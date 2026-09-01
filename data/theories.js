@@ -129,7 +129,7 @@ window.OT.theories = [
     punkter: [
       'Masseproduksjon fungerer best med mekanistisk struktur',
       'Enkeltstykke- og prosessproduksjon fungerer best med organisk struktur',
-      'Antall ledernnivåer og kontrollspenn varierer systematisk med teknologitype'
+      'Antall ledelsesnivåer og kontrollspenn varierer systematisk med teknologitype'
     ],
     kritikk: 'Teknologisk determinisme; undervurderer ledelsens strategiske valg.'
   },
