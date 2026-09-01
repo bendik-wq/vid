@@ -1,0 +1,166 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
+import { runAudit, severity, annualDebtService, DSCR_FLOOR } from '../src/engine/valuation.js';
+import { remediationPlan, restructureTrajectory } from '../src/engine/restructure.js';
+import { runRollup, absorptionCapacity, remainingBalance } from '../src/engine/rollup.js';
+import { BROKER_CASE, PREPARED_CASE } from '../src/data/cases.js';
+import { CRITERIA, MULTIPLE_FLOOR, MAX_COMBINED_EBITDA_HAIRCUT } from '../src/data/criteria.js';
+
+test('severity scales impact from full at 1 to none at 5', () => {
+  assert.equal(severity(1), 1);
+  assert.equal(severity(3), 0.5);
+  assert.equal(severity(5), 0);
+});
+
+test('debt service on a known amortising loan', () => {
+  // £100k at 9% over 7 years ≈ £1,609/month.
+  const annual = annualDebtService(100_000, 0.09, 7);
+  assert.ok(Math.abs(annual / 12 - 1609) < 5, `got ${annual / 12}`);
+});
+
+test('CALIBRATION — broker case lands near Josh’s own $500k figure', () => {
+  const r = runAudit(BROKER_CASE);
+  // He says the business is "realistically at $500,000 in profit".
+  assert.ok(
+    Math.abs(r.defensibleEbitda - 500_000) / 500_000 < 0.1,
+    `defensible EBITDA ${r.defensibleEbitda} is more than 10% from Josh's $500k`,
+  );
+  // The owner salary add-back alone must account for the full $250k replacement cost.
+  const c1 = r.haircuts.lines.find((l) => l.id === 'C1');
+  assert.equal(c1.amount, 250_000);
+});
+
+test('broker case: the ask is unfundable and the gap is the product', () => {
+  const r = runAudit(BROKER_CASE);
+  assert.ok(r.dscr.dscr < 1.0, `DSCR ${r.dscr.dscr} should be below 1.0x`);
+  assert.equal(r.dscr.passes, false);
+  assert.ok(r.impliedMultipleAtAsking > 8, `implied ${r.impliedMultipleAtAsking}x should be absurd`);
+  assert.ok(r.gap > 3_000_000, `gap ${r.gap} should exceed $3m`);
+  assert.equal(r.binding, 'fundability');
+});
+
+test('a restructured seller beats the same business on every axis', () => {
+  const bad = runAudit(BROKER_CASE);
+  const good = runAudit(PREPARED_CASE);
+  assert.ok(good.defensibleEbitda > bad.defensibleEbitda);
+  assert.ok(good.achievableMultiple > bad.achievableMultiple);
+  assert.ok(good.achievableValue > bad.achievableValue * 2);
+});
+
+test('worst possible business floors, it does not go negative', () => {
+  const scores = Object.fromEntries(CRITERIA.map((c) => [c.id, 1]));
+  const r = runAudit({ ...BROKER_CASE, scores });
+  assert.equal(r.achievableMultiple, MULTIPLE_FLOOR);
+  assert.ok(r.multipleFloored);
+  assert.ok(r.haircuts.appliedFraction <= MAX_COMBINED_EBITDA_HAIRCUT + 1e-9);
+  assert.ok(r.achievableValue > 0);
+});
+
+test('a perfect business takes no haircut and no penalty', () => {
+  const scores = Object.fromEntries(CRITERIA.map((c) => [c.id, 5]));
+  const r = runAudit({
+    ...BROKER_CASE,
+    scores,
+    financials: { ...BROKER_CASE.financials, ownerSalaryAddedBack: 0, ownerReplacementCost: 0 },
+  });
+  assert.equal(r.haircuts.appliedFraction, 0);
+  assert.equal(r.penalties.total, 0);
+  assert.equal(r.achievableMultiple, r.ceiling);
+});
+
+test('EBITDA haircut cap binds and rescales the itemised lines', () => {
+  const scores = Object.fromEntries(CRITERIA.map((c) => [c.id, 1]));
+  const r = runAudit({ ...BROKER_CASE, scores });
+  assert.ok(r.haircuts.capApplied);
+  const summed = r.haircuts.lines.reduce((s, l) => s + l.appliedFraction, 0);
+  assert.ok(Math.abs(summed - MAX_COMBINED_EBITDA_HAIRCUT) < 1e-9);
+});
+
+test('max fundable price is exactly the price that hits the DSCR floor', () => {
+  const r = runAudit(BROKER_CASE);
+  const atCap = runAudit({ ...BROKER_CASE, askingPrice: r.dscr.maxFundablePrice });
+  assert.ok(Math.abs(atCap.dscr.dscr - DSCR_FLOOR) < 1e-6, `got ${atCap.dscr.dscr}`);
+});
+
+test('remediation plan prices every open fix and ranks it', () => {
+  const plan = remediationPlan(BROKER_CASE);
+  assert.ok(plan.items.length > 10);
+  assert.ok(plan.items.every((i) => i.fullUplift >= 0));
+  for (let i = 1; i < plan.items.length; i += 1) {
+    assert.ok(plan.items[i - 1].priority >= plan.items[i].priority);
+  }
+  assert.ok(plan.totalRecoverable > 0);
+});
+
+test('restructure trajectory only ever improves', () => {
+  const [now, y1, y2] = restructureTrajectory(BROKER_CASE);
+  assert.ok(y1.result.achievableValue >= now.result.achievableValue);
+  assert.ok(y2.result.achievableValue >= y1.result.achievableValue);
+});
+
+test('remaining balance amortises to zero at term', () => {
+  assert.ok(Math.abs(remainingBalance(100_000, 0.09, 7, 7)) < 1e-6);
+  assert.ok(remainingBalance(100_000, 0.09, 7, 3) < 100_000);
+  assert.ok(remainingBalance(100_000, 0.09, 7, 3) > 0);
+});
+
+test('roll-up creates value through arbitrage, not optimism', () => {
+  const r = runRollup({ sector: 'generic' });
+  assert.ok(r.blendedEntryMultiple < r.exitMultiple);
+  assert.ok(r.arbitrage > 0);
+  assert.ok(r.combinedEbitda > r.acquiredEbitda); // synergies
+  assert.ok(r.moic > 1);
+  assert.ok(r.exitEquityValue > 0);
+});
+
+test('no arbitrage when you buy at the exit multiple with no scale gain', () => {
+  // Sub-£1m EBITDA earns no size premium, so entry at the ceiling leaves nothing on the table.
+  const r = runRollup({
+    sector: 'generic', platformEbitda: 500_000, platformMultiple: 7,
+    boltOnCount: 0, synergyPct: 0,
+  });
+  assert.equal(r.exitMultiple, 7);
+  assert.ok(Math.abs(r.arbitrage) < 1e-9);
+  assert.ok(r.moic < 3, 'return should come from deleveraging alone, not a re-rating');
+});
+
+test('scale alone re-rates the group', () => {
+  const small = runRollup({ platformEbitda: 500_000, boltOnCount: 0, synergyPct: 0 });
+  const big = runRollup({ platformEbitda: 6_000_000, boltOnCount: 0, synergyPct: 0 });
+  assert.ok(big.exitMultiple > small.exitMultiple);
+});
+
+test('absorption capacity is zero once group DSCR is at the floor', () => {
+  const r = runRollup({ boltOnCount: 20 });
+  const cap = absorptionCapacity(r);
+  assert.ok(cap.price >= 0);
+  if (!r.group.passes) assert.equal(cap.price, 0);
+});
+
+test('an interest-only seller note is a structure fix, not a price cut', () => {
+  const amortising = runAudit(BROKER_CASE);
+  const deferred = runAudit({
+    ...BROKER_CASE,
+    structure: { sellerNoteInterestOnly: true },
+  });
+  assert.equal(deferred.askingPrice, amortising.askingPrice);
+  assert.ok(deferred.dscr.dscr > amortising.dscr.dscr);
+  assert.ok(deferred.dscr.maxFundablePrice > amortising.dscr.maxFundablePrice);
+  // The quality ceiling is untouched — structure never fixes a bad business.
+  assert.equal(deferred.achievableValue, amortising.achievableValue);
+});
+
+test('roll-up flags infeasibility rather than pretending debt disappears', () => {
+  const r = runRollup({ boltOnCount: 12, boltOnMultiple: 5, synergyPct: 0 });
+  if (!r.feasible) {
+    assert.ok(r.debtAtExit >= 0);
+    assert.ok(r.principalRepaid <= r.scheduledPrincipalRepaid + 1e-6);
+  }
+});
+
+test('cash-constrained deleveraging never repays more than the schedule', () => {
+  const r = runRollup({});
+  assert.ok(r.principalRepaid <= r.scheduledPrincipalRepaid + 1e-6);
+  assert.ok(r.debtAtExit <= r.debtAtClose + 1e-6);
+});

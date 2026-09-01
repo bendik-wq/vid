@@ -1,0 +1,17 @@
+{
+  "name": "vid-audit-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sell-side audit, restructure and roll-up platform built on the 3C framework (Credibility, Capital, Closing).",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "dev": "node scripts/serve.js",
+    "build": "node scripts/build.js",
+    "calibrate": "node scripts/calibrate.js",
+    "smoke": "node test/browser.smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.1"
+  }
+}
