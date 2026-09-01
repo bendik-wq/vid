@@ -114,12 +114,34 @@ function onClick(e) {
   else if (act === 'export') { exportReport(); }
 }
 
-function exportReport() {
+/** Brief inline message for outcomes that have nowhere else to go. */
+function notice(text) {
+  let el = document.getElementById('notice');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'notice';
+    el.style.cssText =
+      'position:fixed;bottom:20px;right:20px;z-index:9;background:var(--panel-2);' +
+      'border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:13px;' +
+      'color:var(--ink-2);max-width:340px';
+    document.body.appendChild(el);
+  }
+  el.textContent = text;
+  clearTimeout(notice.timer);
+  notice.timer = setTimeout(() => el.remove(), 5000);
+}
+
+function reportPayload() {
   const audit = runAudit(state.audit);
-  const payload = {
+  return {
     generated: new Date().toISOString(),
     business: state.audit.business,
-    inputs: { askingPrice: state.audit.askingPrice, financials: state.audit.financials, structure: state.audit.structure, scores: state.audit.scores },
+    inputs: {
+      askingPrice: state.audit.askingPrice,
+      financials: state.audit.financials,
+      structure: state.audit.structure,
+      scores: state.audit.scores,
+    },
     result: {
       claimedEbitda: audit.claimedEbitda,
       defensibleEbitda: audit.defensibleEbitda,
@@ -138,17 +160,39 @@ function exportReport() {
     haircuts: audit.haircuts.lines,
     penalties: audit.penalties.lines,
     remediation: remediationPlan(state.audit).items,
-    rollup: (() => { const r = runRollup(state.rollup); return {
-      blendedEntryMultiple: r.blendedEntryMultiple, exitMultiple: r.exitMultiple, arbitrage: r.arbitrage,
-      equityInvested: r.equityInvested, exitEquityValue: r.exitEquityValue, moic: r.moic, irr: r.irr,
-      groupDscr: r.group.dscr, feasible: r.feasible,
-    }; })(),
+    rollup: (() => {
+      const r = runRollup(state.rollup);
+      return {
+        blendedEntryMultiple: r.blendedEntryMultiple, exitMultiple: r.exitMultiple, arbitrage: r.arbitrage,
+        equityInvested: r.equityInvested, exitEquityValue: r.exitEquityValue, moic: r.moic, irr: r.irr,
+        groupDscr: r.group.dscr, feasible: r.feasible,
+      };
+    })(),
   };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+}
+
+/**
+ * Published pages cannot start a download themselves, so save through the host when it is
+ * there and fall back to a plain link when the page is served locally.
+ */
+async function exportReport() {
+  const json = JSON.stringify(reportPayload(), null, 2);
+  const filename = `${(state.audit.business.name || 'exit-audit').replace(/\W+/g, '-').toLowerCase()}.json`;
+
+  const downloads = window.claude?.use ? await window.claude.use('downloads') : null;
+  if (downloads) {
+    try {
+      await downloads.save({ filename, data: json });
+    } catch (err) {
+      if (err?.code !== 'declined') notice(`Could not save the report: ${err?.message ?? 'saving is unavailable here'}`);
+    }
+    return;
+  }
+
+  const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${(state.audit.business.name || 'exit-audit').replace(/\W+/g, '-').toLowerCase()}.json`;
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
 }

@@ -1,21 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/*
+ * An instrument, not a document. Committed single-theme: this is a dark console a broker
+ * reads numbers off, and it holds that ground whichever theme the viewer is in — so every
+ * colour below is painted explicitly rather than inherited.
+ *
+ * Neutrals carry a slight cool bias toward the blue end so the brass accent reads as chosen
+ * against them rather than as grey plus yellow.
+ */
 :root {
-  --bg: #0e1116;
-  --panel: #161a21;
-  --panel-2: #1c212a;
-  --line: #262c37;
-  --line-soft: #1f242e;
-  --ink: #e8ecf2;
-  --ink-2: #9aa5b4;
-  --ink-3: #6b7686;
-  --accent: #c9a227;
-  --accent-soft: rgba(201, 162, 39, 0.12);
-  --bad: #d9584a;
-  --bad-soft: rgba(217, 88, 74, 0.12);
-  --good: #4a9d7f;
-  --good-soft: rgba(74, 157, 127, 0.12);
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
-  --sans: ui-sans-serif, -apple-system, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
-  --serif: ui-serif, Georgia, "Times New Roman", serif;
+  --bg: #0d1015;
+  --panel: #14181f;
+  --panel-2: #1a1f28;
+  --line: #242a35;
+  --line-soft: #1d222b;
+  --ink: #e9edf3;
+  --ink-2: #98a3b3;
+  --ink-3: #67717f;
+  --accent: #c8973f;
+  --accent-soft: rgba(200, 151, 63, 0.13);
+  --bad: #d4574c;
+  --bad-soft: rgba(212, 87, 76, 0.13);
+  --good: #48a184;
+  --good-soft: rgba(72, 161, 132, 0.13);
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: Archivo, ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --serif: Newsreader, ui-serif, Georgia, "Times New Roman", serif;
 }
 
 * { box-sizing: border-box; }
@@ -28,7 +38,11 @@ body {
   font-size: 15px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
 }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
 a { color: var(--accent); }
 
@@ -47,7 +61,7 @@ a { color: var(--accent); }
   overflow-y: auto;
 }
 .brand { padding: 0 22px 20px; border-bottom: 1px solid var(--line-soft); margin-bottom: 14px; }
-.brand h1 { font-family: var(--serif); font-size: 19px; margin: 0 0 3px; letter-spacing: 0.01em; }
+.brand h1 { font-family: var(--serif); font-size: 21px; font-weight: 500; margin: 0 0 4px; letter-spacing: -0.01em; }
 .brand p { margin: 0; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.13em; }
 .nav a {
   display: block; padding: 9px 22px; color: var(--ink-2); text-decoration: none;
@@ -60,9 +74,9 @@ a { color: var(--accent); }
 .main { flex: 1; min-width: 0; padding: 34px 40px 90px; max-width: 1180px; }
 
 /* ── Typography ─────────────────────────────────────────────────────────── */
-h2 { font-family: var(--serif); font-size: 27px; margin: 0 0 6px; font-weight: 500; }
+h2 { font-family: var(--serif); font-size: 30px; line-height: 1.2; margin: 0 0 8px; font-weight: 400; letter-spacing: -0.015em; text-wrap: balance; }
 h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.13em; color: var(--ink-2); margin: 34px 0 12px; font-weight: 600; }
-.lede { color: var(--ink-2); max-width: 66ch; margin: 0 0 26px; }
+.lede { color: var(--ink-2); max-width: 65ch; margin: 0 0 26px; }
 .quote {
   border-left: 2px solid var(--accent); padding: 4px 0 4px 16px; margin: 20px 0;
   font-family: var(--serif); font-style: italic; color: var(--ink-2); max-width: 68ch;
@@ -91,6 +105,7 @@ input:focus, select:focus { outline: none; border-color: var(--accent); }
 .check input { width: auto; margin-top: 3px; }
 
 button {
+  transition: filter 120ms ease, border-color 120ms ease, color 120ms ease;
   background: var(--accent); color: #14181e; border: 0; border-radius: 5px;
   padding: 9px 15px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--sans);
 }
@@ -102,11 +117,11 @@ button.ghost:hover { color: var(--ink); border-color: var(--ink-3); }
 /* ── Numbers ────────────────────────────────────────────────────────────── */
 .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; }
 .stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.11em; color: var(--ink-3); }
-.stat .v { font-family: var(--mono); font-size: 25px; margin-top: 6px; letter-spacing: -0.02em; }
+.stat .v { font-family: var(--mono); font-weight: 500; font-size: 24px; margin-top: 6px; letter-spacing: -0.03em; }
 .stat .s { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
 .stat.bad { border-color: rgba(217, 88, 74, 0.45); background: var(--bad-soft); }
 .stat.good { border-color: rgba(74, 157, 127, 0.4); background: var(--good-soft); }
-.stat.hero .v { font-size: 38px; }
+.stat.hero .v { font-size: 34px; }
 .num { font-family: var(--mono); }
 .bad-t { color: var(--bad); }
 .good-t { color: var(--good); }
@@ -159,7 +174,7 @@ td.n, th.n { text-align: right; font-family: var(--mono); white-space: nowrap; }
 .verdict { border-radius: 8px; padding: 20px 22px; margin: 20px 0; border: 1px solid var(--line); }
 .verdict.bad { border-color: rgba(217, 88, 74, 0.5); background: var(--bad-soft); }
 .verdict.good { border-color: rgba(74, 157, 127, 0.45); background: var(--good-soft); }
-.verdict h4 { margin: 0 0 8px; font-size: 16px; font-family: var(--serif); font-weight: 500; }
+.verdict h4 { margin: 0 0 8px; font-size: 19px; font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; text-wrap: balance; }
 .verdict p { margin: 0; color: var(--ink-2); max-width: 72ch; font-size: 14px; }
 
 .flag {

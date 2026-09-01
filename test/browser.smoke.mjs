@@ -12,7 +12,11 @@ const browser = await chromium.launch({ executablePath: CHROME });
 const page = await browser.newPage({ viewport: { width: 1400, height: 1000 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
-page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('favicon')) errors.push(m.text()); });
+// Font requests are ignored: sandboxes without outbound access to Google Fonts fall back
+// to the declared stacks, which is a degraded look, not a broken page.
+const ignorable = (t) => /favicon|fonts\.googleapis|fonts\.gstatic|ERR_CONNECTION_RESET/.test(t);
+page.on('console', (m) => { if (m.type() === 'error' && !ignorable(m.text())) errors.push(m.text()); });
+page.on('requestfailed', (r) => { if (!ignorable(r.url())) errors.push(`request failed: ${r.url()}`); });
 
 const fail = (msg) => { console.error(`FAIL ${msg}`); process.exitCode = 1; };
 
