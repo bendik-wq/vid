@@ -13,7 +13,7 @@
   /* Innholdet i datafilene er kuratert og bruker <em>/<strong> med hensikt.
      Alt annet markup escapes bort før innsetting. */
   var TILLATT = /<\/?(?:em|strong|b|i|br)\s*\/?>/gi;
-  var SENTINEL = '';
+  var SENTINEL = String.fromCharCode(1);
 
   function rik(s) {
     var vakter = [];
