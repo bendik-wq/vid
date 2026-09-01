@@ -1,15 +1,15 @@
-/** Screens. Each returns HTML; app.js wires events by delegation. */
+/** Three screens and two references. Each returns HTML; app.js wires events by delegation. */
 
-import { CRITERIA, PILLARS, criteriaForPillar } from '../data/criteria.js';
+import { PILLARS, criteriaForPillar } from '../data/criteria.js';
 import { SECTORS, SECTORS_BY_ID, SIZE_BANDS, bandFor } from '../data/sectors.js';
-import { STRUCTURES, STRUCTURES_BY_ID, INTEGRATION_LEVERS, LEVERS_BY_ID, MAX_SYNERGY } from '../data/structures.js';
+import { STRUCTURES, INTEGRATION_LEVERS, MAX_SYNERGY } from '../data/structures.js';
 import { config, deltaFor, defaultDeltaFor, ceilingFor, isTuned, isSectorTuned, tuningSummary, DEFAULT_CONFIG } from '../data/config.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan, restructureTrajectory, pillarUplift } from '../engine/restructure.js';
 import { runBuild, capitalOptions, horizon } from '../engine/build.js';
-import { state, groupInput } from './state.js';
+import { state, groupInput, futureInput } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
-import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, twoPaths } from './charts.js';
+import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart } from './charts.js';
 import { groupCanvas, industryTray } from './canvas.js';
 
 const tile = (k, v, s, cls = '') =>
@@ -28,27 +28,24 @@ const rateField = (label, path, value, dp = 0, attr = 'bind') => `
     <input data-${attr}="${path}" data-kind="rate" value="${(value * 100).toFixed(dp)}" inputmode="decimal" />
   </div>`;
 
-// ── The 3C spine ──────────────────────────────────────────────────────────
+// ── The three questions ───────────────────────────────────────────────────
 export function pillarCost(pillar, r) {
   if (pillar === 'credibility') {
     const lost = r.haircuts.lines.reduce((s, l) => s + l.appliedAmount, 0);
     return { headline: `−${money(lost)}`, detail: 'of the profit you are claiming', critical: lost > 0 };
   }
   if (pillar === 'capital') {
-    const turnsLost = r.penalties.lines.filter((l) => l.pillar === 'capital').reduce((s, l) => s + l.penalty, 0);
     return {
       headline: `${turns(r.dscr.dscr)} cover`,
-      detail: r.dscr.passes
-        ? `a buyer can afford the repayments, and −${turns(turnsLost)} off the price`
-        : `a buyer cannot afford the repayments, and −${turns(turnsLost)} off the price`,
+      detail: r.dscr.passes ? 'a buyer can afford the repayments' : 'a buyer cannot afford the repayments',
       critical: !r.dscr.passes,
     };
   }
   const turnsLost = r.penalties.lines.filter((l) => l.pillar === 'closing').reduce((s, l) => s + l.penalty, 0);
-  return { headline: `−${turns(turnsLost)}`, detail: 'off the price, on the risk the deal falls over', critical: turnsLost > 0 };
+  return { headline: `−${turns(turnsLost)}`, detail: 'off the price, on the risk it falls over', critical: turnsLost > 0 };
 }
 
-export function threeCStrip(r, { linked = false } = {}) {
+export function threeCStrip(r) {
   return `
   <div class="grid g3">
     ${['credibility', 'capital', 'closing'].map((id) => {
@@ -65,45 +62,49 @@ export function threeCStrip(r, { linked = false } = {}) {
           <span class="muted" style="font-size:13px">${score.toFixed(1)} / 5</span>
         </div>
         <div class="small" style="margin:-6px 0 0">${esc(cost.detail)}</div>
-        ${linked ? `<div><button class="btn quiet tiny" data-act="open-pillar" data-pillar="${id}">Score this</button></div>` : ''}
       </div>`;
     }).join('')}
   </div>`;
 }
 
-// ── Audit ─────────────────────────────────────────────────────────────────
-export function auditView() {
+// ── One: your business ────────────────────────────────────────────────────
+export function businessView() {
   const a = state.audit;
   const r = runAudit(a);
-  const s = a.structure;
+  const started = r.claimedEbitda > 0 && r.askingPrice > 0;
+  const gapUp = r.gap > 0;
 
   return `
   <section>
     <p class="eyebrow">Step one</p>
-    <h1 class="display">What do you want for it?</h1>
-    <p class="lede">Start with your number. Everything after this is arithmetic on figures you give us —
-    which is the point. There is nothing here to argue with.</p>
-    <div style="max-width:340px">
-      <input class="big" data-bind="askingPrice" data-kind="number" value="${esc(a.askingPrice)}"
-             inputmode="numeric" aria-label="What you want for the business" />
-    </div>
+    ${started ? `
+      <h1 class="display" style="max-width:22ch">${gapUp ? 'It is not worth what you think.' : 'You are asking under the odds.'}</h1>
+      <div class="figure xl ${gapUp ? 'is-critical' : 'is-good'}" style="margin:24px 0 12px">${money(Math.abs(r.gap))}</div>
+      <p class="lede">You want ${money(r.askingPrice)}. That is ${turns(r.impliedMultipleAtAsking)} the profit you
+      can actually prove. A buyer gets to ${money(r.achievableValue)}.</p>
+      ${gapBar({ asking: r.askingPrice, achievable: r.achievableValue, fundable: r.dscr.maxFundablePrice })}
+    ` : `
+      <h1 class="display">What do you want for it?</h1>
+      <p class="lede">Two numbers and you have your answer. Everything after that is arithmetic on figures
+      you give us — which is the point. There is nothing here to argue with.</p>
+    `}
   </section>
 
   <section>
-    <h2 class="headline">The profit you are claiming</h2>
+    <h2 class="headline">${started ? 'Your numbers' : 'Start here'}</h2>
     <div class="grid g3">
+      ${numField('What you want for it', 'askingPrice', a.askingPrice, 'Your asking price.')}
       ${numField('Profit, after add-backs', 'financials.claimedEbitda', a.financials.claimedEbitda,
         'The number on the sales memorandum.')}
       ${numField('Cost to replace you', 'financials.ownerReplacementCost', a.financials.ownerReplacementCost,
         'What you would pay someone to do everything you do.')}
-      ${numField('Your pay, added back', 'financials.ownerSalaryAddedBack', a.financials.ownerSalaryAddedBack,
-        'Add your own wage back and a buyer inherits a job, not a profit.')}
     </div>
     <details class="card" style="margin-top:16px">
       <summary style="cursor:pointer;font-weight:600;font-size:15px">More detail</summary>
       <div class="grid g3" style="margin-top:18px">
+        ${numField('Your pay, added back', 'financials.ownerSalaryAddedBack', a.financials.ownerSalaryAddedBack,
+          'Add your own wage back and a buyer inherits a job, not a profit.')}
         ${numField('Sales', 'financials.revenue', a.financials.revenue)}
-        ${numField('What you pay yourself', 'financials.ownerSalaryDrawn', a.financials.ownerSalaryDrawn)}
         ${numField('Kit and vehicles, a year', 'financials.maintenanceCapex', a.financials.maintenanceCapex,
           'What it costs just to stand still.')}
         <div class="field">
@@ -119,48 +120,93 @@ export function auditView() {
         ${rateField('Tax rate', 'financials.taxRate', a.financials.taxRate)}
       </div>
     </details>
+    <div class="actions" style="margin-top:18px">
+      <button class="btn quiet" data-act="load-broker">Load the example</button>
+      ${started ? '<button class="btn quiet" data-act="reset">Clear</button>' : ''}
+    </div>
+  </section>
+
+  ${started ? `
+  <section>
+    <h2 class="headline">Where it went</h2>
+    <p class="lede">Two cuts, both from your own figures. The first to the profit, the second to the price
+    paid for each pound of it.</p>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="between" style="margin-bottom:16px">
+        <div>
+          <p class="eyebrow" style="margin:0 0 6px">Cut one · the profit</p>
+          <div class="figure lg">${money(r.defensibleEbitda)}</div>
+          <p class="small" style="margin:6px 0 0">you can prove, out of ${money(r.claimedEbitda)} claimed</p>
+        </div>
+        <div class="badge critical">−${pct(r.haircuts.appliedFraction)}</div>
+      </div>
+      ${bridgeBar({
+        total: r.claimedEbitda, keep: r.defensibleEbitda, keepLabel: 'Provable profit',
+        cuts: r.haircuts.lines.map((l) => ({ label: l.name, value: l.appliedAmount })),
+      })}
+    </div>
+
+    <div class="card">
+      <div class="between" style="margin-bottom:16px">
+        <div>
+          <p class="eyebrow" style="margin:0 0 6px">Cut two · the price per pound</p>
+          <div class="figure lg">${turns(r.achievableMultiple)}</div>
+          <p class="small" style="margin:6px 0 0">what you get, out of a best case of ${turns(r.ceiling)}</p>
+        </div>
+        <div class="badge critical">−${turns(r.penalties.total)}</div>
+      </div>
+      ${bridgeBar({
+        total: r.ceiling, keep: r.achievableMultiple, keepLabel: 'What you get',
+        cuts: r.penalties.lines.map((l) => ({ label: l.name, value: l.penalty })), format: turns,
+      })}
+    </div>
   </section>
 
   <section>
-    <h2 class="headline">How a buyer would pay</h2>
-    <p class="body tight">
-      ${pct(s.depositPct, 0)} down, ${pct(s.sellerNotePct, 0)} left with you at
-      ${pct(s.sellerNoteRate, 1)}${s.sellerNoteInterestOnly ? ', interest only' : ` over ${s.sellerNoteTermYears} years`},
-      the rest borrowed at ${pct(s.bankRate, 1)} over ${s.bankTermYears} years.
-    </p>
-    <details class="card" style="margin-top:16px">
-      <summary style="cursor:pointer;font-weight:600;font-size:15px">Change it</summary>
-      <div class="grid g3" style="margin-top:18px">
-        ${rateField('Deposit %', 'structure.depositPct', s.depositPct)}
-        ${rateField('Left with you %', 'structure.sellerNotePct', s.sellerNotePct)}
-        ${rateField('Bank rate %', 'structure.bankRate', s.bankRate, 1)}
-        ${numField('Bank term, years', 'structure.bankTermYears', s.bankTermYears)}
-        ${rateField('Your rate %', 'structure.sellerNoteRate', s.sellerNoteRate, 1)}
-        ${numField('Your term, years', 'structure.sellerNoteTermYears', s.sellerNoteTermYears)}
-      </div>
-      <label class="switch" style="margin-top:16px">
-        <input type="checkbox" data-bind="structure.sellerNoteInterestOnly" data-kind="bool"
-               ${s.sellerNoteInterestOnly ? 'checked' : ''} />
-        <span>You take interest only, and the lump at the end</span>
-      </label>
-      <p class="hint">The single biggest thing that decides whether your price is payable. Try it both ways.</p>
-    </details>
-  </section>
+    <h2 class="headline">Can a buyer even afford it?</h2>
+    ${thresholdScale({ value: r.dscr.dscr, floor: config.dscrFloor, max: 3, label: 'Loan cover at your price' })}
+    <div class="note ${r.dscr.passes ? 'good' : 'critical'}" style="margin:26px 0">
+      <p style="margin:0"><strong>Your price covers the repayments ${turns(r.dscr.dscr)} over. Lenders want ${turns(config.dscrFloor)}.</strong>
+      ${r.dscr.passes
+        ? ' The deal is payable as it stands.'
+        : ` At your price the repayments are ${money(r.dscr.annualService)} a year and the business only makes
+            ${money(r.dscr.freeCashFlow)}. The most anyone could pay on these terms is
+            ${money(r.dscr.maxFundablePrice)}. Your price is not ambitious — it is unpayable.`}</p>
+    </div>
+  </section>` : ''}
 
   <section>
     <h2 class="headline">Three questions a buyer asks</h2>
-    <p class="lede">Score each one from one to five. Five is what a buyer hopes to find.</p>
+    <p class="lede">Score each from one to five. Five is what a buyer hopes to find.</p>
     ${threeCStrip(r)}
     <div style="margin-top:28px">
       ${['credibility', 'capital', 'closing'].map((id) => pillarFold(id, r)).join('')}
     </div>
   </section>
 
-  <section class="actions">
-    <button class="btn" data-act="goto" data-view="value">See what it is worth</button>
-    <button class="btn quiet" data-act="load-broker">Load the example</button>
-    <button class="btn quiet" data-act="reset">Clear</button>
-  </section>`;
+  ${started ? `
+  <section>
+    <h2 class="headline">What fixing it is worth</h2>
+    <p class="lede">Each bar is what you get back if you fixed that one thing and left the other two alone.
+    They do not add up on purpose: profit times price means the three multiply, so fixing all three is worth
+    <strong>more</strong> than the three figures put together.</p>
+    ${pillarBars(pillarUplift(state.audit).map((u) => ({
+      name: PILLARS[u.pillar].name, sub: `${u.score.toFixed(1)} / 5 today`,
+      value: u.value, color: `var(--${u.pillar})`,
+    })))}
+    ${planFold()}
+  </section>
+
+  <section>
+    <p class="statement">Fixing it makes the business worth more.
+    <span class="up">Buying others makes it worth several times more.</span></p>
+    <div class="actions" style="margin-top:26px">
+      <button class="btn" data-act="goto" data-view="build">Build the group</button>
+      <button class="btn quiet" data-act="export">Export report</button>
+      <button class="btn quiet" data-act="print">Print</button>
+    </div>
+  </section>` : ''}`;
 }
 
 function pillarFold(id, r) {
@@ -194,8 +240,7 @@ function critRow(c) {
         <div class="crit-name">${esc(c.name)} <span class="badge">worked out for you</span></div>
         <div class="crit-q">${esc(c.question)}</div>
         <div class="crit-anchor">${esc(c.computedNote)}</div>
-      </div>
-      <div></div>
+      </div><div></div>
     </div>`;
   }
   const score = Number(state.audit.scores[c.id] ?? 3);
@@ -219,144 +264,16 @@ function critRow(c) {
   </div>`;
 }
 
-// ── Value ─────────────────────────────────────────────────────────────────
-export function valueView() {
-  const r = runAudit(state.audit);
-  const name = state.audit.business.name || 'Your business';
-  const gapUp = r.gap > 0;
-
-  return `
-  <section>
-    <p class="eyebrow">${esc(name)}</p>
-    <h1 class="display" style="max-width:22ch">${gapUp ? 'It is not worth what you think.' : 'You are asking under the odds.'}</h1>
-    <div class="figure xl ${gapUp ? 'is-critical' : 'is-good'}" style="margin:28px 0 12px">${money(Math.abs(r.gap))}</div>
-    <p class="lede">You want ${money(r.askingPrice)}. That is ${turns(r.impliedMultipleAtAsking)} the profit you can
-    actually prove. A buyer gets to ${money(r.achievableValue)}.</p>
-    ${gapBar({ asking: r.askingPrice, achievable: r.achievableValue, fundable: r.dscr.maxFundablePrice })}
-  </section>
-
-  <section>
-    <h2 class="headline">Where it went</h2>
-    <p class="lede">Two cuts, both taken from your own figures. The first is to the profit.
-    The second is to the price paid for each pound of it.</p>
-
-    <div class="card" style="margin-bottom:16px">
-      <div class="between" style="margin-bottom:16px">
-        <div>
-          <p class="eyebrow" style="margin:0 0 6px">Cut one · the profit</p>
-          <div class="figure lg">${money(r.defensibleEbitda)}</div>
-          <p class="small" style="margin:6px 0 0">you can prove, out of ${money(r.claimedEbitda)} claimed</p>
-        </div>
-        <div class="badge critical">−${pct(r.haircuts.appliedFraction)}</div>
-      </div>
-      ${bridgeBar({
-        total: r.claimedEbitda,
-        keep: r.defensibleEbitda,
-        keepLabel: 'Provable profit',
-        cuts: r.haircuts.lines.map((l) => ({ label: l.name, value: l.appliedAmount })),
-      })}
-    </div>
-
-    <div class="card">
-      <div class="between" style="margin-bottom:16px">
-        <div>
-          <p class="eyebrow" style="margin:0 0 6px">Cut two · the price per pound</p>
-          <div class="figure lg">${turns(r.achievableMultiple)}</div>
-          <p class="small" style="margin:6px 0 0">what you get, out of a best case of ${turns(r.ceiling)}</p>
-        </div>
-        <div class="badge critical">−${turns(r.penalties.total)}</div>
-      </div>
-      ${bridgeBar({
-        total: r.ceiling,
-        keep: r.achievableMultiple,
-        keepLabel: 'What you get',
-        cuts: r.penalties.lines.map((l) => ({ label: l.name, value: l.penalty })),
-        format: turns,
-      })}
-    </div>
-  </section>
-
-  <section>
-    <h2 class="headline">Can a buyer even afford it?</h2>
-    <p class="lede">${r.dscr.passes
-      ? `Yes. The business throws off ${money(r.dscr.freeCashFlow)} a year against ${money(r.dscr.annualService)} of repayments.`
-      : `No. At your price the repayments are ${money(r.dscr.annualService)} a year and the business only makes ${money(r.dscr.freeCashFlow)}.`}</p>
-    ${thresholdScale({ value: r.dscr.dscr, floor: config.dscrFloor, max: 3, label: 'Loan cover at your price' })}
-    <div class="note ${r.dscr.passes ? 'good' : 'critical'}" style="margin:26px 0">
-      <p style="margin:0"><strong>Your price covers the repayments ${turns(r.dscr.dscr)} over. Lenders want ${turns(config.dscrFloor)}.</strong>
-      ${r.dscr.passes
-        ? ' The deal is payable as it stands.'
-        : ` No bank lends against this. No seller-financed buyer survives it. The most anyone could pay on
-            these terms is ${money(r.dscr.maxFundablePrice)}. Your price is not ambitious — it is unpayable.`}</p>
-    </div>
-    <div class="grid g4">
-      ${tile('Deposit', money(r.dscr.deposit), pct(r.dscr.structure.depositPct, 0))}
-      ${tile('Borrowed', money(r.dscr.bankDebt), `${pct(r.dscr.structure.bankRate, 1)} over ${r.dscr.structure.bankTermYears}y`)}
-      ${tile('Left with you', money(r.dscr.sellerNote), r.dscr.structure.sellerNoteInterestOnly ? 'interest only' : `${r.dscr.structure.sellerNoteTermYears}y`)}
-      ${tile('Repayments', money(r.dscr.annualService), 'every year')}
-    </div>
-    <div class="note" style="margin-top:22px">
-      <p style="margin:0"><strong>${r.binding === 'fundability'
-        ? 'The money is the problem, not the business.'
-        : 'The business is the problem, not the money.'}</strong>
-      ${r.binding === 'fundability'
-        ? ` Nobody can carry more than ${money(r.dscr.maxFundablePrice)} on these terms, even though the business
-            itself is worth ${money(r.achievableValue)}. Stretch the terms, defer more, take some later — the
-            price need not move, the structure must.`
-        : ' Repayments are not what is holding you back. Every extra pound has to come from a better business.'}</p>
-    </div>
-  </section>
-
-  <section>
-    <h2 class="headline">What each one is worth</h2>
-    <p class="lede">What you get back if you fixed that one thing and left the other two alone. They do not add up
-    on purpose: profit times price means the three multiply, so fixing all three is worth
-    <strong>more</strong> than the three figures put together.</p>
-    ${pillarBars(pillarUplift(state.audit).map((u) => ({
-      name: PILLARS[u.pillar].name,
-      sub: `${u.score.toFixed(1)} / 5 today`,
-      value: u.value,
-      color: `var(--${u.pillar})`,
-    })))}
-    ${threeCStrip(r, { linked: true })}
-  </section>
-
-  ${planSection()}
-
-  <section>
-    <p class="statement">Fixing it makes the business worth more.
-    <span class="up">Buying others makes it worth several times more.</span></p>
-    <div class="actions" style="margin-top:26px">
-      <button class="btn" data-act="goto" data-view="build">Build the group</button>
-      <button class="btn quiet" data-act="export">Export report</button>
-      <button class="btn quiet" data-act="print">Print</button>
-    </div>
-  </section>`;
-}
-
-function planSection() {
+function planFold() {
   const plan = remediationPlan(state.audit);
   const traj = restructureTrajectory(state.audit);
-  const base = plan.base;
   const max = Math.max(...plan.items.map((i) => i.fullUplift), 1);
-  const top3 = plan.items.slice(0, 3);
-
   return `
-  <section>
-    <h2 class="headline">The fix, in order</h2>
-    <p class="lede">Ranked by what you get back for each month of work.
-    ${top3.length ? `The first three are worth ${money(top3.reduce((s, i) => s + i.fullUplift, 0))} and take
-    ${Math.max(...top3.map((i) => i.months))} months if you run them side by side.` : ''}</p>
-    ${trajectory(traj.map((t) => ({ label: t.label, value: t.result.achievableValue })))}
-    <div class="grid g3" style="margin-top:20px">
-      ${tile('Worth today', money(base.achievableValue), '')}
-      ${tile('Worth fixed', money(base.achievableValue + plan.totalRecoverable), 'doing all of it', 'flag-good')}
-      ${tile('Still short', money(Math.max(0, base.askingPrice - base.achievableValue - plan.totalRecoverable)),
-        base.askingPrice - base.achievableValue - plan.totalRecoverable > 0 ? 'the price has to move too' : 'your number is reachable')}
-    </div>
-    <details class="card" style="margin-top:18px">
-      <summary style="cursor:pointer;font-weight:600;font-size:15px">Every fix, priced</summary>
-      <div class="scroll" style="margin-top:16px">
+  <details class="card" style="margin-top:22px">
+    <summary style="cursor:pointer;font-weight:600;font-size:15px">The fix, in order</summary>
+    <div style="margin-top:20px">
+      ${trajectory(traj.map((t) => ({ label: t.label, value: t.result.achievableValue })))}
+      <div class="scroll" style="margin-top:18px">
         <table>
           <thead><tr><th>Fix</th><th class="n">Now</th><th class="n">Worth</th><th class="n">Months</th><th style="width:110px"></th></tr></thead>
           <tbody>
@@ -372,25 +289,32 @@ function planSection() {
           </tbody>
         </table>
       </div>
-    </details>
-  </section>`;
+    </div>
+  </details>`;
 }
 
-// ── Build ─────────────────────────────────────────────────────────────────
+// ── Two: build the group ──────────────────────────────────────────────────
 export function buildView() {
   const g = groupInput();
   const r = runBuild(g);
   const selected = r.nodes.find((n) => n.id === state.ui.selectedNode) ?? r.nodes[r.nodes.length - 1];
-  const cash = state.capital.cash;
-  const options = capitalOptions(cash, { industryId: state.capital.industryId, stretch: state.capital.stretch });
   const band = bandFor(r.groupProfit);
+  const failing = r.nodes.filter((n) => !n.passes).length;
 
   return `
   <section>
     <p class="eyebrow">Step two</p>
     <h1 class="display">Stop selling one. Start owning several.</h1>
-    <p class="lede">Small businesses sell cheap. Groups sell dear. Buy at the small price, sell at the group
-    price, and the difference is yours. Your own business is the platform — everything you buy hangs off it.</p>
+    <p class="lede">Small businesses sell cheap. Groups sell dear. You buy at the small price and are paid
+    the group price for the same pound of profit. Your own business is the platform — everything you buy
+    hangs off it.</p>
+    ${spreadDiagram({
+      entry: r.nodes.length ? r.blendedEntry : 2.5,
+      exit: r.nodes.length ? r.exitMultiple : 7,
+      count: Math.max(3, r.nodes.length),
+      each: r.nodes.length ? r.acquiredEbitda / r.nodes.length : 250_000,
+      platform: r.holdcoEbitda,
+    })}
   </section>
 
   <section>
@@ -402,34 +326,31 @@ export function buildView() {
         r.cashRequired === 0 ? 'none of it is yours' : 'from your own pocket', r.cashRequired === 0 ? 'flag-good' : '')}
       ${tile('Loan cover', turns(r.dscr), r.passes ? 'the group can pay' : 'below the floor',
         r.passes ? 'flag-good' : 'flag-critical')}
-      ${tile('Group worth', money(r.equityValue), `${turns(r.exitMultiple)} on ${money(r.groupProfit)}, less debt`, 'flag-good')}
+      ${tile('Group worth', money(r.equityValue), `${turns(r.exitMultiple)} on the profit, less debt`, 'flag-good')}
     </div>
-    ${r.nodes.some((n) => !n.passes) ? `
+    ${failing ? `
       <div class="note ${r.passes ? '' : 'critical'}" style="margin-top:22px">
-        <p style="margin:0 0 12px"><strong>${r.nodes.filter((n) => !n.passes).length} of these cannot pay for
-        themselves at that price.</strong>
+        <p style="margin:0 0 12px"><strong>${failing} of these cannot pay for themselves at that price.</strong>
         ${r.passes
-          ? 'Together with your business the group still covers it — that is what a platform is for, your existing profit carries the first few until they carry themselves.'
+          ? 'Together with your business the group still covers it — that is what a platform is for.'
           : 'And the group cannot carry them either.'}
-        The fastest fix is the terms: ask the seller for interest only, with the lump at the end.</p>
+        The fastest fix is the terms.</p>
         <button class="btn" data-act="stretch-all" data-on="true">Ask every seller for interest only</button>
       </div>` : ''}
-    ${r.nodes.length > 0 && r.nodes.every((n) => n.interestOnly) ? `
+    ${r.nodes.length && r.nodes.every((n) => n.interestOnly) ? `
       <div class="note good" style="margin-top:22px">
-        <p style="margin:0 0 12px"><strong>Nothing about the businesses changed. Only the terms did.</strong>
-        Same price, same profit, same people — and now every one of them pays for itself.
+        <p style="margin:0"><strong>Nothing about the businesses changed. Only the terms did.</strong>
+        Same price, same profit, same people.
         <button class="btn quiet tiny" data-act="stretch-all" data-on="false" style="margin-left:8px">Put it back</button></p>
       </div>` : ''}
-    ${r.nodes.length > 0 ? `
-      <p class="small" style="margin-top:14px">You buy at ${turns(r.blendedEntry)} and the group sells at
-      ${turns(r.exitMultiple)}. That gap — <strong>${turns(r.arbitrage)}</strong> — is the whole strategy.
-      At ${money(r.groupProfit)} of profit, the people bidding are ${esc(band.who.toLowerCase())}.</p>` : ''}
+    ${r.nodes.length ? `
+      <p class="small" style="margin-top:14px">At ${money(r.groupProfit)} of profit, the people bidding are
+      ${esc(band.who.toLowerCase())}.</p>` : ''}
   </section>
 
   <section>
     <h2 class="headline">Add a business</h2>
-    <p class="lede">Tap one to add it. Drag it around the web if you like — the group does not care where
-    you put it, only what it earns.</p>
+    <p class="lede">Tap one to add it. Drag it anywhere on the web — the group only cares what it earns.</p>
     ${industryTray(SECTORS.filter((s) => s.id !== 'generic'))}
   </section>
 
@@ -437,8 +358,8 @@ export function buildView() {
 
   <section>
     <h2 class="headline">How you pay for it</h2>
-    <p class="lede">Three of these four need none of your money. That is not a trick — it is what a seller
-    who wants out will agree to, because he cares more about the number than about getting it all on Friday.</p>
+    <p class="lede">Three of these four need none of your money. Not a trick — it is what a seller who wants
+    out will agree to, because he cares more about the number than about having it all on Friday.</p>
     <div class="grid g2">
       ${STRUCTURES.map((s) => `
         <div class="card">
@@ -447,75 +368,61 @@ export function buildView() {
             <span class="badge ${s.depositPct === 0 ? 'good' : ''}">${s.depositPct === 0 ? 'no money down' : pct(s.depositPct, 0) + ' down'}</span>
           </div>
           <p class="body" style="margin:0 0 10px">${esc(s.plain)}</p>
-          <p class="small" style="margin:0 0 10px">${esc(s.detail)}</p>
           <p class="hint" style="margin:0"><strong>Use it when:</strong> ${esc(s.whenToUse)}<br />
           <strong>Watch for:</strong> ${esc(s.watchFor)}</p>
         </div>`).join('')}
     </div>
-  </section>
-
-  <section>
-    <h2 class="headline">What you actually merge</h2>
-    <p class="lede">Savings are not a percentage you assume. They are a list of things you do. Tick them on a
-    business above and watch its profit change — the most you can take out is ${pct(MAX_SYNERGY, 0)}.</p>
-    <div class="scroll">
-      <table>
-        <thead><tr><th>What you merge</th><th>What it means</th><th class="n">Saves</th><th class="n">Months</th></tr></thead>
-        <tbody>
-          ${INTEGRATION_LEVERS.map((l) => `
-            <tr><td><strong>${esc(l.name)}</strong></td><td class="muted">${esc(l.plain)}</td>
-              <td class="n">${pct(l.saving, 0)}</td><td class="n muted">${l.months}</td></tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section>
-    <h2 class="headline">What can you do with what you have?</h2>
-    <div class="grid g2" style="margin-bottom:22px">
-      ${numField('Cash you could put in', 'cash', cash, 'Try zero. It changes less than you would think.', 'capital')}
-      <div class="field">
-        <label>Industry you would buy in</label>
-        <select data-capital="industryId" data-kind="text">
-          ${SECTORS.filter((s) => s.id !== 'generic').map((x) => `<option value="${x.id}" ${x.id === state.capital.industryId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}
-        </select>
-      </div>
-    </div>
-    <label class="switch" style="margin-bottom:22px">
-      <input type="checkbox" data-capital="stretch" data-kind="bool" ${state.capital.stretch ? 'checked' : ''} />
-      <span>Seller takes interest only, with the lump at the end</span>
-    </label>
-    <div class="scroll">
-      <table>
-        <thead><tr><th>Structure</th><th class="n">Most you can pay</th><th class="n">Enough?</th><th>What limits you</th></tr></thead>
-        <tbody>
-          ${options.map((o) => `
-            <tr>
-              <td><strong>${esc(o.structure.name)}</strong>
-                <div class="hint">${esc(o.structure.plain)}</div></td>
-              <td class="n"><strong>${turns(o.maxMultiple)}</strong>
-                <div class="hint">times profit</div></td>
-              <td class="n">${o.clearsIndustryEntry
-                ? '<span class="badge good">yes</span>'
-                : '<span class="badge critical">no</span>'}
-                <div class="hint">they cost ${turns(o.industryEntry)}</div></td>
-              <td class="muted">${esc(o.limitedBy)}${o.needsCash && isFinite(o.cashLimitedProfit)
-                ? ` — ${money(o.cashLimitedProfit)} of profit at most` : ''}</td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-    <div class="note" style="margin-top:24px">
-      <p style="margin:0"><strong>Your cash is not what stops you.</strong> Three of these four need none of it.
-      What decides how much you can pay is the price per pound of profit and how long the seller gives you —
-      not what is in your account. Stretch the terms above and watch the ceiling move.</p>
-    </div>
+    ${capitalFold()}
   </section>
 
   <section class="actions">
-    <button class="btn" data-act="goto" data-view="future">Where this ends up</button>
-    <button class="btn quiet" data-act="clear-group">Start the group again</button>
+    <button class="btn" data-act="goto" data-view="difference">See the difference</button>
+    <button class="btn quiet" data-act="clear-group">Start again</button>
   </section>`;
+}
+
+function capitalFold() {
+  const cash = state.capital.cash;
+  const options = capitalOptions(cash, { industryId: state.capital.industryId, stretch: state.capital.stretch });
+  return `
+  <details class="card" style="margin-top:18px">
+    <summary style="cursor:pointer;font-weight:600;font-size:15px">What can you do with what you have?</summary>
+    <div style="margin-top:20px">
+      <div class="grid g2" style="margin-bottom:18px">
+        ${numField('Cash you could put in', 'cash', cash, 'Try zero. It changes less than you would think.', 'capital')}
+        <div class="field">
+          <label>Industry you would buy in</label>
+          <select data-capital="industryId" data-kind="text">
+            ${SECTORS.filter((s) => s.id !== 'generic').map((x) => `<option value="${x.id}" ${x.id === state.capital.industryId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <label class="switch" style="margin-bottom:18px">
+        <input type="checkbox" data-capital="stretch" data-kind="bool" ${state.capital.stretch ? 'checked' : ''} />
+        <span>Seller takes interest only, with the lump at the end</span>
+      </label>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Structure</th><th class="n">Most you can pay</th><th class="n">Enough?</th><th>What limits you</th></tr></thead>
+          <tbody>
+            ${options.map((o) => `
+              <tr>
+                <td><strong>${esc(o.structure.name)}</strong></td>
+                <td class="n"><strong>${turns(o.maxMultiple)}</strong><div class="hint">times profit</div></td>
+                <td class="n">${o.clearsIndustryEntry ? '<span class="badge good">yes</span>' : '<span class="badge critical">no</span>'}
+                  <div class="hint">they cost ${turns(o.industryEntry)}</div></td>
+                <td class="muted">${esc(o.limitedBy)}${o.needsCash && isFinite(o.cashLimitedProfit)
+                  ? ` — ${money(o.cashLimitedProfit)} of profit at most` : ''}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:20px">
+        <p style="margin:0"><strong>Your cash is not what stops you.</strong> What decides how much you can pay
+        is the price per pound of profit and how long the seller gives you — not what is in your account.</p>
+      </div>
+    </div>
+  </details>`;
 }
 
 function nodeInspector(node) {
@@ -529,16 +436,15 @@ function nodeInspector(node) {
       <div class="grid g3" style="margin-bottom:20px">
         ${numField('Its profit a year', `nodes.${node.id}.ebitda`, node.ebitda, null, 'group')}
         ${numField('Times profit you pay', `nodes.${node.id}.multiple`, node.multiple,
-          `Businesses like this go for about ${industry.low.toFixed(1)}x.`, 'group')}
+          `Ones like this go for about ${industry.low.toFixed(1)}x.`, 'group')}
         ${tile('Costs you', money(node.price), `${money(node.cashNeeded)} of your own cash`)}
       </div>
 
       ${!node.passes ? `
         <div class="note critical" style="margin-bottom:20px">
-          <p style="margin:0"><strong>On its own, this one does not cover its repayments.</strong>
+          <p style="margin:0"><strong>On its own this one does not cover its repayments.</strong>
           At ${turns(node.multiple)} it needs ${money(node.service)} a year and only makes ${money(node.freeCashFlow)}.
-          Pay ${turns(node.maxMultiple)} instead, merge more of it, or have the seller take interest only —
-          any one of the three fixes it.</p>
+          Pay ${turns(node.maxMultiple)} instead, merge more of it, or have the seller take interest only.</p>
         </div>` : ''}
 
       <label class="switch" style="margin-bottom:22px">
@@ -562,7 +468,7 @@ function nodeInspector(node) {
           </button>`).join('')}
       </div>
 
-      <p class="eyebrow">What you merge</p>
+      <p class="eyebrow">What you merge <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">— up to ${pct(MAX_SYNERGY, 0)} of its profit</span></p>
       <div class="choices" style="margin-bottom:20px">
         ${INTEGRATION_LEVERS.map((l) => `
           <button class="choice ${levers.includes(l.id) ? 'on' : ''}"
@@ -580,7 +486,7 @@ function nodeInspector(node) {
           node.synergy > 0 ? `${money(node.ebitda)} plus ${money(node.synergy)} saved` : 'nothing merged yet')}
         ${tile('Repayments', money(node.service), node.structure.holidayMonths
           ? `nothing for ${node.structure.holidayMonths} months` : 'from month one')}
-        ${tile('Loan cover', turns(node.dscr), node.passes ? 'it pays for itself' : 'it does not pay for itself',
+        ${tile('Loan cover', turns(node.dscr), node.passes ? 'it pays for itself' : 'it does not',
           node.passes ? 'flag-good' : 'flag-critical')}
         ${tile('Your cash', money(node.cashNeeded), node.cashNeeded === 0 ? 'none' : 'deposit')}
       </div>
@@ -591,31 +497,45 @@ function nodeInspector(node) {
   </section>`;
 }
 
-// ── Future ────────────────────────────────────────────────────────────────
-export function futureView() {
-  const audit = runAudit(state.audit);
+// ── Three: the difference ─────────────────────────────────────────────────
+export function differenceView() {
   const f = state.future;
-  const h = horizon({
-    startingProfit: audit.defensibleEbitda || 500_000,
-    todayValue: audit.achievableValue,
-    industryId: state.audit.business.sector,
-    dealsPerYear: f.dealsPerYear,
-    avgDealProfit: f.avgDealProfit,
-    structureId: f.structureId,
-    synergyRate: f.synergyRate,
-    advisoryCost: f.advisoryCost,
-    maxBusinesses: f.maxBusinesses,
-    years: 20,
-  });
-  const final = h.rows[h.rows.length - 1];
+  const h = horizon(futureInput());
+  const first = h.rows[0];
 
   return `
   <section>
     <p class="eyebrow">Step three</p>
-    <h1 class="display">Twenty years, two roads.</h1>
-    <p class="lede">One road: keep the business, grow it steadily, sell it at the end. The other: use it as the
-    platform and buy ${f.maxBusinesses} more alongside it. Same business, same owner, same start.</p>
-    ${twoPaths(h.rows)}
+    <h1 class="display">Same business. Twenty years apart.</h1>
+    <p class="lede">One owner keeps it and grows it. The other uses it as a platform and buys
+    ${f.maxBusinesses} more alongside. Drag the year, or press play.</p>
+
+    <div class="race" id="race-numbers">
+      <div class="race-side">
+        <div class="k">Keep it and grow it</div>
+        <div class="v" id="fig-alone">${money(first.aloneValue)}</div>
+        <div class="s">one business, sold once</div>
+      </div>
+      <div class="race-side group">
+        <div class="k">Buy others alongside it</div>
+        <div class="v" id="fig-group">${money(first.groupEquity)}</div>
+        <div class="s"><span id="fig-count">0</span> bought, after paying the debt down</div>
+      </div>
+    </div>
+
+    <div class="multiplier"><b id="fig-mult">1.0x</b><span id="fig-mult-label">the same, so far</span></div>
+
+    <div class="scrub">
+      <button class="btn play" id="play" aria-label="Play the twenty years">▶</button>
+      <input type="range" id="year" min="1" max="20" step="0.1" value="1" aria-label="Year" />
+      <span class="scrub-year" id="fig-year">Year 1</span>
+    </div>
+
+    <div class="chips" id="chips" aria-live="polite">
+      <span class="chip self">Your business</span>
+    </div>
+
+    <div style="margin-top:30px">${raceChart(h.rows)}</div>
   </section>
 
   <section>
@@ -623,23 +543,17 @@ export function futureView() {
       ${h.milestones.map((m) => tile(`Year ${m.year}`, money(m.groupEquity),
         `on your own: ${moneyShort(m.aloneValue)}`, m.year === 20 ? 'flag-good' : '')).join('')}
     </div>
-    <p class="small" style="margin-top:14px">Free cash pays the debt down as it goes. Buying stops in any year
+    <p class="small" style="margin-top:14px">Spare cash pays the debt down as it goes. Buying stops in any year
     where another deal would push the group below ${turns(config.dscrFloor)} cover, and stops for good at
-    ${f.maxBusinesses} businesses — nobody integrates more than that well. It is a ceiling, not a forecast.</p>
+    ${f.maxBusinesses} businesses — nobody runs more than that well. It is a ceiling, not a forecast.</p>
   </section>
 
   <section>
-    <h2 class="headline">The difference</h2>
-    <div class="grid g3">
-      ${tile('On your own, year 20', money(final.aloneValue), `${money(final.aloneProfit)} of profit`)}
-      ${tile('As a group, year 20', money(final.groupEquity), `${money(final.groupProfit)} of profit`, 'flag-good')}
-      ${tile('The difference', money(h.difference), `from ${h.businessesBought} businesses`, 'flag-good')}
-    </div>
-    <p class="statement" style="margin-top:32px">You put in ${money(h.totalCashIn)}.
+    <p class="statement">You put in ${money(h.totalCashIn)}.
     <span class="up">You end up ${money(h.difference)} ahead.</span></p>
-    <p class="lede" style="margin-top:16px">Because three of the four structures need no deposit, the only money
-    that ever leaves your pocket is what you spend learning to do it properly. That is the whole case for
-    getting help: it is not a cost against the business, it is the only cash in the deal.</p>
+    <p class="lede" style="margin-top:16px">Three of the four structures need no deposit, so the only money that
+    ever leaves your pocket is what you spend learning to do it properly. That is the whole case for getting
+    help: not a cost against the business, but the only cash in the deal.</p>
   </section>
 
   <section>
@@ -660,22 +574,21 @@ export function futureView() {
     ${h.pausedYears > 0 ? `
       <div class="note critical" style="margin-top:22px">
         <p style="margin:0"><strong>Buying paused in ${h.pausedYears} year${h.pausedYears === 1 ? '' : 's'}.</strong>
-        Another deal in those years would have taken the group below ${turns(config.dscrFloor)} cover. The model
-        waits rather than pretending.</p>
+        Another deal would have taken the group below ${turns(config.dscrFloor)} cover. The model waits rather
+        than pretending.</p>
       </div>` : ''}
   </section>
 
   <section>
-    <h2 class="headline">Where the size premium comes from</h2>
-    <p class="lede">Nothing about the business changes. The buyer does.</p>
+    <h2 class="headline">Why the group is worth more per pound</h2>
+    <p class="lede">Nothing about the businesses changes. The buyer does.</p>
     <div class="scroll">
       <table>
         <thead><tr><th>Profit</th><th class="n">Extra on the price</th><th>Who is buying</th></tr></thead>
         <tbody>
           ${SIZE_BANDS.map((b) => {
-            const here = bandFor(final.groupProfit) === b;
-            const label = b.to === Infinity
-              ? `Over ${moneyShort(b.from)}`
+            const here = bandFor(h.rows[h.rows.length - 1].groupProfit) === b;
+            const label = b.to === Infinity ? `Over ${moneyShort(b.from)}`
               : `${b.from === 0 ? 'Under' : moneyShort(b.from) + ' to'} ${moneyShort(b.to)}`;
             return `<tr${here ? ' class="row-total"' : ''}>
               <td>${esc(label)}${here ? ' <span class="badge good">you end here</span>' : ''}</td>
@@ -687,7 +600,6 @@ export function futureView() {
     </div>
   </section>`;
 }
-
 // ── Tune ──────────────────────────────────────────────────────────────────
 export function tuneView() {
   const drift = tuningSummary();

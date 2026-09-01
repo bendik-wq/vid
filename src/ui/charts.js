@@ -308,7 +308,144 @@ export function twoPaths(rows) {
     </svg>
     <div class="legend">
       <span><i style="background:var(--credibility)"></i>Buy others alongside it</span>
-      <span><i style="background:var(--ink-3)"></i>Keep it and grow it</span>
+      <span><i style="background:var(--ink-2)"></i>Keep it and grow it</span>
+    </div>
+  </figure>`;
+}
+
+/**
+ * Why a group is worth more than the businesses in it.
+ *
+ * The whole strategy is one spread: what you pay per pound of profit on the way in against
+ * what you are paid per pound on the way out. Drawing it is the fastest way to see that
+ * nothing about the businesses has to improve for the arithmetic to work.
+ */
+export function spreadDiagram({ entry, exit, count = 3, each = 250_000, platform = 0 }) {
+  const w = 1000;
+  const h = 300;
+  const boxW = 150;
+  const boxH = 54;
+  const leftX = 10;
+  const midX = 420;
+  const rightX = 760;
+  const acquired = count * each;
+  const total = acquired + platform;
+
+  const smalls = Array.from({ length: Math.min(count, 3) }, (_, i) => {
+    const y = 62 + i * 74;
+    return `
+      <rect x="${leftX}" y="${y}" width="${boxW}" height="${boxH}" rx="9"
+            fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5" />
+      <text x="${leftX + boxW / 2}" y="${y + 23}" text-anchor="middle" font-size="13"
+            fill="currentColor" opacity="0.75">One business</text>
+      <text x="${leftX + boxW / 2}" y="${y + 42}" text-anchor="middle" font-size="15"
+            font-weight="600" fill="currentColor">${esc(moneyShort(each))} profit</text>
+      <line x1="${leftX + boxW}" y1="${y + boxH / 2}" x2="${midX - 12}" y2="${h / 2}"
+            stroke="currentColor" stroke-width="1.5" opacity="0.35" marker-end="url(#spread-arrow)" />`;
+  }).join('');
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;color:var(--ink)" role="img"
+         aria-label="You buy at ${turns(entry)} and the group sells at ${turns(exit)}, a spread of ${turns(exit - entry)}">
+      <defs>
+        <marker id="spread-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" opacity="0.5" />
+        </marker>
+      </defs>
+
+      ${smalls}
+      <text x="${leftX}" y="30" font-size="13" font-weight="600" fill="currentColor" opacity="0.6"
+            letter-spacing="1.2">WHAT YOU BUY</text>
+      <text x="${leftX + boxW / 2}" y="${h - 14}" text-anchor="middle" font-size="14"
+            font-weight="600" fill="var(--critical)">${esc(turns(entry))} each</text>
+
+      <rect x="${midX}" y="${h / 2 - 46}" width="200" height="92" rx="12"
+            fill="currentColor" stroke="none" />
+      <text x="${midX + 100}" y="${h / 2 - 18}" text-anchor="middle" font-size="12"
+            fill="var(--paper)" opacity="0.7" letter-spacing="1">ONE GROUP</text>
+      <text x="${midX + 100}" y="${h / 2 + 10}" text-anchor="middle" font-size="26"
+            font-weight="700" fill="var(--paper)">${esc(moneyShort(total))}</text>
+      <text x="${midX + 100}" y="${h / 2 + 30}" text-anchor="middle" font-size="12"
+            fill="var(--paper)" opacity="0.7">of profit</text>
+
+      <line x1="${midX + 200}" y1="${h / 2}" x2="${rightX - 12}" y2="${h / 2}"
+            stroke="currentColor" stroke-width="2" marker-end="url(#spread-arrow)" />
+      <text x="${(midX + 200 + rightX) / 2}" y="${h / 2 - 14}" text-anchor="middle" font-size="13"
+            fill="currentColor" opacity="0.6">sells as one</text>
+
+      <rect x="${rightX}" y="${h / 2 - 46}" width="230" height="92" rx="12"
+            fill="none" stroke="var(--good)" stroke-width="2" />
+      <text x="${rightX + 115}" y="${h / 2 - 18}" text-anchor="middle" font-size="12"
+            fill="currentColor" opacity="0.6" letter-spacing="1">WHAT IT SELLS FOR</text>
+      <text x="${rightX + 115}" y="${h / 2 + 12}" text-anchor="middle" font-size="28"
+            font-weight="700" fill="currentColor">${esc(moneyShort(total * exit))}</text>
+      <text x="${rightX + 115}" y="${h - 14}" text-anchor="middle" font-size="14"
+            font-weight="600" fill="var(--good)">${esc(turns(exit))} for the group</text>
+    </svg>
+    <figcaption>Nothing about any of these businesses has to improve. You pay
+      ${esc(turns(entry))} for each pound of profit and are paid ${esc(turns(exit))} for the same pound
+      once it sits inside a group — a spread of ${esc(turns(exit - entry))}.</figcaption>
+  </figure>`;
+}
+
+/**
+ * The two roads, as a shell the year scrubber drives.
+ *
+ * Both full paths are drawn once and revealed by a clip rectangle the interaction widens,
+ * so scrubbing costs one attribute write rather than a re-render.
+ */
+export function raceChart(rows) {
+  const w = 1000;
+  const h = 340;
+  const padL = 20;
+  const padR = 210;
+  const padTop = 48;
+  const padBottom = 46;
+  const max = Math.max(...rows.map((r) => Math.max(r.groupEquity, r.aloneValue))) || 1;
+  const lastYear = rows[rows.length - 1].year;
+
+  const x = (year) => padL + ((year - 1) / Math.max(1, lastYear - 1)) * (w - padL - padR);
+  const y = (v) => padTop + (1 - v / max) * (h - padTop - padBottom);
+  const path = (key) => rows.map((r, i) => `${i ? 'L' : 'M'}${x(r.year).toFixed(1)},${y(r[key]).toFixed(1)}`).join(' ');
+
+  const scale = { padL, padR, padTop, padBottom, w, h, max, lastYear };
+
+  return `
+  <figure>
+    <svg id="race" viewBox="0 0 ${w} ${h}" style="width:100%;height:auto"
+         data-scale='${JSON.stringify(scale)}' role="img"
+         aria-label="Value over ${lastYear} years: as a group ${money(rows[rows.length - 1].groupEquity)}, on your own ${money(rows[rows.length - 1].aloneValue)}">
+      <defs>
+        <clipPath id="race-reveal"><rect id="race-rect" x="0" y="0" width="0" height="${h}" /></clipPath>
+      </defs>
+      ${[1, 5, 10, 15, 20].filter((v) => v <= lastYear).map((yr) => `
+        <line x1="${x(yr).toFixed(1)}" y1="${padTop - 12}" x2="${x(yr).toFixed(1)}" y2="${h - padBottom}"
+              stroke="var(--hair)" stroke-width="1" />
+        <text x="${x(yr).toFixed(1)}" y="${h - padBottom + 24}" font-size="13" fill="var(--ink-3)"
+              text-anchor="middle">Year ${yr}</text>`).join('')}
+      ${[0.5, 1].map((frac) => `
+        <line x1="${padL}" y1="${y(max * frac).toFixed(1)}" x2="${w - padR}" y2="${y(max * frac).toFixed(1)}"
+              stroke="var(--hair)" stroke-width="1" />
+        <text x="${w - padR + 10}" y="${(y(max * frac) + 4).toFixed(1)}" font-size="12"
+              fill="var(--ink-3)">${esc(moneyShort(max * frac))}</text>`).join('')}
+      <g clip-path="url(#race-reveal)">
+        <path d="${path('groupEquity')} L${x(lastYear).toFixed(1)},${h - padBottom} L${x(1).toFixed(1)},${h - padBottom} Z"
+              fill="var(--credibility)" opacity="0.1" />
+        <path d="${path('groupEquity')}" fill="none" stroke="var(--credibility)" stroke-width="3.5"
+              stroke-linejoin="round" stroke-linecap="round" />
+        <path d="${path('aloneValue')}" fill="none" stroke="var(--ink-2)" stroke-width="3"
+              stroke-linejoin="round" stroke-linecap="round" />
+      </g>
+      <circle id="race-dot-alone" cx="${x(1)}" cy="${y(rows[0].aloneValue)}" r="5.5"
+              fill="var(--paper)" stroke="var(--ink-2)" stroke-width="3" />
+      <circle id="race-dot-group" cx="${x(1)}" cy="${y(rows[0].groupEquity)}" r="6.5"
+              fill="var(--paper)" stroke="var(--credibility)" stroke-width="3.5" />
+    </svg>
+    <div class="legend">
+      <span><i style="background:var(--credibility)"></i>Buy others alongside it</span>
+      <span><i style="background:var(--ink-2)"></i>Keep it and grow it</span>
     </div>
   </figure>`;
 }

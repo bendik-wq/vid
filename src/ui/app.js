@@ -2,27 +2,26 @@
 
 import {
   state, load, notify, setScore, resetAudit, resetTuning, loadBrokerCase,
-  addNode, removeNode, findNode, setNode, toggleLever, clearGroup, groupInput, stretchAll,
+  addNode, removeNode, findNode, setNode, toggleLever, clearGroup, groupInput, futureInput, stretchAll,
 } from './state.js';
 import { config, setConfig, clearOverride } from '../data/config.js';
-import { state_currency, num } from './format.js';
-import { auditView, valueView, buildView, futureView, tuneView, methodView, dock } from './views.js';
+import { state_currency, num, money, moneyShort } from './format.js';
+import { businessView, buildView, differenceView, tuneView, methodView, dock } from './views.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan } from '../engine/restructure.js';
 import { runBuild, horizon } from '../engine/build.js';
 
 const VIEWS = {
-  audit: { label: 'Audit', primary: true, render: auditView, dock: true },
-  value: { label: 'Value', primary: true, render: valueView },
-  build: { label: 'Build', primary: true, render: buildView },
-  future: { label: 'Future', primary: true, render: futureView },
+  business: { label: 'Your business', primary: true, render: businessView, dock: true },
+  build: { label: 'The group', primary: true, render: buildView },
+  difference: { label: 'The difference', primary: true, render: differenceView, mount: mountDifference },
   tune: { label: 'Tune', primary: false, render: tuneView },
   method: { label: 'Method', primary: false, render: methodView },
 };
 
 const currentView = () => {
   const v = location.hash.replace('#', '');
-  return VIEWS[v] ? v : 'audit';
+  return VIEWS[v] ? v : 'business';
 };
 
 function topbar() {
@@ -50,11 +49,14 @@ function render() {
     || active.dataset?.group || active.dataset?.capital || active.dataset?.future);
   const caret = key && active.selectionStart != null ? active.selectionStart : null;
 
+  // Any playback belongs to the screen that started it; leaving the screen ends it.
+  cancelPlayback();
   document.getElementById('topbar').innerHTML = topbar();
   main.dataset.view = view;
   main.innerHTML = VIEWS[view].render();
   document.getElementById('dock').innerHTML = VIEWS[view].dock ? dock() : '';
   window.scrollTo(0, keepScroll);
+  VIEWS[view].mount?.();
 
   if (key) {
     const el = main.querySelector(
@@ -117,7 +119,7 @@ function onClick(e) {
   } else if (act === 'open-pillar') {
     state.ui.openPillar = el.dataset.pillar;
     notify();
-    location.hash = 'audit';
+    location.hash = 'business';
   } else if (act === 'goto') { location.hash = el.dataset.view; }
   else if (act === 'reset') { resetAudit(); render(); }
   else if (act === 'reset-config') { resetTuning(); render(); }
@@ -312,4 +314,115 @@ export function start() {
   document.addEventListener('pointercancel', onPointerUp);
   window.addEventListener('hashchange', render);
   render();
+}
+
+// ── The difference, played ────────────────────────────────────────────────
+/**
+ * The payoff screen is the one place worth animating: the two roads only feel different
+ * when you watch them separate. The chart is drawn once and revealed by widening a clip
+ * rectangle, so a scrub costs a handful of attribute writes rather than a re-render.
+ */
+const REDUCED = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+let playing = null;
+let autoplayTimer = null;
+let hasPlayed = false;
+
+function cancelPlayback() {
+  if (playing) cancelAnimationFrame(playing);
+  clearTimeout(autoplayTimer);
+  playing = null;
+  autoplayTimer = null;
+}
+
+function mountDifference() {
+  const svg = document.getElementById('race');
+  const slider = document.getElementById('year');
+  if (!svg || !slider) return;
+
+  const rows = horizon(futureInput()).rows;
+  const s = JSON.parse(svg.dataset.scale);
+  const el = (id) => document.getElementById(id);
+
+  const x = (year) => s.padL + ((year - 1) / Math.max(1, s.lastYear - 1)) * (s.w - s.padL - s.padR);
+  const y = (v) => s.padTop + (1 - v / s.max) * (s.h - s.padTop - s.padBottom);
+
+  /** Values between two years, so scrubbing reads as continuous rather than stepped. */
+  const at = (t) => {
+    const clamped = Math.max(1, Math.min(s.lastYear, t));
+    const lo = rows[Math.floor(clamped) - 1];
+    const hi = rows[Math.min(rows.length - 1, Math.ceil(clamped) - 1)];
+    const f = clamped - Math.floor(clamped);
+    return {
+      year: clamped,
+      aloneValue: lo.aloneValue + (hi.aloneValue - lo.aloneValue) * f,
+      groupEquity: lo.groupEquity + (hi.groupEquity - lo.groupEquity) * f,
+      businesses: lo.businesses,
+    };
+  };
+
+  let shownChips = -1;
+  const paint = (t) => {
+    // The screen can go away mid-animation; a frame that arrives after that is a no-op.
+    if (!el('fig-alone') || !el('race-rect')) { cancelPlayback(); return; }
+    const v = at(t);
+    el('fig-alone').textContent = money(v.aloneValue);
+    el('fig-group').textContent = money(v.groupEquity);
+    el('fig-count').textContent = String(v.businesses);
+    el('fig-year').textContent = `Year ${Math.round(v.year)}`;
+
+    const mult = v.aloneValue > 0 ? v.groupEquity / v.aloneValue : 1;
+    el('fig-mult').textContent = `${mult.toFixed(1)}x`;
+    el('fig-mult-label').textContent = mult < 1.05
+      ? 'the same, so far'
+      : `bigger than doing nothing — ${moneyShort(v.groupEquity - v.aloneValue)} more`;
+
+    el('race-rect').setAttribute('width', x(v.year).toFixed(1));
+    el('race-dot-group').setAttribute('cx', x(v.year).toFixed(1));
+    el('race-dot-group').setAttribute('cy', y(v.groupEquity).toFixed(1));
+    el('race-dot-alone').setAttribute('cx', x(v.year).toFixed(1));
+    el('race-dot-alone').setAttribute('cy', y(v.aloneValue).toFixed(1));
+
+    // Rebuild the chips only when the count changes, so each new one pops exactly once.
+    if (v.businesses !== shownChips) {
+      shownChips = v.businesses;
+      el('chips').innerHTML = '<span class="chip self">Your business</span>' +
+        Array.from({ length: v.businesses }, (_, i) => `<span class="chip">Bought ${i + 1}</span>`).join('');
+    }
+  };
+
+  const stop = () => {
+    cancelPlayback();
+    const btn = el('play');
+    if (btn) { btn.textContent = '▶'; btn.setAttribute('aria-label', 'Play the twenty years'); }
+  };
+
+  const play = () => {
+    if (playing) { stop(); return; }
+    const btn = el('play');
+    // The autoplay timer can outlive the screen that set it.
+    if (!btn || !el('race-rect')) return;
+    if (REDUCED()) { slider.value = String(s.lastYear); paint(s.lastYear); return; }
+    btn.textContent = '❚❚';
+    btn.setAttribute('aria-label', 'Pause');
+    const duration = 6500;
+    const start = performance.now();
+    const step = (now) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const t = 1 + eased * (s.lastYear - 1);
+      slider.value = String(t);
+      paint(t);
+      if (p < 1) playing = requestAnimationFrame(step);
+      else stop();
+    };
+    playing = requestAnimationFrame(step);
+  };
+
+  slider.addEventListener('input', () => { stop(); paint(Number(slider.value)); });
+  el('play').addEventListener('click', play);
+
+  stop();
+  paint(1);
+  // Show it once, unprompted. Nobody drags a slider they have not seen move.
+  if (!hasPlayed && !REDUCED()) { hasPlayed = true; autoplayTimer = setTimeout(play, 450); }
 }

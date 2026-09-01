@@ -25,8 +25,8 @@ export const PILLARS = {
     buySide: 'Can you be believed?',
     sellSide: 'Can your numbers be believed?',
     blurb:
-      'Every pound of claimed EBITDA that will not survive a quality-of-earnings review. ' +
-      'This pillar carries all EBITDA haircuts — it moves the base, not the multiple.',
+      'Every pound of claimed profit that will not survive an accountant going through the books. ' +
+      'This is where the profit gets cut, not the price.',
   },
   capital: {
     id: 'capital',
@@ -63,11 +63,11 @@ export const CRITERIA = [
     id: 'C1',
     pillar: 'credibility',
     name: 'Owner salary add-back',
-    question: 'Is the owner’s pay added back to EBITDA, and would a buyer have to replace them?',
+    question: 'Is your own pay added back to the profit, and would a buyer have to replace you?',
     impact: { kind: 'computed', target: 'ebitda', cap: 0.4 },
     computedNote:
       'Not self-scored. Haircut = market cost of replacing the owner, less any owner pay still ' +
-      'sitting in the P&L. Capped at 40% of claimed EBITDA.',
+      'still shown as a cost. Capped at 40% of the profit you are claiming.',
     anchors: {
       1: 'Full salary added back and the owner is in delivery daily — the buyer inherits a vacancy, not a profit.',
       3: 'Partial add-back, or owner is half out of delivery — a replacement costs real money.',
@@ -85,30 +85,30 @@ export const CRITERIA = [
     question: 'Do you own the premises and charge the business below-market rent?',
     impact: { kind: 'ebitda', maxHaircut: 0.08 },
     anchors: {
-      1: 'Premises owned personally, rent nil or nominal — EBITDA is flattered by free occupancy.',
+      1: 'You own the premises and the business pays little or no rent, so the profit looks better than it is.',
       3: 'Related-party lease, rent below market, no independent valuation.',
       5: 'Arm’s-length lease at market rent, or an assignable third-party lease with term remaining.',
     },
     effort: { months: 3, difficulty: 1 },
     why:
       'A buyer either pays you market rent or pays a landlord. Either way the cost lands. 8% caps ' +
-      'the typical rent-to-EBITDA distortion in an owner-occupied SME.',
+      'the usual distortion where an owner occupies premises they own.',
   },
   {
     id: 'C3',
     pillar: 'credibility',
     name: 'Non-recurring add-backs',
-    question: 'How much of your adjusted EBITDA is one-off items added back?',
+    question: 'How much of your profit is one-off costs added back?',
     impact: { kind: 'ebitda', maxHaircut: 0.1 },
     anchors: {
       1: 'A long list of "one-offs" that recur every year — legal, restructuring, bad debts, write-offs.',
       3: 'A handful of genuine one-offs, thinly evidenced.',
-      5: 'Under 2% of EBITDA in add-backs, each one documented and genuinely non-repeating.',
+      5: 'Under 2% of profit in add-backs, every one documented and genuinely never coming back.',
     },
     effort: { months: 6, difficulty: 2 },
     why:
-      'The add-back schedule is the first thing a QoE provider dismantles. 10% is the mid-point of ' +
-      'what is typically disallowed in lower-mid-market deals.',
+      'The add-back list is the first thing an accountant takes apart. 10% is the middle of what usually ' +
+      'gets thrown out on deals this size.',
   },
   {
     id: 'C4',
@@ -124,7 +124,7 @@ export const CRITERIA = [
     effort: { months: 12, difficulty: 2 },
     why:
       'Add-backs a buyer cannot verify are add-backs a buyer will not pay for. Tax-efficient today, ' +
-      'value-destroying at exit — the trade is roughly 7% of EBITDA in a typical owner-managed business.',
+      'value-destroying at exit — the trade is roughly 7% of profit in a typical owner-run business.',
   },
   {
     id: 'C5',
@@ -139,8 +139,8 @@ export const CRITERIA = [
     },
     effort: { months: 9, difficulty: 2 },
     why:
-      'Deferred capex is borrowed EBITDA. A buyer prices the replacement, so it comes out of the base ' +
-      'before it ever reaches the multiple.',
+      'Putting off replacing things is borrowing from next year’s profit. A buyer prices what it costs to ' +
+      'catch up, and it comes off the profit before any price is applied to it.',
   },
   {
     id: 'C6',
@@ -183,17 +183,17 @@ export const CRITERIA = [
     question: 'Could a buyer service the debt your price implies?',
     impact: { kind: 'computed', target: 'gate' },
     computedNote:
-      'Not self-scored. Free cash flow after tax and maintenance capex, divided by the annual debt ' +
-      'service your asking price implies at the stated structure. Josh’s floor is 1.50x.',
+      'Worked out, not scored. The cash the business makes after tax and kit, divided by a year of ' +
+      'repayments at your asking price. Lenders want it to cover 1.5 times over.',
     anchors: {
-      1: 'Below 1.00x — no lender funds it and no seller-financed buyer survives it.',
-      3: 'Between 1.25x and 1.50x — fundable only with a larger deposit or a longer seller note.',
-      5: 'Above 2.00x — comfortably bankable at the price asked.',
+      1: 'Under 1.0 — the payments are bigger than the cash. Nobody can fund it.',
+      3: 'Between 1.25 and 1.5 — only works with a bigger deposit or longer to pay.',
+      5: 'Above 2.0 — comfortably payable at the price you are asking.',
     },
     effort: { months: 0, difficulty: 1 },
     why:
-      'The gate. Pure arithmetic on the seller’s own inputs. A price that fails DSCR is not an ' +
-      'ambitious price, it is an unfundable one — and that is a structure problem, not a price problem.',
+      'The gate. Pure arithmetic on the seller’s own figures. A price the cash cannot cover is not an ' +
+      'ambitious price, it is an unpayable one — and that is a structure problem, not a price problem.',
   },
   {
     id: 'C9',
@@ -224,8 +224,8 @@ export const CRITERIA = [
     },
     effort: { months: 6, difficulty: 1 },
     why:
-      'A buyer funds the working capital peg on day one. A volatile peg is negotiated out of the ' +
-      'headline price — and the negotiation always favours the side with the data.',
+      'A buyer has to fund the cash tied up in the business on day one. If that number jumps around, it ' +
+      'gets negotiated off the price — and that negotiation favours whoever has the figures.',
   },
   {
     id: 'C11',
@@ -348,9 +348,9 @@ export const CRITERIA = [
     question: 'Are the people the business depends on contractually tied in?',
     impact: { kind: 'multiple', maxPenalty: 0.3 },
     anchors: {
-      1: 'No written contracts, no restrictive covenants, key staff loyal to the owner personally.',
-      3: 'Contracts in place, covenants weak or untested.',
-      5: 'Current contracts, enforceable covenants, retention arrangements agreed through a sale.',
+      1: 'No written contracts, nothing stopping them leaving, and they are loyal to you rather than the business.',
+      3: 'Contracts in place, but nothing that would hold up if they wanted to go.',
+      5: 'Current contracts, terms that would hold, and agreements to stay through a sale.',
     },
     effort: { months: 6, difficulty: 1 },
     why:

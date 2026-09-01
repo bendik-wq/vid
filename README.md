@@ -71,23 +71,34 @@ $1m EBITDA, a $250k owner salary added back while the owner works the business d
 The $5m ask implies **9.57x** defensible EBITDA. Not ambitious — delusional. That is the audit's
 value proposition in one number.
 
-## Three steps, three pains
+## Three screens
 
 | Screen | The pain it lands |
 |---|---|
-| **Audit** | Your asking price, your profit, then the three C's as an accordion — one open at a time, live figures docked at the bottom |
-| **Value** | *It is not worth what you think.* The gap as one figure, both cuts drawn as bridges, the loan-cover gate, what each C is worth, and the fix in order |
-| **Build** | *Selling one is the small game.* A drag-and-drop group canvas, the four deal structures, what you actually merge, and what your cash really buys |
-| **Future** | Twenty years, two roads, and what the difference is worth against the only cash you ever put in |
-| **Tune** | Every number editable in place beside its justification — limits, industry prices, and what each answer is worth |
-| **Method** | Formulas, assumptions, and an explicit list of what is not signed off |
+| **Your business** | *It is not worth what you think.* Two numbers in, and the gap is the first thing you see. Both cuts drawn as bridges, the loan-cover gate, the three questions to score, and what fixing each is worth |
+| **The group** | *Selling one is the small game.* A drag-and-drop group canvas, the four deal structures, what you actually merge, and what your cash really buys |
+| **The difference** | Twenty years, two roads, on a scrubber you can play |
+| **Tune** | Every number editable in place beside its justification |
+| **Method** | Formulas, assumptions, and what is not signed off |
+
+## The difference, played
+
+The payoff screen is the one place worth animating: two roads only feel different when you
+watch them separate. Press play and twenty years run in about six seconds — both figures count,
+businesses pop in as they are bought, the chart draws itself, and a multiplier badge says how
+many times bigger the group ended up. Or drag the year and read any point on the way.
+
+Mechanically it is one chart drawn once and revealed by widening a clip rectangle, so a scrub
+costs a handful of attribute writes rather than a re-render. Values interpolate between years so
+scrubbing reads as continuous. `prefers-reduced-motion` skips straight to year twenty, and
+playback is cancelled the moment you leave the screen.
 
 ## The group canvas
 
 Your business sits in the middle; everything you buy hangs off it. Tap an industry to add a
-business — it takes its place on the web automatically — then drag it anywhere you like.
-Tap one to open it and set what it earns, what you pay, how you fund it, and what you merge.
-Positions are stored as fractions of the box, so the web survives a resize.
+business — it takes its place on the web automatically — then drag it anywhere. Tap one to open
+it and set what it earns, what you pay, how you fund it, and what you merge. Positions are
+stored as fractions of the box, so the web survives a resize.
 
 ## The deal structures
 
@@ -119,6 +130,11 @@ lifts the multiple multiply when fixed together. Fixing all three is worth **mor
 three individual figures added up — on the broker case, $3.51m against $2.87m summed. The
 tool reports each pillar's marginal uplift and computes the programme total directly, because
 no honest per-pillar share of the total exists: the interaction belongs to no single pillar.
+
+## Plain language
+
+No EBITDA, no DSCR, no multiple arbitrage anywhere a client can see — provable profit, loan
+cover, what buyers pay. A test fails the build if that jargon reappears on the main screen.
 
 ## Integration
 

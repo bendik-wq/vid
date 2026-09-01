@@ -59,6 +59,18 @@ export function groupInput() {
   };
 }
 
+/** Everything the twenty-year projection needs, with the platform taken from the audit. */
+export function futureInput() {
+  const audit = runAudit(state.audit);
+  return {
+    startingProfit: audit.defensibleEbitda || 500_000,
+    todayValue: audit.achievableValue,
+    industryId: state.audit.business.sector,
+    ...state.future,
+    years: 20,
+  };
+}
+
 /** Add a business to the group, priced at what one like it usually costs. */
 export function addNode(industryId) {
   const industry = SECTORS_BY_ID[industryId] ?? SECTORS_BY_ID.generic;

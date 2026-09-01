@@ -48,14 +48,14 @@ await page.waitForTimeout(350);
 if (await page.isVisible('[data-act="score"][data-id="C7"][data-score="5"]')) fail('two pillars open at once');
 if (!(await page.isVisible('[data-act="score"][data-id="C15"][data-score="5"]'))) fail('closing did not open');
 
-for (const view of ['value', 'build', 'future', 'tune', 'method']) {
+for (const view of ['build', 'difference', 'tune', 'method']) {
   await page.click(`.tabs a[href="#${view}"]`);
   await page.waitForTimeout(400);
   if ((await page.innerHTML('#main')).length < 2000) fail(`${view} view rendered almost nothing`);
 }
 
 // Every figure must actually draw.
-await page.click('.tabs a[href="#value"]');
+await page.click('.tabs a[href="#business"]');
 await page.waitForTimeout(400);
 const figures = await page.$$eval('#main svg', (els) => els.length);
 if (figures < 4) fail(`expected the value screen to draw at least four figures, found ${figures}`);
@@ -96,20 +96,28 @@ await page.click('[data-act="toggle-lever"][data-lever="crosssell"]');
 await page.waitForTimeout(400);
 if ((await page.textContent('.tile .v')) === profitBefore) fail('merging did not change the group profit');
 
-// The twenty-year projection has to draw both roads.
-await page.click('.tabs a[href="#future"]');
-await page.waitForTimeout(450);
-const legend = await page.textContent('#main .legend');
-if (!legend.includes('on your own') && !legend.includes('Keep it and grow it')) fail('the two roads are not both drawn');
+// The difference screen has to play: scrubbing the year must move both numbers and the chart.
+await page.click('.tabs a[href="#difference"]');
+await page.waitForTimeout(1400);
+const startGroup = await page.textContent('#fig-group');
+const startWidth = await page.$eval('#race-rect', (el) => Number(el.getAttribute('width')));
+await page.$eval('#year', (el) => { el.value = '20'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+await page.waitForTimeout(400);
+const endGroup = await page.textContent('#fig-group');
+const endWidth = await page.$eval('#race-rect', (el) => Number(el.getAttribute('width')));
+if (startGroup === endGroup) fail('scrubbing the year did not move the group figure');
+if (endWidth <= startWidth) fail('the chart did not reveal as the year advanced');
+if ((await page.$$('#chips .chip')).length < 2) fail('businesses did not appear as they were bought');
+if (!(await page.textContent('#fig-mult')).match(/^\d+\.\dx$/)) fail('the multiplier is not showing');
 
 // Tuning a number has to reach the audit.
 await page.click('.tabs a[href="#tune"]');
 await page.waitForTimeout(400);
 await page.fill('[data-config="deltas.C15"]', '1.2');
 await page.waitForTimeout(450);
-await page.click('.tabs a[href="#value"]');
+await page.click('.tabs a[href="#business"]');
 await page.waitForTimeout(400);
-if (!(await page.textContent('#main')).includes('1.20x')) fail('a tuned number did not reach the value screen');
+if (!(await page.textContent('#main')).includes('1.20x')) fail('a tuned number did not reach the business screen');
 
 if (errors.length) fail(`console errors: ${errors.join(' | ')}`);
 await browser.close();

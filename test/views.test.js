@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { auditView, valueView, buildView, futureView, tuneView, methodView, dock, threeCStrip } from '../src/ui/views.js';
+import { businessView, buildView, differenceView, tuneView, methodView, dock, threeCStrip } from '../src/ui/views.js';
 import { runAudit } from '../src/engine/valuation.js';
 import { state, loadBrokerCase, blankAudit } from '../src/ui/state.js';
 
-const VIEWS = { auditView, valueView, buildView, futureView, tuneView, methodView };
+const VIEWS = { businessView, buildView, differenceView, tuneView, methodView };
 // The dock is deliberately empty until there are earnings, so it is checked on its own.
 const ALL = { ...VIEWS, dock };
 
@@ -29,9 +29,9 @@ test('every view renders for an empty audit', () => {
   }
 });
 
-test('the value screen states the gap and the DSCR verdict', () => {
+test('the business screen states the gap and the cover verdict', () => {
   loadBrokerCase();
-  const html = valueView();
+  const html = businessView();
   assert.ok(/covers the repayments \d+\.\d\dx over/.test(html), 'loan cover sentence missing');
   assert.ok(html.includes('unpayable'), 'the worked example should be called unpayable');
   assert.ok(!/EBITDA|DSCR|multiple arbitrage/.test(html), 'the value screen should avoid jargon');
@@ -46,6 +46,16 @@ test('the three C strip names all three pillars and what each costs', () => {
   }
   assert.ok(html.includes('cover'), 'Capital should report the loan cover');
   assert.ok(/data-pillar="closing"/.test(html));
+});
+
+test('the difference screen ships the scrubber it needs to animate', () => {
+  loadBrokerCase();
+  const html = differenceView();
+  for (const id of ['race', 'race-rect', 'race-dot-group', 'race-dot-alone', 'year', 'play',
+                    'fig-alone', 'fig-group', 'fig-count', 'fig-year', 'fig-mult', 'chips']) {
+    assert.ok(html.includes(`id="${id}"`), `the scrubber needs #${id}`);
+  }
+  assert.ok(/data-scale='\{[^']+\}'/.test(html), 'the chart must carry its scale for the interaction');
 });
 
 test('the dock is empty until there are earnings to report', () => {
