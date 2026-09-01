@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Organisasjonsteori – interaktiv oppgaveplattform</title>
+<meta name="description" content="Interaktiv oppgaveplattform for organisasjonsteori: hvordan organisasjoner fungerer, med hovedteorier, definisjoner, quiz, flashcards og caseoppgaver." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<a class="skip-link" href="#main">Hopp til innhold</a>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Vis meny" aria-expanded="false">☰</button>
+  <a class="brand" href="#/oversikt">
+    <span class="brand-mark" aria-hidden="true">OT</span>
+    <span class="brand-text">
+      <strong>Organisasjonsteori</strong>
+      <small>Hvordan organisasjoner fungerer</small>
+    </span>
+  </a>
+
+  <div class="search-wrap">
+    <input
+      type="search"
+      id="globalSearch"
+      class="search-input"
+      placeholder="Søk i teorier, begreper og moduler…"
+      aria-label="Søk"
+      autocomplete="off"
+      role="combobox"
+      aria-expanded="false"
+      aria-controls="searchResults"
+    />
+    <div class="search-results" id="searchResults" role="listbox" hidden></div>
+  </div>
+
+  <button class="icon-btn" id="themeBtn" aria-label="Bytt fargetema" title="Bytt fargetema">◐</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Hovedmeny">
+    <div class="nav-group">
+      <p class="nav-label">Plattform</p>
+      <a class="nav-item" href="#/oversikt"><span aria-hidden="true">◈</span> Oversikt</a>
+      <a class="nav-item" href="#/moduler"><span aria-hidden="true">▤</span> Moduler</a>
+      <a class="nav-item" href="#/teorier"><span aria-hidden="true">◎</span> Teoribank</a>
+      <a class="nav-item" href="#/begreper"><span aria-hidden="true">▦</span> Begrepsbank</a>
+    </div>
+    <div class="nav-group">
+      <p class="nav-label">Oppgaver</p>
+      <a class="nav-item" href="#/quiz"><span aria-hidden="true">✓</span> Quiz</a>
+      <a class="nav-item" href="#/flashcards"><span aria-hidden="true">▭</span> Flashcards</a>
+      <a class="nav-item" href="#/kobling"><span aria-hidden="true">⇄</span> Koblingsoppgaver</a>
+      <a class="nav-item" href="#/case"><span aria-hidden="true">✎</span> Caseoppgaver</a>
+      <a class="nav-item" href="#/eksamen"><span aria-hidden="true">★</span> Eksamensmodus</a>
+    </div>
+    <div class="nav-group">
+      <p class="nav-label">Deg</p>
+      <a class="nav-item" href="#/fremgang"><span aria-hidden="true">▲</span> Fremgang</a>
+    </div>
+
+    <div class="nav-group nav-modules">
+      <p class="nav-label">Kapitler</p>
+      <div id="moduleNav"></div>
+    </div>
+  </nav>
+
+  <div class="scrim" id="scrim" hidden></div>
+
+  <main id="main" class="content" tabindex="-1"></main>
+</div>
+
+<script src="data/modules.js"></script>
+<script src="data/theories.js"></script>
+<script src="data/glossary.js"></script>
+<script src="data/questions.js"></script>
+<script src="data/cases.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/flashcards.js"></script>
+<script src="js/match.js"></script>
+<script src="js/cases.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
