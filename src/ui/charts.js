@@ -250,3 +250,65 @@ export function rankBar(value, max) {
   return `<div style="height:6px;background:var(--sunken);border-radius:3px;overflow:hidden;min-width:70px">
     <div style="height:100%;width:${w.toFixed(1)}%;background:var(--good);border-radius:3px"></div></div>`;
 }
+
+/**
+ * Two roads over twenty years.
+ *
+ * The group line takes the identity colour; the do-nothing line is deliberately grey,
+ * because it is the baseline rather than a competing category. Both ends are labelled so
+ * the reader never has to match a colour to a legend to get the point.
+ */
+export function twoPaths(rows) {
+  const w = VB;
+  const h = 380;
+  const padL = 46;   // room for the first year label, which is centred on the axis
+  const padR = 170;
+  const padTop = 40;
+  const padBottom = 46;
+  const max = Math.max(...rows.map((r) => Math.max(r.groupEquity, r.aloneValue))) || 1;
+  const lastYear = rows[rows.length - 1].year;
+
+  const x = (year) => padL + ((year - 1) / Math.max(1, lastYear - 1)) * (w - padL - padR);
+  const y = (v) => padTop + (1 - v / max) * (h - padTop - padBottom);
+
+  const path = (key) => rows.map((r, i) => `${i ? 'L' : 'M'}${x(r.year).toFixed(1)},${y(r[key]).toFixed(1)}`).join(' ');
+  const last = rows[rows.length - 1];
+
+  const gridYears = [1, 5, 10, 15, 20].filter((v) => v <= lastYear);
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" role="img"
+         aria-label="After ${lastYear} years: as a group ${money(last.groupEquity)}, on your own ${money(last.aloneValue)}">
+      ${gridYears.map((yr) => `
+        <line x1="${x(yr).toFixed(1)}" y1="${padTop - 10}" x2="${x(yr).toFixed(1)}" y2="${h - padBottom}"
+              stroke="var(--hair)" stroke-width="1" />
+        <text x="${x(yr).toFixed(1)}" y="${h - padBottom + 24}" font-size="13" fill="var(--ink-3)"
+              text-anchor="middle">Year ${yr}</text>`).join('')}
+      <path d="${path('groupEquity')} L${x(last.year).toFixed(1)},${h - padBottom} L${x(1).toFixed(1)},${h - padBottom} Z"
+            fill="var(--credibility)" opacity="0.09" />
+      <path d="${path('aloneValue')}" fill="none" stroke="var(--ink-3)" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round" />
+      <path d="${path('groupEquity')}" fill="none" stroke="var(--credibility)" stroke-width="3"
+            stroke-linejoin="round" stroke-linecap="round" />
+
+      <circle cx="${x(last.year).toFixed(1)}" cy="${y(last.groupEquity).toFixed(1)}" r="6"
+              fill="var(--paper)" stroke="var(--credibility)" stroke-width="3" />
+      <text x="${(x(last.year) + 16).toFixed(1)}" y="${(y(last.groupEquity) - 4).toFixed(1)}"
+            font-size="22" font-weight="700" fill="var(--ink)" letter-spacing="-0.5">${esc(moneyShort(last.groupEquity))}</text>
+      <text x="${(x(last.year) + 16).toFixed(1)}" y="${(y(last.groupEquity) + 16).toFixed(1)}"
+            font-size="13" fill="var(--ink-3)">as a group</text>
+
+      <circle cx="${x(last.year).toFixed(1)}" cy="${y(last.aloneValue).toFixed(1)}" r="5"
+              fill="var(--paper)" stroke="var(--ink-3)" stroke-width="2.5" />
+      <text x="${(x(last.year) + 16).toFixed(1)}" y="${(y(last.aloneValue) + 2).toFixed(1)}"
+            font-size="17" font-weight="600" fill="var(--ink-2)">${esc(moneyShort(last.aloneValue))}</text>
+      <text x="${(x(last.year) + 16).toFixed(1)}" y="${(y(last.aloneValue) + 20).toFixed(1)}"
+            font-size="13" fill="var(--ink-3)">on your own</text>
+    </svg>
+    <div class="legend">
+      <span><i style="background:var(--credibility)"></i>Buy others alongside it</span>
+      <span><i style="background:var(--ink-3)"></i>Keep it and grow it</span>
+    </div>
+  </figure>`;
+}

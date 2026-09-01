@@ -2,9 +2,11 @@
 
 import { CRITERIA } from '../data/criteria.js';
 import { DEFAULT_STRUCTURE, DEFAULT_FINANCIALS } from '../engine/valuation.js';
-import { DEFAULT_ROLLUP } from '../engine/rollup.js';
 import { BROKER_CASE } from '../data/cases.js';
 import { config, applyConfig, resetConfig } from '../data/config.js';
+import { SECTORS_BY_ID } from '../data/sectors.js';
+import { DEFAULT_ASSUMPTIONS } from '../engine/build.js';
+import { runAudit } from '../engine/valuation.js';
 
 const KEY = 'vid-audit-platform-v1';
 
@@ -19,12 +21,97 @@ export const blankAudit = () => ({
   ),
 });
 
+export const blankGroup = () => ({
+  /** Left null until the audit has a number; the platform is the seller's own business. */
+  holdcoEbitda: null,
+  holdcoIndustry: null,
+  nodes: [],
+  nextId: 1,
+  assumptions: { ...DEFAULT_ASSUMPTIONS },
+});
+
 export const state = {
   audit: blankAudit(),
-  rollup: { ...DEFAULT_ROLLUP, structure: { ...DEFAULT_STRUCTURE } },
-  /** Interface state: which pillar is open. Not part of the audit, not exported. */
-  ui: { openPillar: 'credibility' },
+  group: blankGroup(),
+  capital: { cash: 0, industryId: 'trades', stretch: false },
+  future: {
+    dealsPerYear: 2,
+    avgDealProfit: 250_000,
+    maxBusinesses: 12,
+    structureId: 'vendor',
+    synergyRate: 0.15,
+    advisoryCost: 50_000,
+  },
+  /** Interface state. Not part of the audit, not exported. */
+  ui: { openPillar: 'credibility', selectedNode: null },
 };
+
+/**
+ * The group, with the platform filled in from the audit.
+ * Your own business is the platform — you should not have to type its profit twice.
+ */
+export function groupInput() {
+  const audit = runAudit(state.audit);
+  return {
+    ...state.group,
+    holdcoEbitda: state.group.holdcoEbitda ?? audit.defensibleEbitda ?? 0,
+    holdcoIndustry: state.group.holdcoIndustry ?? state.audit.business.sector,
+  };
+}
+
+/** Add a business to the group, priced at what one like it usually costs. */
+export function addNode(industryId) {
+  const industry = SECTORS_BY_ID[industryId] ?? SECTORS_BY_ID.generic;
+  const id = state.group.nextId;
+  state.group.nextId += 1;
+  state.group.nodes.push({
+    id,
+    industryId,
+    ebitda: 250_000,
+    multiple: industry.low,
+    structureId: 'vendor',
+    levers: [...(industry.levers ?? [])],
+    interestOnly: false,
+  });
+  state.ui.selectedNode = id;
+  notify();
+  return id;
+}
+
+export function removeNode(id) {
+  state.group.nodes = state.group.nodes.filter((n) => n.id !== Number(id));
+  if (state.ui.selectedNode === Number(id)) state.ui.selectedNode = null;
+  notify();
+}
+
+export function findNode(id) {
+  return state.group.nodes.find((n) => n.id === Number(id));
+}
+
+export function setNode(id, key, value) {
+  const node = findNode(id);
+  if (node) { node[key] = value; notify(); }
+}
+
+export function toggleLever(id, leverId) {
+  const node = findNode(id);
+  if (!node) return;
+  const levers = node.levers ?? [];
+  node.levers = levers.includes(leverId) ? levers.filter((l) => l !== leverId) : [...levers, leverId];
+  notify();
+}
+
+/** One switch across the whole group — the fastest way to show what terms are worth. */
+export function stretchAll(on) {
+  for (const n of state.group.nodes) n.interestOnly = on;
+  notify();
+}
+
+export function clearGroup() {
+  state.group = blankGroup();
+  state.ui.selectedNode = null;
+  notify();
+}
 
 const listeners = new Set();
 export const subscribe = (fn) => { listeners.add(fn); return () => listeners.delete(fn); };
@@ -34,7 +121,9 @@ export function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({
       audit: state.audit,
-      rollup: state.rollup,
+      group: state.group,
+      capital: state.capital,
+      future: state.future,
       ui: state.ui,
       config: {
         currency: config.currency,
@@ -54,7 +143,9 @@ export function load() {
     if (!raw) return;
     const parsed = JSON.parse(raw);
     if (parsed.audit) state.audit = { ...blankAudit(), ...parsed.audit };
-    if (parsed.rollup) state.rollup = { ...DEFAULT_ROLLUP, ...parsed.rollup };
+    if (parsed.group) state.group = { ...blankGroup(), ...parsed.group };
+    if (parsed.capital) state.capital = { ...state.capital, ...parsed.capital };
+    if (parsed.future) state.future = { ...state.future, ...parsed.future };
     if (parsed.ui) state.ui = { ...state.ui, ...parsed.ui };
     if (parsed.config) applyConfig(parsed.config);
   } catch { /* corrupt or unreadable storage is not worth a broken page */ }
@@ -64,14 +155,6 @@ export function load() {
 export function setAudit(path, value) {
   const keys = path.split('.');
   let node = state.audit;
-  while (keys.length > 1) node = node[keys.shift()];
-  node[keys[0]] = value;
-  notify();
-}
-
-export function setRollup(path, value) {
-  const keys = path.split('.');
-  let node = state.rollup;
   while (keys.length > 1) node = node[keys.shift()];
   node[keys[0]] = value;
   notify();

@@ -8,6 +8,7 @@
 import { runAudit } from '../src/engine/valuation.js';
 import { remediationPlan } from '../src/engine/restructure.js';
 import { BROKER_CASE, PREPARED_CASE } from '../src/data/cases.js';
+import { capitalOptions } from '../src/engine/build.js';
 
 const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
 const turns = (n) => n.toFixed(2) + 'x';
@@ -51,6 +52,13 @@ for (const item of plan.items.slice(0, 5)) {
     `${money(item.fullUplift)} / ${item.months}mo`);
 }
 row('Total recoverable', money(plan.totalRecoverable));
+
+console.log('\n=== WHAT A BUYER CAN ACTUALLY PAY ===\n');
+console.log('  Debt cover does not care how big the business is, so the answer is a price');
+console.log('  per pound of profit rather than a size.\n');
+for (const o of capitalOptions(0, { industryId: 'trades' })) {
+  row(`  ${o.structure.name}`, `${turns(o.maxMultiple)} · ${turns(o.stretchedMultiple)} interest-only`);
+}
 
 const good = runAudit(PREPARED_CASE);
 console.log('\n=== SAME BUSINESS, RESTRUCTURED ===\n');

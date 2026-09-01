@@ -71,16 +71,46 @@ $1m EBITDA, a $250k owner salary added back while the owner works the business d
 The $5m ask implies **9.57x** defensible EBITDA. Not ambitious — delusional. That is the audit's
 value proposition in one number.
 
-## Screens
+## Three steps, three pains
 
-| Screen | What it does |
+| Screen | The pain it lands |
 |---|---|
-| **Audit** | Your asking price, your earnings, then the three C's as an accordion — one pillar open at a time, live valuation docked at the bottom |
-| **Value** | The gap as one figure, both haircuts drawn as bridges, the DSCR gate, which ceiling binds, and what each C is worth on its own |
-| **Plan** | Every fix priced and sequenced by value per month of effort; today / 12mo / 24mo trajectory |
-| **Roll-up** | Multiple arbitrage: platform plus bolt-ons, per-deal and group DSCR, cash-constrained deleveraging, equity return |
-| **Tune** | Every delta, sector ceiling and bound editable in place, each beside its "why this number" justification. Changes flow through the audit, the plan and the roll-up at once |
+| **Audit** | Your asking price, your profit, then the three C's as an accordion — one open at a time, live figures docked at the bottom |
+| **Value** | *It is not worth what you think.* The gap as one figure, both cuts drawn as bridges, the loan-cover gate, what each C is worth, and the fix in order |
+| **Build** | *Selling one is the small game.* A drag-and-drop group canvas, the four deal structures, what you actually merge, and what your cash really buys |
+| **Future** | Twenty years, two roads, and what the difference is worth against the only cash you ever put in |
+| **Tune** | Every number editable in place beside its justification — limits, industry prices, and what each answer is worth |
 | **Method** | Formulas, assumptions, and an explicit list of what is not signed off |
+
+## The group canvas
+
+Your business sits in the middle; everything you buy hangs off it. Tap an industry to add a
+business — it takes its place on the web automatically — then drag it anywhere you like.
+Tap one to open it and set what it earns, what you pay, how you fund it, and what you merge.
+Positions are stored as fractions of the box, so the web survives a resize.
+
+## The deal structures
+
+Four, straight from the framework. Three need none of the buyer's money:
+
+| Structure | Plain English | Cash needed |
+|---|---|---|
+| **Seller pays himself out** | The seller lends you the whole price, unsecured, with a 9-month payment holiday | None |
+| **Bank and seller together** | 60% commercial debt, 40% left in by the seller as rollover | None |
+| **The business pays the bills** | Price financed, and a working-capital line drawn at completion covers the fees | None — you finish with more cash than you started |
+| **Put money down** | 20% deposit, the way most people assume it has to work | 20% of the price |
+
+## What your money actually buys
+
+The surprising answer, and the tool computes it rather than asserting it: **cash flow and debt
+service both scale with the deal, so the size of the business cancels out.** What is left is a
+maximum *price per pound of profit*. On the framework's own terms — 1.5x cover, a 6-year seller
+note at 4% — that ceiling is about **2.4x profit**. Your cash does not appear in that calculation
+at all; three of the four structures never touch it.
+
+Which is why the same screen has one button that changes everything: ask every seller for
+interest only, with the lump at the end. Nothing about any business changes. Only the terms do,
+and deals that could not cover themselves suddenly can.
 
 ## The pillars compound
 
@@ -89,6 +119,13 @@ lifts the multiple multiply when fixed together. Fixing all three is worth **mor
 three individual figures added up — on the broker case, $3.51m against $2.87m summed. The
 tool reports each pillar's marginal uplift and computes the programme total directly, because
 no honest per-pillar share of the total exists: the interaction belongs to no single pillar.
+
+## Integration
+
+Savings are not a percentage you assume, they are a list of things you do: one back office, group
+buying, shared premises, the owner's wage, cross-selling, one system. Each is worth a stated share
+of the acquired business's profit, and each has a time and a difficulty. Tick them on a business
+and its contribution changes immediately — the most you can take out is 30%.
 
 ## Tuning
 

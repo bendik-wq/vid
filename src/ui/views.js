@@ -1,61 +1,51 @@
 /** Screens. Each returns HTML; app.js wires events by delegation. */
 
 import { CRITERIA, PILLARS, criteriaForPillar } from '../data/criteria.js';
-import { SECTORS } from '../data/sectors.js';
+import { SECTORS, SECTORS_BY_ID, SIZE_BANDS, bandFor } from '../data/sectors.js';
+import { STRUCTURES, STRUCTURES_BY_ID, INTEGRATION_LEVERS, LEVERS_BY_ID, MAX_SYNERGY } from '../data/structures.js';
 import { config, deltaFor, defaultDeltaFor, ceilingFor, isTuned, isSectorTuned, tuningSummary, DEFAULT_CONFIG } from '../data/config.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan, restructureTrajectory, pillarUplift } from '../engine/restructure.js';
-import { runRollup, absorptionCapacity } from '../engine/rollup.js';
-import { state } from './state.js';
+import { runBuild, capitalOptions, horizon } from '../engine/build.js';
+import { state, groupInput } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
-import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, multipleSpread, rankBar, pillarBars } from './charts.js';
+import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, twoPaths } from './charts.js';
+import { groupCanvas, industryTray } from './canvas.js';
 
 const tile = (k, v, s, cls = '') =>
   `<div class="tile ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
 
-const numField = (label, path, value, hint) => `
+const numField = (label, path, value, hint, attr = 'bind') => `
   <div class="field">
     <label>${esc(label)}</label>
-    <input data-bind="${path}" data-kind="number" value="${esc(value ?? 0)}" inputmode="numeric" />
+    <input data-${attr}="${path}" data-kind="number" value="${esc(value ?? 0)}" inputmode="numeric" />
     ${hint ? `<p class="hint">${hint}</p>` : ''}
   </div>`;
 
-const rateField = (label, path, value, dp = 0) => `
+const rateField = (label, path, value, dp = 0, attr = 'bind') => `
   <div class="field">
     <label>${esc(label)}</label>
-    <input data-bind="${path}" data-kind="rate" value="${(value * 100).toFixed(dp)}" inputmode="decimal" />
+    <input data-${attr}="${path}" data-kind="rate" value="${(value * 100).toFixed(dp)}" inputmode="decimal" />
   </div>`;
 
 // ── The 3C spine ──────────────────────────────────────────────────────────
-/** What each pillar is currently costing, in the unit that pillar moves. */
 export function pillarCost(pillar, r) {
   if (pillar === 'credibility') {
     const lost = r.haircuts.lines.reduce((s, l) => s + l.appliedAmount, 0);
-    const turnsLost = r.penalties.lines
-      .filter((l) => PILLARS[l.pillar] && l.pillar === 'credibility')
-      .reduce((s, l) => s + l.penalty, 0);
-    return {
-      headline: `−${money(lost)}`,
-      detail: `of claimed earnings${turnsLost > 0 ? `, and −${turns(turnsLost)} of multiple` : ''}`,
-      critical: lost > 0,
-    };
+    return { headline: `−${money(lost)}`, detail: 'of the profit you are claiming', critical: lost > 0 };
   }
   if (pillar === 'capital') {
     const turnsLost = r.penalties.lines.filter((l) => l.pillar === 'capital').reduce((s, l) => s + l.penalty, 0);
     return {
-      headline: `${turns(r.dscr.dscr)} DSCR`,
+      headline: `${turns(r.dscr.dscr)} cover`,
       detail: r.dscr.passes
-        ? `fundable at your price, −${turns(turnsLost)} of multiple`
-        : `below the ${turns(config.dscrFloor)} floor, −${turns(turnsLost)} of multiple`,
+        ? `a buyer can afford the repayments, and −${turns(turnsLost)} off the price`
+        : `a buyer cannot afford the repayments, and −${turns(turnsLost)} off the price`,
       critical: !r.dscr.passes,
     };
   }
   const turnsLost = r.penalties.lines.filter((l) => l.pillar === 'closing').reduce((s, l) => s + l.penalty, 0);
-  return {
-    headline: `−${turns(turnsLost)}`,
-    detail: 'of multiple, on completion risk alone',
-    critical: turnsLost > 0,
-  };
+  return { headline: `−${turns(turnsLost)}`, detail: 'off the price, on the risk the deal falls over', critical: turnsLost > 0 };
 }
 
 export function threeCStrip(r, { linked = false } = {}) {
@@ -89,40 +79,41 @@ export function auditView() {
 
   return `
   <section>
-    <p class="eyebrow">The audit</p>
-    <h1 class="display">What do you want for the business?</h1>
-    <p class="lede">Start with your number. Everything after this is arithmetic on figures you supply —
+    <p class="eyebrow">Step one</p>
+    <h1 class="display">What do you want for it?</h1>
+    <p class="lede">Start with your number. Everything after this is arithmetic on figures you give us —
     which is the point. There is nothing here to argue with.</p>
     <div style="max-width:340px">
       <input class="big" data-bind="askingPrice" data-kind="number" value="${esc(a.askingPrice)}"
-             inputmode="numeric" aria-label="Your asking price" />
+             inputmode="numeric" aria-label="What you want for the business" />
     </div>
   </section>
 
   <section>
-    <h2 class="headline">The earnings you are claiming</h2>
+    <h2 class="headline">The profit you are claiming</h2>
     <div class="grid g3">
-      ${numField('Claimed EBITDA', 'financials.claimedEbitda', a.financials.claimedEbitda,
-        'After every add-back — the figure on the memorandum.')}
-      ${numField('Market cost to replace you', 'financials.ownerReplacementCost', a.financials.ownerReplacementCost,
+      ${numField('Profit, after add-backs', 'financials.claimedEbitda', a.financials.claimedEbitda,
+        'The number on the sales memorandum.')}
+      ${numField('Cost to replace you', 'financials.ownerReplacementCost', a.financials.ownerReplacementCost,
         'What you would pay someone to do everything you do.')}
-      ${numField('Owner pay added back', 'financials.ownerSalaryAddedBack', a.financials.ownerSalaryAddedBack,
-        'Add your pay back and a buyer inherits a vacancy, not a profit.')}
+      ${numField('Your pay, added back', 'financials.ownerSalaryAddedBack', a.financials.ownerSalaryAddedBack,
+        'Add your own wage back and a buyer inherits a job, not a profit.')}
     </div>
-    <details class="card" style="margin-top:16px" ${a.ui?.moreOpen ? 'open' : ''}>
+    <details class="card" style="margin-top:16px">
       <summary style="cursor:pointer;font-weight:600;font-size:15px">More detail</summary>
       <div class="grid g3" style="margin-top:18px">
-        ${numField('Revenue', 'financials.revenue', a.financials.revenue)}
-        ${numField('Owner pay drawn', 'financials.ownerSalaryDrawn', a.financials.ownerSalaryDrawn)}
-        ${numField('Maintenance capex a year', 'financials.maintenanceCapex', a.financials.maintenanceCapex)}
+        ${numField('Sales', 'financials.revenue', a.financials.revenue)}
+        ${numField('What you pay yourself', 'financials.ownerSalaryDrawn', a.financials.ownerSalaryDrawn)}
+        ${numField('Kit and vehicles, a year', 'financials.maintenanceCapex', a.financials.maintenanceCapex,
+          'What it costs just to stand still.')}
         <div class="field">
           <label>Business name</label>
           <input data-bind="business.name" data-kind="text" value="${esc(a.business.name)}" placeholder="Trading name" />
         </div>
         <div class="field">
-          <label>Sector</label>
+          <label>Industry</label>
           <select data-bind="business.sector" data-kind="text">
-            ${SECTORS.map((x) => `<option value="${x.id}" ${x.id === a.business.sector ? 'selected' : ''}>${esc(x.name)} — ${ceilingFor(x.id).toFixed(1)}x</option>`).join('')}
+            ${SECTORS.map((x) => `<option value="${x.id}" ${x.id === a.business.sector ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}
           </select>
         </div>
         ${rateField('Tax rate', 'financials.taxRate', a.financials.taxRate)}
@@ -131,35 +122,34 @@ export function auditView() {
   </section>
 
   <section>
-    <h2 class="headline">How a buyer would pay for it</h2>
+    <h2 class="headline">How a buyer would pay</h2>
     <p class="body tight">
-      ${pct(s.depositPct, 0)} deposit, ${pct(s.sellerNotePct, 0)} left in as a seller note at
-      ${pct(s.sellerNoteRate, 1)}${s.sellerNoteInterestOnly ? ' interest-only' : ` over ${s.sellerNoteTermYears} years`},
+      ${pct(s.depositPct, 0)} down, ${pct(s.sellerNotePct, 0)} left with you at
+      ${pct(s.sellerNoteRate, 1)}${s.sellerNoteInterestOnly ? ', interest only' : ` over ${s.sellerNoteTermYears} years`},
       the rest borrowed at ${pct(s.bankRate, 1)} over ${s.bankTermYears} years.
     </p>
     <details class="card" style="margin-top:16px">
-      <summary style="cursor:pointer;font-weight:600;font-size:15px">Change the structure</summary>
+      <summary style="cursor:pointer;font-weight:600;font-size:15px">Change it</summary>
       <div class="grid g3" style="margin-top:18px">
-        ${rateField('Buyer deposit %', 'structure.depositPct', s.depositPct)}
-        ${rateField('Seller note %', 'structure.sellerNotePct', s.sellerNotePct)}
+        ${rateField('Deposit %', 'structure.depositPct', s.depositPct)}
+        ${rateField('Left with you %', 'structure.sellerNotePct', s.sellerNotePct)}
         ${rateField('Bank rate %', 'structure.bankRate', s.bankRate, 1)}
-        ${numField('Bank term (years)', 'structure.bankTermYears', s.bankTermYears)}
-        ${rateField('Seller note rate %', 'structure.sellerNoteRate', s.sellerNoteRate, 1)}
-        ${numField('Seller note term (years)', 'structure.sellerNoteTermYears', s.sellerNoteTermYears)}
+        ${numField('Bank term, years', 'structure.bankTermYears', s.bankTermYears)}
+        ${rateField('Your rate %', 'structure.sellerNoteRate', s.sellerNoteRate, 1)}
+        ${numField('Your term, years', 'structure.sellerNoteTermYears', s.sellerNoteTermYears)}
       </div>
       <label class="switch" style="margin-top:16px">
         <input type="checkbox" data-bind="structure.sellerNoteInterestOnly" data-kind="bool"
                ${s.sellerNoteInterestOnly ? 'checked' : ''} />
-        <span>Seller note is interest-only with a bullet at the end</span>
+        <span>You take interest only, and the lump at the end</span>
       </label>
-      <p class="hint">The single biggest lever on whether your price is fundable. Try it both ways.</p>
+      <p class="hint">The single biggest thing that decides whether your price is payable. Try it both ways.</p>
     </details>
   </section>
 
   <section>
-    <h2 class="headline">The three C&rsquo;s</h2>
-    <p class="lede">Josh teaches these to buyers. Pointed at a seller they ask the same three questions
-    of your business. Score one to five against the anchors; five is what a buyer wants to find.</p>
+    <h2 class="headline">Three questions a buyer asks</h2>
+    <p class="lede">Score each one from one to five. Five is what a buyer hopes to find.</p>
     ${threeCStrip(r)}
     <div style="margin-top:28px">
       ${['credibility', 'capital', 'closing'].map((id) => pillarFold(id, r)).join('')}
@@ -168,7 +158,7 @@ export function auditView() {
 
   <section class="actions">
     <button class="btn" data-act="goto" data-view="value">See what it is worth</button>
-    <button class="btn quiet" data-act="load-broker">Load Josh&rsquo;s broker case</button>
+    <button class="btn quiet" data-act="load-broker">Load the example</button>
     <button class="btn quiet" data-act="reset">Clear</button>
   </section>`;
 }
@@ -178,21 +168,19 @@ function pillarFold(id, r) {
   const open = state.ui.openPillar === id;
   const items = criteriaForPillar(id);
   const scored = items.filter((c) => c.impact.kind !== 'computed');
-  const done = scored.filter((c) => state.audit.scores[c.id] !== undefined).length;
   return `
   <div class="fold pillar" data-pillar="${id}" data-open="${open}">
     <button class="fold-head" data-act="toggle-pillar" data-pillar="${id}" aria-expanded="${open}">
       <span class="dot"></span>
       <span class="fold-title">${esc(p.name)}</span>
       <span class="fold-meta">
-        <span>${done} criteria</span>
+        <span>${scored.length} questions</span>
         <span>${r.pillarScores[id].toFixed(1)} / 5</span>
         <span class="chev"></span>
       </span>
     </button>
     ${open ? `<div class="fold-body">
-      <p class="small" style="margin:0 0 14px"><strong>Buy-side:</strong> ${esc(p.buySide)}
-        &nbsp;·&nbsp; <strong>Sell-side:</strong> ${esc(p.sellSide)}</p>
+      <p class="small" style="margin:0 0 14px">${esc(p.sellSide)}</p>
       ${items.map((c) => critRow(c)).join('')}
     </div>` : ''}
   </div>`;
@@ -203,7 +191,7 @@ function critRow(c) {
     return `
     <div class="crit">
       <div>
-        <div class="crit-name">${esc(c.name)} <span class="badge">computed</span></div>
+        <div class="crit-name">${esc(c.name)} <span class="badge">worked out for you</span></div>
         <div class="crit-q">${esc(c.question)}</div>
         <div class="crit-anchor">${esc(c.computedNote)}</div>
       </div>
@@ -212,8 +200,8 @@ function critRow(c) {
   }
   const score = Number(state.audit.scores[c.id] ?? 3);
   const delta = c.impact.kind === 'ebitda'
-    ? `worth up to ${pct(deltaFor(c), 0)} of EBITDA`
-    : `worth up to ${turns(deltaFor(c))} of multiple`;
+    ? `worth up to ${pct(deltaFor(c), 0)} of your profit`
+    : `worth up to ${turns(deltaFor(c))} on the price`;
   return `
   <div class="crit">
     <div>
@@ -234,126 +222,119 @@ function critRow(c) {
 // ── Value ─────────────────────────────────────────────────────────────────
 export function valueView() {
   const r = runAudit(state.audit);
-  const name = state.audit.business.name || 'The business';
+  const name = state.audit.business.name || 'Your business';
   const gapUp = r.gap > 0;
 
   return `
   <section>
     <p class="eyebrow">${esc(name)}</p>
-    <h1 class="display" style="max-width:24ch">${gapUp ? 'The gap between your number and a buyer&rsquo;s' : 'You are asking below what this supports'}</h1>
+    <h1 class="display" style="max-width:22ch">${gapUp ? 'It is not worth what you think.' : 'You are asking under the odds.'}</h1>
     <div class="figure xl ${gapUp ? 'is-critical' : 'is-good'}" style="margin:28px 0 12px">${money(Math.abs(r.gap))}</div>
-    <p class="lede">You are asking ${money(r.askingPrice)} — ${turns(r.impliedMultipleAtAsking)} of what the
-    earnings actually defend. The audit supports ${money(r.achievableValue)}.</p>
+    <p class="lede">You want ${money(r.askingPrice)}. That is ${turns(r.impliedMultipleAtAsking)} the profit you can
+    actually prove. A buyer gets to ${money(r.achievableValue)}.</p>
     ${gapBar({ asking: r.askingPrice, achievable: r.achievableValue, fundable: r.dscr.maxFundablePrice })}
   </section>
 
   <section>
     <h2 class="headline">Where it went</h2>
-    <p class="lede">Two haircuts, both taken from your own figures. The first moves the earnings.
-    The second moves the multiple.</p>
+    <p class="lede">Two cuts, both taken from your own figures. The first is to the profit.
+    The second is to the price paid for each pound of it.</p>
 
     <div class="card" style="margin-bottom:16px">
       <div class="between" style="margin-bottom:16px">
         <div>
-          <p class="eyebrow" style="margin:0 0 6px">Haircut one · earnings</p>
+          <p class="eyebrow" style="margin:0 0 6px">Cut one · the profit</p>
           <div class="figure lg">${money(r.defensibleEbitda)}</div>
-          <p class="small" style="margin:6px 0 0">defensible, from ${money(r.claimedEbitda)} claimed</p>
+          <p class="small" style="margin:6px 0 0">you can prove, out of ${money(r.claimedEbitda)} claimed</p>
         </div>
         <div class="badge critical">−${pct(r.haircuts.appliedFraction)}</div>
       </div>
       ${bridgeBar({
         total: r.claimedEbitda,
         keep: r.defensibleEbitda,
-        keepLabel: 'Defensible',
+        keepLabel: 'Provable profit',
         cuts: r.haircuts.lines.map((l) => ({ label: l.name, value: l.appliedAmount })),
       })}
-      ${r.haircuts.capApplied ? `<p class="hint">Raw haircut was ${pct(r.haircuts.rawFraction)}; capped at ${pct(config.ebitdaHaircutCap, 0)} and rescaled.</p>` : ''}
     </div>
 
     <div class="card">
       <div class="between" style="margin-bottom:16px">
         <div>
-          <p class="eyebrow" style="margin:0 0 6px">Haircut two · multiple</p>
+          <p class="eyebrow" style="margin:0 0 6px">Cut two · the price per pound</p>
           <div class="figure lg">${turns(r.achievableMultiple)}</div>
-          <p class="small" style="margin:6px 0 0">achievable, from a ${turns(r.ceiling)} ceiling</p>
+          <p class="small" style="margin:6px 0 0">what you get, out of a best case of ${turns(r.ceiling)}</p>
         </div>
         <div class="badge critical">−${turns(r.penalties.total)}</div>
       </div>
       ${bridgeBar({
         total: r.ceiling,
         keep: r.achievableMultiple,
-        keepLabel: 'Achievable',
+        keepLabel: 'What you get',
         cuts: r.penalties.lines.map((l) => ({ label: l.name, value: l.penalty })),
         format: turns,
       })}
-      ${r.multipleFloored ? `<p class="hint">Penalties exceeded the ceiling; held at the ${turns(config.multipleFloor)} floor.</p>` : ''}
     </div>
   </section>
 
   <section>
-    <h2 class="headline">Could a buyer even fund it?</h2>
+    <h2 class="headline">Can a buyer even afford it?</h2>
     <p class="lede">${r.dscr.passes
-      ? `Yes. ${money(r.dscr.freeCashFlow)} of free cash flow against ${money(r.dscr.annualService)} of annual debt service.`
-      : `No. At your price a buyer faces ${money(r.dscr.annualService)} a year of debt service against ${money(r.dscr.freeCashFlow)} of free cash flow.`}</p>
-    ${thresholdScale({ value: r.dscr.dscr, floor: config.dscrFloor, max: 3, label: 'DSCR at your asking price' })}
+      ? `Yes. The business throws off ${money(r.dscr.freeCashFlow)} a year against ${money(r.dscr.annualService)} of repayments.`
+      : `No. At your price the repayments are ${money(r.dscr.annualService)} a year and the business only makes ${money(r.dscr.freeCashFlow)}.`}</p>
+    ${thresholdScale({ value: r.dscr.dscr, floor: config.dscrFloor, max: 3, label: 'Loan cover at your price' })}
     <div class="note ${r.dscr.passes ? 'good' : 'critical'}" style="margin:26px 0">
-      <p style="margin:0"><strong>Your asking price implies a ${turns(r.dscr.dscr)} DSCR. The floor is ${turns(config.dscrFloor)}.</strong>
+      <p style="margin:0"><strong>Your price covers the repayments ${turns(r.dscr.dscr)} over. Lenders want ${turns(config.dscrFloor)}.</strong>
       ${r.dscr.passes
-        ? ' The deal is fundable as structured.'
-        : ` No bank funds this. No seller-financed buyer survives it. The most a buyer could fund on this
-            structure is ${money(r.dscr.maxFundablePrice)}. Your price is not high — it is unfundable.`}</p>
+        ? ' The deal is payable as it stands.'
+        : ` No bank lends against this. No seller-financed buyer survives it. The most anyone could pay on
+            these terms is ${money(r.dscr.maxFundablePrice)}. Your price is not ambitious — it is unpayable.`}</p>
     </div>
     <div class="grid g4">
       ${tile('Deposit', money(r.dscr.deposit), pct(r.dscr.structure.depositPct, 0))}
-      ${tile('Bank debt', money(r.dscr.bankDebt), `${pct(r.dscr.structure.bankRate, 1)} over ${r.dscr.structure.bankTermYears}y`)}
-      ${tile('Seller note', money(r.dscr.sellerNote), r.dscr.structure.sellerNoteInterestOnly ? 'interest-only' : `${r.dscr.structure.sellerNoteTermYears}y amortising`)}
-      ${tile('Debt service', money(r.dscr.annualService), 'every year')}
-    </div>
-  </section>
-
-  <section>
-    <h2 class="headline">Which ceiling binds</h2>
-    <div class="grid g2">
-      ${tile('Quality ceiling', money(r.achievableValue), 'what it earns × what it deserves',
-        r.binding === 'quality' ? 'flag-critical' : '')}
-      ${tile('Fundability ceiling', money(r.dscr.maxFundablePrice), `most a buyer can service at ${turns(config.dscrFloor)}`,
-        r.binding === 'fundability' ? 'flag-critical' : '')}
+      ${tile('Borrowed', money(r.dscr.bankDebt), `${pct(r.dscr.structure.bankRate, 1)} over ${r.dscr.structure.bankTermYears}y`)}
+      ${tile('Left with you', money(r.dscr.sellerNote), r.dscr.structure.sellerNoteInterestOnly ? 'interest only' : `${r.dscr.structure.sellerNoteTermYears}y`)}
+      ${tile('Repayments', money(r.dscr.annualService), 'every year')}
     </div>
     <div class="note" style="margin-top:22px">
       <p style="margin:0"><strong>${r.binding === 'fundability'
-        ? 'Cash binds, not quality.'
-        : 'Quality binds, not cash.'}</strong>
+        ? 'The money is the problem, not the business.'
+        : 'The business is the problem, not the money.'}</strong>
       ${r.binding === 'fundability'
-        ? ` A buyer cannot service more than ${money(r.dscr.maxFundablePrice)} on this structure even though the
-            business supports ${money(r.achievableValue)}. Lengthen the note, defer more, take the difference in
-            earn-out — the price need not move, the structure must.`
-        : ' Debt service is not the constraint. Every extra pound of price has to come from a better business.'}</p>
+        ? ` Nobody can carry more than ${money(r.dscr.maxFundablePrice)} on these terms, even though the business
+            itself is worth ${money(r.achievableValue)}. Stretch the terms, defer more, take some later — the
+            price need not move, the structure must.`
+        : ' Repayments are not what is holding you back. Every extra pound has to come from a better business.'}</p>
     </div>
   </section>
 
   <section>
-    <h2 class="headline">What each C is worth</h2>
-    <p class="lede">Value recovered if that pillar alone reached five and the other two stayed exactly
-    as they are. They deliberately do not sum: earnings times multiple means the three compound, so
-    fixing all three is worth <strong>more</strong> than the three figures added together.</p>
+    <h2 class="headline">What each one is worth</h2>
+    <p class="lede">What you get back if you fixed that one thing and left the other two alone. They do not add up
+    on purpose: profit times price means the three multiply, so fixing all three is worth
+    <strong>more</strong> than the three figures put together.</p>
     ${pillarBars(pillarUplift(state.audit).map((u) => ({
       name: PILLARS[u.pillar].name,
-      sub: `${u.score.toFixed(1)} / 5 today${u.multiple > 0 ? ` · +${turns(u.multiple)} of multiple` : ''}${u.ebitda > 0 ? ` · +${money(u.ebitda)} of earnings` : ''}`,
+      sub: `${u.score.toFixed(1)} / 5 today`,
       value: u.value,
       color: `var(--${u.pillar})`,
     })))}
     ${threeCStrip(r, { linked: true })}
   </section>
 
-  <section class="actions">
-    <button class="btn" data-act="goto" data-view="plan">What closes the gap</button>
-    <button class="btn quiet" data-act="export">Export report</button>
-    <button class="btn quiet" data-act="print">Print</button>
+  ${planSection()}
+
+  <section>
+    <p class="statement">Fixing it makes the business worth more.
+    <span class="up">Buying others makes it worth several times more.</span></p>
+    <div class="actions" style="margin-top:26px">
+      <button class="btn" data-act="goto" data-view="build">Build the group</button>
+      <button class="btn quiet" data-act="export">Export report</button>
+      <button class="btn quiet" data-act="print">Print</button>
+    </div>
   </section>`;
 }
 
-// ── Plan ──────────────────────────────────────────────────────────────────
-export function planView() {
+function planSection() {
   const plan = remediationPlan(state.audit);
   const traj = restructureTrajectory(state.audit);
   const base = plan.base;
@@ -362,188 +343,348 @@ export function planView() {
 
   return `
   <section>
-    <p class="eyebrow">The plan</p>
-    <h1 class="display">Every fix, priced.</h1>
-    <p class="lede">The audit says what the business is worth today. This says what each fix is worth,
-    so the conversation stops being “your price is wrong” and becomes “here is the sequence”.</p>
+    <h2 class="headline">The fix, in order</h2>
+    <p class="lede">Ranked by what you get back for each month of work.
+    ${top3.length ? `The first three are worth ${money(top3.reduce((s, i) => s + i.fullUplift, 0))} and take
+    ${Math.max(...top3.map((i) => i.months))} months if you run them side by side.` : ''}</p>
     ${trajectory(traj.map((t) => ({ label: t.label, value: t.result.achievableValue })))}
-    <p class="small">Horizons assume the workstreams run in parallel and every criterion reachable inside the
-    window lands at 5. It is the ceiling of the plan, not a forecast.</p>
-  </section>
-
-  <section>
-    <div class="grid g3">
-      ${tile('Value today', money(base.achievableValue), `${money(base.defensibleEbitda)} × ${turns(base.achievableMultiple)}`)}
-      ${tile('Total recoverable', money(plan.totalRecoverable), 'doing all of it, not the sum of the parts', 'flag-good')}
-      ${tile('Still short of your ask',
-        money(Math.max(0, base.askingPrice - base.achievableValue - plan.totalRecoverable)),
-        base.askingPrice - base.achievableValue - plan.totalRecoverable > 0 ? 'the price has to move too' : 'the ask is reachable')}
+    <div class="grid g3" style="margin-top:20px">
+      ${tile('Worth today', money(base.achievableValue), '')}
+      ${tile('Worth fixed', money(base.achievableValue + plan.totalRecoverable), 'doing all of it', 'flag-good')}
+      ${tile('Still short', money(Math.max(0, base.askingPrice - base.achievableValue - plan.totalRecoverable)),
+        base.askingPrice - base.achievableValue - plan.totalRecoverable > 0 ? 'the price has to move too' : 'your number is reachable')}
     </div>
+    <details class="card" style="margin-top:18px">
+      <summary style="cursor:pointer;font-weight:600;font-size:15px">Every fix, priced</summary>
+      <div class="scroll" style="margin-top:16px">
+        <table>
+          <thead><tr><th>Fix</th><th class="n">Now</th><th class="n">Worth</th><th class="n">Months</th><th style="width:110px"></th></tr></thead>
+          <tbody>
+            ${plan.items.map((i) => `
+              <tr>
+                <td><strong>${esc(i.name)}</strong><div class="hint" style="margin-top:3px">${esc(i.anchorNow)}</div></td>
+                <td class="n">${i.currentScore}/5</td>
+                <td class="n"><strong>${moneyShort(i.fullUplift)}</strong></td>
+                <td class="n muted">${i.months}</td>
+                <td>${rankBar(i.fullUplift, max)}</td>
+              </tr>`).join('')}
+            ${plan.items.length === 0 ? '<tr><td colspan="5" class="muted">Nothing left to fix.</td></tr>' : ''}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </section>`;
+}
+
+// ── Build ─────────────────────────────────────────────────────────────────
+export function buildView() {
+  const g = groupInput();
+  const r = runBuild(g);
+  const selected = r.nodes.find((n) => n.id === state.ui.selectedNode) ?? r.nodes[r.nodes.length - 1];
+  const cash = state.capital.cash;
+  const options = capitalOptions(cash, { industryId: state.capital.industryId, stretch: state.capital.stretch });
+  const band = bandFor(r.groupProfit);
+
+  return `
+  <section>
+    <p class="eyebrow">Step two</p>
+    <h1 class="display">Stop selling one. Start owning several.</h1>
+    <p class="lede">Small businesses sell cheap. Groups sell dear. Buy at the small price, sell at the group
+    price, and the difference is yours. Your own business is the platform — everything you buy hangs off it.</p>
   </section>
 
-  ${top3.length ? `
   <section>
-    <h2 class="headline">Start here</h2>
-    <p class="lede">Ranked by value recovered per month of work, weighted by difficulty. The first three
-    recover ${money(top3.reduce((s, i) => s + i.fullUplift, 0))} in
-    ${Math.max(...top3.map((i) => i.months))} months if run in parallel.</p>
-    <div class="grid g3">
-      ${top3.map((i) => `
-        <div class="pillar tile" data-pillar="${i.pillar}">
-          <div class="k" style="display:flex;align-items:center;gap:7px"><span class="dot"></span>${esc(PILLARS[i.pillar].name)}</div>
-          <div style="font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-top:10px">${esc(i.name)}</div>
-          <div class="v is-good" style="font-size:24px">${money(i.fullUplift)}</div>
-          <div class="s">${i.currentScore}/5 today · ${i.months} months</div>
+    ${groupCanvas(r, { selected: selected?.id })}
+    <div class="grid g4" style="margin-top:18px">
+      ${tile('Profit together', money(r.groupProfit),
+        r.synergies > 0 ? `includes ${money(r.synergies)} saved by merging` : 'add a business to start')}
+      ${tile('Your cash in', money(r.cashRequired),
+        r.cashRequired === 0 ? 'none of it is yours' : 'from your own pocket', r.cashRequired === 0 ? 'flag-good' : '')}
+      ${tile('Loan cover', turns(r.dscr), r.passes ? 'the group can pay' : 'below the floor',
+        r.passes ? 'flag-good' : 'flag-critical')}
+      ${tile('Group worth', money(r.equityValue), `${turns(r.exitMultiple)} on ${money(r.groupProfit)}, less debt`, 'flag-good')}
+    </div>
+    ${r.nodes.some((n) => !n.passes) ? `
+      <div class="note ${r.passes ? '' : 'critical'}" style="margin-top:22px">
+        <p style="margin:0 0 12px"><strong>${r.nodes.filter((n) => !n.passes).length} of these cannot pay for
+        themselves at that price.</strong>
+        ${r.passes
+          ? 'Together with your business the group still covers it — that is what a platform is for, your existing profit carries the first few until they carry themselves.'
+          : 'And the group cannot carry them either.'}
+        The fastest fix is the terms: ask the seller for interest only, with the lump at the end.</p>
+        <button class="btn" data-act="stretch-all" data-on="true">Ask every seller for interest only</button>
+      </div>` : ''}
+    ${r.nodes.length > 0 && r.nodes.every((n) => n.interestOnly) ? `
+      <div class="note good" style="margin-top:22px">
+        <p style="margin:0 0 12px"><strong>Nothing about the businesses changed. Only the terms did.</strong>
+        Same price, same profit, same people — and now every one of them pays for itself.
+        <button class="btn quiet tiny" data-act="stretch-all" data-on="false" style="margin-left:8px">Put it back</button></p>
+      </div>` : ''}
+    ${r.nodes.length > 0 ? `
+      <p class="small" style="margin-top:14px">You buy at ${turns(r.blendedEntry)} and the group sells at
+      ${turns(r.exitMultiple)}. That gap — <strong>${turns(r.arbitrage)}</strong> — is the whole strategy.
+      At ${money(r.groupProfit)} of profit, the people bidding are ${esc(band.who.toLowerCase())}.</p>` : ''}
+  </section>
+
+  <section>
+    <h2 class="headline">Add a business</h2>
+    <p class="lede">Tap one to add it. Drag it around the web if you like — the group does not care where
+    you put it, only what it earns.</p>
+    ${industryTray(SECTORS.filter((s) => s.id !== 'generic'))}
+  </section>
+
+  ${selected ? nodeInspector(selected) : ''}
+
+  <section>
+    <h2 class="headline">How you pay for it</h2>
+    <p class="lede">Three of these four need none of your money. That is not a trick — it is what a seller
+    who wants out will agree to, because he cares more about the number than about getting it all on Friday.</p>
+    <div class="grid g2">
+      ${STRUCTURES.map((s) => `
+        <div class="card">
+          <div class="between" style="margin-bottom:8px">
+            <strong style="font-size:16px">${esc(s.name)}</strong>
+            <span class="badge ${s.depositPct === 0 ? 'good' : ''}">${s.depositPct === 0 ? 'no money down' : pct(s.depositPct, 0) + ' down'}</span>
+          </div>
+          <p class="body" style="margin:0 0 10px">${esc(s.plain)}</p>
+          <p class="small" style="margin:0 0 10px">${esc(s.detail)}</p>
+          <p class="hint" style="margin:0"><strong>Use it when:</strong> ${esc(s.whenToUse)}<br />
+          <strong>Watch for:</strong> ${esc(s.watchFor)}</p>
         </div>`).join('')}
     </div>
-  </section>` : ''}
+  </section>
 
   <section>
-    <h2 class="headline">Everything else</h2>
+    <h2 class="headline">What you actually merge</h2>
+    <p class="lede">Savings are not a percentage you assume. They are a list of things you do. Tick them on a
+    business above and watch its profit change — the most you can take out is ${pct(MAX_SYNERGY, 0)}.</p>
     <div class="scroll">
       <table>
-        <thead><tr>
-          <th>Fix</th><th>Pillar</th><th class="n">Now</th><th class="n">+1 point</th>
-          <th class="n">To 5</th><th class="n">Months</th><th style="width:120px"></th>
-        </tr></thead>
+        <thead><tr><th>What you merge</th><th>What it means</th><th class="n">Saves</th><th class="n">Months</th></tr></thead>
         <tbody>
-          ${plan.items.map((i) => `
-            <tr>
-              <td><strong>${esc(i.name)}</strong><div class="hint" style="margin-top:3px">${esc(i.anchorNow)}</div></td>
-              <td class="muted">${esc(PILLARS[i.pillar].name)}</td>
-              <td class="n">${i.currentScore}/5</td>
-              <td class="n muted">${moneyShort(i.nextStepUplift)}</td>
-              <td class="n"><strong>${moneyShort(i.fullUplift)}</strong></td>
-              <td class="n muted">${i.months}</td>
-              <td>${rankBar(i.fullUplift, max)}</td>
-            </tr>`).join('')}
-          ${plan.items.length === 0 ? '<tr><td colspan="7" class="muted">Nothing left to fix — every criterion is already at 5.</td></tr>' : ''}
+          ${INTEGRATION_LEVERS.map((l) => `
+            <tr><td><strong>${esc(l.name)}</strong></td><td class="muted">${esc(l.plain)}</td>
+              <td class="n">${pct(l.saving, 0)}</td><td class="n muted">${l.months}</td></tr>`).join('')}
         </tbody>
       </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="headline">What can you do with what you have?</h2>
+    <div class="grid g2" style="margin-bottom:22px">
+      ${numField('Cash you could put in', 'cash', cash, 'Try zero. It changes less than you would think.', 'capital')}
+      <div class="field">
+        <label>Industry you would buy in</label>
+        <select data-capital="industryId" data-kind="text">
+          ${SECTORS.filter((s) => s.id !== 'generic').map((x) => `<option value="${x.id}" ${x.id === state.capital.industryId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <label class="switch" style="margin-bottom:22px">
+      <input type="checkbox" data-capital="stretch" data-kind="bool" ${state.capital.stretch ? 'checked' : ''} />
+      <span>Seller takes interest only, with the lump at the end</span>
+    </label>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Structure</th><th class="n">Most you can pay</th><th class="n">Enough?</th><th>What limits you</th></tr></thead>
+        <tbody>
+          ${options.map((o) => `
+            <tr>
+              <td><strong>${esc(o.structure.name)}</strong>
+                <div class="hint">${esc(o.structure.plain)}</div></td>
+              <td class="n"><strong>${turns(o.maxMultiple)}</strong>
+                <div class="hint">times profit</div></td>
+              <td class="n">${o.clearsIndustryEntry
+                ? '<span class="badge good">yes</span>'
+                : '<span class="badge critical">no</span>'}
+                <div class="hint">they cost ${turns(o.industryEntry)}</div></td>
+              <td class="muted">${esc(o.limitedBy)}${o.needsCash && isFinite(o.cashLimitedProfit)
+                ? ` — ${money(o.cashLimitedProfit)} of profit at most` : ''}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="note" style="margin-top:24px">
+      <p style="margin:0"><strong>Your cash is not what stops you.</strong> Three of these four need none of it.
+      What decides how much you can pay is the price per pound of profit and how long the seller gives you —
+      not what is in your account. Stretch the terms above and watch the ceiling move.</p>
+    </div>
+  </section>
+
+  <section class="actions">
+    <button class="btn" data-act="goto" data-view="future">Where this ends up</button>
+    <button class="btn quiet" data-act="clear-group">Start the group again</button>
+  </section>`;
+}
+
+function nodeInspector(node) {
+  const industry = SECTORS_BY_ID[node.industryId] ?? SECTORS_BY_ID.generic;
+  const levers = node.levers ?? [];
+  return `
+  <section>
+    <h2 class="headline">${esc(industry.name)}</h2>
+    <p class="lede">${esc(industry.why)}</p>
+    <div class="inspector">
+      <div class="grid g3" style="margin-bottom:20px">
+        ${numField('Its profit a year', `nodes.${node.id}.ebitda`, node.ebitda, null, 'group')}
+        ${numField('Times profit you pay', `nodes.${node.id}.multiple`, node.multiple,
+          `Businesses like this go for about ${industry.low.toFixed(1)}x.`, 'group')}
+        ${tile('Costs you', money(node.price), `${money(node.cashNeeded)} of your own cash`)}
+      </div>
+
+      ${!node.passes ? `
+        <div class="note critical" style="margin-bottom:20px">
+          <p style="margin:0"><strong>On its own, this one does not cover its repayments.</strong>
+          At ${turns(node.multiple)} it needs ${money(node.service)} a year and only makes ${money(node.freeCashFlow)}.
+          Pay ${turns(node.maxMultiple)} instead, merge more of it, or have the seller take interest only —
+          any one of the three fixes it.</p>
+        </div>` : ''}
+
+      <label class="switch" style="margin-bottom:22px">
+        <input type="checkbox" data-group="nodes.${node.id}.interestOnly" data-kind="bool"
+               ${node.interestOnly ? 'checked' : ''} />
+        <span>The seller takes interest only, and the lump at the end</span>
+      </label>
+
+      <p class="eyebrow">How you pay for it</p>
+      <div class="choices" style="margin-bottom:22px">
+        ${STRUCTURES.map((s) => `
+          <button class="choice ${s.id === node.structureId ? 'on' : ''}"
+                  data-act="set-structure" data-node="${node.id}" data-structure="${s.id}">
+            <span class="choice-mark"></span>
+            <span class="choice-body">
+              <span class="choice-name">${esc(s.name)}</span>
+              <span class="choice-plain">${esc(s.plain)}</span>
+              <span class="choice-tag">${s.depositPct === 0 ? 'None of your money' : `${pct(s.depositPct, 0)} of your money`}
+                · ${s.holidayMonths ? `${s.holidayMonths} months before the first payment` : 'payments start straight away'}</span>
+            </span>
+          </button>`).join('')}
+      </div>
+
+      <p class="eyebrow">What you merge</p>
+      <div class="choices" style="margin-bottom:20px">
+        ${INTEGRATION_LEVERS.map((l) => `
+          <button class="choice ${levers.includes(l.id) ? 'on' : ''}"
+                  data-act="toggle-lever" data-node="${node.id}" data-lever="${l.id}">
+            <span class="choice-mark"></span>
+            <span class="choice-body">
+              <span class="choice-name">${esc(l.name)} <span class="muted" style="font-weight:400">+${pct(l.saving, 0)}</span></span>
+              <span class="choice-plain">${esc(l.plain)}</span>
+            </span>
+          </button>`).join('')}
+      </div>
+
+      <div class="grid g4">
+        ${tile('Profit it adds', money(node.contributed),
+          node.synergy > 0 ? `${money(node.ebitda)} plus ${money(node.synergy)} saved` : 'nothing merged yet')}
+        ${tile('Repayments', money(node.service), node.structure.holidayMonths
+          ? `nothing for ${node.structure.holidayMonths} months` : 'from month one')}
+        ${tile('Loan cover', turns(node.dscr), node.passes ? 'it pays for itself' : 'it does not pay for itself',
+          node.passes ? 'flag-good' : 'flag-critical')}
+        ${tile('Your cash', money(node.cashNeeded), node.cashNeeded === 0 ? 'none' : 'deposit')}
+      </div>
+      <div class="actions" style="margin-top:18px">
+        <button class="btn quiet tiny" data-act="remove-node" data-node="${node.id}">Remove this business</button>
+      </div>
     </div>
   </section>`;
 }
 
-// ── Roll-up ───────────────────────────────────────────────────────────────
-export function rollupView() {
-  const i = state.rollup;
-  const r = runRollup(i);
-  const cap = absorptionCapacity(r);
+// ── Future ────────────────────────────────────────────────────────────────
+export function futureView() {
+  const audit = runAudit(state.audit);
+  const f = state.future;
+  const h = horizon({
+    startingProfit: audit.defensibleEbitda || 500_000,
+    todayValue: audit.achievableValue,
+    industryId: state.audit.business.sector,
+    dealsPerYear: f.dealsPerYear,
+    avgDealProfit: f.avgDealProfit,
+    structureId: f.structureId,
+    synergyRate: f.synergyRate,
+    advisoryCost: f.advisoryCost,
+    maxBusinesses: f.maxBusinesses,
+    years: 20,
+  });
+  const final = h.rows[h.rows.length - 1];
 
   return `
   <section>
-    <p class="eyebrow">The roll-up</p>
-    <h1 class="display">Buy small. Sell big. Keep the spread.</h1>
-    <p class="lede">Small businesses trade at small-business multiples and groups trade at group multiples.
-    The spread is the return; debt is what makes it a return on very little equity. Every deal here is
-    tested against the same ${turns(config.dscrFloor)} floor the audit uses.</p>
-    ${multipleSpread({ entry: r.blendedEntryMultiple, exit: r.exitMultiple })}
+    <p class="eyebrow">Step three</p>
+    <h1 class="display">Twenty years, two roads.</h1>
+    <p class="lede">One road: keep the business, grow it steadily, sell it at the end. The other: use it as the
+    platform and buy ${f.maxBusinesses} more alongside it. Same business, same owner, same start.</p>
+    ${twoPaths(h.rows)}
   </section>
 
   <section>
     <div class="grid g4">
-      ${tile('Equity in', money(r.equityInvested), 'deposits across every deal')}
-      ${tile('Equity out', money(r.exitEquityValue), `${r.moic.toFixed(2)}x over ${i.holdingYears} years`, 'flag-good')}
-      ${tile('Annualised', pct(r.irr, 1), 'on invested equity')}
-      ${tile('Group DSCR', turns(r.group.dscr), r.group.passes ? 'serviceable' : 'below the floor',
-        r.group.passes ? 'flag-good' : 'flag-critical')}
+      ${h.milestones.map((m) => tile(`Year ${m.year}`, money(m.groupEquity),
+        `on your own: ${moneyShort(m.aloneValue)}`, m.year === 20 ? 'flag-good' : '')).join('')}
     </div>
-    ${!r.group.passes ? `
-      <div class="note critical" style="margin-top:22px">
-        <p style="margin:0"><strong>This does not fund as structured.</strong>
-        Group cash flow covers ${turns(r.group.dscr)} of debt service against a ${turns(config.dscrFloor)} floor.
-        Longer terms, more deferral, or fewer deals — the same three levers a seller gets.</p>
-      </div>` : ''}
-    ${r.cashShortfall > 0 ? `
-      <div class="note critical" style="margin-top:16px">
-        <p style="margin:0"><strong>The amortisation schedule outruns the cash by ${money(r.cashShortfall)}.</strong>
-        Debt is held flat to that extent rather than pretending it is repaid.</p>
-      </div>` : ''}
+    <p class="small" style="margin-top:14px">Free cash pays the debt down as it goes. Buying stops in any year
+    where another deal would push the group below ${turns(config.dscrFloor)} cover, and stops for good at
+    ${f.maxBusinesses} businesses — nobody integrates more than that well. It is a ceiling, not a forecast.</p>
   </section>
 
   <section>
-    <h2 class="headline">The deals</h2>
+    <h2 class="headline">The difference</h2>
     <div class="grid g3">
-      <div class="field"><label>Sector</label>
-        <select data-rollup="sector" data-kind="text">
-          ${SECTORS.map((x) => `<option value="${x.id}" ${x.id === i.sector ? 'selected' : ''}>${esc(x.name)} — ${ceilingFor(x.id).toFixed(1)}x</option>`).join('')}
-        </select></div>
-      <div class="field"><label>Platform EBITDA</label>
-        <input data-rollup="platformEbitda" data-kind="number" value="${i.platformEbitda}" inputmode="numeric" /></div>
-      <div class="field"><label>Platform entry multiple</label>
-        <input data-rollup="platformMultiple" data-kind="number" value="${i.platformMultiple}" inputmode="decimal" /></div>
-      <div class="field"><label>Bolt-ons</label>
-        <input data-rollup="boltOnCount" data-kind="number" value="${i.boltOnCount}" inputmode="numeric" /></div>
-      <div class="field"><label>EBITDA each</label>
-        <input data-rollup="boltOnEbitda" data-kind="number" value="${i.boltOnEbitda}" inputmode="numeric" /></div>
-      <div class="field"><label>Bolt-on entry multiple</label>
-        <input data-rollup="boltOnMultiple" data-kind="number" value="${i.boltOnMultiple}" inputmode="decimal" /></div>
+      ${tile('On your own, year 20', money(final.aloneValue), `${money(final.aloneProfit)} of profit`)}
+      ${tile('As a group, year 20', money(final.groupEquity), `${money(final.groupProfit)} of profit`, 'flag-good')}
+      ${tile('The difference', money(h.difference), `from ${h.businessesBought} businesses`, 'flag-good')}
     </div>
-    <details class="card" style="margin-top:16px">
-      <summary style="cursor:pointer;font-weight:600;font-size:15px">Synergies, funding and hold</summary>
-      <div class="grid g4" style="margin-top:18px">
-        <div class="field"><label>Synergy %</label>
-          <input data-rollup="synergyPct" data-kind="rate" value="${(i.synergyPct * 100).toFixed(0)}" /></div>
-        <div class="field"><label>Deposit %</label>
-          <input data-rollup="structure.depositPct" data-kind="rate" value="${(i.structure.depositPct * 100).toFixed(0)}" /></div>
-        <div class="field"><label>Seller note %</label>
-          <input data-rollup="structure.sellerNotePct" data-kind="rate" value="${(i.structure.sellerNotePct * 100).toFixed(0)}" /></div>
-        <div class="field"><label>Bank rate %</label>
-          <input data-rollup="structure.bankRate" data-kind="rate" value="${(i.structure.bankRate * 100).toFixed(1)}" /></div>
-        <div class="field"><label>Hold (years)</label>
-          <input data-rollup="holdingYears" data-kind="number" value="${i.holdingYears}" /></div>
-        <div class="field"><label>Maintenance capex %</label>
-          <input data-rollup="maintenanceCapexPct" data-kind="rate" value="${(i.maintenanceCapexPct * 100).toFixed(0)}" /></div>
+    <p class="statement" style="margin-top:32px">You put in ${money(h.totalCashIn)}.
+    <span class="up">You end up ${money(h.difference)} ahead.</span></p>
+    <p class="lede" style="margin-top:16px">Because three of the four structures need no deposit, the only money
+    that ever leaves your pocket is what you spend learning to do it properly. That is the whole case for
+    getting help: it is not a cost against the business, it is the only cash in the deal.</p>
+  </section>
+
+  <section>
+    <h2 class="headline">Change the assumptions</h2>
+    <div class="grid g3">
+      ${numField('Businesses a year', 'dealsPerYear', f.dealsPerYear, 'Two is busy. One is realistic.', 'future')}
+      ${numField('Profit of each', 'avgDealProfit', f.avgDealProfit, 'What a typical target earns.', 'future')}
+      ${numField('Stop after', 'maxBusinesses', f.maxBusinesses, 'How many you can actually run.', 'future')}
+      ${rateField('Saved by merging %', 'synergyRate', f.synergyRate, 0, 'future')}
+      ${numField('What you spend on advice', 'advisoryCost', f.advisoryCost, 'Over the whole programme.', 'future')}
+      <div class="field">
+        <label>How you pay for them</label>
+        <select data-future="structureId" data-kind="text">
+          ${STRUCTURES.map((s) => `<option value="${s.id}" ${s.id === f.structureId ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}
+        </select>
       </div>
-      <label class="switch" style="margin-top:16px">
-        <input type="checkbox" data-rollup="structure.sellerNoteInterestOnly" data-kind="bool"
-               ${i.structure.sellerNoteInterestOnly ? 'checked' : ''} />
-        <span>Seller notes interest-only with a bullet</span>
-      </label>
-      <p class="hint">Synergy is cost taken out of each bolt-on as a share of its EBITDA. It is the assumption
-      buyers get wrong most often — model it low and be surprised upward.</p>
-    </details>
+    </div>
+    ${h.pausedYears > 0 ? `
+      <div class="note critical" style="margin-top:22px">
+        <p style="margin:0"><strong>Buying paused in ${h.pausedYears} year${h.pausedYears === 1 ? '' : 's'}.</strong>
+        Another deal in those years would have taken the group below ${turns(config.dscrFloor)} cover. The model
+        waits rather than pretending.</p>
+      </div>` : ''}
   </section>
 
   <section>
-    <h2 class="headline">Where the value comes from</h2>
+    <h2 class="headline">Where the size premium comes from</h2>
+    <p class="lede">Nothing about the business changes. The buyer does.</p>
     <div class="scroll">
       <table>
+        <thead><tr><th>Profit</th><th class="n">Extra on the price</th><th>Who is buying</th></tr></thead>
         <tbody>
-          ${r.waterfall.map((w) => `
-            <tr><td>${esc(w.label)}</td><td class="n">${money(w.value)}</td>
-              <td style="width:160px">${rankBar(Math.abs(w.value), Math.max(...r.waterfall.map((x) => Math.abs(x.value)), 1))}</td></tr>`).join('')}
-          <tr class="row-total"><td>Enterprise value at exit</td><td class="n">${money(r.exitEnterpriseValue)}</td><td></td></tr>
-          <tr><td class="muted">Debt outstanding at exit</td><td class="n is-critical">−${money(r.debtAtExit)}</td><td></td></tr>
-          <tr class="row-total"><td>Equity value at exit</td><td class="n">${money(r.exitEquityValue)}</td><td></td></tr>
+          ${SIZE_BANDS.map((b) => {
+            const here = bandFor(final.groupProfit) === b;
+            const label = b.to === Infinity
+              ? `Over ${moneyShort(b.from)}`
+              : `${b.from === 0 ? 'Under' : moneyShort(b.from) + ' to'} ${moneyShort(b.to)}`;
+            return `<tr${here ? ' class="row-total"' : ''}>
+              <td>${esc(label)}${here ? ' <span class="badge good">you end here</span>' : ''}</td>
+              <td class="n">${b.premium ? `+${turns(b.premium)}` : '—'}</td>
+              <td class="muted">${esc(b.who)}</td></tr>`;
+          }).join('')}
         </tbody>
       </table>
     </div>
-  </section>
-
-  <section>
-    <h2 class="headline">Every deal, stress-tested</h2>
-    <div class="scroll">
-      <table>
-        <thead><tr><th>Deal</th><th class="n">EBITDA</th><th class="n">Price</th><th class="n">Equity</th>
-          <th class="n">Debt service</th><th class="n">DSCR</th></tr></thead>
-        <tbody>
-          <tr><td>Platform</td><td class="n">${money(i.platformEbitda)}</td><td class="n">${money(r.platform.price)}</td>
-            <td class="n">${money(r.platform.deposit)}</td><td class="n">${money(r.platform.service)}</td>
-            <td class="n ${r.platform.passes ? 'is-good' : 'is-critical'}">${turns(r.platform.dscr)}</td></tr>
-          ${r.boltOns.map((b) => `
-            <tr><td class="muted">Bolt-on ${b.index}</td><td class="n">${money(b.ebitda)}</td><td class="n">${money(b.price)}</td>
-              <td class="n">${money(b.deposit)}</td><td class="n">${money(b.service)}</td>
-              <td class="n ${b.passes ? 'is-good' : 'is-critical'}">${turns(b.dscr)}</td></tr>`).join('')}
-          <tr class="row-total"><td>Group</td><td class="n">${money(r.combinedEbitda)}</td><td class="n">${money(r.totalPrice)}</td>
-            <td class="n">${money(r.equityInvested)}</td><td class="n">${money(r.group.service)}</td>
-            <td class="n ${r.group.passes ? 'is-good' : 'is-critical'}">${turns(r.group.dscr)}</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="small" style="margin-top:16px">Next bolt-on capacity before the floor breaks:
-    <strong>${money(cap.price)}</strong> of price, ${money(cap.ebitda)} of EBITDA,
-    ${money(cap.equityNeeded)} of equity.</p>
   </section>`;
 }
 
@@ -553,47 +694,52 @@ export function tuneView() {
   return `
   <section>
     <p class="eyebrow">Tuning</p>
-    <h1 class="display">The numbers, not the criteria.</h1>
-    <p class="lede">The criteria are uncontroversial. The deltas are the risk — if one cannot be justified
-    on a call, the tool becomes a liability the first time a seller quotes it back. Every row carries the
-    reasoning behind its number. Change any of them and the audit, the plan and the roll-up all move.</p>
+    <h1 class="display">The numbers, not the questions.</h1>
+    <p class="lede">The questions are not controversial. The numbers behind them are. If one cannot be defended
+    on a call, the tool becomes a liability the first time a seller quotes it back. Every row says where its
+    number comes from. Change any of them and the whole tool moves.</p>
     ${drift.count > 0 ? `
       <div class="note" style="margin-bottom:22px">
-        <p style="margin:0"><strong>${drift.count} value${drift.count === 1 ? '' : 's'} tuned away from the shipped defaults.</strong>
-        <button class="btn quiet tiny" data-act="reset-config" style="margin-left:10px">Reset all</button></p>
+        <p style="margin:0"><strong>${drift.count} number${drift.count === 1 ? '' : 's'} changed from what shipped.</strong>
+        <button class="btn quiet tiny" data-act="reset-config" style="margin-left:10px">Put them all back</button></p>
       </div>` : ''}
   </section>
 
   <section>
-    <h2 class="headline">Bounds</h2>
+    <h2 class="headline">Limits</h2>
     <div class="grid g3">
-      <div class="field"><label>DSCR floor</label>
+      <div class="field"><label>Loan cover floor</label>
         <input data-config="dscrFloor" data-kind="number" value="${config.dscrFloor}" inputmode="decimal" />
-        <p class="hint">Below this, no lender underwrites. Default ${DEFAULT_CONFIG.dscrFloor}.</p></div>
-      <div class="field"><label>Multiple floor</label>
+        <p class="hint">Below this no lender goes near it. Shipped at ${DEFAULT_CONFIG.dscrFloor}.</p></div>
+      <div class="field"><label>Lowest price anyone pays</label>
         <input data-config="multipleFloor" data-kind="number" value="${config.multipleFloor}" inputmode="decimal" />
-        <p class="hint">The worst business the engine will price. Default ${DEFAULT_CONFIG.multipleFloor}.</p></div>
-      <div class="field"><label>Combined EBITDA haircut cap %</label>
+        <p class="hint">The worst business the tool will price. Shipped at ${DEFAULT_CONFIG.multipleFloor}.</p></div>
+      <div class="field"><label>Most profit we will cut %</label>
         <input data-config="ebitdaHaircutCap" data-kind="rate" value="${(config.ebitdaHaircutCap * 100).toFixed(0)}" />
-        <p class="hint">Lines rescale proportionally above this. Default ${pct(DEFAULT_CONFIG.ebitdaHaircutCap, 0)}.</p></div>
+        <p class="hint">Cuts rescale above this. Shipped at ${pct(DEFAULT_CONFIG.ebitdaHaircutCap, 0)}.</p></div>
     </div>
   </section>
 
   <section>
-    <h2 class="headline">Sector ceilings</h2>
-    <p class="lede">A physio clinic and an electrical contractor do not share a premium multiple. These are
-    placeholders until they are replaced with real ranges for the core verticals.</p>
+    <h2 class="headline">Industries</h2>
+    <p class="lede">What a good one in each industry sells for, and why. These are working assumptions, not
+    market data — replace them with real numbers for the industries you actually deal in.</p>
     <div class="scroll">
       <table>
-        <thead><tr><th>Sector</th><th class="n" style="width:140px">Ceiling</th><th class="n" style="width:110px">Shipped</th><th></th></tr></thead>
+        <thead><tr><th style="width:16%">Industry</th><th class="n" style="width:110px">Best price</th>
+          <th class="n" style="width:90px">To buy</th><th style="width:28%">Why it sells there</th>
+          <th class="n" style="width:80px">Roll-up</th><th>Why</th></tr></thead>
         <tbody>
           ${SECTORS.map((s) => `
             <tr>
-              <td>${esc(s.name)} ${isSectorTuned(s.id) ? '<span class="badge warning">tuned</span>' : '<span class="badge">provisional</span>'}</td>
+              <td><strong>${esc(s.name)}</strong><div class="hint">${esc(s.example)}</div></td>
               <td class="n"><input data-config="ceilings.${s.id}" data-kind="number" value="${ceilingFor(s.id)}"
-                    style="text-align:right" inputmode="decimal" /></td>
-              <td class="n muted">${s.ceiling.toFixed(1)}x</td>
-              <td class="n">${isSectorTuned(s.id) ? `<button class="btn quiet tiny" data-act="clear-config" data-path="ceilings.${s.id}">Reset</button>` : ''}</td>
+                    style="text-align:right" inputmode="decimal" />
+                ${isSectorTuned(s.id) ? `<div class="hint" style="text-align:right">was ${s.ceiling.toFixed(1)}x</div>` : ''}</td>
+              <td class="n muted">${s.low.toFixed(1)}x</td>
+              <td class="hint">${esc(s.why)}</td>
+              <td class="n">${'★'.repeat(s.rollupFit)}<span class="muted">${'☆'.repeat(5 - s.rollupFit)}</span></td>
+              <td class="hint">${esc(s.rollupWhy)}</td>
             </tr>`).join('')}
         </tbody>
       </table>
@@ -605,28 +751,28 @@ export function tuneView() {
     return `
     <section class="pillar" data-pillar="${pid}">
       <h2 class="headline" style="display:flex;align-items:center;gap:10px"><span class="dot"></span>${esc(p.name)}</h2>
-      <p class="lede" style="margin-bottom:20px">${esc(p.blurb)}</p>
+      <p class="lede" style="margin-bottom:20px">${esc(p.sellSide)}</p>
       <div class="scroll">
         <table>
           <thead><tr>
-            <th style="width:24%">Criterion</th><th>Score 1</th><th>Score 5</th>
-            <th class="n" style="width:118px">Delta</th><th style="width:26%">Why this number</th><th></th>
+            <th style="width:24%">Question</th><th>Worst answer</th><th>Best answer</th>
+            <th class="n" style="width:118px">Worth</th><th style="width:26%">Why that number</th><th></th>
           </tr></thead>
           <tbody>
             ${criteriaForPillar(pid).map((c) => {
               const computed = c.impact.kind === 'computed';
               return `
               <tr>
-                <td><strong>${esc(c.name)}</strong>
-                  <div class="hint">${esc(c.question)}</div></td>
+                <td><strong>${esc(c.name)}</strong><div class="hint">${esc(c.question)}</div></td>
                 <td class="muted">${esc(c.anchors[1])}</td>
                 <td class="muted">${esc(c.anchors[5])}</td>
                 <td class="n">${computed
-                  ? `<span class="badge">${c.impact.target === 'gate' ? 'gate' : 'computed'}</span>`
+                  ? '<span class="badge">worked out</span>'
                   : `<input data-config="deltas.${c.id}" data-kind="${c.impact.kind === 'ebitda' ? 'rate' : 'number'}"
                        value="${c.impact.kind === 'ebitda' ? (deltaFor(c) * 100).toFixed(0) : deltaFor(c)}"
                        style="text-align:right" inputmode="decimal" />
-                     <div class="hint" style="text-align:right">${c.impact.kind === 'ebitda' ? '% of EBITDA' : 'turns'} · was ${c.impact.kind === 'ebitda' ? pct(defaultDeltaFor(c), 0) : turns(defaultDeltaFor(c))}</div>`}</td>
+                     <div class="hint" style="text-align:right">${c.impact.kind === 'ebitda' ? '% of profit' : 'on the price'}
+                       · was ${c.impact.kind === 'ebitda' ? pct(defaultDeltaFor(c), 0) : turns(defaultDeltaFor(c))}</div>`}</td>
                 <td class="hint">${esc(c.why)}</td>
                 <td class="n">${!computed && isTuned(c.id) ? `<button class="btn quiet tiny" data-act="clear-config" data-path="deltas.${c.id}">Reset</button>` : ''}</td>
               </tr>`;
@@ -651,55 +797,61 @@ export function methodView() {
   </section>
 
   <section>
-    <h2 class="headline">The two haircuts</h2>
+    <h2 class="headline">The two cuts</h2>
     <div class="card">
-      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">Haircut 1 — EBITDA:    claimed EBITDA → defensible EBITDA
-   owner replacement cost, related-party rent, one-off add-backs,
-   personal expenses, unrecorded maintenance capex
-   combined haircut capped at ${pct(config.ebitdaHaircutCap, 0)}
+      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">Cut 1 — the profit:  what you claim → what you can prove
+   your replacement's wage, rent to yourself, one-offs,
+   personal spending, kit you have put off buying
+   the total is capped at ${pct(config.ebitdaHaircutCap, 0)}
 
-Haircut 2 — MULTIPLE:  premium ceiling → achievable multiple
-   owner dependency, revenue quality, cash rhythm, management
-   depth, concentration, assignability
-   floored at ${turns(config.multipleFloor)}
+Cut 2 — the price:   the best case → what you actually get
+   how much depends on you, how solid the revenue is,
+   how the cash arrives, who runs it, who the customers are
+   never falls below ${turns(config.multipleFloor)}
 
-value = defensible EBITDA × achievable multiple
-gap   = asking price − value</p>
+worth = provable profit x price per pound
+gap   = what you want − what it is worth</p>
     </div>
   </section>
 
   <section>
     <h2 class="headline">Scoring</h2>
-    <p class="lede">A self-scored criterion applies its delta proportionally: <span class="mono">(5 − score) ÷ 4</span>.
-    Five costs nothing, one costs the full delta, three costs half.</p>
-    <p class="body">Two criteria are <strong>not</strong> self-scored. The owner salary add-back and DSCR are computed
-    from the seller’s own inputs, because those are the two a seller most wants to argue with.</p>
+    <p class="lede">Each answer costs a share of its number: <span class="mono">(5 − score) ÷ 4</span>.
+    Five costs nothing, one costs the lot, three costs half.</p>
+    <p class="body">Two things are not scored. Your replacement's wage and the loan cover are worked out from
+    your own figures, because those are the two people most want to argue with.</p>
   </section>
 
   <section>
-    <h2 class="headline">The Capital gate</h2>
+    <h2 class="headline">Loan cover</h2>
     <div class="card">
-      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">free cash flow = (defensible EBITDA − maintenance capex) × (1 − tax)
-debt service   = amortising bank tranche + seller note
-DSCR           = free cash flow ÷ debt service
-floor          = ${turns(config.dscrFloor)}
-max fundable   = free cash flow ÷ (floor × debt service per unit of price)</p>
+      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">cash the business makes = (provable profit − kit) x (1 − tax)
+repayments             = the loan + whatever you leave in
+cover                  = cash ÷ repayments
+floor                  = ${turns(config.dscrFloor)}
+most anyone can pay    = cash ÷ (floor x repayments per pound of price)</p>
     </div>
-    <p class="body" style="margin-top:20px">Tax is applied to EBITDA less maintenance capex rather than to taxable
-    profit after interest. That is deliberately conservative, and it is stated here rather than buried: it
-    understates cash flow slightly, which is the right direction for a test a seller will be shown.</p>
+    <p class="body" style="margin-top:20px">Tax comes off profit less kit rather than off profit after interest.
+    That is deliberately cautious, and it is said here rather than buried: it understates the cash a little,
+    which is the right direction for a test you are going to show a seller.</p>
+  </section>
+
+  <section>
+    <h2 class="headline">The group</h2>
+    <p class="body">Every business is priced on its own cash before it is allowed in, using the same
+    ${turns(config.dscrFloor)} floor. Savings from merging are the levers you tick, not a percentage assumed.
+    The group's price per pound is the average of its industries, weighted by where the profit comes from, plus
+    a premium for size. The twenty-year projection sweeps free cash against the debt, pauses buying whenever
+    another deal would break the cover floor, and stops for good at the number of businesses you say you can run.</p>
   </section>
 
   <section>
     <h2 class="headline">Calibration</h2>
-    <p class="lede">The engine was built from the criteria, not fitted to a target.</p>
     <div class="grid g3">
-      ${tile('Engine', '$522,500', 'defensible EBITDA, broker case')}
+      ${tile('This tool', '$522,500', 'provable profit, worked example')}
       ${tile('Josh, on camera', '$500,000', 'same business, off the cuff')}
-      ${tile('Variance', '4.5%', 'with no tuning', 'flag-good')}
+      ${tile('Difference', '4.5%', 'with no fiddling', 'flag-good')}
     </div>
-    <p class="small" style="margin-top:16px">Run <span class="mono">npm run calibrate</span> to reproduce it.
-    Load the case from the audit screen to see it scored.</p>
   </section>
 
   <section>
@@ -707,25 +859,24 @@ max fundable   = free cash flow ÷ (floor × debt service per unit of price)</p>
     <div class="scroll">
       <table>
         <tbody>
-          <tr><td style="width:200px"><span class="badge warning">provisional</span> Sector ceilings</td>
-            <td>Placeholder ranges. They need real numbers per vertical rather than figures pulled off the internet.</td></tr>
-          <tr><td><span class="badge warning">provisional</span> Individual deltas</td>
-            <td>Calibrated as a set against the broker case, not validated individually against completed transactions.</td></tr>
-          <tr><td><span class="badge warning">provisional</span> Size premium</td>
-            <td>Step function by EBITDA scale. Directionally right, magnitudes unverified.</td></tr>
+          <tr><td style="width:210px"><span class="badge warning">working assumption</span> Industry prices</td>
+            <td>Indicative ranges, not transaction data. Replace them for the industries that matter to you.</td></tr>
+          <tr><td><span class="badge warning">working assumption</span> What each answer is worth</td>
+            <td>Calibrated together against the worked example, not one at a time against real deals.</td></tr>
+          <tr><td><span class="badge warning">working assumption</span> Size premium</td>
+            <td>Right direction, unverified size.</td></tr>
           <tr><td><span class="badge">fixed</span> The arithmetic</td>
-            <td>The formulas above are not judgement calls. Everything that is a judgement call is on the tuning screen.</td></tr>
+            <td>The formulas above are not opinions. Everything that is an opinion is on the Tune screen.</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
   <section>
-    <h2 class="headline">Limits</h2>
-    <p class="body">This is a triage instrument, not a valuation. It produces a defensible range and a
-    prioritised remediation plan from self-reported inputs. It verifies nothing, and a seller who scores
-    themselves generously gets a generous answer — which is exactly why the two numbers that matter most
-    are computed rather than scored.</p>
+    <h2 class="headline">What this is not</h2>
+    <p class="body">It is a first look, not a valuation. It gives a defensible range and an order of work from
+    what you tell it. It checks nothing, and someone who scores themselves generously gets a generous answer —
+    which is exactly why the two numbers that matter most are worked out rather than scored.</p>
   </section>`;
 }
 
@@ -736,13 +887,13 @@ export function dock() {
   const item = (k, v, cls = '') => `<div class="dock-item"><span class="k">${esc(k)}</span><span class="v ${cls}">${v}</span></div>`;
   return `
   <div class="dock">
-    ${item('Defensible EBITDA', money(r.defensibleEbitda))}
+    ${item('Provable profit', money(r.defensibleEbitda))}
     <div class="rule"></div>
-    ${item('Multiple', turns(r.achievableMultiple))}
+    ${item('Price paid', turns(r.achievableMultiple))}
     <div class="rule"></div>
     ${item('Worth', money(r.achievableValue))}
     <div class="rule"></div>
-    ${item(r.gap > 0 ? 'Gap' : 'Headroom', money(Math.abs(r.gap)), r.gap > 0 ? 'is-critical' : 'is-good')}
-    <button class="btn" data-act="goto" data-view="value">Value</button>
+    ${item(r.gap > 0 ? 'Short by' : 'Spare', money(Math.abs(r.gap)), r.gap > 0 ? 'is-critical' : 'is-good')}
+    <button class="btn" data-act="goto" data-view="value">See it</button>
   </div>`;
 }

@@ -4,7 +4,6 @@ import assert from 'node:assert/strict';
 import { runAudit, severity, annualDebtService } from '../src/engine/valuation.js';
 import { config, resetConfig, deltaFor, tuningSummary } from '../src/data/config.js';
 import { remediationPlan, restructureTrajectory } from '../src/engine/restructure.js';
-import { runRollup, absorptionCapacity, remainingBalance } from '../src/engine/rollup.js';
 import { BROKER_CASE, PREPARED_CASE } from '../src/data/cases.js';
 import { CRITERIA, CRITERIA_BY_ID, MULTIPLE_FLOOR, MAX_COMBINED_EBITDA_HAIRCUT } from '../src/data/criteria.js';
 
@@ -105,44 +104,10 @@ test('restructure trajectory only ever improves', () => {
   assert.ok(y2.result.achievableValue >= y1.result.achievableValue);
 });
 
-test('remaining balance amortises to zero at term', () => {
-  assert.ok(Math.abs(remainingBalance(100_000, 0.09, 7, 7)) < 1e-6);
-  assert.ok(remainingBalance(100_000, 0.09, 7, 3) < 100_000);
-  assert.ok(remainingBalance(100_000, 0.09, 7, 3) > 0);
-});
 
-test('roll-up creates value through arbitrage, not optimism', () => {
-  const r = runRollup({ sector: 'generic' });
-  assert.ok(r.blendedEntryMultiple < r.exitMultiple);
-  assert.ok(r.arbitrage > 0);
-  assert.ok(r.combinedEbitda > r.acquiredEbitda); // synergies
-  assert.ok(r.moic > 1);
-  assert.ok(r.exitEquityValue > 0);
-});
 
-test('no arbitrage when you buy at the exit multiple with no scale gain', () => {
-  // Sub-£1m EBITDA earns no size premium, so entry at the ceiling leaves nothing on the table.
-  const r = runRollup({
-    sector: 'generic', platformEbitda: 500_000, platformMultiple: 7,
-    boltOnCount: 0, synergyPct: 0,
-  });
-  assert.equal(r.exitMultiple, 7);
-  assert.ok(Math.abs(r.arbitrage) < 1e-9);
-  assert.ok(r.moic < 3, 'return should come from deleveraging alone, not a re-rating');
-});
 
-test('scale alone re-rates the group', () => {
-  const small = runRollup({ platformEbitda: 500_000, boltOnCount: 0, synergyPct: 0 });
-  const big = runRollup({ platformEbitda: 6_000_000, boltOnCount: 0, synergyPct: 0 });
-  assert.ok(big.exitMultiple > small.exitMultiple);
-});
 
-test('absorption capacity is zero once group DSCR is at the floor', () => {
-  const r = runRollup({ boltOnCount: 20 });
-  const cap = absorptionCapacity(r);
-  assert.ok(cap.price >= 0);
-  if (!r.group.passes) assert.equal(cap.price, 0);
-});
 
 test('an interest-only seller note is a structure fix, not a price cut', () => {
   const amortising = runAudit(BROKER_CASE);
@@ -157,19 +122,7 @@ test('an interest-only seller note is a structure fix, not a price cut', () => {
   assert.equal(deferred.achievableValue, amortising.achievableValue);
 });
 
-test('roll-up flags infeasibility rather than pretending debt disappears', () => {
-  const r = runRollup({ boltOnCount: 12, boltOnMultiple: 5, synergyPct: 0 });
-  if (!r.feasible) {
-    assert.ok(r.debtAtExit >= 0);
-    assert.ok(r.principalRepaid <= r.scheduledPrincipalRepaid + 1e-6);
-  }
-});
 
-test('cash-constrained deleveraging never repays more than the schedule', () => {
-  const r = runRollup({});
-  assert.ok(r.principalRepaid <= r.scheduledPrincipalRepaid + 1e-6);
-  assert.ok(r.debtAtExit <= r.debtAtClose + 1e-6);
-});
 
 test('tuning a delta moves the valuation and is reported as drift', () => {
   const before = runAudit(BROKER_CASE);

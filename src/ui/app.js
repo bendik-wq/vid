@@ -1,18 +1,21 @@
-/** Router, event delegation, persistence wiring. */
+/** Router, event delegation, dragging, persistence. */
 
-import { state, load, notify, setScore, resetAudit, resetTuning, loadBrokerCase } from './state.js';
+import {
+  state, load, notify, setScore, resetAudit, resetTuning, loadBrokerCase,
+  addNode, removeNode, findNode, setNode, toggleLever, clearGroup, groupInput, stretchAll,
+} from './state.js';
 import { config, setConfig, clearOverride } from '../data/config.js';
 import { state_currency, num } from './format.js';
-import { auditView, valueView, planView, rollupView, tuneView, methodView, dock } from './views.js';
+import { auditView, valueView, buildView, futureView, tuneView, methodView, dock } from './views.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan } from '../engine/restructure.js';
-import { runRollup } from '../engine/rollup.js';
+import { runBuild, horizon } from '../engine/build.js';
 
 const VIEWS = {
   audit: { label: 'Audit', primary: true, render: auditView, dock: true },
   value: { label: 'Value', primary: true, render: valueView },
-  plan: { label: 'Plan', primary: true, render: planView },
-  rollup: { label: 'Roll-up', primary: true, render: rollupView },
+  build: { label: 'Build', primary: true, render: buildView },
+  future: { label: 'Future', primary: true, render: futureView },
   tune: { label: 'Tune', primary: false, render: tuneView },
   method: { label: 'Method', primary: false, render: methodView },
 };
@@ -43,7 +46,8 @@ function render() {
   const keepScroll = sameView ? window.scrollY : 0;
 
   const active = document.activeElement;
-  const key = active && (active.dataset?.bind || active.dataset?.rollup || active.dataset?.config);
+  const key = active && (active.dataset?.bind || active.dataset?.config
+    || active.dataset?.group || active.dataset?.capital || active.dataset?.future);
   const caret = key && active.selectionStart != null ? active.selectionStart : null;
 
   document.getElementById('topbar').innerHTML = topbar();
@@ -53,7 +57,9 @@ function render() {
   window.scrollTo(0, keepScroll);
 
   if (key) {
-    const el = main.querySelector(`[data-bind="${key}"], [data-rollup="${key}"], [data-config="${key}"]`);
+    const el = main.querySelector(
+      `[data-bind="${key}"], [data-config="${key}"], [data-group="${key}"], [data-capital="${key}"], [data-future="${key}"]`,
+    );
     if (el) {
       el.focus();
       if (caret != null && el.setSelectionRange) {
@@ -80,10 +86,16 @@ function writePath(root, path, value) {
 
 function onInput(e) {
   const el = e.target;
-  if (el.dataset.bind) writePath(state.audit, el.dataset.bind, readInput(el));
-  else if (el.dataset.rollup) writePath(state.rollup, el.dataset.rollup, readInput(el));
-  else if (el.dataset.config) setConfig(el.dataset.config, readInput(el));
-  else return;
+  const d = el.dataset;
+  if (d.bind) writePath(state.audit, d.bind, readInput(el));
+  else if (d.config) setConfig(d.config, readInput(el));
+  else if (d.capital) writePath(state.capital, d.capital, readInput(el));
+  else if (d.future) writePath(state.future, d.future, readInput(el));
+  else if (d.group) {
+    // nodes.<id>.<key>
+    const [, id, key] = d.group.split('.');
+    setNode(id, key, readInput(el));
+  } else return;
   refreshLive();
 }
 
@@ -111,8 +123,71 @@ function onClick(e) {
   else if (act === 'reset-config') { resetTuning(); render(); }
   else if (act === 'clear-config') { clearOverride(el.dataset.path); notify(); render(); }
   else if (act === 'load-broker') { loadBrokerCase(); render(); }
+  else if (act === 'add-node') { addNode(el.dataset.industry); render(); }
+  else if (act === 'remove-node') { removeNode(el.dataset.node); render(); }
+  else if (act === 'set-structure') { setNode(el.dataset.node, 'structureId', el.dataset.structure); render(); }
+  else if (act === 'toggle-lever') { toggleLever(el.dataset.node, el.dataset.lever); render(); }
+  else if (act === 'clear-group') { clearGroup(); render(); }
+  else if (act === 'stretch-all') { stretchAll(el.dataset.on === 'true'); render(); }
   else if (act === 'print') { window.print(); }
   else if (act === 'export') { exportReport(); }
+}
+
+// ── Dragging businesses around the web ────────────────────────────────────
+/**
+ * Positions are fractions of the canvas box, so the web survives a resize. During a drag
+ * the node and its connector are moved directly rather than through a re-render — a
+ * re-render every pointermove would fight the pointer and drop the capture.
+ */
+const DRAG_THRESHOLD = 4;
+let drag = null;
+
+function onPointerDown(e) {
+  const el = e.target.closest('.gnode');
+  if (!el) return;
+  const canvas = el.closest('[data-canvas]');
+  if (!canvas) return;
+  drag = {
+    el,
+    canvas,
+    id: Number(el.dataset.node),
+    line: canvas.querySelector(`[data-line="${el.dataset.node}"]`),
+    startX: e.clientX,
+    startY: e.clientY,
+    moved: false,
+  };
+  el.setPointerCapture(e.pointerId);
+}
+
+function onPointerMove(e) {
+  if (!drag) return;
+  if (!drag.moved) {
+    if (Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) < DRAG_THRESHOLD) return;
+    drag.moved = true;
+    drag.el.classList.add('dragging');
+  }
+  // Read the box every move: the page can scroll under a drag, and a stale box would
+  // make the node jump.
+  const box = drag.canvas.getBoundingClientRect();
+  const x = Math.min(0.94, Math.max(0.06, (e.clientX - box.left) / box.width));
+  const y = Math.min(0.92, Math.max(0.08, (e.clientY - box.top) / box.height));
+  drag.pos = { x, y };
+  drag.el.style.left = `${(x * 100).toFixed(2)}%`;
+  drag.el.style.top = `${(y * 100).toFixed(2)}%`;
+  if (drag.line) {
+    drag.line.setAttribute('x2', (x * 100).toFixed(2));
+    drag.line.setAttribute('y2', (y * 100).toFixed(2));
+  }
+}
+
+function onPointerUp() {
+  if (!drag) return;
+  const { id, moved, pos } = drag;
+  drag.el.classList.remove('dragging');
+  drag = null;
+  if (moved && pos) setNode(id, 'pos', pos);
+  else { state.ui.selectedNode = id; notify(); }
+  render();
 }
 
 /** Brief inline message for outcomes that have nowhere else to go. */
@@ -135,6 +210,14 @@ function notice(text) {
 
 function reportPayload() {
   const audit = runAudit(state.audit);
+  const group = runBuild(groupInput());
+  const future = horizon({
+    startingProfit: audit.defensibleEbitda || 500_000,
+    todayValue: audit.achievableValue,
+    industryId: state.audit.business.sector,
+    ...state.future,
+    years: 20,
+  });
   return {
     generated: new Date().toISOString(),
     business: state.audit.business,
@@ -161,7 +244,6 @@ function reportPayload() {
       achievableValue: audit.achievableValue,
       askingPrice: audit.askingPrice,
       gap: audit.gap,
-      impliedMultipleAtAsking: audit.impliedMultipleAtAsking,
       dscr: audit.dscr.dscr,
       maxFundablePrice: audit.dscr.maxFundablePrice,
       binding: audit.binding,
@@ -170,14 +252,25 @@ function reportPayload() {
     haircuts: audit.haircuts.lines,
     penalties: audit.penalties.lines,
     remediation: remediationPlan(state.audit).items,
-    rollup: (() => {
-      const r = runRollup(state.rollup);
-      return {
-        blendedEntryMultiple: r.blendedEntryMultiple, exitMultiple: r.exitMultiple, arbitrage: r.arbitrage,
-        equityInvested: r.equityInvested, exitEquityValue: r.exitEquityValue, moic: r.moic, irr: r.irr,
-        groupDscr: r.group.dscr, feasible: r.feasible,
-      };
-    })(),
+    group: {
+      businesses: group.nodes.map((n) => ({
+        industry: n.industry.name, profit: n.ebitda, multiple: n.multiple, price: n.price,
+        structure: n.structure.name, cashNeeded: n.cashNeeded, dscr: n.dscr, merged: n.levers,
+      })),
+      groupProfit: group.groupProfit,
+      cashRequired: group.cashRequired,
+      dscr: group.dscr,
+      exitMultiple: group.exitMultiple,
+      equityValue: group.equityValue,
+      arbitrage: group.arbitrage,
+    },
+    future: {
+      assumptions: state.future,
+      milestones: future.milestones,
+      difference: future.difference,
+      totalCashIn: future.totalCashIn,
+      businessesBought: future.businessesBought,
+    },
   };
 }
 
@@ -213,6 +306,10 @@ export function start() {
   document.addEventListener('input', onInput);
   document.addEventListener('change', onInput);
   document.addEventListener('click', onClick);
+  document.addEventListener('pointerdown', onPointerDown);
+  document.addEventListener('pointermove', onPointerMove);
+  document.addEventListener('pointerup', onPointerUp);
+  document.addEventListener('pointercancel', onPointerUp);
   window.addEventListener('hashchange', render);
   render();
 }
