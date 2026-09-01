@@ -1,4 +1,10 @@
-/** Session state: one audit, one roll-up, persisted locally. */
+/**
+ * Session state.
+ *
+ * The tool holds several named cases — one per business you are working on — and one of
+ * them is live at a time. The live copy is what every screen reads and writes; it is
+ * folded back into its case record on every change, so switching cases never loses work.
+ */
 
 import { CRITERIA } from '../data/criteria.js';
 import { DEFAULT_STRUCTURE, DEFAULT_FINANCIALS } from '../engine/valuation.js';
@@ -8,7 +14,8 @@ import { SECTORS_BY_ID } from '../data/sectors.js';
 import { DEFAULT_ASSUMPTIONS } from '../engine/build.js';
 import { runAudit } from '../engine/valuation.js';
 
-const KEY = 'vid-audit-platform-v1';
+const KEY = 'vid-audit-platform-v2';
+const LEGACY_KEY = 'vid-audit-platform-v1';
 
 export const blankAudit = () => ({
   business: { name: '', sector: 'generic' },
@@ -30,21 +37,156 @@ export const blankGroup = () => ({
   assumptions: { ...DEFAULT_ASSUMPTIONS },
 });
 
-export const state = {
+export const blankCapital = () => ({ cash: 0, industryId: 'trades', stretch: false });
+
+export const blankFuture = () => ({
+  dealsPerYear: 2,
+  avgDealProfit: 250_000,
+  maxBusinesses: 12,
+  structureId: 'vendor',
+  synergyRate: 0.15,
+  advisoryCost: 50_000,
+});
+
+let caseSeq = 1;
+const nextCaseId = () => `case-${caseSeq++}-${Math.random().toString(36).slice(2, 7)}`;
+
+export const blankCase = (name = 'New case') => ({
+  id: nextCaseId(),
+  name,
+  created: Date.now(),
+  updated: Date.now(),
   audit: blankAudit(),
   group: blankGroup(),
-  capital: { cash: 0, industryId: 'trades', stretch: false },
-  future: {
-    dealsPerYear: 2,
-    avgDealProfit: 250_000,
-    maxBusinesses: 12,
-    structureId: 'vendor',
-    synergyRate: 0.15,
-    advisoryCost: 50_000,
-  },
-  /** Interface state. Not part of the audit, not exported. */
+  capital: blankCapital(),
+  future: blankFuture(),
+});
+
+export const state = {
+  /** Every case you have entered. The live copy below belongs to whichever is active. */
+  cases: [],
+  activeCaseId: null,
+  audit: blankAudit(),
+  group: blankGroup(),
+  capital: blankCapital(),
+  future: blankFuture(),
+  /** Interface state. Not part of any case, never exported. */
   ui: { openPillar: 'credibility', selectedNode: null },
 };
+
+export const activeCase = () => state.cases.find((c) => c.id === state.activeCaseId) ?? null;
+
+/** Fold the live copy back into its case record. Called before every save. */
+function syncActive() {
+  const record = activeCase();
+  if (!record) return;
+  record.audit = state.audit;
+  record.group = state.group;
+  record.capital = state.capital;
+  record.future = state.future;
+  record.updated = Date.now();
+  if (state.audit.business.name && record.name === 'New case') record.name = state.audit.business.name;
+}
+
+/** Make a case live, taking its stored copy as the working copy. */
+export function openCase(id) {
+  const record = state.cases.find((c) => c.id === id);
+  if (!record) return;
+  syncActive();
+  state.activeCaseId = id;
+  state.audit = record.audit;
+  state.group = record.group;
+  state.capital = record.capital;
+  state.future = record.future;
+  state.ui.selectedNode = null;
+  notify();
+}
+
+export function newCase(name = 'New case', seed = null) {
+  const record = blankCase(name);
+  if (seed) {
+    record.audit = {
+      ...blankAudit(),
+      business: { ...seed.business },
+      askingPrice: seed.askingPrice,
+      financials: { ...DEFAULT_FINANCIALS, ...seed.financials },
+      scores: { ...blankAudit().scores, ...seed.scores },
+    };
+  }
+  syncActive();
+  state.cases.push(record);
+  state.activeCaseId = record.id;
+  state.audit = record.audit;
+  state.group = record.group;
+  state.capital = record.capital;
+  state.future = record.future;
+  state.ui.selectedNode = null;
+  notify();
+  return record.id;
+}
+
+export function renameCase(id, name) {
+  const record = state.cases.find((c) => c.id === id);
+  if (!record) return;
+  record.name = name || 'Untitled case';
+  if (id === state.activeCaseId) state.audit.business.name = record.name;
+  notify();
+}
+
+export function duplicateCase(id) {
+  const source = state.cases.find((c) => c.id === id);
+  if (!source) return null;
+  syncActive();
+  const copy = structuredClone({ ...source, id: nextCaseId(), name: `${source.name} copy`, created: Date.now() });
+  state.cases.push(copy);
+  notify();
+  return copy.id;
+}
+
+export function deleteCase(id) {
+  state.cases = state.cases.filter((c) => c.id !== id);
+  if (state.activeCaseId === id) {
+    if (state.cases.length === 0) newCase();
+    else openCase(state.cases[0].id);
+    return;
+  }
+  notify();
+}
+
+/** A case as a portable object, so one can be sent to someone else and opened here. */
+export function exportCase(id) {
+  const record = state.cases.find((c) => c.id === id) ?? activeCase();
+  if (!record) return null;
+  syncActive();
+  return {
+    format: 'exit-audit-case',
+    version: 1,
+    name: record.name,
+    audit: record.audit,
+    group: record.group,
+    capital: record.capital,
+    future: record.future,
+  };
+}
+
+/** Take a case someone sent you. Anything missing or malformed falls back to a blank. */
+export function importCase(payload) {
+  if (!payload || payload.format !== 'exit-audit-case') return null;
+  const record = blankCase(typeof payload.name === 'string' ? payload.name : 'Imported case');
+  if (payload.audit && typeof payload.audit === 'object') {
+    record.audit = { ...blankAudit(), ...payload.audit };
+    record.audit.financials = { ...DEFAULT_FINANCIALS, ...(payload.audit.financials ?? {}) };
+    record.audit.structure = { ...DEFAULT_STRUCTURE, ...(payload.audit.structure ?? {}) };
+    record.audit.scores = { ...blankAudit().scores, ...(payload.audit.scores ?? {}) };
+  }
+  if (payload.group && typeof payload.group === 'object') record.group = { ...blankGroup(), ...payload.group };
+  if (payload.capital && typeof payload.capital === 'object') record.capital = { ...blankCapital(), ...payload.capital };
+  if (payload.future && typeof payload.future === 'object') record.future = { ...blankFuture(), ...payload.future };
+  syncActive();
+  state.cases.push(record);
+  openCase(record.id);
+  return record.id;
+}
 
 /**
  * The group, with the platform filled in from the audit.
@@ -130,12 +272,11 @@ export const subscribe = (fn) => { listeners.add(fn); return () => listeners.del
 export const notify = () => { save(); listeners.forEach((fn) => fn()); };
 
 export function save() {
+  syncActive();
   try {
     localStorage.setItem(KEY, JSON.stringify({
-      audit: state.audit,
-      group: state.group,
-      capital: state.capital,
-      future: state.future,
+      cases: state.cases,
+      activeCaseId: state.activeCaseId,
       ui: state.ui,
       config: {
         currency: config.currency,
@@ -152,15 +293,48 @@ export function save() {
 export function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
-    if (parsed.audit) state.audit = { ...blankAudit(), ...parsed.audit };
-    if (parsed.group) state.group = { ...blankGroup(), ...parsed.group };
-    if (parsed.capital) state.capital = { ...state.capital, ...parsed.capital };
-    if (parsed.future) state.future = { ...state.future, ...parsed.future };
-    if (parsed.ui) state.ui = { ...state.ui, ...parsed.ui };
-    if (parsed.config) applyConfig(parsed.config);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed.cases) && parsed.cases.length) {
+        state.cases = parsed.cases.map((c) => ({
+          ...blankCase(c.name ?? 'Untitled case'),
+          ...c,
+          audit: { ...blankAudit(), ...(c.audit ?? {}) },
+          group: { ...blankGroup(), ...(c.group ?? {}) },
+          capital: { ...blankCapital(), ...(c.capital ?? {}) },
+          future: { ...blankFuture(), ...(c.future ?? {}) },
+        }));
+        state.activeCaseId = state.cases.some((c) => c.id === parsed.activeCaseId)
+          ? parsed.activeCaseId : state.cases[0].id;
+      }
+      if (parsed.ui) state.ui = { ...state.ui, ...parsed.ui };
+      if (parsed.config) applyConfig(parsed.config);
+    } else {
+      // One audit saved before cases existed becomes the first case rather than being lost.
+      const legacy = JSON.parse(localStorage.getItem(LEGACY_KEY) ?? 'null');
+      if (legacy?.audit) {
+        const record = blankCase(legacy.audit?.business?.name || 'Saved case');
+        record.audit = { ...blankAudit(), ...legacy.audit };
+        if (legacy.group) record.group = { ...blankGroup(), ...legacy.group };
+        if (legacy.capital) record.capital = { ...blankCapital(), ...legacy.capital };
+        if (legacy.future) record.future = { ...blankFuture(), ...legacy.future };
+        state.cases = [record];
+        state.activeCaseId = record.id;
+      }
+      if (legacy?.config) applyConfig(legacy.config);
+    }
   } catch { /* corrupt or unreadable storage is not worth a broken page */ }
+
+  if (!state.cases.length) {
+    const record = blankCase('New case');
+    state.cases = [record];
+    state.activeCaseId = record.id;
+  }
+  const live = activeCase();
+  state.audit = live.audit;
+  state.group = live.group;
+  state.capital = live.capital;
+  state.future = live.future;
 }
 
 /** Deep-set on the audit: setAudit('financials.claimedEbitda', 1000000). */
@@ -185,6 +359,8 @@ export function loadCase(sample) {
     financials: { ...DEFAULT_FINANCIALS, ...sample.financials },
     scores: { ...blankAudit().scores, ...sample.scores },
   };
+  const record = activeCase();
+  if (record && record.name === 'New case') record.name = sample.business.name || sample.label;
   notify();
 }
 

@@ -427,7 +427,7 @@ svg text { font-family: var(--sans); font-variant-numeric: tabular-nums; }
   letter-spacing: -0.025em; max-width: 24ch; text-wrap: balance; margin: 0;
 }
 .statement em { font-style: normal; color: var(--critical); }
-.statement .up { color: var(--good); }
+.statement .up { color: var(--credibility); }
 
 @media (max-width: 860px) {
   .canvas { aspect-ratio: 3 / 4; min-height: 460px; }
@@ -495,4 +495,35 @@ svg text { font-family: var(--sans); font-variant-numeric: tabular-nums; }
 
 @media (max-width: 720px) {
   .race { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+}
+
+/* ── Cases ──────────────────────────────────────────────────────────────── */
+.case-card {
+  background: var(--raised); border: 1px solid var(--hair); border-radius: 14px;
+  padding: 20px 22px; display: flex; flex-direction: column; gap: 16px;
+}
+.case-card.on { border-color: var(--ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 8%, transparent); }
+.case-name {
+  font-size: 18px; font-weight: 600; letter-spacing: -0.02em; padding: 4px 8px; margin-left: -8px;
+  background: none; border: 1px solid transparent; border-radius: 7px; width: auto; flex: 1; min-width: 0;
+}
+.case-name:hover { border-color: var(--hair); }
+.case-figs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.case-figs > div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.case-figs .k { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3); }
+.case-figs .v { font-size: 18px; font-weight: 600; letter-spacing: -0.025em; }
+
+.case-chip {
+  display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: 13.5px; font-weight: 600;
+  background: var(--sunken); border: 1px solid var(--hair); color: var(--ink);
+  border-radius: 100px; padding: 5px 14px; cursor: pointer; text-decoration: none;
+  max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: border-color 130ms ease;
+}
+.case-chip:hover { border-color: var(--ink-3); }
+.case-chip .dot { background: var(--good); }
+
+@media (max-width: 860px) {
+  .case-figs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .case-chip { max-width: 150px; }
 }

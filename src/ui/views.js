@@ -5,11 +5,11 @@ import { SECTORS, SECTORS_BY_ID, SIZE_BANDS, bandFor } from '../data/sectors.js'
 import { STRUCTURES, INTEGRATION_LEVERS, MAX_SYNERGY } from '../data/structures.js';
 import { config, deltaFor, defaultDeltaFor, ceilingFor, isTuned, isSectorTuned, tuningSummary, DEFAULT_CONFIG } from '../data/config.js';
 import { runAudit } from '../engine/valuation.js';
-import { remediationPlan, restructureTrajectory, pillarUplift } from '../engine/restructure.js';
+import { remediationPlan, restructureTrajectory, pillarUplift, sensitivity } from '../engine/restructure.js';
 import { runBuild, capitalOptions, horizon } from '../engine/build.js';
-import { state, groupInput, futureInput } from './state.js';
+import { state, groupInput, futureInput, activeCase } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
-import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart } from './charts.js';
+import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow } from './charts.js';
 import { groupCanvas, industryTray } from './canvas.js';
 
 const tile = (k, v, s, cls = '') =>
@@ -196,6 +196,13 @@ export function businessView() {
       value: u.value, color: `var(--${u.pillar})`,
     })))}
     ${planFold()}
+  </section>
+
+  <section>
+    <h2 class="headline">What moves the number most</h2>
+    <p class="lede">Every question, worst answer to best, with where you sit now in the middle.
+    The longest bar is where the next twelve months should go.</p>
+    ${tornado(sensitivity(state.audit))}
   </section>
 
   <section>
@@ -480,6 +487,14 @@ function nodeInspector(node) {
             </span>
           </button>`).join('')}
       </div>
+
+      <p class="eyebrow">Where the money comes from</p>
+      ${fundingStack(node)}
+      <div style="margin:22px 0 6px">${dealCashflow(node)}</div>
+      ${node.structure.holidayMonths ? `
+        <p class="small" style="margin:0 0 22px">Nothing leaves the business for the first
+        ${node.structure.holidayMonths} months. That holiday is the difference between a deal that
+        strangles you in year one and one that funds itself.</p>` : '<div style="height:16px"></div>'}
 
       <div class="grid g4">
         ${tile('Profit it adds', money(node.contributed),
@@ -808,4 +823,54 @@ export function dock() {
     ${item(r.gap > 0 ? 'Short by' : 'Spare', money(Math.abs(r.gap)), r.gap > 0 ? 'is-critical' : 'is-good')}
     <button class="btn" data-act="goto" data-view="value">See it</button>
   </div>`;
+}
+
+// ── Cases ─────────────────────────────────────────────────────────────────
+export function casesView() {
+  const live = activeCase();
+  return `
+  <section>
+    <p class="eyebrow">Cases</p>
+    <h1 class="display">One per business.</h1>
+    <p class="lede">Everything you enter belongs to a case. Start one for each business you look at,
+    switch between them, and send one to someone else as a file.</p>
+    <div class="actions">
+      <button class="btn" data-act="new-case">New case</button>
+      <button class="btn quiet" data-act="new-case-example">New from the worked example</button>
+      <label class="btn quiet" style="cursor:pointer">Open a case file
+        <input type="file" accept="application/json,.json" data-import-case hidden />
+      </label>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid g2">
+      ${state.cases.map((c) => {
+        const r = runAudit(c.audit);
+        const isLive = c.id === live?.id;
+        const started = r.claimedEbitda > 0 && r.askingPrice > 0;
+        return `
+        <div class="case-card ${isLive ? 'on' : ''}">
+          <div class="between" style="align-items:flex-start;gap:12px">
+            <input class="case-name" data-rename="${c.id}" value="${esc(c.name)}" aria-label="Case name" />
+            ${isLive ? '<span class="badge good">open</span>' : ''}
+          </div>
+          <div class="case-figs">
+            ${started ? `
+              <div><span class="k">Wants</span><span class="v">${moneyShort(r.askingPrice)}</span></div>
+              <div><span class="k">Worth</span><span class="v">${moneyShort(r.achievableValue)}</span></div>
+              <div><span class="k">Short by</span><span class="v ${r.gap > 0 ? 'is-critical' : 'is-good'}">${moneyShort(Math.abs(r.gap))}</span></div>
+              <div><span class="k">Bought</span><span class="v">${(c.group?.nodes ?? []).length}</span></div>
+            ` : '<div class="muted" style="font-size:13.5px">Nothing entered yet.</div>'}
+          </div>
+          <div class="actions">
+            ${isLive ? '' : `<button class="btn quiet tiny" data-act="open-case" data-case="${c.id}">Open</button>`}
+            <button class="btn quiet tiny" data-act="dup-case" data-case="${c.id}">Duplicate</button>
+            <button class="btn quiet tiny" data-act="export-case" data-case="${c.id}">Save to a file</button>
+            ${state.cases.length > 1 ? `<button class="btn quiet tiny" data-act="del-case" data-case="${c.id}">Delete</button>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </section>`;
 }

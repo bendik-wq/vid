@@ -48,10 +48,12 @@ await page.waitForTimeout(350);
 if (await page.isVisible('[data-act="score"][data-id="C7"][data-score="5"]')) fail('two pillars open at once');
 if (!(await page.isVisible('[data-act="score"][data-id="C15"][data-score="5"]'))) fail('closing did not open');
 
-for (const view of ['build', 'difference', 'tune', 'method']) {
+for (const view of ['build', 'difference', 'cases', 'tune', 'method']) {
   await page.click(`.tabs a[href="#${view}"]`);
   await page.waitForTimeout(400);
-  if ((await page.innerHTML('#main')).length < 2000) fail(`${view} view rendered almost nothing`);
+  // A single empty case is a legitimately short page; the rest should be substantial.
+  const floor = view === 'cases' ? 700 : 2000;
+  if ((await page.innerHTML('#main')).length < floor) fail(`${view} view rendered almost nothing`);
 }
 
 // Every figure must actually draw.
@@ -118,6 +120,35 @@ await page.waitForTimeout(450);
 await page.click('.tabs a[href="#business"]');
 await page.waitForTimeout(400);
 if (!(await page.textContent('#main')).includes('1.20x')) fail('a tuned number did not reach the business screen');
+
+// Cases: a new one must start clean, and switching back must restore the old figures.
+await page.click('.tabs a[href="#cases"]');
+await page.waitForTimeout(400);
+if ((await page.$$('.case-card')).length !== 1) fail('expected one case to start with');
+await page.click('[data-act="new-case"]');
+await page.waitForTimeout(400);
+if ((await page.textContent('#main')).includes('$5,000,000')) fail('a new case inherited the last one');
+await page.click('.tabs a[href="#cases"]');
+await page.waitForTimeout(400);
+const cards = await page.$$('.case-card');
+if (cards.length !== 2) fail(`expected two cases, found ${cards.length}`);
+await page.click('[data-act="open-case"]');
+await page.waitForTimeout(450);
+if (!(await page.textContent('#main')).includes('$5,000,000')) fail('reopening a case lost its figures');
+
+// The case name is in the top bar, and editing it there sticks.
+await page.click('.tabs a[href="#cases"]');
+await page.waitForTimeout(350);
+await page.fill('.case-name', 'Acme Electrical');
+await page.waitForTimeout(450);
+if (!(await page.textContent('.case-chip')).includes('Acme')) fail('renaming a case did not reach the top bar');
+
+// The sensitivity tornado has to draw on the business screen.
+await page.click('.tabs a[href="#business"]');
+await page.waitForTimeout(450);
+const bars = await page.$$eval('#main svg rect', (els) => els.length);
+if (bars < 10) fail(`expected the business screen to draw its figures, found ${bars} marks`);
+if (!(await page.textContent('#main')).includes('What moves the number most')) fail('the tornado section is missing');
 
 if (errors.length) fail(`console errors: ${errors.join(' | ')}`);
 await browser.close();

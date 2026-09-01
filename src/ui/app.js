@@ -3,10 +3,11 @@
 import {
   state, load, notify, setScore, resetAudit, resetTuning, loadBrokerCase,
   addNode, removeNode, findNode, setNode, toggleLever, clearGroup, groupInput, futureInput, stretchAll,
+  activeCase, newCase, openCase, renameCase, duplicateCase, deleteCase, exportCase, importCase,
 } from './state.js';
 import { config, setConfig, clearOverride } from '../data/config.js';
-import { state_currency, num, money, moneyShort } from './format.js';
-import { businessView, buildView, differenceView, tuneView, methodView, dock } from './views.js';
+import { state_currency, num, money, moneyShort, esc } from './format.js';
+import { businessView, buildView, differenceView, casesView, tuneView, methodView, dock } from './views.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan } from '../engine/restructure.js';
 import { runBuild, horizon } from '../engine/build.js';
@@ -15,6 +16,7 @@ const VIEWS = {
   business: { label: 'Your business', primary: true, render: businessView, dock: true },
   build: { label: 'The group', primary: true, render: buildView },
   difference: { label: 'The difference', primary: true, render: differenceView, mount: mountDifference },
+  cases: { label: 'Cases', primary: false, render: casesView },
   tune: { label: 'Tune', primary: false, render: tuneView },
   method: { label: 'Method', primary: false, render: methodView },
 };
@@ -28,8 +30,12 @@ function topbar() {
   const view = currentView();
   const link = ([id, v]) => `<a href="#${id}" class="${id === view ? 'on' : ''}">${v.label}</a>`;
   const entries = Object.entries(VIEWS);
+  const live = activeCase();
   return `
     <span class="mark">Exit Audit</span>
+    <a class="case-chip" href="#cases" title="Switch case">
+      <span class="dot"></span>${esc(live?.name ?? 'New case')}
+    </a>
     <nav class="tabs" aria-label="Sections">
       ${entries.filter(([, v]) => v.primary).map(link).join('')}
       <span class="sep" aria-hidden="true"></span>
@@ -45,8 +51,8 @@ function render() {
   const keepScroll = sameView ? window.scrollY : 0;
 
   const active = document.activeElement;
-  const key = active && (active.dataset?.bind || active.dataset?.config
-    || active.dataset?.group || active.dataset?.capital || active.dataset?.future);
+  const key = active && (active.dataset?.bind || active.dataset?.config || active.dataset?.group
+    || active.dataset?.capital || active.dataset?.future || active.dataset?.rename);
   const caret = key && active.selectionStart != null ? active.selectionStart : null;
 
   // Any playback belongs to the screen that started it; leaving the screen ends it.
@@ -60,7 +66,8 @@ function render() {
 
   if (key) {
     const el = main.querySelector(
-      `[data-bind="${key}"], [data-config="${key}"], [data-group="${key}"], [data-capital="${key}"], [data-future="${key}"]`,
+      `[data-bind="${key}"], [data-config="${key}"], [data-group="${key}"], ` +
+      `[data-capital="${key}"], [data-future="${key}"], [data-rename="${key}"]`,
     );
     if (el) {
       el.focus();
@@ -89,6 +96,8 @@ function writePath(root, path, value) {
 function onInput(e) {
   const el = e.target;
   const d = el.dataset;
+  if (d.rename !== undefined) { renameCase(d.rename, el.value); refreshLive(); return; }
+  if (d.importCase !== undefined) { readCaseFile(el.files?.[0]); return; }
   if (d.bind) writePath(state.audit, d.bind, readInput(el));
   else if (d.config) setConfig(d.config, readInput(el));
   else if (d.capital) writePath(state.capital, d.capital, readInput(el));
@@ -131,6 +140,12 @@ function onClick(e) {
   else if (act === 'toggle-lever') { toggleLever(el.dataset.node, el.dataset.lever); render(); }
   else if (act === 'clear-group') { clearGroup(); render(); }
   else if (act === 'stretch-all') { stretchAll(el.dataset.on === 'true'); render(); }
+  else if (act === 'new-case') { newCase(); location.hash = 'business'; render(); }
+  else if (act === 'new-case-example') { newCase('Worked example'); loadBrokerCase(); location.hash = 'business'; render(); }
+  else if (act === 'open-case') { openCase(el.dataset.case); location.hash = 'business'; render(); }
+  else if (act === 'dup-case') { duplicateCase(el.dataset.case); render(); }
+  else if (act === 'del-case') { deleteCase(el.dataset.case); render(); }
+  else if (act === 'export-case') { saveCaseFile(el.dataset.case); }
   else if (act === 'print') { window.print(); }
   else if (act === 'export') { exportReport(); }
 }
@@ -425,4 +440,52 @@ function mountDifference() {
   paint(1);
   // Show it once, unprompted. Nobody drags a slider they have not seen move.
   if (!hasPlayed && !REDUCED()) { hasPlayed = true; autoplayTimer = setTimeout(play, 450); }
+}
+
+// ── Case files ────────────────────────────────────────────────────────────
+/** Hand a case to the viewer as a file, through the host when the page is published. */
+async function saveCaseFile(id) {
+  const payload = exportCase(id);
+  if (!payload) return;
+  const json = JSON.stringify(payload, null, 2);
+  const filename = `${payload.name.replace(/\W+/g, '-').toLowerCase() || 'case'}.exitaudit.json`;
+
+  const downloads = window.claude?.use ? await window.claude.use('downloads') : null;
+  if (downloads) {
+    try {
+      await downloads.save({ filename, data: json });
+    } catch (err) {
+      if (err?.code !== 'declined') notice(`Could not save the case: ${err?.message ?? 'saving is unavailable here'}`);
+    }
+    return;
+  }
+  const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/** Take a case file. A file that is not one says so rather than half-loading. */
+function readCaseFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let payload;
+    try {
+      payload = JSON.parse(String(reader.result));
+    } catch {
+      notice('That file is not readable. A case file is the JSON this tool saves.');
+      return;
+    }
+    if (importCase(payload)) {
+      location.hash = 'business';
+      render();
+    } else {
+      notice('That is not a case file. Use one saved from this tool.');
+    }
+  };
+  reader.onerror = () => notice('That file could not be read.');
+  reader.readAsText(file);
 }

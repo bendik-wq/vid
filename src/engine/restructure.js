@@ -129,3 +129,35 @@ export function describeFix(id) {
   const c = CRITERIA_BY_ID[id];
   return c ? { name: c.name, question: c.question, target: c.anchors[5], why: c.why } : null;
 }
+
+/**
+ * What actually moves the number.
+ *
+ * For each question, the value of the business if that answer were the worst it could be
+ * and if it were the best, holding everything else where it is. The spread between those
+ * two is the lever; the order of the spreads is where to spend the next twelve months.
+ */
+export function sensitivity(input) {
+  const base = runAudit(input).achievableValue;
+  const scores = input.scores ?? {};
+
+  return CRITERIA
+    .filter((c) => c.impact.kind !== 'computed')
+    .map((c) => {
+      const low = runAudit({ ...input, scores: { ...scores, [c.id]: 1 } }).achievableValue;
+      const high = runAudit({ ...input, scores: { ...scores, [c.id]: 5 } }).achievableValue;
+      return {
+        id: c.id,
+        name: c.name,
+        pillar: c.pillar,
+        score: Number(scores[c.id] ?? 3),
+        base,
+        low,
+        high,
+        downside: base - low,
+        upside: high - base,
+        range: high - low,
+      };
+    })
+    .sort((a, b) => b.range - a.range);
+}

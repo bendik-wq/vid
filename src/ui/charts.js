@@ -449,3 +449,149 @@ export function raceChart(rows) {
     </div>
   </figure>`;
 }
+
+/**
+ * What moves the number most, worst answer to best.
+ *
+ * A tornado: every bar is one question's range around where the business sits today, sorted
+ * by how much is at stake. Loss and gain are the only two things being shown, so they take
+ * the status colours rather than an identity palette.
+ */
+export function tornado(items, { limit = 8 } = {}) {
+  const rows = items.slice(0, limit);
+  const rowH = 42;
+  const labelW = 300;
+  const h = rows.length * rowH + 46;
+  const w = VB;
+  const plotL = labelW;
+  const plotW = w - labelW - 120;
+  const span = Math.max(...rows.map((r) => Math.max(r.downside, r.upside)), 1);
+  const mid = plotL + plotW / 2;
+  const scale = (v) => (v / span) * (plotW / 2);
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" role="img"
+         aria-label="${rows.map((r) => `${r.name}: ${money(r.low)} to ${money(r.high)}`).join('; ')}">
+      <line x1="${mid}" y1="26" x2="${mid}" y2="${h - 26}" stroke="var(--ink-3)" stroke-width="1.5" />
+      <text x="${mid}" y="16" text-anchor="middle" font-size="12" fill="var(--ink-3)">where you are now</text>
+      ${rows.map((r, i) => {
+        const y = 32 + i * rowH;
+        const down = scale(r.downside);
+        const up = scale(r.upside);
+        return `
+        <text x="0" y="${y + 20}" font-size="14" font-weight="600" fill="var(--ink)">${esc(r.name)}</text>
+        <text x="${labelW - 22}" y="${y + 20}" text-anchor="end" font-size="12.5" fill="var(--ink-3)">${r.score}/5</text>
+        <rect class="seg-mark" x="${(mid - down).toFixed(1)}" y="${y + 4}" width="${Math.max(0, down - 1).toFixed(1)}"
+              height="24" rx="4" fill="var(--critical)" opacity="0.75">
+          <title>${esc(r.name)} at its worst: ${esc(money(r.low))}</title></rect>
+        <rect class="seg-mark" x="${(mid + 1).toFixed(1)}" y="${y + 4}" width="${Math.max(0, up - 1).toFixed(1)}"
+              height="24" rx="4" fill="var(--good)" opacity="0.8">
+          <title>${esc(r.name)} at its best: ${esc(money(r.high))}</title></rect>
+        <text x="${(mid + up + 12).toFixed(1)}" y="${y + 21}" font-size="13.5" font-weight="600"
+              fill="var(--ink)">+${esc(moneyShort(r.upside))}</text>`;
+      }).join('')}
+    </svg>
+    <div class="legend">
+      <span><i style="background:var(--critical);opacity:0.75"></i>What you lose if it gets worse</span>
+      <span><i style="background:var(--good);opacity:0.8"></i>What you gain if you fix it</span>
+    </div>
+  </figure>`;
+}
+
+/** Where the money for one deal comes from. One hue, because it is all the same price. */
+export function fundingStack(node) {
+  const h = 46;
+  const total = node.price || 1;
+  const parts = [
+    { label: 'Your cash', value: node.cashNeeded, opacity: 1 },
+    { label: 'Borrowed from a bank', value: node.bankDebt, opacity: 0.6 },
+    { label: 'Left with the seller', value: node.sellerNote, opacity: 0.32 },
+  ].filter((p) => p.value > 0);
+
+  let x = 0;
+  const marks = parts.map((p) => {
+    const width = Math.max(0, (p.value / total) * VB - GAP);
+    const rect = `<rect class="seg-mark" x="${x.toFixed(1)}" y="0" width="${width.toFixed(1)}" height="${h}"
+      fill="var(--ink)" opacity="${p.opacity}"><title>${esc(p.label)}: ${esc(money(p.value))}</title></rect>`;
+    x += (p.value / total) * VB;
+    return rect;
+  }).join('');
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${VB} ${h}" preserveAspectRatio="none" style="width:100%;height:${h}px" role="img"
+         aria-label="${parts.map((p) => `${p.label} ${money(p.value)}`).join(', ')}">
+      <defs><clipPath id="clip-${cid()}"><rect x="0" y="0" width="${VB}" height="${h}" rx="7" /></clipPath></defs>
+      <g clip-path="url(#clip-${lastId})">
+        <rect x="0" y="0" width="${VB}" height="${h}" fill="var(--sunken)" />
+        ${marks}
+      </g>
+    </svg>
+    <div class="legend">
+      ${parts.map((p) => `<span><i style="background:var(--ink);opacity:${p.opacity}"></i>${esc(p.label)}
+        <strong style="margin-left:4px">${esc(money(p.value))}</strong></span>`).join('')}
+    </div>
+  </figure>`;
+}
+
+/**
+ * The first six years of one deal: what it earns against what it owes.
+ *
+ * The payment holiday is the whole reason these structures work, and it is invisible in a
+ * single cover ratio — you have to see the year with no bar next to it.
+ */
+export function dealCashflow(node, { years = 6 } = {}) {
+  const w = VB;
+  const h = 260;
+  const padL = 10;
+  const padR = 10;
+  const padTop = 40;
+  const padBottom = 48;
+  const holidayYears = (node.structure?.holidayMonths ?? 0) / 12;
+
+  const rows = Array.from({ length: years }, (_, i) => {
+    const year = i + 1;
+    const covered = Math.max(0, Math.min(1, year - holidayYears));
+    return { year, cash: node.freeCashFlow, service: node.service * covered };
+  });
+
+  const max = Math.max(...rows.flatMap((r) => [r.cash, r.service]), 1);
+  const slot = (w - padL - padR) / years;
+  const barW = slot * 0.3;
+  const y = (v) => padTop + (1 - v / max) * (h - padTop - padBottom);
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" role="img"
+         aria-label="Year by year, ${money(node.freeCashFlow)} of cash against repayments rising to ${money(node.service)}">
+      <line x1="${padL}" y1="${h - padBottom}" x2="${w - padR}" y2="${h - padBottom}"
+            stroke="var(--hair)" stroke-width="1" />
+      ${rows.map((r, i) => {
+        const year = r.year;
+        const cx = padL + slot * i + slot / 2;
+        const shortfall = r.service > r.cash;
+        return `
+        <rect class="seg-mark" x="${(cx - barW - 3).toFixed(1)}" y="${y(r.cash).toFixed(1)}"
+              width="${barW.toFixed(1)}" height="${(h - padBottom - y(r.cash)).toFixed(1)}" rx="4"
+              fill="var(--ink)" opacity="0.85">
+          <title>Year ${r.year} cash: ${esc(money(r.cash))}</title></rect>
+        <rect class="seg-mark" x="${(cx + 3).toFixed(1)}" y="${y(r.service).toFixed(1)}"
+              width="${barW.toFixed(1)}" height="${Math.max(0, h - padBottom - y(r.service)).toFixed(1)}" rx="4"
+              fill="${shortfall ? 'var(--critical)' : 'var(--loss)'}">
+          <title>Year ${r.year} repayments: ${esc(money(r.service))}</title></rect>
+        <text x="${cx.toFixed(1)}" y="${h - padBottom + 22}" text-anchor="middle" font-size="13"
+              fill="var(--ink-3)">Year ${r.year}</text>
+        ${year <= holidayYears + 1 && holidayYears > 0 ? `<text x="${cx.toFixed(1)}" y="${h - padBottom + 40}"
+              text-anchor="middle" font-size="12" font-weight="600" fill="var(--good)">${
+                r.service === 0 ? 'no payments' : `${Math.round(holidayYears * 12)} months free`
+              }</text>` : ''}`;
+      }).join('')}
+      <text x="${padL}" y="22" font-size="13" fill="var(--ink-3)">Cash the business makes, against what it owes</text>
+    </svg>
+    <div class="legend">
+      <span><i style="background:var(--ink);opacity:0.85"></i>Cash it makes</span>
+      <span><i style="background:var(--loss)"></i>Repayments</span>
+    </div>
+  </figure>`;
+}

@@ -81,6 +81,15 @@ value proposition in one number.
 | **Tune** | Every number editable in place beside its justification |
 | **Method** | Formulas, assumptions, and what is not signed off |
 
+## Cases
+
+Everything you enter belongs to a named case — one per business you look at. Start as many as
+you like, switch between them from the chip in the top bar, and each keeps its own audit,
+group and projection. They persist locally, so a case is still there tomorrow.
+
+A case saves to a file and opens from one, which is how you hand a client's numbers to a
+colleague. Anything that is not a case file is refused rather than half-loaded.
+
 ## The difference, played
 
 The payoff screen is the one place worth animating: two roads only feel different when you
@@ -92,6 +101,20 @@ Mechanically it is one chart drawn once and revealed by widening a clip rectangl
 costs a handful of attribute writes rather than a re-render. Values interpolate between years so
 scrubbing reads as continuous. `prefers-reduced-motion` skips straight to year twenty, and
 playback is cancelled the moment you leave the screen.
+
+## What moves the number most
+
+A tornado on the business screen: every question drawn worst-answer to best, with where the
+business sits today down the middle, sorted by how much is at stake. The longest bar is where
+the next twelve months should go — it answers "what do I actually fix" without anyone having to
+read a table.
+
+## Seeing a structure, not just a ratio
+
+Open any business in the group and you get its funding stack — your cash, the bank, and what
+stays with the seller, as one bar — and its first six years drawn as cash against repayments.
+The payment holiday is the whole reason these structures work and it is invisible in a single
+cover ratio; you have to see the year with almost no bar beside it.
 
 ## The group canvas
 
