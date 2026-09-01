@@ -135,7 +135,7 @@ window.OT.modules = [
             ['Dynamiske kapabiliteter (Teece)', 'Hvordan fornyer vi ressursbasen?', 'Evnen til å sanse, gripe og omforme ressurser i skiftende omgivelser.'],
             ['Blue Ocean (Kim & Mauborgne)', 'Kan vi skape et nytt marked?', 'Verdiinnovasjon: øk og skap verdi for kunden samtidig som kostnadene reduseres.']
           ]},
-          { t: 'p', tekst: 'SWOT-analysen kobler intern analyse (styrker og svakheter) til ekstern analyse (muligheter og trusler), og er koblingspunktet mellom ressursperspektivet og posisjonsperspektivet. Miles og Snows typologi beskriver fire strategiske adferdsmønstre: <em>prospector</em> (oppdager), <em>defender</em> (forsvarer), <em>analyzer</em> (analytiker) og <em>reactor</em> (etternoler).' }
+          { t: 'p', tekst: 'SWOT-analysen kobler intern analyse (styrker og svakheter) til ekstern analyse (muligheter og trusler), og er koblingspunktet mellom ressursperspektivet og posisjonsperspektivet. Miles og Snows typologi beskriver fire strategiske adferdsmønstre: <em>prospector</em> (oppdager), <em>defender</em> (forsvarer), <em>analyzer</em> (analytiker) og <em>reactor</em> (etternøler).' }
         ]
       },
       {
@@ -185,7 +185,7 @@ window.OT.modules = [
           { t: 'p', tekst: 'Arbeidsdeling skjer langs to akser. <strong>Horisontal spesialisering</strong> deler arbeidet i ulike oppgaver på samme nivå. <strong>Vertikal spesialisering</strong> deler arbeidet mellom nivåer – hvem som planlegger og bestemmer, og hvem som utfører.' },
           { t: 'tabell', kolonner: ['Grupperingsform', 'Prinsipp', 'Styrker', 'Svakheter'], rader: [
             ['Funksjonsbasert', 'Gruppering etter lik funksjon eller fagkompetanse (økonomi, produksjon, salg)', 'Stordriftsfordeler, dype fagmiljøer, tydelig karrierevei', 'Silotenkning, dårlig helhetskoordinering, treg respons'],
-            ['Markedsbasert (divisjon)', 'Gruppering etter produkt, kundegruppe eller geografi', 'Kundenaerhet, klart resultatansvar, rask omstilling', 'Dobbeltarbeid, tap av stordrift, svakere fagmiljøer'],
+            ['Markedsbasert (divisjon)', 'Gruppering etter produkt, kundegruppe eller geografi', 'Kundenærhet, klart resultatansvar, rask omstilling', 'Dobbeltarbeid, tap av stordrift, svakere fagmiljøer'],
             ['Matrise', 'To dimensjoner samtidig, f.eks. funksjon × prosjekt', 'Kombinerer fagdybde og resultatfokus, fleksibel ressursbruk', 'Brudd på enhetlig kommando, rollekonflikt, høy møtebelastning'],
             ['Prosessbasert', 'Gruppering langs verdikjeden/kundereisen', 'Kort flyt, få overleveringer', 'Krever bred kompetanse, sårbar for fravær'],
             ['Nettverk / virtuell', 'Kjernefunksjoner beholdes, resten settes ut', 'Svært fleksibel, lave faste kostnader', 'Kontrolltap, avhengighet av partnere']
@@ -647,7 +647,7 @@ window.OT.modules = [
           { t: 'tabell', kolonner: ['Håndteringsstil (Thomas–Kilmann)', 'Selvhevdelse', 'Samarbeidsvilje', 'Passer når'], rader: [
             ['Konkurrere', 'Høy', 'Lav', 'Krisesituasjon, upopulære men nødvendige vedtak'],
             ['Samarbeide', 'Høy', 'Høy', 'Begge parters mål er viktige; tid til å finne vinn-vinn'],
-            ['Inngaa kompromiss', 'Middels', 'Middels', 'Likeverdige parter, tidspress, midlertidig løsning'],
+            ['Inngå kompromiss', 'Middels', 'Middels', 'Likeverdige parter, tidspress, midlertidig løsning'],
             ['Unngå', 'Lav', 'Lav', 'Trivielle saker, behov for avkjøling, andre kan løse det bedre'],
             ['Tilpasse seg', 'Lav', 'Høy', 'Saken betyr mer for den andre; bygge goodwill']
           ]},
