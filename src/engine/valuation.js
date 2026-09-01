@@ -9,15 +9,9 @@
  * which is the entire design: there is nothing here for them to argue with.
  */
 
-import {
-  CRITERIA,
-  CRITERIA_BY_ID,
-  MAX_COMBINED_EBITDA_HAIRCUT,
-  MULTIPLE_FLOOR,
-} from '../data/criteria.js';
-import { ceilingFor, sizePremium } from '../data/sectors.js';
-
-export const DSCR_FLOOR = 1.5;
+import { CRITERIA, CRITERIA_BY_ID } from '../data/criteria.js';
+import { sizePremium } from '../data/sectors.js';
+import { config, deltaFor, ceilingFor } from '../data/config.js';
 
 export const DEFAULT_STRUCTURE = {
   depositPct: 0.2,
@@ -89,7 +83,7 @@ export function ebitdaHaircuts(financials, scores) {
 
   for (const c of CRITERIA) {
     if (c.impact.kind !== 'ebitda') continue;
-    const fraction = c.impact.maxHaircut * severity(scores[c.id] ?? 5);
+    const fraction = deltaFor(c) * severity(scores[c.id] ?? 5);
     lines.push({
       id: c.id,
       name: c.name,
@@ -101,8 +95,8 @@ export function ebitdaHaircuts(financials, scores) {
   }
 
   const rawFraction = lines.reduce((s, l) => s + l.fraction, 0);
-  const appliedFraction = Math.min(rawFraction, MAX_COMBINED_EBITDA_HAIRCUT);
-  const capApplied = rawFraction > MAX_COMBINED_EBITDA_HAIRCUT;
+  const appliedFraction = Math.min(rawFraction, config.ebitdaHaircutCap);
+  const capApplied = rawFraction > config.ebitdaHaircutCap;
   const scale = rawFraction > 0 ? appliedFraction / rawFraction : 0;
 
   return {
@@ -128,8 +122,8 @@ export function multiplePenalties(scores) {
         name: c.name,
         pillar: c.pillar,
         score,
-        penalty: c.impact.maxPenalty * severity(score),
-        maxPenalty: c.impact.maxPenalty,
+        penalty: deltaFor(c) * severity(score),
+        maxPenalty: deltaFor(c),
       };
     });
   return { lines, total: lines.reduce((s, l) => s + l.penalty, 0) };
@@ -150,13 +144,13 @@ export function dscrAnalysis({ askingPrice, defensibleEbitda, financials, struct
 
   const service = servicePerPound * askingPrice;
   const dscr = service > 0 ? freeCashFlow / service : Infinity;
-  const maxFundablePrice = servicePerPound > 0 ? freeCashFlow / (DSCR_FLOOR * servicePerPound) : Infinity;
+  const maxFundablePrice = servicePerPound > 0 ? freeCashFlow / (config.dscrFloor * servicePerPound) : Infinity;
 
   let gateScore;
   if (dscr < 1.0) gateScore = 1;
   else if (dscr < 1.25) gateScore = 2;
-  else if (dscr < DSCR_FLOOR) gateScore = 3;
-  else if (dscr < 2.0) gateScore = 4;
+  else if (dscr < config.dscrFloor) gateScore = 3;
+  else if (dscr < config.dscrFloor + 0.5) gateScore = 4;
   else gateScore = 5;
 
   return {
@@ -166,7 +160,7 @@ export function dscrAnalysis({ askingPrice, defensibleEbitda, financials, struct
     sellerNote: askingPrice * s.sellerNotePct,
     deposit: askingPrice * s.depositPct,
     dscr,
-    passes: dscr >= DSCR_FLOOR,
+    passes: dscr >= config.dscrFloor,
     maxFundablePrice,
     gateScore,
     structure: s,
@@ -192,8 +186,8 @@ export function runAudit(input) {
   const ceiling = baseCeiling + premium;
 
   const penalties = multiplePenalties(scores);
-  const achievableMultiple = clamp(ceiling - penalties.total, MULTIPLE_FLOOR, ceiling);
-  const multipleFloored = ceiling - penalties.total < MULTIPLE_FLOOR;
+  const achievableMultiple = clamp(ceiling - penalties.total, config.multipleFloor, ceiling);
+  const multipleFloored = ceiling - penalties.total < config.multipleFloor;
 
   const achievableValue = defensibleEbitda * achievableMultiple;
   const dscr = dscrAnalysis({ askingPrice, defensibleEbitda, financials, structure });

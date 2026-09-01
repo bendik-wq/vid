@@ -7,8 +7,9 @@
  * audit uses, because a roll-up that cannot service its debt is not a strategy.
  */
 
-import { ceilingFor, sizePremium } from '../data/sectors.js';
-import { annualDebtService, DSCR_FLOOR, DEFAULT_STRUCTURE } from './valuation.js';
+import { sizePremium } from '../data/sectors.js';
+import { config, ceilingFor } from '../data/config.js';
+import { annualDebtService, DEFAULT_STRUCTURE } from './valuation.js';
 
 export const DEFAULT_ROLLUP = {
   sector: 'generic',
@@ -54,7 +55,7 @@ export function priceDeal({ ebitda, multiple, structure, taxRate, maintenanceCap
 
   return {
     price, deposit, sellerNote, bankDebt, service, freeCashFlow,
-    dscr, passes: dscr >= DSCR_FLOOR, structure: s,
+    dscr, passes: dscr >= config.dscrFloor, structure: s,
   };
 }
 
@@ -125,14 +126,14 @@ export function runRollup(inputRaw) {
     exitMultiple, exitEnterpriseValue, exitEquityValue,
     debtAtClose, debtAtExit, principalRepaid, scheduledPrincipalRepaid, cashShortfall,
     moic, irr,
-    feasible: groupDscr >= DSCR_FLOOR,
+    feasible: groupDscr >= config.dscrFloor,
     arbitrage: exitMultiple - blendedEntryMultiple,
     group: {
       service: groupService,
       freeCashFlow: groupFreeCashFlow,
       dscr: groupDscr,
-      passes: groupDscr >= DSCR_FLOOR,
-      headroom: groupFreeCashFlow - groupService * DSCR_FLOOR,
+      passes: groupDscr >= config.dscrFloor,
+      headroom: groupFreeCashFlow - groupService * config.dscrFloor,
     },
     // What the arbitrage is made of, in pounds of enterprise value.
     waterfall: [
@@ -151,7 +152,7 @@ export function runRollup(inputRaw) {
 export function absorptionCapacity(result) {
   const { input, group } = result;
   const s = { ...DEFAULT_STRUCTURE, ...(input.structure ?? {}) };
-  const headroomService = Math.max(0, group.freeCashFlow / DSCR_FLOOR - group.service);
+  const headroomService = Math.max(0, group.freeCashFlow / config.dscrFloor - group.service);
   const servicePerPound =
     annualDebtService(1 - s.depositPct - s.sellerNotePct, s.bankRate, s.bankTermYears) +
     annualDebtService(s.sellerNotePct, s.sellerNoteRate, s.sellerNoteTermYears, s.sellerNoteInterestOnly);

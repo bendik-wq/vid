@@ -24,9 +24,6 @@ export const SECTORS = [
 
 export const SECTORS_BY_ID = Object.fromEntries(SECTORS.map((s) => [s.id, s]));
 
-export const ceilingFor = (sectorId) =>
-  (SECTORS_BY_ID[sectorId] ?? SECTORS_BY_ID.generic).ceiling;
-
 /**
  * Size premium. Scale is repriced by the market: a £5m-EBITDA group does not trade
  * at the same multiple as five £1m businesses. Used by the roll-up model, and as an

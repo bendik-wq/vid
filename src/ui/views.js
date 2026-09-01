@@ -1,373 +1,427 @@
-/** All screens. Each view returns an HTML string; app.js handles events by delegation. */
+/** Screens. Each returns HTML; app.js wires events by delegation. */
 
-import { CRITERIA, PILLARS, criteriaForPillar, MULTIPLE_FLOOR, MAX_COMBINED_EBITDA_HAIRCUT } from '../data/criteria.js';
+import { CRITERIA, PILLARS, criteriaForPillar } from '../data/criteria.js';
 import { SECTORS } from '../data/sectors.js';
-import { runAudit, DSCR_FLOOR } from '../engine/valuation.js';
-import { remediationPlan, restructureTrajectory } from '../engine/restructure.js';
+import { config, deltaFor, defaultDeltaFor, ceilingFor, isTuned, isSectorTuned, tuningSummary, DEFAULT_CONFIG } from '../data/config.js';
+import { runAudit } from '../engine/valuation.js';
+import { remediationPlan, restructureTrajectory, pillarUplift } from '../engine/restructure.js';
 import { runRollup, absorptionCapacity } from '../engine/rollup.js';
 import { state } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
+import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, multipleSpread, rankBar, pillarBars } from './charts.js';
 
-const field = (label, path, value, opts = {}) => `
+const tile = (k, v, s, cls = '') =>
+  `<div class="tile ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
+
+const numField = (label, path, value, hint) => `
   <div class="field">
     <label>${esc(label)}</label>
-    <input data-bind="${path}" data-kind="${opts.kind ?? 'number'}" value="${esc(value ?? '')}"
-           ${opts.placeholder ? `placeholder="${esc(opts.placeholder)}"` : ''} />
-    ${opts.hint ? `<p class="hint">${opts.hint}</p>` : ''}
+    <input data-bind="${path}" data-kind="number" value="${esc(value ?? 0)}" inputmode="numeric" />
+    ${hint ? `<p class="hint">${hint}</p>` : ''}
   </div>`;
 
-const stat = (k, v, s, cls = '') => `
-  <div class="stat ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
+const rateField = (label, path, value, dp = 0) => `
+  <div class="field">
+    <label>${esc(label)}</label>
+    <input data-bind="${path}" data-kind="rate" value="${(value * 100).toFixed(dp)}" inputmode="decimal" />
+  </div>`;
+
+// ── The 3C spine ──────────────────────────────────────────────────────────
+/** What each pillar is currently costing, in the unit that pillar moves. */
+export function pillarCost(pillar, r) {
+  if (pillar === 'credibility') {
+    const lost = r.haircuts.lines.reduce((s, l) => s + l.appliedAmount, 0);
+    const turnsLost = r.penalties.lines
+      .filter((l) => PILLARS[l.pillar] && l.pillar === 'credibility')
+      .reduce((s, l) => s + l.penalty, 0);
+    return {
+      headline: `−${money(lost)}`,
+      detail: `of claimed earnings${turnsLost > 0 ? `, and −${turns(turnsLost)} of multiple` : ''}`,
+      critical: lost > 0,
+    };
+  }
+  if (pillar === 'capital') {
+    const turnsLost = r.penalties.lines.filter((l) => l.pillar === 'capital').reduce((s, l) => s + l.penalty, 0);
+    return {
+      headline: `${turns(r.dscr.dscr)} DSCR`,
+      detail: r.dscr.passes
+        ? `fundable at your price, −${turns(turnsLost)} of multiple`
+        : `below the ${turns(config.dscrFloor)} floor, −${turns(turnsLost)} of multiple`,
+      critical: !r.dscr.passes,
+    };
+  }
+  const turnsLost = r.penalties.lines.filter((l) => l.pillar === 'closing').reduce((s, l) => s + l.penalty, 0);
+  return {
+    headline: `−${turns(turnsLost)}`,
+    detail: 'of multiple, on completion risk alone',
+    critical: turnsLost > 0,
+  };
+}
+
+export function threeCStrip(r, { linked = false } = {}) {
+  return `
+  <div class="grid g3">
+    ${['credibility', 'capital', 'closing'].map((id) => {
+      const p = PILLARS[id];
+      const cost = pillarCost(id, r);
+      const score = r.pillarScores[id];
+      return `
+      <div class="pillar pillar-card" data-pillar="${id}">
+        <div class="pillar-name"><span class="dot"></span>${esc(p.name)}</div>
+        <div class="pillar-q">${esc(p.sellSide)}</div>
+        ${pillarMeter(score)}
+        <div class="between">
+          <span class="pillar-cost ${cost.critical ? 'is-critical' : ''}">${cost.headline}</span>
+          <span class="muted" style="font-size:13px">${score.toFixed(1)} / 5</span>
+        </div>
+        <div class="small" style="margin:-6px 0 0">${esc(cost.detail)}</div>
+        ${linked ? `<div><button class="btn quiet tiny" data-act="open-pillar" data-pillar="${id}">Score this</button></div>` : ''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
 
 // ── Audit ─────────────────────────────────────────────────────────────────
 export function auditView() {
   const a = state.audit;
   const r = runAudit(a);
-
-  const sectorOptions = SECTORS.map(
-    (s) => `<option value="${s.id}" ${s.id === a.business.sector ? 'selected' : ''}>${esc(s.name)} — ${s.ceiling.toFixed(1)}x</option>`,
-  ).join('');
+  const s = a.structure;
 
   return `
-  <h2>Pre-exit audit</h2>
-  <p class="lede">Every number below is yours. The tool only does arithmetic on what you type,
-  which is the point: there is nothing here to argue with.</p>
-
-  <div class="split">
-    <div>
-      <h3>1. The business</h3>
-      <div class="panel">
-        <div class="grid g2">
-          <div class="field">
-            <label>Business name</label>
-            <input data-bind="business.name" data-kind="text" value="${esc(a.business.name)}" placeholder="Trading name" />
-          </div>
-          <div class="field">
-            <label>Sector <span class="flag">provisional</span></label>
-            <select data-bind="business.sector" data-kind="text">${sectorOptions}</select>
-            <p class="hint">Sets the premium multiple ceiling. Ranges are placeholders until signed off.</p>
-          </div>
-        </div>
-        ${field('Annual revenue', 'financials.revenue', a.financials.revenue)}
-      </div>
-
-      <h3>2. What do you want for it?</h3>
-      <div class="panel">
-        ${field('Your asking price', 'askingPrice', a.askingPrice, {
-          hint: 'The number the rest of the audit is measured against. Ask it first — it is the number everything else dismantles.',
-        })}
-      </div>
-
-      <h3>3. The earnings you are claiming</h3>
-      <div class="panel">
-        <div class="grid g2">
-          ${field('Claimed / adjusted EBITDA', 'financials.claimedEbitda', a.financials.claimedEbitda, {
-            hint: 'The figure on the information memorandum, after every add-back.',
-          })}
-          ${field('Maintenance capex a year', 'financials.maintenanceCapex', a.financials.maintenanceCapex, {
-            hint: 'What it costs just to stand still. Used in the DSCR test.',
-          })}
-          ${field('Owner pay drawn', 'financials.ownerSalaryDrawn', a.financials.ownerSalaryDrawn)}
-          ${field('Of which added back to EBITDA', 'financials.ownerSalaryAddedBack', a.financials.ownerSalaryAddedBack, {
-            hint: 'Add back the owner’s pay and a buyer inherits a vacancy, not a profit.',
-          })}
-          ${field('Market cost to replace you', 'financials.ownerReplacementCost', a.financials.ownerReplacementCost, {
-            hint: 'What you would have to pay someone to do everything you do.',
-          })}
-          <div class="field">
-            <label>Tax rate</label>
-            <input data-bind="financials.taxRate" data-kind="rate" value="${(a.financials.taxRate * 100).toFixed(0)}" />
-            <p class="hint">Per cent. Applied to cash flow in the DSCR test.</p>
-          </div>
-        </div>
-      </div>
-
-      <h3>4. The structure a buyer would use</h3>
-      <div class="panel">
-        <div class="grid g3">
-          <div class="field"><label>Buyer deposit %</label>
-            <input data-bind="structure.depositPct" data-kind="rate" value="${(a.structure.depositPct * 100).toFixed(0)}" /></div>
-          <div class="field"><label>Seller note %</label>
-            <input data-bind="structure.sellerNotePct" data-kind="rate" value="${(a.structure.sellerNotePct * 100).toFixed(0)}" /></div>
-          <div class="field"><label>Bank rate %</label>
-            <input data-bind="structure.bankRate" data-kind="rate" value="${(a.structure.bankRate * 100).toFixed(1)}" /></div>
-          <div class="field"><label>Bank term (years)</label>
-            <input data-bind="structure.bankTermYears" data-kind="number" value="${a.structure.bankTermYears}" /></div>
-          <div class="field"><label>Seller note rate %</label>
-            <input data-bind="structure.sellerNoteRate" data-kind="rate" value="${(a.structure.sellerNoteRate * 100).toFixed(1)}" /></div>
-          <div class="field"><label>Seller note term (years)</label>
-            <input data-bind="structure.sellerNoteTermYears" data-kind="number" value="${a.structure.sellerNoteTermYears}" /></div>
-        </div>
-        <label class="check">
-          <input type="checkbox" data-bind="structure.sellerNoteInterestOnly" data-kind="bool"
-                 ${a.structure.sellerNoteInterestOnly ? 'checked' : ''} />
-          <span>Seller note is interest-only with a bullet at the end.
-          <span class="dim">The single biggest lever on whether your price is fundable — try it both ways.</span></span>
-        </label>
-      </div>
-
-      <h3>5. Score the business</h3>
-      <p class="lede">One to five against the anchors. Five is what a buyer wants to find.</p>
-      ${['credibility', 'capital', 'closing'].map(pillarBlock).join('')}
-
-      <div class="actions">
-        <button data-act="goto" data-view="result">See the result</button>
-        <button class="ghost" data-act="load-broker">Load Josh’s broker case</button>
-        <button class="ghost" data-act="reset">Clear</button>
-      </div>
+  <section>
+    <p class="eyebrow">The audit</p>
+    <h1 class="display">What do you want for the business?</h1>
+    <p class="lede">Start with your number. Everything after this is arithmetic on figures you supply —
+    which is the point. There is nothing here to argue with.</p>
+    <div style="max-width:340px">
+      <input class="big" data-bind="askingPrice" data-kind="number" value="${esc(a.askingPrice)}"
+             inputmode="numeric" aria-label="Your asking price" />
     </div>
+  </section>
 
-    <div class="sticky">
-      ${liveSummary(r)}
+  <section>
+    <h2 class="headline">The earnings you are claiming</h2>
+    <div class="grid g3">
+      ${numField('Claimed EBITDA', 'financials.claimedEbitda', a.financials.claimedEbitda,
+        'After every add-back — the figure on the memorandum.')}
+      ${numField('Market cost to replace you', 'financials.ownerReplacementCost', a.financials.ownerReplacementCost,
+        'What you would pay someone to do everything you do.')}
+      ${numField('Owner pay added back', 'financials.ownerSalaryAddedBack', a.financials.ownerSalaryAddedBack,
+        'Add your pay back and a buyer inherits a vacancy, not a profit.')}
     </div>
+    <details class="card" style="margin-top:16px" ${a.ui?.moreOpen ? 'open' : ''}>
+      <summary style="cursor:pointer;font-weight:600;font-size:15px">More detail</summary>
+      <div class="grid g3" style="margin-top:18px">
+        ${numField('Revenue', 'financials.revenue', a.financials.revenue)}
+        ${numField('Owner pay drawn', 'financials.ownerSalaryDrawn', a.financials.ownerSalaryDrawn)}
+        ${numField('Maintenance capex a year', 'financials.maintenanceCapex', a.financials.maintenanceCapex)}
+        <div class="field">
+          <label>Business name</label>
+          <input data-bind="business.name" data-kind="text" value="${esc(a.business.name)}" placeholder="Trading name" />
+        </div>
+        <div class="field">
+          <label>Sector</label>
+          <select data-bind="business.sector" data-kind="text">
+            ${SECTORS.map((x) => `<option value="${x.id}" ${x.id === a.business.sector ? 'selected' : ''}>${esc(x.name)} — ${ceilingFor(x.id).toFixed(1)}x</option>`).join('')}
+          </select>
+        </div>
+        ${rateField('Tax rate', 'financials.taxRate', a.financials.taxRate)}
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2 class="headline">How a buyer would pay for it</h2>
+    <p class="body tight">
+      ${pct(s.depositPct, 0)} deposit, ${pct(s.sellerNotePct, 0)} left in as a seller note at
+      ${pct(s.sellerNoteRate, 1)}${s.sellerNoteInterestOnly ? ' interest-only' : ` over ${s.sellerNoteTermYears} years`},
+      the rest borrowed at ${pct(s.bankRate, 1)} over ${s.bankTermYears} years.
+    </p>
+    <details class="card" style="margin-top:16px">
+      <summary style="cursor:pointer;font-weight:600;font-size:15px">Change the structure</summary>
+      <div class="grid g3" style="margin-top:18px">
+        ${rateField('Buyer deposit %', 'structure.depositPct', s.depositPct)}
+        ${rateField('Seller note %', 'structure.sellerNotePct', s.sellerNotePct)}
+        ${rateField('Bank rate %', 'structure.bankRate', s.bankRate, 1)}
+        ${numField('Bank term (years)', 'structure.bankTermYears', s.bankTermYears)}
+        ${rateField('Seller note rate %', 'structure.sellerNoteRate', s.sellerNoteRate, 1)}
+        ${numField('Seller note term (years)', 'structure.sellerNoteTermYears', s.sellerNoteTermYears)}
+      </div>
+      <label class="switch" style="margin-top:16px">
+        <input type="checkbox" data-bind="structure.sellerNoteInterestOnly" data-kind="bool"
+               ${s.sellerNoteInterestOnly ? 'checked' : ''} />
+        <span>Seller note is interest-only with a bullet at the end</span>
+      </label>
+      <p class="hint">The single biggest lever on whether your price is fundable. Try it both ways.</p>
+    </details>
+  </section>
+
+  <section>
+    <h2 class="headline">The three C&rsquo;s</h2>
+    <p class="lede">Josh teaches these to buyers. Pointed at a seller they ask the same three questions
+    of your business. Score one to five against the anchors; five is what a buyer wants to find.</p>
+    ${threeCStrip(r)}
+    <div style="margin-top:28px">
+      ${['credibility', 'capital', 'closing'].map((id) => pillarFold(id, r)).join('')}
+    </div>
+  </section>
+
+  <section class="actions">
+    <button class="btn" data-act="goto" data-view="value">See what it is worth</button>
+    <button class="btn quiet" data-act="load-broker">Load Josh&rsquo;s broker case</button>
+    <button class="btn quiet" data-act="reset">Clear</button>
+  </section>`;
+}
+
+function pillarFold(id, r) {
+  const p = PILLARS[id];
+  const open = state.ui.openPillar === id;
+  const items = criteriaForPillar(id);
+  const scored = items.filter((c) => c.impact.kind !== 'computed');
+  const done = scored.filter((c) => state.audit.scores[c.id] !== undefined).length;
+  return `
+  <div class="fold pillar" data-pillar="${id}" data-open="${open}">
+    <button class="fold-head" data-act="toggle-pillar" data-pillar="${id}" aria-expanded="${open}">
+      <span class="dot"></span>
+      <span class="fold-title">${esc(p.name)}</span>
+      <span class="fold-meta">
+        <span>${done} criteria</span>
+        <span>${r.pillarScores[id].toFixed(1)} / 5</span>
+        <span class="chev"></span>
+      </span>
+    </button>
+    ${open ? `<div class="fold-body">
+      <p class="small" style="margin:0 0 14px"><strong>Buy-side:</strong> ${esc(p.buySide)}
+        &nbsp;·&nbsp; <strong>Sell-side:</strong> ${esc(p.sellSide)}</p>
+      ${items.map((c) => critRow(c)).join('')}
+    </div>` : ''}
   </div>`;
 }
 
-function pillarBlock(pillarId) {
-  const p = PILLARS[pillarId];
-  const a = state.audit;
-  return `
-    <div style="margin-bottom:26px">
-      <div class="crit-head" style="margin-bottom:4px">
-        <div><strong style="font-size:15px">${esc(p.name)}</strong>
-        <span class="pill" style="margin-left:8px">${esc(p.sellSide)}</span></div>
-      </div>
-      <p class="hint" style="margin:0 0 12px;max-width:70ch">${esc(p.blurb)}</p>
-      ${criteriaForPillar(pillarId).map((c) => critCard(c, a.scores[c.id])).join('')}
-    </div>`;
-}
-
-function critCard(c, score) {
+function critRow(c) {
   if (c.impact.kind === 'computed') {
     return `
     <div class="crit">
-      <div class="crit-head">
-        <div class="crit-name">${esc(c.id)} · ${esc(c.name)}<span class="computed-badge">computed</span></div>
-        <div class="delta">from your inputs</div>
+      <div>
+        <div class="crit-name">${esc(c.name)} <span class="badge">computed</span></div>
+        <div class="crit-q">${esc(c.question)}</div>
+        <div class="crit-anchor">${esc(c.computedNote)}</div>
       </div>
-      <div class="crit-q">${esc(c.question)}</div>
-      <div class="anchor">${esc(c.computedNote)}</div>
+      <div></div>
     </div>`;
   }
+  const score = Number(state.audit.scores[c.id] ?? 3);
   const delta = c.impact.kind === 'ebitda'
-    ? `up to −${pct(c.impact.maxHaircut, 0)} EBITDA`
-    : `up to −${c.impact.maxPenalty.toFixed(2)}x multiple`;
-  const s = Number(score ?? 3);
+    ? `worth up to ${pct(deltaFor(c), 0)} of EBITDA`
+    : `worth up to ${turns(deltaFor(c))} of multiple`;
   return `
   <div class="crit">
-    <div class="crit-head">
-      <div class="crit-name">${esc(c.id)} · ${esc(c.name)}</div>
-      <div class="delta">${delta}</div>
+    <div>
+      <div class="crit-name">${esc(c.name)}</div>
+      <div class="crit-q">${esc(c.question)}</div>
+      <div class="crit-anchor">${esc(c.anchors[score] ?? c.anchors[score < 3 ? 1 : 5])}</div>
     </div>
-    <div class="crit-q">${esc(c.question)}</div>
-    <div class="scale">
-      ${[1, 2, 3, 4, 5].map((n) => `<button data-act="score" data-id="${c.id}" data-score="${n}" class="${n === s ? 'on' : ''}">${n}</button>`).join('')}
-    </div>
-    <div class="anchor">${esc(c.anchors[s] ?? c.anchors[s < 3 ? 1 : 5])}</div>
-  </div>`;
-}
-
-function liveSummary(r) {
-  const gapBad = r.gap > 0;
-  return `
-  <div class="panel">
-    <div class="k" style="font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)">Live</div>
-    <table style="margin-top:10px">
-      <tr><td>Claimed EBITDA</td><td class="n">${money(r.claimedEbitda)}</td></tr>
-      <tr><td>Haircut</td><td class="n bad-t">−${pct(r.haircuts.appliedFraction)}</td></tr>
-      <tr><td><strong>Defensible EBITDA</strong></td><td class="n"><strong>${money(r.defensibleEbitda)}</strong></td></tr>
-      <tr><td>Ceiling</td><td class="n">${turns(r.ceiling)}</td></tr>
-      <tr><td>Penalty</td><td class="n bad-t">−${turns(r.penalties.total)}</td></tr>
-      <tr><td><strong>Achievable multiple</strong></td><td class="n"><strong>${turns(r.achievableMultiple)}</strong></td></tr>
-      <tr><td>Your price</td><td class="n">${money(r.askingPrice)}</td></tr>
-      <tr><td>Audit value</td><td class="n">${money(r.achievableValue)}</td></tr>
-      <tr><td>DSCR at your price</td><td class="n ${r.dscr.passes ? 'good-t' : 'bad-t'}">${turns(r.dscr.dscr)}</td></tr>
-    </table>
-    <div class="stat ${gapBad ? 'bad' : 'good'}" style="margin-top:14px">
-      <div class="k">${gapBad ? 'The gap' : 'Headroom'}</div>
-      <div class="v">${money(Math.abs(r.gap))}</div>
-      <div class="s">${gapBad ? 'between what you want and what you get' : 'you are asking below what the audit supports'}</div>
-    </div>
-  </div>`;
-}
-
-// ── Result ────────────────────────────────────────────────────────────────
-export function resultView() {
-  const r = runAudit(state.audit);
-  const name = state.audit.business.name || 'This business';
-  const gateFail = !r.dscr.passes;
-  const dscrPos = Math.min(100, (r.dscr.dscr / 3) * 100);
-  const floorPos = (DSCR_FLOOR / 3) * 100;
-
-  return `
-  <h2>${esc(name)} — what it is actually worth</h2>
-  <p class="lede">Two haircuts, both taken from your own figures. The first moves the earnings,
-  the second moves the multiple.</p>
-
-  <div class="grid g3">
-    ${stat('You are asking', money(r.askingPrice), `${turns(r.impliedMultipleAtAsking)} of defensible EBITDA`)}
-    ${stat('The audit says', money(r.achievableValue), `${money(r.defensibleEbitda)} × ${turns(r.achievableMultiple)}`)}
-    ${stat(r.gap > 0 ? 'The gap' : 'Headroom', money(Math.abs(r.gap)), r.gap > 0 ? 'you do not have' : 'you are leaving on the table', r.gap > 0 ? 'bad' : 'good')}
-  </div>
-
-  <div class="verdict ${gateFail ? 'bad' : 'good'}">
-    <h4>Your asking price implies a ${turns(r.dscr.dscr)} DSCR. The floor is ${turns(DSCR_FLOOR)}.</h4>
-    <p>${gateFail
-      ? `No bank funds this. No seller-financed buyer survives it. At your price a buyer faces
-         ${money(r.dscr.annualService)} a year of debt service against ${money(r.dscr.freeCashFlow)} of free cash flow.
-         The most a buyer could fund on this structure is <strong>${money(r.dscr.maxFundablePrice)}</strong>.
-         Your price is not high — it is unfundable. That is a structure problem, not a price problem.`
-      : `A buyer can service debt at this price: ${money(r.dscr.freeCashFlow)} of free cash flow against
-         ${money(r.dscr.annualService)} of annual debt service. The deal is fundable as structured.`}</p>
-    <div class="gauge">
-      <div class="gauge-track">
-        <div class="gauge-fill ${r.dscr.passes ? 'ok' : ''}" style="width:${dscrPos}%"></div>
-        <div class="gauge-mark" style="left:${floorPos}%"></div>
+    <div>
+      <div class="segs">
+        ${[1, 2, 3, 4, 5].map((n) => `<button data-act="score" data-id="${c.id}" data-score="${n}"
+          class="${n === score ? 'on' : ''}" aria-label="Score ${n} of 5">${n}</button>`).join('')}
       </div>
-      <div class="gauge-labels"><span>0.00x</span><span>floor ${turns(DSCR_FLOOR)}</span><span>3.00x+</span></div>
+      <div class="crit-delta">${delta}</div>
     </div>
-  </div>
-
-  <div class="grid g4">
-    ${stat('Deposit', money(r.dscr.deposit), `${pct(r.dscr.structure.depositPct, 0)} of price`)}
-    ${stat('Bank debt', money(r.dscr.bankDebt), `${pct(r.dscr.structure.bankRate, 1)} over ${r.dscr.structure.bankTermYears}y`)}
-    ${stat('Seller note', money(r.dscr.sellerNote), r.dscr.structure.sellerNoteInterestOnly ? 'interest-only' : `${r.dscr.structure.sellerNoteTermYears}y amortising`)}
-    ${stat('Annual debt service', money(r.dscr.annualService), `against ${money(r.dscr.freeCashFlow)} free cash`)}
-  </div>
-
-  <h3>Haircut 1 — claimed EBITDA to defensible EBITDA</h3>
-  <div class="panel scroll">
-    <table>
-      <thead><tr><th>Line</th><th>Basis</th><th class="n">Haircut</th><th class="n">Amount</th></tr></thead>
-      <tbody>
-        <tr><td colspan="3"><strong>Claimed EBITDA</strong></td><td class="n"><strong>${money(r.claimedEbitda)}</strong></td></tr>
-        ${r.haircuts.lines.map((l) => `
-          <tr>
-            <td>${esc(l.id)} · ${esc(l.name)}</td>
-            <td class="dim">${l.computed ? 'computed from your inputs' : `scored ${l.score}/5`}</td>
-            <td class="n bad-t">${l.appliedFraction > 0 ? '−' + pct(l.appliedFraction) : '—'}</td>
-            <td class="n bad-t">${l.appliedAmount > 0 ? '−' + money(l.appliedAmount) : '—'}</td>
-          </tr>`).join('')}
-        <tr><td colspan="2"><strong>Defensible EBITDA</strong></td>
-            <td class="n"><strong>−${pct(r.haircuts.appliedFraction)}</strong></td>
-            <td class="n"><strong>${money(r.defensibleEbitda)}</strong></td></tr>
-      </tbody>
-    </table>
-    ${r.haircuts.capApplied ? `<p class="hint">Raw haircut was ${pct(r.haircuts.rawFraction)}; capped at ${pct(MAX_COMBINED_EBITDA_HAIRCUT, 0)} and each line rescaled proportionally.</p>` : ''}
-  </div>
-
-  <h3>Haircut 2 — premium multiple to achievable multiple</h3>
-  <div class="panel scroll">
-    <table>
-      <thead><tr><th>Criterion</th><th>Pillar</th><th class="n">Score</th><th class="n">Available</th><th class="n">Penalty</th></tr></thead>
-      <tbody>
-        <tr><td colspan="4"><strong>Sector ceiling${r.sizePremium ? ` (incl. ${turns(r.sizePremium)} size premium)` : ''}</strong></td>
-            <td class="n"><strong>${turns(r.ceiling)}</strong></td></tr>
-        ${r.penalties.lines.map((l) => `
-          <tr>
-            <td>${esc(l.id)} · ${esc(l.name)}</td>
-            <td class="dim">${esc(PILLARS[l.pillar].name)}</td>
-            <td class="n">${l.score}/5</td>
-            <td class="n dim">${turns(l.maxPenalty)}</td>
-            <td class="n ${l.penalty > 0 ? 'bad-t' : 'dim'}">${l.penalty > 0 ? '−' + turns(l.penalty) : '—'}</td>
-          </tr>`).join('')}
-        <tr><td colspan="3"><strong>Achievable multiple</strong></td>
-            <td class="n"><strong>−${turns(r.penalties.total)}</strong></td>
-            <td class="n"><strong>${turns(r.achievableMultiple)}</strong></td></tr>
-      </tbody>
-    </table>
-    ${r.multipleFloored ? `<p class="hint">Penalties exceeded the ceiling; the multiple is held at the ${turns(MULTIPLE_FLOOR)} floor. Nothing trades below asset value.</p>` : ''}
-  </div>
-
-  <h3>Which ceiling binds</h3>
-  <div class="grid g2">
-    ${stat('Quality ceiling', money(r.achievableValue), 'what the business earns × what it deserves', r.binding === 'quality' ? 'bad' : '')}
-    ${stat('Fundability ceiling', money(r.dscr.maxFundablePrice), `most a buyer can service at ${turns(DSCR_FLOOR)}`, r.binding === 'fundability' ? 'bad' : '')}
-  </div>
-  <div class="verdict">
-    <h4>${r.binding === 'fundability'
-      ? 'Fundability binds. Cash, not quality, is what caps your price today.'
-      : 'Quality binds. The business is fundable at what it is worth — it just is not worth what you want.'}</h4>
-    <p>${r.binding === 'fundability'
-      ? `A buyer cannot service more than ${money(r.dscr.maxFundablePrice)} on this structure, even though the
-         business itself supports ${money(r.achievableValue)}. Lengthen the note, defer more, or take the
-         difference in earn-out — the price does not have to move, the structure does.`
-      : `Debt service is not your constraint. Every pound of extra price has to come from a better
-         business: a defensible earnings base and fewer reasons for a buyer to discount the multiple.`}</p>
-  </div>
-
-  <div class="actions">
-    <button data-act="goto" data-view="restructure">What closes the gap</button>
-    <button class="ghost" data-act="export">Export report (JSON)</button>
-    <button class="ghost" data-act="print">Print</button>
   </div>`;
 }
 
-// ── Restructure ───────────────────────────────────────────────────────────
-export function restructureView() {
+// ── Value ─────────────────────────────────────────────────────────────────
+export function valueView() {
+  const r = runAudit(state.audit);
+  const name = state.audit.business.name || 'The business';
+  const gapUp = r.gap > 0;
+
+  return `
+  <section>
+    <p class="eyebrow">${esc(name)}</p>
+    <h1 class="display" style="max-width:24ch">${gapUp ? 'The gap between your number and a buyer&rsquo;s' : 'You are asking below what this supports'}</h1>
+    <div class="figure xl ${gapUp ? 'is-critical' : 'is-good'}" style="margin:28px 0 12px">${money(Math.abs(r.gap))}</div>
+    <p class="lede">You are asking ${money(r.askingPrice)} — ${turns(r.impliedMultipleAtAsking)} of what the
+    earnings actually defend. The audit supports ${money(r.achievableValue)}.</p>
+    ${gapBar({ asking: r.askingPrice, achievable: r.achievableValue, fundable: r.dscr.maxFundablePrice })}
+  </section>
+
+  <section>
+    <h2 class="headline">Where it went</h2>
+    <p class="lede">Two haircuts, both taken from your own figures. The first moves the earnings.
+    The second moves the multiple.</p>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="between" style="margin-bottom:16px">
+        <div>
+          <p class="eyebrow" style="margin:0 0 6px">Haircut one · earnings</p>
+          <div class="figure lg">${money(r.defensibleEbitda)}</div>
+          <p class="small" style="margin:6px 0 0">defensible, from ${money(r.claimedEbitda)} claimed</p>
+        </div>
+        <div class="badge critical">−${pct(r.haircuts.appliedFraction)}</div>
+      </div>
+      ${bridgeBar({
+        total: r.claimedEbitda,
+        keep: r.defensibleEbitda,
+        keepLabel: 'Defensible',
+        cuts: r.haircuts.lines.map((l) => ({ label: l.name, value: l.appliedAmount })),
+      })}
+      ${r.haircuts.capApplied ? `<p class="hint">Raw haircut was ${pct(r.haircuts.rawFraction)}; capped at ${pct(config.ebitdaHaircutCap, 0)} and rescaled.</p>` : ''}
+    </div>
+
+    <div class="card">
+      <div class="between" style="margin-bottom:16px">
+        <div>
+          <p class="eyebrow" style="margin:0 0 6px">Haircut two · multiple</p>
+          <div class="figure lg">${turns(r.achievableMultiple)}</div>
+          <p class="small" style="margin:6px 0 0">achievable, from a ${turns(r.ceiling)} ceiling</p>
+        </div>
+        <div class="badge critical">−${turns(r.penalties.total)}</div>
+      </div>
+      ${bridgeBar({
+        total: r.ceiling,
+        keep: r.achievableMultiple,
+        keepLabel: 'Achievable',
+        cuts: r.penalties.lines.map((l) => ({ label: l.name, value: l.penalty })),
+        format: turns,
+      })}
+      ${r.multipleFloored ? `<p class="hint">Penalties exceeded the ceiling; held at the ${turns(config.multipleFloor)} floor.</p>` : ''}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="headline">Could a buyer even fund it?</h2>
+    <p class="lede">${r.dscr.passes
+      ? `Yes. ${money(r.dscr.freeCashFlow)} of free cash flow against ${money(r.dscr.annualService)} of annual debt service.`
+      : `No. At your price a buyer faces ${money(r.dscr.annualService)} a year of debt service against ${money(r.dscr.freeCashFlow)} of free cash flow.`}</p>
+    ${thresholdScale({ value: r.dscr.dscr, floor: config.dscrFloor, max: 3, label: 'DSCR at your asking price' })}
+    <div class="note ${r.dscr.passes ? 'good' : 'critical'}" style="margin:26px 0">
+      <p style="margin:0"><strong>Your asking price implies a ${turns(r.dscr.dscr)} DSCR. The floor is ${turns(config.dscrFloor)}.</strong>
+      ${r.dscr.passes
+        ? ' The deal is fundable as structured.'
+        : ` No bank funds this. No seller-financed buyer survives it. The most a buyer could fund on this
+            structure is ${money(r.dscr.maxFundablePrice)}. Your price is not high — it is unfundable.`}</p>
+    </div>
+    <div class="grid g4">
+      ${tile('Deposit', money(r.dscr.deposit), pct(r.dscr.structure.depositPct, 0))}
+      ${tile('Bank debt', money(r.dscr.bankDebt), `${pct(r.dscr.structure.bankRate, 1)} over ${r.dscr.structure.bankTermYears}y`)}
+      ${tile('Seller note', money(r.dscr.sellerNote), r.dscr.structure.sellerNoteInterestOnly ? 'interest-only' : `${r.dscr.structure.sellerNoteTermYears}y amortising`)}
+      ${tile('Debt service', money(r.dscr.annualService), 'every year')}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="headline">Which ceiling binds</h2>
+    <div class="grid g2">
+      ${tile('Quality ceiling', money(r.achievableValue), 'what it earns × what it deserves',
+        r.binding === 'quality' ? 'flag-critical' : '')}
+      ${tile('Fundability ceiling', money(r.dscr.maxFundablePrice), `most a buyer can service at ${turns(config.dscrFloor)}`,
+        r.binding === 'fundability' ? 'flag-critical' : '')}
+    </div>
+    <div class="note" style="margin-top:22px">
+      <p style="margin:0"><strong>${r.binding === 'fundability'
+        ? 'Cash binds, not quality.'
+        : 'Quality binds, not cash.'}</strong>
+      ${r.binding === 'fundability'
+        ? ` A buyer cannot service more than ${money(r.dscr.maxFundablePrice)} on this structure even though the
+            business supports ${money(r.achievableValue)}. Lengthen the note, defer more, take the difference in
+            earn-out — the price need not move, the structure must.`
+        : ' Debt service is not the constraint. Every extra pound of price has to come from a better business.'}</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="headline">What each C is worth</h2>
+    <p class="lede">Value recovered if that pillar alone reached five and the other two stayed exactly
+    as they are. They deliberately do not sum: earnings times multiple means the three compound, so
+    fixing all three is worth <strong>more</strong> than the three figures added together.</p>
+    ${pillarBars(pillarUplift(state.audit).map((u) => ({
+      name: PILLARS[u.pillar].name,
+      sub: `${u.score.toFixed(1)} / 5 today${u.multiple > 0 ? ` · +${turns(u.multiple)} of multiple` : ''}${u.ebitda > 0 ? ` · +${money(u.ebitda)} of earnings` : ''}`,
+      value: u.value,
+      color: `var(--${u.pillar})`,
+    })))}
+    ${threeCStrip(r, { linked: true })}
+  </section>
+
+  <section class="actions">
+    <button class="btn" data-act="goto" data-view="plan">What closes the gap</button>
+    <button class="btn quiet" data-act="export">Export report</button>
+    <button class="btn quiet" data-act="print">Print</button>
+  </section>`;
+}
+
+// ── Plan ──────────────────────────────────────────────────────────────────
+export function planView() {
   const plan = remediationPlan(state.audit);
   const traj = restructureTrajectory(state.audit);
   const base = plan.base;
   const max = Math.max(...plan.items.map((i) => i.fullUplift), 1);
+  const top3 = plan.items.slice(0, 3);
 
   return `
-  <h2>Restructure</h2>
-  <p class="lede">The audit tells a seller what the business is worth today. This prices every fix,
-  so the conversation stops being “your price is wrong” and becomes “here is the sequence”.</p>
+  <section>
+    <p class="eyebrow">The plan</p>
+    <h1 class="display">Every fix, priced.</h1>
+    <p class="lede">The audit says what the business is worth today. This says what each fix is worth,
+    so the conversation stops being “your price is wrong” and becomes “here is the sequence”.</p>
+    ${trajectory(traj.map((t) => ({ label: t.label, value: t.result.achievableValue })))}
+    <p class="small">Horizons assume the workstreams run in parallel and every criterion reachable inside the
+    window lands at 5. It is the ceiling of the plan, not a forecast.</p>
+  </section>
 
-  <div class="grid g3">
-    ${traj.map((t) => stat(t.label, money(t.result.achievableValue),
-      `${money(t.result.defensibleEbitda)} × ${turns(t.result.achievableMultiple)}`,
-      t.months === 24 ? 'good' : '')).join('')}
-  </div>
-  <p class="hint">Horizons assume the workstreams run in parallel and every criterion reachable inside the
-  window lands at 5. It is the ceiling of the plan, not a forecast.</p>
+  <section>
+    <div class="grid g3">
+      ${tile('Value today', money(base.achievableValue), `${money(base.defensibleEbitda)} × ${turns(base.achievableMultiple)}`)}
+      ${tile('Total recoverable', money(plan.totalRecoverable), 'doing all of it, not the sum of the parts', 'flag-good')}
+      ${tile('Still short of your ask',
+        money(Math.max(0, base.askingPrice - base.achievableValue - plan.totalRecoverable)),
+        base.askingPrice - base.achievableValue - plan.totalRecoverable > 0 ? 'the price has to move too' : 'the ask is reachable')}
+    </div>
+  </section>
 
-  <div class="grid g3" style="margin-top:18px">
-    ${stat('Value today', money(base.achievableValue), '')}
-    ${stat('Total recoverable', money(plan.totalRecoverable), 'if every open criterion reaches 5', 'good')}
-    ${stat('Still short of your ask', money(Math.max(0, base.askingPrice - base.achievableValue - plan.totalRecoverable)),
-      base.askingPrice - base.achievableValue - plan.totalRecoverable > 0 ? 'the price has to move too' : 'the ask is reachable', '')}
-  </div>
+  ${top3.length ? `
+  <section>
+    <h2 class="headline">Start here</h2>
+    <p class="lede">Ranked by value recovered per month of work, weighted by difficulty. The first three
+    recover ${money(top3.reduce((s, i) => s + i.fullUplift, 0))} in
+    ${Math.max(...top3.map((i) => i.months))} months if run in parallel.</p>
+    <div class="grid g3">
+      ${top3.map((i) => `
+        <div class="pillar tile" data-pillar="${i.pillar}">
+          <div class="k" style="display:flex;align-items:center;gap:7px"><span class="dot"></span>${esc(PILLARS[i.pillar].name)}</div>
+          <div style="font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-top:10px">${esc(i.name)}</div>
+          <div class="v is-good" style="font-size:24px">${money(i.fullUplift)}</div>
+          <div class="s">${i.currentScore}/5 today · ${i.months} months</div>
+        </div>`).join('')}
+    </div>
+  </section>` : ''}
 
-  <h3>Every fix, priced and sequenced</h3>
-  <p class="hint" style="margin-bottom:12px">Ranked by value recovered per month of work, weighted by difficulty.
-  Cheap and fast first — a seller with a horizon needs a sequence, not a wish list.</p>
-  <div class="panel scroll">
-    <table>
-      <thead><tr>
-        <th></th><th>Fix</th><th>Pillar</th><th class="n">Now</th>
-        <th class="n">+1 point</th><th class="n">To 5</th><th class="n">Months</th><th style="width:150px">Value</th>
-      </tr></thead>
-      <tbody>
-        ${plan.items.map((i, n) => `
-          <tr>
-            <td class="n dim">${n + 1}</td>
-            <td><strong>${esc(i.id)} · ${esc(i.name)}</strong>
-                <div class="hint" style="margin-top:3px">${esc(i.anchorNow)}</div></td>
-            <td class="dim">${esc(PILLARS[i.pillar].name)}</td>
-            <td class="n">${i.currentScore}/5</td>
-            <td class="n">${moneyShort(i.nextStepUplift)}</td>
-            <td class="n good-t">${moneyShort(i.fullUplift)}</td>
-            <td class="n">${i.months}</td>
-            <td><div class="bar good"><i style="width:${(i.fullUplift / max) * 100}%"></i></div></td>
-          </tr>`).join('')}
-        ${plan.items.length === 0 ? '<tr><td colspan="8" class="dim">Nothing left to fix — every criterion is already at 5.</td></tr>' : ''}
-      </tbody>
-    </table>
-  </div>
-
-  <h3>The mandate</h3>
-  <div class="verdict">
-    <h4>${base.binding === 'fundability'
-      ? 'Structure first, then quality.'
-      : 'Quality first — the structure already works.'}</h4>
-    <p>${plan.items.length
-      ? `The first three fixes recover ${money(plan.items.slice(0, 3).reduce((s, i) => s + i.fullUplift, 0))}
-         and take ${Math.max(...plan.items.slice(0, 3).map((i) => i.months))} months if run in parallel.
-         The whole programme recovers ${money(plan.totalRecoverable)}.`
-      : 'This business is already prepared. The work now is process, not remediation.'}</p>
-  </div>`;
+  <section>
+    <h2 class="headline">Everything else</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th>Fix</th><th>Pillar</th><th class="n">Now</th><th class="n">+1 point</th>
+          <th class="n">To 5</th><th class="n">Months</th><th style="width:120px"></th>
+        </tr></thead>
+        <tbody>
+          ${plan.items.map((i) => `
+            <tr>
+              <td><strong>${esc(i.name)}</strong><div class="hint" style="margin-top:3px">${esc(i.anchorNow)}</div></td>
+              <td class="muted">${esc(PILLARS[i.pillar].name)}</td>
+              <td class="n">${i.currentScore}/5</td>
+              <td class="n muted">${moneyShort(i.nextStepUplift)}</td>
+              <td class="n"><strong>${moneyShort(i.fullUplift)}</strong></td>
+              <td class="n muted">${i.months}</td>
+              <td>${rankBar(i.fullUplift, max)}</td>
+            </tr>`).join('')}
+          ${plan.items.length === 0 ? '<tr><td colspan="7" class="muted">Nothing left to fix — every criterion is already at 5.</td></tr>' : ''}
+        </tbody>
+      </table>
+    </div>
+  </section>`;
 }
 
 // ── Roll-up ───────────────────────────────────────────────────────────────
@@ -375,252 +429,320 @@ export function rollupView() {
   const i = state.rollup;
   const r = runRollup(i);
   const cap = absorptionCapacity(r);
-  const maxWf = Math.max(...r.waterfall.map((w) => Math.abs(w.value)), 1);
-
-  const sectorOptions = SECTORS.map(
-    (s) => `<option value="${s.id}" ${s.id === i.sector ? 'selected' : ''}>${esc(s.name)} — ${s.ceiling.toFixed(1)}x</option>`,
-  ).join('');
 
   return `
-  <h2>Roll-up</h2>
-  <p class="lede">Buy small at a small-business multiple, sell the group at a group multiple. The spread is
-  the return; the debt is what makes it a return on very little equity. Every deal here is tested against the
-  same ${turns(DSCR_FLOOR)} floor the audit uses.</p>
+  <section>
+    <p class="eyebrow">The roll-up</p>
+    <h1 class="display">Buy small. Sell big. Keep the spread.</h1>
+    <p class="lede">Small businesses trade at small-business multiples and groups trade at group multiples.
+    The spread is the return; debt is what makes it a return on very little equity. Every deal here is
+    tested against the same ${turns(config.dscrFloor)} floor the audit uses.</p>
+    ${multipleSpread({ entry: r.blendedEntryMultiple, exit: r.exitMultiple })}
+  </section>
 
-  <div class="split">
-    <div>
-      <h3>Platform</h3>
-      <div class="panel">
-        <div class="grid g3">
-          <div class="field"><label>Sector</label>
-            <select data-rollup="sector" data-kind="text">${sectorOptions}</select></div>
-          <div class="field"><label>Platform EBITDA</label>
-            <input data-rollup="platformEbitda" data-kind="number" value="${i.platformEbitda}" /></div>
-          <div class="field"><label>Entry multiple</label>
-            <input data-rollup="platformMultiple" data-kind="number" value="${i.platformMultiple}" /></div>
-        </div>
-      </div>
-
-      <h3>Bolt-ons</h3>
-      <div class="panel">
-        <div class="grid g4">
-          <div class="field"><label>How many</label>
-            <input data-rollup="boltOnCount" data-kind="number" value="${i.boltOnCount}" /></div>
-          <div class="field"><label>EBITDA each</label>
-            <input data-rollup="boltOnEbitda" data-kind="number" value="${i.boltOnEbitda}" /></div>
-          <div class="field"><label>Entry multiple</label>
-            <input data-rollup="boltOnMultiple" data-kind="number" value="${i.boltOnMultiple}" /></div>
-          <div class="field"><label>Synergy %</label>
-            <input data-rollup="synergyPct" data-kind="rate" value="${(i.synergyPct * 100).toFixed(0)}" /></div>
-        </div>
-        <p class="hint">Synergy is cost taken out of each bolt-on, as a percentage of its EBITDA. It is the
-        assumption buyers get wrong most often — model it low and be surprised upward.</p>
-      </div>
-
-      <h3>Funding and hold</h3>
-      <div class="panel">
-        <div class="grid g4">
-          <div class="field"><label>Deposit %</label>
-            <input data-rollup="structure.depositPct" data-kind="rate" value="${(i.structure.depositPct * 100).toFixed(0)}" /></div>
-          <div class="field"><label>Seller note %</label>
-            <input data-rollup="structure.sellerNotePct" data-kind="rate" value="${(i.structure.sellerNotePct * 100).toFixed(0)}" /></div>
-          <div class="field"><label>Bank rate %</label>
-            <input data-rollup="structure.bankRate" data-kind="rate" value="${(i.structure.bankRate * 100).toFixed(1)}" /></div>
-          <div class="field"><label>Hold (years)</label>
-            <input data-rollup="holdingYears" data-kind="number" value="${i.holdingYears}" /></div>
-        </div>
-        <label class="check">
-          <input type="checkbox" data-rollup="structure.sellerNoteInterestOnly" data-kind="bool"
-                 ${i.structure.sellerNoteInterestOnly ? 'checked' : ''} />
-          <span>Seller notes interest-only with a bullet</span>
-        </label>
-      </div>
-
-      <h3>Arbitrage</h3>
-      <div class="panel scroll">
-        <table>
-          <thead><tr><th>Source of enterprise value</th><th class="n">Amount</th><th style="width:170px"></th></tr></thead>
-          <tbody>
-            ${r.waterfall.map((w) => `
-              <tr><td>${esc(w.label)}</td><td class="n">${money(w.value)}</td>
-                <td><div class="bar ${w.value < 0 ? 'bad' : 'good'}"><i style="width:${(Math.abs(w.value) / maxWf) * 100}%"></i></div></td></tr>`).join('')}
-            <tr><td><strong>Enterprise value at exit</strong></td><td class="n"><strong>${money(r.exitEnterpriseValue)}</strong></td><td></td></tr>
-            <tr><td>Debt outstanding at exit</td><td class="n bad-t">−${money(r.debtAtExit)}</td><td></td></tr>
-            <tr><td><strong>Equity value at exit</strong></td><td class="n"><strong>${money(r.exitEquityValue)}</strong></td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Every deal, stress-tested</h3>
-      <div class="panel scroll">
-        <table>
-          <thead><tr><th>Deal</th><th class="n">EBITDA</th><th class="n">Price</th><th class="n">Equity</th>
-            <th class="n">Debt service</th><th class="n">DSCR</th></tr></thead>
-          <tbody>
-            <tr><td>Platform</td><td class="n">${money(i.platformEbitda)}</td><td class="n">${money(r.platform.price)}</td>
-              <td class="n">${money(r.platform.deposit)}</td><td class="n">${money(r.platform.service)}</td>
-              <td class="n ${r.platform.passes ? 'good-t' : 'bad-t'}">${turns(r.platform.dscr)}</td></tr>
-            ${r.boltOns.map((b) => `
-              <tr><td>Bolt-on ${b.index}</td><td class="n">${money(b.ebitda)}</td><td class="n">${money(b.price)}</td>
-                <td class="n">${money(b.deposit)}</td><td class="n">${money(b.service)}</td>
-                <td class="n ${b.passes ? 'good-t' : 'bad-t'}">${turns(b.dscr)}</td></tr>`).join('')}
-            <tr><td><strong>Group</strong></td><td class="n"><strong>${money(r.combinedEbitda)}</strong></td>
-              <td class="n"><strong>${money(r.totalPrice)}</strong></td><td class="n"><strong>${money(r.equityInvested)}</strong></td>
-              <td class="n"><strong>${money(r.group.service)}</strong></td>
-              <td class="n ${r.group.passes ? 'good-t' : 'bad-t'}"><strong>${turns(r.group.dscr)}</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
+  <section>
+    <div class="grid g4">
+      ${tile('Equity in', money(r.equityInvested), 'deposits across every deal')}
+      ${tile('Equity out', money(r.exitEquityValue), `${r.moic.toFixed(2)}x over ${i.holdingYears} years`, 'flag-good')}
+      ${tile('Annualised', pct(r.irr, 1), 'on invested equity')}
+      ${tile('Group DSCR', turns(r.group.dscr), r.group.passes ? 'serviceable' : 'below the floor',
+        r.group.passes ? 'flag-good' : 'flag-critical')}
     </div>
+    ${!r.group.passes ? `
+      <div class="note critical" style="margin-top:22px">
+        <p style="margin:0"><strong>This does not fund as structured.</strong>
+        Group cash flow covers ${turns(r.group.dscr)} of debt service against a ${turns(config.dscrFloor)} floor.
+        Longer terms, more deferral, or fewer deals — the same three levers a seller gets.</p>
+      </div>` : ''}
+    ${r.cashShortfall > 0 ? `
+      <div class="note critical" style="margin-top:16px">
+        <p style="margin:0"><strong>The amortisation schedule outruns the cash by ${money(r.cashShortfall)}.</strong>
+        Debt is held flat to that extent rather than pretending it is repaid.</p>
+      </div>` : ''}
+  </section>
 
-    <div class="sticky">
-      <div class="grid">
-        ${stat('Blended entry', turns(r.blendedEntryMultiple), `${money(r.totalPrice)} for ${money(r.acquiredEbitda)} EBITDA`)}
-        ${stat('Exit multiple', turns(r.exitMultiple), 'sector ceiling plus size premium')}
-        ${stat('Arbitrage', turns(r.arbitrage), 'turns of multiple created by scale', r.arbitrage > 0 ? 'good' : 'bad')}
-        ${stat('Equity in', money(r.equityInvested), 'deposits across every deal')}
-        ${stat('Equity out', money(r.exitEquityValue), `${r.moic.toFixed(2)}x over ${i.holdingYears} years`, 'hero')}
-        ${stat('Annualised', pct(r.irr, 1), 'on invested equity')}
-        ${stat('Group DSCR', turns(r.group.dscr), r.group.passes ? 'serviceable' : 'below the floor — this does not fund',
-          r.group.passes ? 'good' : 'bad')}
-        ${stat('Next bolt-on capacity', money(cap.price), `${money(cap.ebitda)} of EBITDA before the floor breaks`)}
-      </div>
-      ${r.cashShortfall > 0 ? `
-        <div class="verdict bad" style="margin-top:14px">
-          <h4>The schedule outruns the cash</h4>
-          <p>Scheduled amortisation over ${i.holdingYears} years exceeds what the group generates by
-          ${money(r.cashShortfall)}. Debt is held flat to that extent rather than pretending it is repaid —
-          this structure needs longer terms, more deferral, or fewer deals.</p>
-        </div>` : ''}
+  <section>
+    <h2 class="headline">The deals</h2>
+    <div class="grid g3">
+      <div class="field"><label>Sector</label>
+        <select data-rollup="sector" data-kind="text">
+          ${SECTORS.map((x) => `<option value="${x.id}" ${x.id === i.sector ? 'selected' : ''}>${esc(x.name)} — ${ceilingFor(x.id).toFixed(1)}x</option>`).join('')}
+        </select></div>
+      <div class="field"><label>Platform EBITDA</label>
+        <input data-rollup="platformEbitda" data-kind="number" value="${i.platformEbitda}" inputmode="numeric" /></div>
+      <div class="field"><label>Platform entry multiple</label>
+        <input data-rollup="platformMultiple" data-kind="number" value="${i.platformMultiple}" inputmode="decimal" /></div>
+      <div class="field"><label>Bolt-ons</label>
+        <input data-rollup="boltOnCount" data-kind="number" value="${i.boltOnCount}" inputmode="numeric" /></div>
+      <div class="field"><label>EBITDA each</label>
+        <input data-rollup="boltOnEbitda" data-kind="number" value="${i.boltOnEbitda}" inputmode="numeric" /></div>
+      <div class="field"><label>Bolt-on entry multiple</label>
+        <input data-rollup="boltOnMultiple" data-kind="number" value="${i.boltOnMultiple}" inputmode="decimal" /></div>
     </div>
-  </div>`;
+    <details class="card" style="margin-top:16px">
+      <summary style="cursor:pointer;font-weight:600;font-size:15px">Synergies, funding and hold</summary>
+      <div class="grid g4" style="margin-top:18px">
+        <div class="field"><label>Synergy %</label>
+          <input data-rollup="synergyPct" data-kind="rate" value="${(i.synergyPct * 100).toFixed(0)}" /></div>
+        <div class="field"><label>Deposit %</label>
+          <input data-rollup="structure.depositPct" data-kind="rate" value="${(i.structure.depositPct * 100).toFixed(0)}" /></div>
+        <div class="field"><label>Seller note %</label>
+          <input data-rollup="structure.sellerNotePct" data-kind="rate" value="${(i.structure.sellerNotePct * 100).toFixed(0)}" /></div>
+        <div class="field"><label>Bank rate %</label>
+          <input data-rollup="structure.bankRate" data-kind="rate" value="${(i.structure.bankRate * 100).toFixed(1)}" /></div>
+        <div class="field"><label>Hold (years)</label>
+          <input data-rollup="holdingYears" data-kind="number" value="${i.holdingYears}" /></div>
+        <div class="field"><label>Maintenance capex %</label>
+          <input data-rollup="maintenanceCapexPct" data-kind="rate" value="${(i.maintenanceCapexPct * 100).toFixed(0)}" /></div>
+      </div>
+      <label class="switch" style="margin-top:16px">
+        <input type="checkbox" data-rollup="structure.sellerNoteInterestOnly" data-kind="bool"
+               ${i.structure.sellerNoteInterestOnly ? 'checked' : ''} />
+        <span>Seller notes interest-only with a bullet</span>
+      </label>
+      <p class="hint">Synergy is cost taken out of each bolt-on as a share of its EBITDA. It is the assumption
+      buyers get wrong most often — model it low and be surprised upward.</p>
+    </details>
+  </section>
+
+  <section>
+    <h2 class="headline">Where the value comes from</h2>
+    <div class="scroll">
+      <table>
+        <tbody>
+          ${r.waterfall.map((w) => `
+            <tr><td>${esc(w.label)}</td><td class="n">${money(w.value)}</td>
+              <td style="width:160px">${rankBar(Math.abs(w.value), Math.max(...r.waterfall.map((x) => Math.abs(x.value)), 1))}</td></tr>`).join('')}
+          <tr class="row-total"><td>Enterprise value at exit</td><td class="n">${money(r.exitEnterpriseValue)}</td><td></td></tr>
+          <tr><td class="muted">Debt outstanding at exit</td><td class="n is-critical">−${money(r.debtAtExit)}</td><td></td></tr>
+          <tr class="row-total"><td>Equity value at exit</td><td class="n">${money(r.exitEquityValue)}</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="headline">Every deal, stress-tested</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Deal</th><th class="n">EBITDA</th><th class="n">Price</th><th class="n">Equity</th>
+          <th class="n">Debt service</th><th class="n">DSCR</th></tr></thead>
+        <tbody>
+          <tr><td>Platform</td><td class="n">${money(i.platformEbitda)}</td><td class="n">${money(r.platform.price)}</td>
+            <td class="n">${money(r.platform.deposit)}</td><td class="n">${money(r.platform.service)}</td>
+            <td class="n ${r.platform.passes ? 'is-good' : 'is-critical'}">${turns(r.platform.dscr)}</td></tr>
+          ${r.boltOns.map((b) => `
+            <tr><td class="muted">Bolt-on ${b.index}</td><td class="n">${money(b.ebitda)}</td><td class="n">${money(b.price)}</td>
+              <td class="n">${money(b.deposit)}</td><td class="n">${money(b.service)}</td>
+              <td class="n ${b.passes ? 'is-good' : 'is-critical'}">${turns(b.dscr)}</td></tr>`).join('')}
+          <tr class="row-total"><td>Group</td><td class="n">${money(r.combinedEbitda)}</td><td class="n">${money(r.totalPrice)}</td>
+            <td class="n">${money(r.equityInvested)}</td><td class="n">${money(r.group.service)}</td>
+            <td class="n ${r.group.passes ? 'is-good' : 'is-critical'}">${turns(r.group.dscr)}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small" style="margin-top:16px">Next bolt-on capacity before the floor breaks:
+    <strong>${money(cap.price)}</strong> of price, ${money(cap.ebitda)} of EBITDA,
+    ${money(cap.equityNeeded)} of equity.</p>
+  </section>`;
 }
 
-// ── Criteria bank ─────────────────────────────────────────────────────────
-export function bankView() {
+// ── Tune ──────────────────────────────────────────────────────────────────
+export function tuneView() {
+  const drift = tuningSummary();
   return `
-  <h2>Criteria bank</h2>
-  <p class="lede">Twenty criteria, the delta each one carries, and where that number comes from.
-  The deltas are the part that has to be defensible — if they cannot be justified on a call, the tool
-  becomes a liability the first time a seller quotes it back.</p>
+  <section>
+    <p class="eyebrow">Tuning</p>
+    <h1 class="display">The numbers, not the criteria.</h1>
+    <p class="lede">The criteria are uncontroversial. The deltas are the risk — if one cannot be justified
+    on a call, the tool becomes a liability the first time a seller quotes it back. Every row carries the
+    reasoning behind its number. Change any of them and the audit, the plan and the roll-up all move.</p>
+    ${drift.count > 0 ? `
+      <div class="note" style="margin-bottom:22px">
+        <p style="margin:0"><strong>${drift.count} value${drift.count === 1 ? '' : 's'} tuned away from the shipped defaults.</strong>
+        <button class="btn quiet tiny" data-act="reset-config" style="margin-left:10px">Reset all</button></p>
+      </div>` : ''}
+  </section>
 
-  <div class="verdict">
-    <h4>Review this, not the criteria</h4>
-    <p>The criteria are uncontroversial. The <em>numbers</em> are the risk. Every row below carries a
-    “why this number” justification so a review is agreeing or disagreeing with a stated position rather
-    than with a black box. Sector ceilings are marked <span class="flag">provisional</span> and are not
-    signed off.</p>
-  </div>
+  <section>
+    <h2 class="headline">Bounds</h2>
+    <div class="grid g3">
+      <div class="field"><label>DSCR floor</label>
+        <input data-config="dscrFloor" data-kind="number" value="${config.dscrFloor}" inputmode="decimal" />
+        <p class="hint">Below this, no lender underwrites. Default ${DEFAULT_CONFIG.dscrFloor}.</p></div>
+      <div class="field"><label>Multiple floor</label>
+        <input data-config="multipleFloor" data-kind="number" value="${config.multipleFloor}" inputmode="decimal" />
+        <p class="hint">The worst business the engine will price. Default ${DEFAULT_CONFIG.multipleFloor}.</p></div>
+      <div class="field"><label>Combined EBITDA haircut cap %</label>
+        <input data-config="ebitdaHaircutCap" data-kind="rate" value="${(config.ebitdaHaircutCap * 100).toFixed(0)}" />
+        <p class="hint">Lines rescale proportionally above this. Default ${pct(DEFAULT_CONFIG.ebitdaHaircutCap, 0)}.</p></div>
+    </div>
+  </section>
 
-  ${['credibility', 'capital', 'closing'].map((pid) => {
-    const p = PILLARS[pid];
-    const items = criteriaForPillar(pid);
-    return `
-    <h3>${esc(p.name)} — ${esc(p.sellSide)}</h3>
-    <p class="hint" style="margin:-6px 0 12px;max-width:74ch">
-      <strong>Buy-side:</strong> ${esc(p.buySide)} &nbsp;·&nbsp; <strong>Sell-side:</strong> ${esc(p.blurb)}</p>
-    <div class="panel scroll">
+  <section>
+    <h2 class="headline">Sector ceilings</h2>
+    <p class="lede">A physio clinic and an electrical contractor do not share a premium multiple. These are
+    placeholders until they are replaced with real ranges for the core verticals.</p>
+    <div class="scroll">
       <table>
-        <thead><tr><th style="width:52px">#</th><th>Criterion</th><th>Score 1</th><th>Score 5</th>
-          <th class="n">Delta</th><th style="width:30%">Why this number</th></tr></thead>
+        <thead><tr><th>Sector</th><th class="n" style="width:140px">Ceiling</th><th class="n" style="width:110px">Shipped</th><th></th></tr></thead>
         <tbody>
-          ${items.map((c) => `
+          ${SECTORS.map((s) => `
             <tr>
-              <td class="dim">${esc(c.id)}</td>
-              <td><strong>${esc(c.name)}</strong><div class="hint">${esc(c.question)}</div></td>
-              <td class="dim">${esc(c.anchors[1])}</td>
-              <td class="dim">${esc(c.anchors[5])}</td>
-              <td class="n">${c.impact.kind === 'ebitda'
-                ? `−${pct(c.impact.maxHaircut, 0)}<div class="hint">EBITDA</div>`
-                : c.impact.kind === 'multiple'
-                  ? `−${c.impact.maxPenalty.toFixed(2)}x<div class="hint">multiple</div>`
-                  : `<span class="flag">${c.impact.target === 'gate' ? 'gate' : 'computed'}</span>`}</td>
-              <td class="hint">${esc(c.why)}</td>
+              <td>${esc(s.name)} ${isSectorTuned(s.id) ? '<span class="badge warning">tuned</span>' : '<span class="badge">provisional</span>'}</td>
+              <td class="n"><input data-config="ceilings.${s.id}" data-kind="number" value="${ceilingFor(s.id)}"
+                    style="text-align:right" inputmode="decimal" /></td>
+              <td class="n muted">${s.ceiling.toFixed(1)}x</td>
+              <td class="n">${isSectorTuned(s.id) ? `<button class="btn quiet tiny" data-act="clear-config" data-path="ceilings.${s.id}">Reset</button>` : ''}</td>
             </tr>`).join('')}
         </tbody>
       </table>
-    </div>`;
-  }).join('')}
+    </div>
+  </section>
 
-  <h3>Bounds</h3>
-  <div class="grid g3">
-    ${stat('Combined EBITDA haircut cap', pct(MAX_COMBINED_EBITDA_HAIRCUT, 0), 'lines rescale proportionally above this')}
-    ${stat('Multiple floor', turns(MULTIPLE_FLOOR), 'the worst business the engine will price')}
-    ${stat('Worst case', `${pct(MAX_COMBINED_EBITDA_HAIRCUT, 0)} · ${turns(MULTIPLE_FLOOR)}`, 'half the claimed earnings at the floor multiple')}
-  </div>`;
+  ${['credibility', 'capital', 'closing'].map((pid) => {
+    const p = PILLARS[pid];
+    return `
+    <section class="pillar" data-pillar="${pid}">
+      <h2 class="headline" style="display:flex;align-items:center;gap:10px"><span class="dot"></span>${esc(p.name)}</h2>
+      <p class="lede" style="margin-bottom:20px">${esc(p.blurb)}</p>
+      <div class="scroll">
+        <table>
+          <thead><tr>
+            <th style="width:24%">Criterion</th><th>Score 1</th><th>Score 5</th>
+            <th class="n" style="width:118px">Delta</th><th style="width:26%">Why this number</th><th></th>
+          </tr></thead>
+          <tbody>
+            ${criteriaForPillar(pid).map((c) => {
+              const computed = c.impact.kind === 'computed';
+              return `
+              <tr>
+                <td><strong>${esc(c.name)}</strong>
+                  <div class="hint">${esc(c.question)}</div></td>
+                <td class="muted">${esc(c.anchors[1])}</td>
+                <td class="muted">${esc(c.anchors[5])}</td>
+                <td class="n">${computed
+                  ? `<span class="badge">${c.impact.target === 'gate' ? 'gate' : 'computed'}</span>`
+                  : `<input data-config="deltas.${c.id}" data-kind="${c.impact.kind === 'ebitda' ? 'rate' : 'number'}"
+                       value="${c.impact.kind === 'ebitda' ? (deltaFor(c) * 100).toFixed(0) : deltaFor(c)}"
+                       style="text-align:right" inputmode="decimal" />
+                     <div class="hint" style="text-align:right">${c.impact.kind === 'ebitda' ? '% of EBITDA' : 'turns'} · was ${c.impact.kind === 'ebitda' ? pct(defaultDeltaFor(c), 0) : turns(defaultDeltaFor(c))}</div>`}</td>
+                <td class="hint">${esc(c.why)}</td>
+                <td class="n">${!computed && isTuned(c.id) ? `<button class="btn quiet tiny" data-act="clear-config" data-path="deltas.${c.id}">Reset</button>` : ''}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>`;
+  }).join('')}`;
 }
 
 // ── Method ────────────────────────────────────────────────────────────────
 export function methodView() {
   return `
-  <h2>Method</h2>
-  <p class="lede">What the engine does, what it assumes, and what has not been signed off.</p>
+  <section>
+    <p class="eyebrow">Method</p>
+    <h1 class="display">What it does, and what it assumes.</h1>
+    <div class="note" style="margin-bottom:32px">
+      <p style="margin:0;font-size:17px">“A lot of times sellers haven’t set up properly to maximise the
+      value they get when they exit.”</p>
+    </div>
+  </section>
 
-  <div class="quote">“A lot of times sellers haven’t set up properly to maximise the value they get
-  when they exit.”</div>
-
-  <h3>The two haircuts</h3>
-  <div class="panel">
-    <pre class="num" style="margin:0;white-space:pre-wrap;font-size:13px;line-height:1.7">
-Haircut 1 — EBITDA:    claimed EBITDA → defensible EBITDA
-   owner replacement cost, related-party rent, one-offs,
+  <section>
+    <h2 class="headline">The two haircuts</h2>
+    <div class="card">
+      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">Haircut 1 — EBITDA:    claimed EBITDA → defensible EBITDA
+   owner replacement cost, related-party rent, one-off add-backs,
    personal expenses, unrecorded maintenance capex
-   combined haircut capped at ${pct(MAX_COMBINED_EBITDA_HAIRCUT, 0)}
+   combined haircut capped at ${pct(config.ebitdaHaircutCap, 0)}
 
 Haircut 2 — MULTIPLE:  premium ceiling → achievable multiple
-   owner dependency, revenue quality, cash rhythm,
-   management depth, concentration, assignability
-   floored at ${turns(MULTIPLE_FLOOR)}
+   owner dependency, revenue quality, cash rhythm, management
+   depth, concentration, assignability
+   floored at ${turns(config.multipleFloor)}
 
 value = defensible EBITDA × achievable multiple
-gap   = asking price − value</pre>
-  </div>
+gap   = asking price − value</p>
+    </div>
+  </section>
 
-  <h3>Scoring</h3>
-  <p class="lede">A self-scored criterion applies its delta proportionally: <span class="num">(5 − score) ÷ 4</span>.
-  Score 5 costs nothing, score 1 costs the full delta, score 3 costs half. Two criteria are not self-scored —
-  the owner salary add-back and DSCR are computed from the seller’s own inputs, because those are the two
-  a seller most wants to argue with.</p>
+  <section>
+    <h2 class="headline">Scoring</h2>
+    <p class="lede">A self-scored criterion applies its delta proportionally: <span class="mono">(5 − score) ÷ 4</span>.
+    Five costs nothing, one costs the full delta, three costs half.</p>
+    <p class="body">Two criteria are <strong>not</strong> self-scored. The owner salary add-back and DSCR are computed
+    from the seller’s own inputs, because those are the two a seller most wants to argue with.</p>
+  </section>
 
-  <h3>The Capital gate</h3>
-  <div class="panel">
-    <pre class="num" style="margin:0;white-space:pre-wrap;font-size:13px;line-height:1.7">
-free cash flow  = (defensible EBITDA − maintenance capex) × (1 − tax)
-debt service    = amortising bank tranche + seller note
-DSCR            = free cash flow ÷ debt service
-floor           = ${turns(DSCR_FLOOR)}
-max fundable    = free cash flow ÷ (floor × debt service per unit of price)</pre>
-  </div>
-  <p class="lede">Tax is applied to EBITDA less maintenance capex rather than to taxable profit after
-  interest. That is deliberately conservative and it is stated here rather than buried: it understates
-  cash flow slightly, which is the right direction for a test a seller is going to be shown.</p>
+  <section>
+    <h2 class="headline">The Capital gate</h2>
+    <div class="card">
+      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">free cash flow = (defensible EBITDA − maintenance capex) × (1 − tax)
+debt service   = amortising bank tranche + seller note
+DSCR           = free cash flow ÷ debt service
+floor          = ${turns(config.dscrFloor)}
+max fundable   = free cash flow ÷ (floor × debt service per unit of price)</p>
+    </div>
+    <p class="body" style="margin-top:20px">Tax is applied to EBITDA less maintenance capex rather than to taxable
+    profit after interest. That is deliberately conservative, and it is stated here rather than buried: it
+    understates cash flow slightly, which is the right direction for a test a seller will be shown.</p>
+  </section>
 
-  <h3>What is not signed off</h3>
-  <div class="panel">
-    <table>
-      <tr><td><span class="flag">provisional</span> Sector ceilings</td>
-        <td>Placeholder ranges. A physio clinic and an electrical contractor do not share a premium
-        multiple; these need real numbers per vertical rather than figures pulled off the internet.</td></tr>
-      <tr><td><span class="flag">provisional</span> Individual deltas</td>
-        <td>Each carries a stated justification in the criteria bank. Calibrated as a set against the
-        broker case, not validated individually against completed transactions.</td></tr>
-      <tr><td><span class="flag">provisional</span> Size premium</td>
-        <td>Step function by EBITDA scale. Directionally right, magnitudes unverified.</td></tr>
-      <tr><td>Fixed</td>
-        <td>The DSCR floor of ${turns(DSCR_FLOOR)} and the arithmetic itself. Neither is a judgement call.</td></tr>
-    </table>
-  </div>
+  <section>
+    <h2 class="headline">Calibration</h2>
+    <p class="lede">The engine was built from the criteria, not fitted to a target.</p>
+    <div class="grid g3">
+      ${tile('Engine', '$522,500', 'defensible EBITDA, broker case')}
+      ${tile('Josh, on camera', '$500,000', 'same business, off the cuff')}
+      ${tile('Variance', '4.5%', 'with no tuning', 'flag-good')}
+    </div>
+    <p class="small" style="margin-top:16px">Run <span class="mono">npm run calibrate</span> to reproduce it.
+    Load the case from the audit screen to see it scored.</p>
+  </section>
 
-  <h3>Calibration</h3>
-  <p class="lede">The engine was built from the criteria, not fitted to a target. Run
-  <span class="num">npm run calibrate</span> to reproduce the check: the broker case Josh describes on
-  camera — $3m revenue, a claimed $1m EBITDA, a $250k owner salary added back while the owner works the
-  business daily — lands at a defensible EBITDA within 5% of the figure he gives off the cuff for the
-  same business.</p>
+  <section>
+    <h2 class="headline">Not signed off</h2>
+    <div class="scroll">
+      <table>
+        <tbody>
+          <tr><td style="width:200px"><span class="badge warning">provisional</span> Sector ceilings</td>
+            <td>Placeholder ranges. They need real numbers per vertical rather than figures pulled off the internet.</td></tr>
+          <tr><td><span class="badge warning">provisional</span> Individual deltas</td>
+            <td>Calibrated as a set against the broker case, not validated individually against completed transactions.</td></tr>
+          <tr><td><span class="badge warning">provisional</span> Size premium</td>
+            <td>Step function by EBITDA scale. Directionally right, magnitudes unverified.</td></tr>
+          <tr><td><span class="badge">fixed</span> The arithmetic</td>
+            <td>The formulas above are not judgement calls. Everything that is a judgement call is on the tuning screen.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-  <h3>Limits</h3>
-  <p class="lede">This is a triage instrument, not a valuation. It produces a defensible range and a
-  prioritised remediation plan from self-reported inputs. It does not verify anything, and a seller who
-  scores themselves generously gets a generous answer — which is why the two numbers that matter most
-  are computed rather than scored.</p>`;
+  <section>
+    <h2 class="headline">Limits</h2>
+    <p class="body">This is a triage instrument, not a valuation. It produces a defensible range and a
+    prioritised remediation plan from self-reported inputs. It verifies nothing, and a seller who scores
+    themselves generously gets a generous answer — which is exactly why the two numbers that matter most
+    are computed rather than scored.</p>
+  </section>`;
+}
+
+// ── Dock ──────────────────────────────────────────────────────────────────
+export function dock() {
+  const r = runAudit(state.audit);
+  if (!r.claimedEbitda) return '';
+  const item = (k, v, cls = '') => `<div class="dock-item"><span class="k">${esc(k)}</span><span class="v ${cls}">${v}</span></div>`;
+  return `
+  <div class="dock">
+    ${item('Defensible EBITDA', money(r.defensibleEbitda))}
+    <div class="rule"></div>
+    ${item('Multiple', turns(r.achievableMultiple))}
+    <div class="rule"></div>
+    ${item('Worth', money(r.achievableValue))}
+    <div class="rule"></div>
+    ${item(r.gap > 0 ? 'Gap' : 'Headroom', money(Math.abs(r.gap)), r.gap > 0 ? 'is-critical' : 'is-good')}
+    <button class="btn" data-act="goto" data-view="value">Value</button>
+  </div>`;
 }

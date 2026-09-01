@@ -25,20 +25,49 @@ await page.waitForTimeout(500);
 
 if ((await page.innerHTML('#main')).length < 5000) fail('audit view did not render');
 
-await page.click('text=Load Josh’s broker case');
-await page.waitForTimeout(300);
-const live = await page.textContent('.sticky');
-if (!live.includes('$522,500')) fail(`calibration figure missing from live panel: ${live.slice(0, 200)}`);
+await page.click('text=Load Josh\u2019s broker case');
+await page.waitForTimeout(400);
+const dock = await page.textContent('#dock');
+if (!dock.includes('$522,500')) fail(`calibration figure missing from the dock: ${dock.slice(0, 200)}`);
 
+// The three C's are the spine: all three pillars, with what each one costs.
+const strip = await page.$$eval('.pillar-card .pillar-name', (els) => els.map((e) => e.textContent.trim()));
+for (const pillar of ['Credibility', 'Capital', 'Closing']) {
+  if (!strip.includes(pillar)) fail(`${pillar} missing from the 3C strip (saw ${strip.join(', ')})`);
+}
+
+// Credibility is open on arrival; scoring one of its criteria moves the valuation.
+if (!(await page.isVisible('[data-act="score"][data-id="C7"][data-score="5"]'))) fail('credibility should open by default');
 await page.click('[data-act="score"][data-id="C7"][data-score="5"]');
-await page.waitForTimeout(200);
-if ((await page.textContent('.sticky')).includes('$1,743,844')) fail('scoring did not move the valuation');
+await page.waitForTimeout(300);
+if ((await page.textContent('#dock')).includes('$1,743,844')) fail('scoring did not move the valuation');
 
-for (const view of ['result', 'restructure', 'rollup', 'bank', 'method']) {
-  await page.click(`.nav a[href="#${view}"]`);
-  await page.waitForTimeout(250);
+// Only one pillar is open at a time.
+await page.click('[data-act="toggle-pillar"][data-pillar="closing"]');
+await page.waitForTimeout(350);
+if (await page.isVisible('[data-act="score"][data-id="C7"][data-score="5"]')) fail('two pillars open at once');
+if (!(await page.isVisible('[data-act="score"][data-id="C15"][data-score="5"]'))) fail('closing did not open');
+
+for (const view of ['value', 'plan', 'rollup', 'tune', 'method']) {
+  await page.click(`.tabs a[href="#${view}"]`);
+  await page.waitForTimeout(350);
   if ((await page.innerHTML('#main')).length < 2000) fail(`${view} view rendered almost nothing`);
 }
+
+// Every figure must actually draw.
+await page.click('.tabs a[href="#value"]');
+await page.waitForTimeout(350);
+const figures = await page.$$eval('#main svg', (els) => els.length);
+if (figures < 4) fail(`expected the value screen to draw at least four figures, found ${figures}`);
+
+// Tuning a delta has to move the audit.
+await page.click('.tabs a[href="#tune"]');
+await page.waitForTimeout(350);
+await page.fill('[data-config="deltas.C15"]', '1.2');
+await page.waitForTimeout(400);
+await page.click('.tabs a[href="#value"]');
+await page.waitForTimeout(350);
+if (!(await page.textContent('#main')).includes('1.20x')) fail('a tuned delta did not reach the value screen');
 
 if (errors.length) fail(`console errors: ${errors.join(' | ')}`);
 await browser.close();

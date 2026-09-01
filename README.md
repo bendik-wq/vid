@@ -71,16 +71,32 @@ $1m EBITDA, a $250k owner salary added back while the owner works the business d
 The $5m ask implies **9.57x** defensible EBITDA. Not ambitious — delusional. That is the audit's
 value proposition in one number.
 
-## Modules
+## Screens
 
 | Screen | What it does |
 |---|---|
-| **Audit** | Intake, twenty criteria, live valuation as you score |
-| **Result** | Both haircuts itemised, the DSCR verdict, which ceiling binds |
-| **Restructure** | Every fix priced in currency and sequenced by value per month of effort; today / 12mo / 24mo trajectory |
+| **Audit** | Your asking price, your earnings, then the three C's as an accordion — one pillar open at a time, live valuation docked at the bottom |
+| **Value** | The gap as one figure, both haircuts drawn as bridges, the DSCR gate, which ceiling binds, and what each C is worth on its own |
+| **Plan** | Every fix priced and sequenced by value per month of effort; today / 12mo / 24mo trajectory |
 | **Roll-up** | Multiple arbitrage: platform plus bolt-ons, per-deal and group DSCR, cash-constrained deleveraging, equity return |
-| **Criteria bank** | All twenty with anchors, deltas, and a "why this number" justification per row — the red-pen view |
+| **Tune** | Every delta, sector ceiling and bound editable in place, each beside its "why this number" justification. Changes flow through the audit, the plan and the roll-up at once |
 | **Method** | Formulas, assumptions, and an explicit list of what is not signed off |
+
+## The pillars compound
+
+Value is earnings times multiple, so a pillar that lifts the earnings base and a pillar that
+lifts the multiple multiply when fixed together. Fixing all three is worth **more** than the
+three individual figures added up — on the broker case, $3.51m against $2.87m summed. The
+tool reports each pillar's marginal uplift and computes the programme total directly, because
+no honest per-pillar share of the total exists: the interaction belongs to no single pillar.
+
+## Tuning
+
+Every judgement call lives in `src/data/config.js` and is editable on the Tune screen: the
+DSCR floor, the multiple floor, the combined haircut cap, all nine sector ceilings, and the
+delta on each of the eighteen self-scored criteria. Overrides persist locally, are stamped
+into the exported report, and reset individually or all at once. The criteria themselves are
+not editable — the criteria are uncontroversial, the numbers are the risk.
 
 ## Running it
 
@@ -93,7 +109,16 @@ npm run smoke   # browser smoke test against the built bundle (needs dev server 
 ```
 
 No build step is required for development; the app is plain ES modules. `npm run build` exists
-only to produce a single distributable HTML file.
+only to produce a single distributable HTML file — it strips the import/export keywords and
+concatenates in dependency order, and fails loudly on a duplicate top-level name.
+
+## Design
+
+One typeface across the whole interface, and hue reserved entirely for data: each pillar owns
+a colour (Credibility blue, Capital orange, Closing aqua) that follows it everywhere, status
+owns red/green/amber, and every button and tab is ink on paper so nothing competes with the
+figures. The categorical steps come from a validated palette — the three pillar hues clear
+the colourblind-separation and normal-vision floors on all pairs in both light and dark.
 
 ## Open items
 

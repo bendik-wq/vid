@@ -54,7 +54,14 @@ export function remediationPlan(input) {
 
   items.sort((a, b) => b.priority - a.priority);
 
-  const totalRecoverable = items.reduce((s, i) => s + i.fullUplift, 0);
+  // Not the sum of the individual uplifts. The fixes compound, so summing them understates
+  // the programme. This is the value of doing all of it, computed directly.
+  const everythingFixed = { ...(input.scores ?? {}) };
+  for (const c of CRITERIA) {
+    if (c.impact.kind !== 'computed') everythingFixed[c.id] = 5;
+  }
+  const totalRecoverable =
+    runAudit({ ...input, scores: everythingFixed }).achievableValue - base.achievableValue;
 
   return {
     base,
@@ -87,6 +94,34 @@ export function restructureTrajectory(input) {
     { label: '12 months', months: 12, result: valueAtHorizon(input, 12) },
     { label: '24 months', months: 24, result: valueAtHorizon(input, 24) },
   ];
+}
+
+/**
+ * What each of the three C's is worth on its own: the value recovered if that pillar
+ * alone reached 5 and the other two stayed exactly as they are.
+ *
+ * These are marginal, and they do not sum to the total — they under-add. Value is earnings
+ * times multiple, so a pillar that lifts the earnings base and a pillar that lifts the
+ * multiple compound when fixed together: the whole is worth more than the sum of the parts.
+ * Reported as marginals rather than as shares of a total precisely because no honest share
+ * exists — the interaction belongs to no single pillar.
+ */
+export function pillarUplift(input) {
+  const base = runAudit(input);
+  return ['credibility', 'capital', 'closing'].map((pillar) => {
+    const scores = { ...(input.scores ?? {}) };
+    for (const c of CRITERIA) {
+      if (c.pillar === pillar && c.impact.kind !== 'computed') scores[c.id] = 5;
+    }
+    const lifted = runAudit({ ...input, scores });
+    return {
+      pillar,
+      value: lifted.achievableValue - base.achievableValue,
+      multiple: lifted.achievableMultiple - base.achievableMultiple,
+      ebitda: lifted.defensibleEbitda - base.defensibleEbitda,
+      score: base.pillarScores[pillar],
+    };
+  });
 }
 
 /** Named summary of a single fix, for the report. */

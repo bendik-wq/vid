@@ -4,6 +4,7 @@ import { CRITERIA } from '../data/criteria.js';
 import { DEFAULT_STRUCTURE, DEFAULT_FINANCIALS } from '../engine/valuation.js';
 import { DEFAULT_ROLLUP } from '../engine/rollup.js';
 import { BROKER_CASE } from '../data/cases.js';
+import { config, applyConfig, resetConfig } from '../data/config.js';
 
 const KEY = 'vid-audit-platform-v1';
 
@@ -21,7 +22,8 @@ export const blankAudit = () => ({
 export const state = {
   audit: blankAudit(),
   rollup: { ...DEFAULT_ROLLUP, structure: { ...DEFAULT_STRUCTURE } },
-  currency: '$',
+  /** Interface state: which pillar is open. Not part of the audit, not exported. */
+  ui: { openPillar: 'credibility' },
 };
 
 const listeners = new Set();
@@ -30,7 +32,19 @@ export const notify = () => { save(); listeners.forEach((fn) => fn()); };
 
 export function save() {
   try {
-    localStorage.setItem(KEY, JSON.stringify({ audit: state.audit, rollup: state.rollup, currency: state.currency }));
+    localStorage.setItem(KEY, JSON.stringify({
+      audit: state.audit,
+      rollup: state.rollup,
+      ui: state.ui,
+      config: {
+        currency: config.currency,
+        dscrFloor: config.dscrFloor,
+        multipleFloor: config.multipleFloor,
+        ebitdaHaircutCap: config.ebitdaHaircutCap,
+        deltas: config.deltas,
+        ceilings: config.ceilings,
+      },
+    }));
   } catch { /* private browsing, quota, embedded contexts — the tool still works */ }
 }
 
@@ -41,7 +55,8 @@ export function load() {
     const parsed = JSON.parse(raw);
     if (parsed.audit) state.audit = { ...blankAudit(), ...parsed.audit };
     if (parsed.rollup) state.rollup = { ...DEFAULT_ROLLUP, ...parsed.rollup };
-    if (parsed.currency) state.currency = parsed.currency;
+    if (parsed.ui) state.ui = { ...state.ui, ...parsed.ui };
+    if (parsed.config) applyConfig(parsed.config);
   } catch { /* corrupt or unreadable storage is not worth a broken page */ }
 }
 
@@ -82,5 +97,10 @@ export const loadBrokerCase = () => loadCase(BROKER_CASE);
 
 export function resetAudit() {
   state.audit = blankAudit();
+  notify();
+}
+
+export function resetTuning() {
+  resetConfig();
   notify();
 }

@@ -16,11 +16,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ORDER = [
   'src/data/criteria.js',
   'src/data/sectors.js',
+  'src/data/config.js',
   'src/data/cases.js',
   'src/engine/valuation.js',
   'src/engine/restructure.js',
   'src/engine/rollup.js',
   'src/ui/format.js',
+  'src/ui/charts.js',
   'src/ui/state.js',
   'src/ui/views.js',
   'src/ui/app.js',
@@ -39,16 +41,10 @@ const strip = (src, file) => {
 const html = (css, js) => `<title>Exit Audit</title>
 <style>
 ${css}
-@media print {
-  .nav, .actions { display: none !important; }
-  body { background: #fff; color: #111; }
-  .panel, .stat, .crit, .verdict { border-color: #ccc; background: #fff; }
-}
 </style>
-<div class="shell">
-  <nav class="nav" id="nav"></nav>
-  <main class="main" id="main"></main>
-</div>
+<header class="topbar" id="topbar"></header>
+<main class="page" id="main"></main>
+<div id="dock"></div>
 <script type="module">
 ${js}
 start();
@@ -59,6 +55,18 @@ const parts = [];
 for (const file of ORDER) {
   parts.push(`// ── ${file} ${'─'.repeat(Math.max(0, 60 - file.length))}`);
   parts.push(strip(await readFile(join(ROOT, file), 'utf8'), file));
+}
+
+// Concatenation only works while every module's top-level names are unique. Catch a
+// collision here rather than as a blank page in the browser.
+const declared = new Map();
+for (let i = 0; i < ORDER.length; i += 1) {
+  const body = parts[i * 2 + 1];
+  for (const m of body.matchAll(/^(?:const|let|function|class|async function)\s+([A-Za-z_$][\w$]*)/gm)) {
+    const prior = declared.get(m[1]);
+    if (prior) throw new Error(`Duplicate top-level name "${m[1]}" in ${ORDER[i]} and ${prior}`);
+    declared.set(m[1], ORDER[i]);
+  }
 }
 
 await mkdir(join(ROOT, 'dist'), { recursive: true });

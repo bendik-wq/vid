@@ -1,11 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { runAudit, severity, annualDebtService, DSCR_FLOOR } from '../src/engine/valuation.js';
+import { runAudit, severity, annualDebtService } from '../src/engine/valuation.js';
+import { config, resetConfig, deltaFor, tuningSummary } from '../src/data/config.js';
 import { remediationPlan, restructureTrajectory } from '../src/engine/restructure.js';
 import { runRollup, absorptionCapacity, remainingBalance } from '../src/engine/rollup.js';
 import { BROKER_CASE, PREPARED_CASE } from '../src/data/cases.js';
-import { CRITERIA, MULTIPLE_FLOOR, MAX_COMBINED_EBITDA_HAIRCUT } from '../src/data/criteria.js';
+import { CRITERIA, CRITERIA_BY_ID, MULTIPLE_FLOOR, MAX_COMBINED_EBITDA_HAIRCUT } from '../src/data/criteria.js';
+
+const DSCR_FLOOR = 1.5;
+
+// Every test starts from the shipped defaults; the tuning tests restore them when done.
+test.beforeEach(() => resetConfig());
 
 test('severity scales impact from full at 1 to none at 5', () => {
   assert.equal(severity(1), 1);
@@ -163,4 +169,69 @@ test('cash-constrained deleveraging never repays more than the schedule', () => 
   const r = runRollup({});
   assert.ok(r.principalRepaid <= r.scheduledPrincipalRepaid + 1e-6);
   assert.ok(r.debtAtExit <= r.debtAtClose + 1e-6);
+});
+
+test('tuning a delta moves the valuation and is reported as drift', () => {
+  const before = runAudit(BROKER_CASE);
+  config.deltas.C15 = 1.2; // management depth, doubled
+  const after = runAudit(BROKER_CASE);
+  assert.ok(after.achievableMultiple < before.achievableMultiple);
+  assert.equal(deltaFor(CRITERIA_BY_ID.C15), 1.2);
+  assert.equal(tuningSummary().count, 1);
+  resetConfig();
+  assert.equal(tuningSummary().count, 0);
+  assert.equal(runAudit(BROKER_CASE).achievableMultiple, before.achievableMultiple);
+});
+
+test('tuning a sector ceiling moves only that sector', () => {
+  config.ceilings.trades = 9;
+  const trades = runAudit({ ...BROKER_CASE, business: { sector: 'trades' } });
+  const generic = runAudit(BROKER_CASE);
+  assert.equal(trades.baseCeiling, 9);
+  assert.equal(generic.baseCeiling, 7);
+  resetConfig();
+});
+
+test('tuning the DSCR floor moves the gate and the fundable price', () => {
+  const before = runAudit(BROKER_CASE);
+  config.dscrFloor = 1.0;
+  const after = runAudit(BROKER_CASE);
+  assert.ok(after.dscr.maxFundablePrice > before.dscr.maxFundablePrice);
+  assert.equal(after.dscr.passes, after.dscr.dscr >= 1.0);
+  resetConfig();
+});
+
+test('a saved configuration rejects values that are not finite numbers', async () => {
+  const { applyConfig } = await import('../src/data/config.js');
+  applyConfig({ dscrFloor: 'nonsense', deltas: { C15: null, NOPE: 3 }, ceilings: { trades: 4 } });
+  assert.equal(config.dscrFloor, 1.5);
+  assert.equal(config.deltas.C15, undefined);
+  assert.equal(config.deltas.NOPE, undefined);
+  assert.equal(config.ceilings.trades, 4);
+  resetConfig();
+});
+
+test('each pillar is worth something on its own, and the marginals do not oversum', async () => {
+  const { pillarUplift } = await import('../src/engine/restructure.js');
+  const ups = pillarUplift(BROKER_CASE);
+  assert.equal(ups.length, 3);
+  assert.ok(ups.every((u) => u.value >= 0));
+  assert.ok(ups.some((u) => u.value > 0));
+
+  // The pillars compound: value is earnings x multiple, so lifting the base and lifting the
+  // multiple together is worth more than the two marginals added up.
+  const all = Object.fromEntries(CRITERIA.map((c) => [c.id, 5]));
+  const together = runAudit({ ...BROKER_CASE, scores: all }).achievableValue - runAudit(BROKER_CASE).achievableValue;
+  const summed = ups.reduce((s, u) => s + u.value, 0);
+  assert.ok(together > summed, `combined fix ${together} should exceed the summed marginals ${summed}`);
+});
+
+test('total recoverable is the combined fix, not the sum of the parts', () => {
+  const plan = remediationPlan(BROKER_CASE);
+  const summed = plan.items.reduce((s, i) => s + i.fullUplift, 0);
+  assert.ok(plan.totalRecoverable > summed, 'the programme should beat the sum of its fixes');
+
+  // And it must agree with the 24-month horizon, which fixes everything reachable by then.
+  const [, , y2] = restructureTrajectory(BROKER_CASE);
+  assert.ok(y2.result.achievableValue <= plan.base.achievableValue + plan.totalRecoverable + 1e-6);
 });
