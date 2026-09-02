@@ -595,3 +595,118 @@ export function dealCashflow(node, { years = 6 } = {}) {
     </div>
   </figure>`;
 }
+
+/**
+ * The capital stack: where every pound of the price came from.
+ *
+ * Two families, because there is only one distinction that matters — money that has to be
+ * repaid out of the business's cash, and money that takes a share of it instead. Tints within
+ * each family separate the sources; direct labels carry the identity so hue never has to.
+ */
+export function stackBar(tranches, need) {
+  const h = 52;
+  const total = Math.max(need, tranches.reduce((s, t) => s + t.amount, 0)) || 1;
+  const tone = {
+    cash: { fill: 'var(--ink)', opacity: 1 },
+    rollover: { fill: 'var(--ink)', opacity: 0.5 },
+    investor: { fill: 'var(--ink)', opacity: 0.28 },
+    seller: { fill: 'var(--credibility)', opacity: 1 },
+    bank: { fill: 'var(--credibility)', opacity: 0.5 },
+  };
+
+  let x = 0;
+  const parts = tranches.filter((t) => t.amount > 0);
+  const marks = parts.map((t) => {
+    const style = tone[t.source.id] ?? tone.cash;
+    const width = Math.max(0, (t.amount / total) * VB - GAP);
+    const rect = `<rect class="seg-mark" x="${x.toFixed(1)}" y="0" width="${width.toFixed(1)}" height="${h}"
+      fill="${style.fill}" opacity="${style.opacity}">
+      <title>${esc(t.type.name)}: ${esc(money(t.amount))}</title></rect>`;
+    x += (t.amount / total) * VB;
+    return rect;
+  }).join('');
+
+  const gap = Math.max(0, need - parts.reduce((s, t) => s + t.amount, 0));
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${VB} ${h}" preserveAspectRatio="none" style="width:100%;height:${h}px" role="img"
+         aria-label="${parts.map((t) => `${t.type.name} ${money(t.amount)}`).join(', ')}">
+      <defs><clipPath id="clip-${cid()}"><rect x="0" y="0" width="${VB}" height="${h}" rx="7" /></clipPath></defs>
+      <g clip-path="url(#clip-${lastId})">
+        <rect x="0" y="0" width="${VB}" height="${h}" fill="var(--sunken)" />
+        ${marks}
+      </g>
+    </svg>
+    <div class="legend">
+      ${parts.map((t) => {
+        const style = tone[t.source.id] ?? tone.cash;
+        return `<span><i style="background:${style.fill};opacity:${style.opacity}"></i>${esc(t.type.name)}
+          <strong style="margin-left:4px">${esc(money(t.amount))}</strong></span>`;
+      }).join('')}
+      ${gap > 1 ? `<span><i style="background:var(--sunken);border:1px solid var(--hair-strong)"></i>Not funded
+        <strong style="margin-left:4px" class="is-critical">${esc(money(gap))}</strong></span>` : ''}
+    </div>
+  </figure>`;
+}
+
+/**
+ * What the deal owes, year by year, against what it earns.
+ *
+ * The balloon sits on top of the payments in its own colour, because a year that looks
+ * comfortable on instalments alone can be the year the whole thing falls over.
+ */
+export function serviceTimeline(schedule, cash, { floor = 1.5 } = {}) {
+  const rows = schedule.filter((r) => r.owed > 0 || r.year <= 8).slice(0, 10);
+  const w = VB;
+  const h = 300;
+  const padL = 16;
+  const padR = 130;
+  const padTop = 40;
+  const padBottom = 54;
+  const max = Math.max(...rows.map((r) => r.owed), cash, 1) * 1.08;
+  const slot = (w - padL - padR) / rows.length;
+  const barW = Math.min(64, slot * 0.52);
+  const y = (v) => padTop + (1 - v / max) * (h - padTop - padBottom);
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" role="img"
+         aria-label="Owed each year against ${money(cash)} of cash a year">
+      <line x1="${padL}" y1="${h - padBottom}" x2="${w - padR}" y2="${h - padBottom}"
+            stroke="var(--hair)" stroke-width="1" />
+      <line x1="${padL}" y1="${y(cash).toFixed(1)}" x2="${w - padR}" y2="${y(cash).toFixed(1)}"
+            stroke="var(--ink)" stroke-width="2" />
+      <text x="${w - padR + 10}" y="${(y(cash) + 4).toFixed(1)}" font-size="13" fill="var(--ink)"
+            font-weight="600">${esc(moneyShort(cash))} cash</text>
+      <line x1="${padL}" y1="${y(cash / floor).toFixed(1)}" x2="${w - padR}" y2="${y(cash / floor).toFixed(1)}"
+            stroke="var(--ink-3)" stroke-width="1" />
+      <text x="${w - padR + 10}" y="${(y(cash / floor) + 4).toFixed(1)}" font-size="12"
+            fill="var(--ink-3)">most you can owe</text>
+      ${rows.map((r, i) => {
+        const cx = padL + slot * i + slot / 2;
+        const payTop = y(r.payment);
+        const owedTop = y(r.owed);
+        const tight = r.payment > cash / floor;
+        return `
+        <rect class="seg-mark" x="${(cx - barW / 2).toFixed(1)}" y="${payTop.toFixed(1)}"
+              width="${barW.toFixed(1)}" height="${Math.max(0, h - padBottom - payTop).toFixed(1)}" rx="4"
+              fill="${tight ? 'var(--critical)' : 'var(--credibility)'}" opacity="0.9">
+          <title>Year ${r.year} payments: ${esc(money(r.payment))}</title></rect>
+        ${r.balloon > 0 ? `
+          <rect class="seg-mark" x="${(cx - barW / 2).toFixed(1)}" y="${owedTop.toFixed(1)}"
+                width="${barW.toFixed(1)}" height="${Math.max(0, payTop - owedTop - 2).toFixed(1)}" rx="4"
+                fill="var(--critical)">
+            <title>Year ${r.year} lump due: ${esc(money(r.balloon))}</title></rect>
+          <text x="${cx.toFixed(1)}" y="${(owedTop - 8).toFixed(1)}" text-anchor="middle" font-size="12"
+                font-weight="600" fill="var(--critical)">${esc(moneyShort(r.balloon))} due</text>` : ''}
+        <text x="${cx.toFixed(1)}" y="${h - padBottom + 22}" text-anchor="middle" font-size="12.5"
+              fill="var(--ink-3)">Yr ${r.year}</text>`;
+      }).join('')}
+    </svg>
+    <div class="legend">
+      <span><i style="background:var(--credibility);opacity:0.9"></i>Payments</span>
+      <span><i style="background:var(--critical)"></i>Lump due at the end</span>
+    </div>
+  </figure>`;
+}

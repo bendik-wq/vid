@@ -48,7 +48,7 @@ await page.waitForTimeout(350);
 if (await page.isVisible('[data-act="score"][data-id="C7"][data-score="5"]')) fail('two pillars open at once');
 if (!(await page.isVisible('[data-act="score"][data-id="C15"][data-score="5"]'))) fail('closing did not open');
 
-for (const view of ['build', 'difference', 'cases', 'tune', 'method']) {
+for (const view of ['build', 'deal', 'difference', 'cases', 'tune', 'method']) {
   await page.click(`.tabs a[href="#${view}"]`);
   await page.waitForTimeout(400);
   // A single empty case is a legitimately short page; the rest should be substantial.
@@ -180,6 +180,30 @@ await page.waitForTimeout(700);
 const serialText = await page.textContent('#main');
 if (!serialText.includes('Which ones are carrying the rest')) fail('the portfolio check is missing');
 if (!serialText.includes('Overpaid by')) fail('the drag is not priced');
+
+// The deal screen: every term is editable and the maths follows.
+await page.click('.tabs a[href="#deal"]');
+await page.waitForTimeout(450);
+await page.fill('[data-source="seller.amount"]', '1040000');
+await page.waitForTimeout(450);
+if (!(await page.textContent('#main')).includes('fully funded')) fail('the stack did not balance when it should');
+
+// Switching a tranche to a balloon has to produce a lump and say when it lands.
+await page.selectOption('[data-source="seller.mode"]', 'balloon');
+await page.waitForTimeout(450);
+await page.fill('[data-source="seller.amortYears"]', '20');
+await page.waitForTimeout(500);
+const dealText = await page.textContent('#main');
+if (!/falls due in one go in year/.test(dealText)) fail('the balloon warning is missing');
+if (!(await page.$$('#main svg rect')).length) fail('the repayment timeline did not draw');
+
+// Interest only owes the whole amount at the end.
+await page.selectOption('[data-source="seller.mode"]', 'interest');
+await page.waitForTimeout(500);
+if (!(await page.textContent('#main')).includes('$1,040,000')) fail('interest only should owe the full amount at the end');
+
+// Nothing of your own in, and you still own the equity.
+if (!(await page.textContent('#main')).includes('none of it')) fail('a no-money-down stack should say so');
 
 if (errors.length) fail(`console errors: ${errors.join(' | ')}`);
 await browser.close();

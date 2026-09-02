@@ -163,6 +163,35 @@ business — it takes its place on the web automatically — then drag it anywhe
 it and set what it earns, what you pay, how you fund it, and what you merge. Positions are
 stored as fractions of the box, so the web survives a resize.
 
+## Structuring one deal yourself
+
+The presets cover the common shapes; the **One deal** screen is for when the shape is yours.
+Five places the money can come from, with every term that actually changes the answer:
+
+| Source | Kind | Terms you set |
+|---|---|---|
+| Your own money | equity | Amount, and the share of the business it buys |
+| Seller finance | debt | Amount, rate, when it is due, what it is paid down over, when the first payment starts, whether interest builds during the holiday |
+| Seller rollover | equity | Amount, and the share he keeps |
+| Commercial debt | debt | Same full set as seller finance |
+| Investor capital | equity | Amount, share taken, and a preferred return if one was agreed |
+
+Four ways to repay a tranche: **over the term** (nothing left at the end), **part repaid with a
+lump** (payments sized over a longer period than the term — the structure most vendor finance
+actually uses), **interest only** (the whole amount due at the end), and **nothing until the
+end** (interest rolls up and the lot falls due at once).
+
+Every tranche gets a real month-by-month schedule rather than one average payment, because the
+details are the difference between a deal that funds itself and one that strangles you in year
+two — and an average hides all of them. The screen reports the **tightest year**, which after a
+payment holiday is almost never year one, and draws what is owed each year against what the
+business earns, with any lump standing on top of the payments in its own colour.
+
+It also splits the exit. The lenders are paid what is still owing; what is left goes to
+whoever owns the equity, which is not the same people who lent you the money. On a stack with
+none of your own cash in it, that line reads: you put in nothing, and you walk away with the
+majority of it.
+
 ## The deal structures
 
 Four, straight from the framework. Three need none of the buyer's money:

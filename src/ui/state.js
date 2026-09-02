@@ -10,6 +10,7 @@ import { CRITERIA } from '../data/criteria.js';
 import { DEFAULT_STRUCTURE, DEFAULT_FINANCIALS } from '../engine/valuation.js';
 import { BROKER_CASE } from '../data/cases.js';
 import { SCENARIOS_BY_ID } from '../data/scenarios.js';
+import { defaultStack, blankSource } from '../data/capital-stack.js';
 import { config, applyConfig, resetConfig } from '../data/config.js';
 import { SECTORS_BY_ID } from '../data/sectors.js';
 import { DEFAULT_ASSUMPTIONS } from '../engine/build.js';
@@ -52,6 +53,15 @@ export const blankFuture = () => ({
 let caseSeq = 1;
 const nextCaseId = () => `case-${caseSeq++}-${Math.random().toString(36).slice(2, 7)}`;
 
+export const blankDeal = () => ({
+  price: 1_000_000,
+  fees: 40_000,
+  ebitda: 250_000,
+  exitYear: 5,
+  exitMultiple: 6,
+  sources: defaultStack(),
+});
+
 export const blankCase = (name = 'New case') => ({
   id: nextCaseId(),
   name,
@@ -61,6 +71,7 @@ export const blankCase = (name = 'New case') => ({
   group: blankGroup(),
   capital: blankCapital(),
   future: blankFuture(),
+  deal: blankDeal(),
 });
 
 export const state = {
@@ -71,6 +82,7 @@ export const state = {
   group: blankGroup(),
   capital: blankCapital(),
   future: blankFuture(),
+  deal: blankDeal(),
   /** Interface state. Not part of any case, never exported. */
   ui: { openPillar: 'credibility', selectedNode: null },
 };
@@ -85,6 +97,7 @@ function syncActive() {
   record.group = state.group;
   record.capital = state.capital;
   record.future = state.future;
+  record.deal = state.deal;
   record.updated = Date.now();
   if (state.audit.business.name && record.name === 'New case') record.name = state.audit.business.name;
 }
@@ -99,6 +112,7 @@ export function openCase(id) {
   state.group = record.group;
   state.capital = record.capital;
   state.future = record.future;
+  state.deal = record.deal;
   state.ui.selectedNode = null;
   notify();
 }
@@ -121,6 +135,7 @@ export function newCase(name = 'New case', seed = null) {
   state.group = record.group;
   state.capital = record.capital;
   state.future = record.future;
+  state.deal = record.deal;
   state.ui.selectedNode = null;
   notify();
   return record.id;
@@ -154,6 +169,7 @@ export function loadScenario(id) {
   state.group = record.group;
   state.capital = record.capital;
   state.future = record.future;
+  state.deal = record.deal;
   state.ui.selectedNode = null;
   notify();
   return scenario.goto;
@@ -200,6 +216,7 @@ export function exportCase(id) {
     group: record.group,
     capital: record.capital,
     future: record.future,
+    deal: record.deal,
   };
 }
 
@@ -216,6 +233,10 @@ export function importCase(payload) {
   if (payload.group && typeof payload.group === 'object') record.group = { ...blankGroup(), ...payload.group };
   if (payload.capital && typeof payload.capital === 'object') record.capital = { ...blankCapital(), ...payload.capital };
   if (payload.future && typeof payload.future === 'object') record.future = { ...blankFuture(), ...payload.future };
+  if (payload.deal && typeof payload.deal === 'object') {
+    record.deal = { ...blankDeal(), ...payload.deal };
+    if (!Array.isArray(record.deal.sources) || !record.deal.sources.length) record.deal.sources = defaultStack();
+  }
   syncActive();
   state.cases.push(record);
   openCase(record.id);
@@ -289,6 +310,23 @@ export function toggleLever(id, leverId) {
   notify();
 }
 
+/** Pull the deal screen's price and profit from a business on the canvas. */
+export function dealFromNode(id) {
+  const node = findNode(id);
+  if (!node) return;
+  const price = (node.ebitda || 0) * (node.multiple || 0);
+  state.deal.price = price;
+  state.deal.ebitda = node.ebitda || 0;
+  state.deal.sources = defaultStack().map((s) =>
+    (s.id === 'seller' ? { ...s, amount: price } : s));
+  notify();
+}
+
+export function setSource(sourceId, key, value) {
+  const source = state.deal.sources.find((s) => s.id === sourceId);
+  if (source) { source[key] = value; notify(); }
+}
+
 /** One switch across the whole group — the fastest way to show what terms are worth. */
 export function stretchAll(on) {
   for (const n of state.group.nodes) n.interestOnly = on;
@@ -337,6 +375,7 @@ export function load() {
           group: { ...blankGroup(), ...(c.group ?? {}) },
           capital: { ...blankCapital(), ...(c.capital ?? {}) },
           future: { ...blankFuture(), ...(c.future ?? {}) },
+          deal: { ...blankDeal(), ...(c.deal ?? {}) },
         }));
         state.activeCaseId = state.cases.some((c) => c.id === parsed.activeCaseId)
           ? parsed.activeCaseId : state.cases[0].id;
@@ -369,6 +408,7 @@ export function load() {
   state.group = live.group;
   state.capital = live.capital;
   state.future = live.future;
+  state.deal = live.deal;
 }
 
 /** Deep-set on the audit: setAudit('financials.claimedEbitda', 1000000). */

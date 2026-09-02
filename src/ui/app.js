@@ -4,11 +4,11 @@ import {
   state, load, notify, setScore, resetAudit, resetTuning, loadBrokerCase,
   addNode, removeNode, findNode, setNode, toggleLever, clearGroup, groupInput, futureInput, stretchAll,
   activeCase, newCase, openCase, renameCase, duplicateCase, deleteCase, exportCase, importCase,
-  loadScenario,
+  loadScenario, setSource, dealFromNode,
 } from './state.js';
 import { config, setConfig, clearOverride } from '../data/config.js';
 import { state_currency, num, money, moneyShort, esc } from './format.js';
-import { businessView, buildView, differenceView, casesView, tuneView, methodView, dock } from './views.js';
+import { businessView, buildView, dealView, differenceView, casesView, tuneView, methodView, dock } from './views.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan } from '../engine/restructure.js';
 import { runBuild, horizon } from '../engine/build.js';
@@ -16,6 +16,7 @@ import { runBuild, horizon } from '../engine/build.js';
 const VIEWS = {
   business: { label: 'Your business', primary: true, render: businessView, dock: true },
   build: { label: 'The group', primary: true, render: buildView },
+  deal: { label: 'One deal', primary: true, render: dealView },
   difference: { label: 'The difference', primary: true, render: differenceView, mount: mountDifference },
   cases: { label: 'Cases', primary: false, render: casesView },
   tune: { label: 'Tune', primary: false, render: tuneView },
@@ -53,7 +54,8 @@ function render() {
 
   const active = document.activeElement;
   const key = active && (active.dataset?.bind || active.dataset?.config || active.dataset?.group
-    || active.dataset?.capital || active.dataset?.future || active.dataset?.rename);
+    || active.dataset?.capital || active.dataset?.future || active.dataset?.rename
+    || active.dataset?.deal || active.dataset?.source);
   const caret = key && active.selectionStart != null ? active.selectionStart : null;
 
   // Any playback belongs to the screen that started it; leaving the screen ends it.
@@ -68,7 +70,8 @@ function render() {
   if (key) {
     const el = main.querySelector(
       `[data-bind="${key}"], [data-config="${key}"], [data-group="${key}"], ` +
-      `[data-capital="${key}"], [data-future="${key}"], [data-rename="${key}"]`,
+      `[data-capital="${key}"], [data-future="${key}"], [data-rename="${key}"], ` +
+      `[data-deal="${key}"], [data-source="${key}"]`,
     );
     if (el) {
       el.focus();
@@ -103,6 +106,13 @@ function onInput(e) {
   else if (d.config) setConfig(d.config, readInput(el));
   else if (d.capital) writePath(state.capital, d.capital, readInput(el));
   else if (d.future) writePath(state.future, d.future, readInput(el));
+  else if (d.deal) writePath(state.deal, d.deal, readInput(el));
+  else if (d.source) {
+    const [sourceId, key] = d.source.split('.');
+    // A blank share means "split it in proportion", which is not the same as zero.
+    const raw = key === 'equityPct' && el.value.trim() === '' ? null : readInput(el);
+    setSource(sourceId, key, raw);
+  }
   else if (d.group) {
     // nodes.<id>.<key>
     const [, id, key] = d.group.split('.');
@@ -148,6 +158,7 @@ function onClick(e) {
   else if (act === 'del-case') { deleteCase(el.dataset.case); render(); }
   else if (act === 'export-case') { saveCaseFile(el.dataset.case); }
   else if (act === 'scenario') { location.hash = loadScenario(el.dataset.scenario) ?? 'business'; render(); }
+  else if (act === 'deal-from-node') { dealFromNode(el.dataset.node); render(); }
   else if (act === 'print') { window.print(); }
   else if (act === 'export') { exportReport(); }
 }

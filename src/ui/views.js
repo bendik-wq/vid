@@ -8,9 +8,11 @@ import { config, deltaFor, defaultDeltaFor, ceilingFor, isTuned, isSectorTuned, 
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan, restructureTrajectory, pillarUplift, sensitivity } from '../engine/restructure.js';
 import { runBuild, capitalOptions, horizon, requiredScale, portfolioHealth, industryFit } from '../engine/build.js';
+import { runStack, tranche } from '../engine/stack.js';
+import { SOURCE_TYPES, REPAYMENT_MODES, blankSource } from '../data/capital-stack.js';
 import { state, groupInput, futureInput, activeCase } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
-import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow } from './charts.js';
+import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow, stackBar, serviceTimeline } from './charts.js';
 import { groupCanvas, industryTray } from './canvas.js';
 
 const tile = (k, v, s, cls = '') =>
@@ -1020,3 +1022,170 @@ function fitNote(node) {
 }
 
 const LEVER_NAMES = Object.fromEntries(INTEGRATION_LEVERS.map((l) => [l.id, l.name.toLowerCase()]));
+
+// ── One deal, your terms ──────────────────────────────────────────────────
+export function dealView() {
+  const d = state.deal;
+  const r = runStack({
+    price: d.price, fees: d.fees, ebitda: d.ebitda,
+    sources: d.sources, exitYear: d.exitYear, exitMultiple: d.exitMultiple,
+    years: Math.max(12, d.exitYear + 2),
+  });
+  const group = runBuild(groupInput());
+
+  return `
+  <section>
+    <p class="eyebrow">One deal</p>
+    <h1 class="display">Structure it yourself.</h1>
+    <p class="lede">Four places the money can come from, and every term that matters — rate, how long,
+    how long you pay it down over, when the first payment starts, and what falls due at the end.</p>
+
+    <div class="grid g4">
+      ${numField('Price', 'price', d.price, null, 'deal')}
+      ${numField('Fees and working capital', 'fees', d.fees, 'Legal, accounting, and the cash it needs on day one.', 'deal')}
+      ${numField('What it earns a year', 'ebitda', d.ebitda, 'Profit before the deal.', 'deal')}
+      ${tile('To find', money(r.need), r.balanced
+        ? 'fully funded'
+        : r.shortfall > 0 ? `${money(r.shortfall)} still short` : `${money(-r.shortfall)} over`,
+        r.balanced ? 'flag-good' : 'flag-critical')}
+    </div>
+    <div style="margin-top:22px">${stackBar(r.tranches, r.need)}</div>
+    ${group.nodes.length ? `
+      <div class="actions" style="margin-top:16px">
+        <button class="btn quiet tiny" data-act="deal-from-node" data-node="${group.nodes[group.nodes.length - 1].id}">
+          Take the price from ${esc((group.nodes[group.nodes.length - 1].industry.name).toLowerCase())} on the canvas
+        </button>
+      </div>` : ''}
+  </section>
+
+  <section>
+    <h2 class="headline">Where the money comes from</h2>
+    <div class="stack">
+      ${SOURCE_TYPES.map((type) => sourceRow(type, d.sources.find((s) => s.id === type.id) ?? blankSource(type.id))).join('')}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="headline">Can it pay for that?</h2>
+    <p class="lede">${r.covers
+      ? `Yes. Every year the payments stay under what the business makes, with the tightest year at
+         ${turns(r.minDscr)} cover.`
+      : `Not as it stands. The tightest year is year ${r.worst?.year ?? 1} at ${turns(r.minDscr)} cover,
+         against a floor of ${turns(config.dscrFloor)}.`}</p>
+    ${serviceTimeline(r.schedule, r.freeCashFlow, { floor: config.dscrFloor })}
+
+    <div class="grid g4" style="margin-top:22px">
+      ${tile('Cash it makes', money(r.freeCashFlow), 'a year, after tax and kit')}
+      ${tile('Tightest year', r.worst ? `Year ${r.worst.year}` : '—',
+        r.worst ? `${turns(r.minDscr)} cover` : 'nothing to repay',
+        r.covers ? 'flag-good' : 'flag-critical')}
+      ${tile('Your money in', money(r.cashIn), r.cashIn === 0 ? 'none of it' : 'at completion',
+        r.cashIn === 0 ? 'flag-good' : '')}
+      ${tile('Lump at the end', r.totalBalloon > 0 ? money(r.totalBalloon) : 'none',
+        r.balloons.length ? `due in year ${r.balloons.map((b) => b.year).join(' and ')}` : 'nothing falls due',
+        r.totalBalloon > 0 ? 'flag-critical' : 'flag-good')}
+    </div>
+
+    ${r.totalBalloon > 0 ? `
+      <div class="note critical" style="margin-top:22px">
+        <p style="margin:0"><strong>${money(r.totalBalloon)} falls due in one go in year
+        ${r.balloons.map((b) => b.year).join(' and ')}.</strong>
+        That is ${turns(r.totalBalloon / Math.max(1, r.freeCashFlow))} of a whole year's cash. Nobody pays a
+        lump like that out of profit — it gets refinanced, or it gets extended, and both of those are
+        conversations to have before you sign rather than in the month it lands.</p>
+      </div>` : ''}
+    ${!r.balanced ? `
+      <div class="note critical" style="margin-top:16px">
+        <p style="margin:0"><strong>The stack does not add up.</strong>
+        ${r.shortfall > 0
+          ? `You are ${money(r.shortfall)} short of the ${money(r.need)} this deal needs.`
+          : `You have raised ${money(-r.shortfall)} more than the deal needs.`}
+        Everything below is priced on what you have actually raised.</p>
+      </div>` : ''}
+  </section>
+
+  <section>
+    <h2 class="headline">What you walk away with</h2>
+    <p class="lede">Sell in year ${d.exitYear} at ${turns(d.exitMultiple)}. The lenders are paid what is left
+    owing, and what remains is split between whoever owns the equity — which is not the same people who
+    lent you the money.</p>
+    <div class="grid g3" style="margin-bottom:20px">
+      ${numField('Sell in year', 'exitYear', d.exitYear, null, 'deal')}
+      ${numField('At this many times profit', 'exitMultiple', d.exitMultiple, null, 'deal')}
+      ${tile('Worth then', money(r.exitEnterprise), `less ${money(r.debtAtExit)} still owed`)}
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Who</th><th class="n">Put in</th><th class="n">Owns</th><th class="n">Walks away with</th><th class="n">Times their money</th></tr></thead>
+        <tbody>
+          ${r.shares.map((s) => `
+            <tr${s.id === 'cash' ? ' class="row-total"' : ''}>
+              <td>${esc(s.name)}</td>
+              <td class="n">${money(s.amount)}</td>
+              <td class="n">${pct(r.statedTotal > 0 ? s.pct / r.statedTotal : 0, 0)}</td>
+              <td class="n"><strong>${money(s.proceeds)}</strong></td>
+              <td class="n ${s.amount > 0 && s.proceeds / s.amount >= 1 ? 'is-good' : 'muted'}">
+                ${s.amount > 0 ? `${(s.proceeds / s.amount).toFixed(1)}x` : '—'}</td>
+            </tr>`).join('')}
+          ${r.shares.length === 0 ? '<tr><td colspan="5" class="muted">Nobody owns any equity yet — put something in above.</td></tr>' : ''}
+        </tbody>
+      </table>
+    </div>
+    ${r.cashIn === 0 && r.yourProceeds > 0 ? `
+      <p class="statement" style="margin-top:28px">You put in nothing.
+      <span class="up">You walk away with ${money(r.yourProceeds)}.</span></p>` : ''}
+  </section>`;
+}
+
+function sourceRow(type, source) {
+  const isDebt = type.kind === 'debt';
+  const mode = REPAYMENT_MODES.find((m) => m.id === source.mode) ?? REPAYMENT_MODES[0];
+  const showsBalloon = isDebt && (source.mode === 'balloon' || source.mode === 'interest' || source.mode === 'bullet');
+
+  return `
+  <div class="card">
+    <div class="between" style="margin-bottom:14px">
+      <div>
+        <strong style="font-size:16px">${esc(type.name)}</strong>
+        <span class="badge" style="margin-left:8px">${isDebt ? 'has to be repaid' : 'takes a share instead'}</span>
+        <p class="hint" style="margin:6px 0 0;max-width:62ch">${esc(type.plain)}${type.plainTerms ? ` ${esc(type.plainTerms)}` : ''}</p>
+      </div>
+    </div>
+    <div class="grid ${isDebt ? 'g4' : 'g3'}">
+      ${numField('Amount', `${type.id}.amount`, source.amount, null, 'source')}
+      ${isDebt ? `
+        ${rateField('Rate %', `${type.id}.rate`, source.rate, 1, 'source')}
+        <div class="field">
+          <label>How it is repaid</label>
+          <select data-source="${type.id}.mode" data-kind="text">
+            ${REPAYMENT_MODES.map((m) => `<option value="${m.id}" ${m.id === source.mode ? 'selected' : ''}>${esc(m.name)}</option>`).join('')}
+          </select>
+          <p class="hint">${esc(mode.plain)}</p>
+        </div>
+        ${numField('Due after, years', `${type.id}.termYears`, source.termYears, null, 'source')}
+        ${source.mode === 'balloon' ? numField('Paid down over, years', `${type.id}.amortYears`, source.amortYears,
+          'Longer than the term is what leaves a lump at the end.', 'source') : ''}
+        ${numField('First payment after, months', `${type.id}.holidayMonths`, source.holidayMonths,
+          'The holiday. Nothing leaves the business until then.', 'source')}
+      ` : `
+        <div class="field">
+          <label>Share of the business taken</label>
+          <input data-source="${type.id}.equityPct" data-kind="rate"
+                 value="${source.equityPct === null || source.equityPct === undefined ? '' : (source.equityPct * 100).toFixed(0)}"
+                 placeholder="in proportion" inputmode="decimal" />
+          <p class="hint">Leave blank to split in proportion to what everyone put in.</p>
+        </div>
+        ${type.id === 'investor' ? rateField('Preferred return %', `${type.id}.prefRate`, source.prefRate ?? 0, 1, 'source') : ''}
+      `}
+    </div>
+    ${isDebt && source.holidayMonths > 0 ? `
+      <label class="switch" style="margin-top:14px">
+        <input type="checkbox" data-source="${type.id}.accrueDuringHoliday" data-kind="bool"
+               ${source.accrueDuringHoliday ? 'checked' : ''} />
+        <span>Interest still builds up during the holiday</span>
+      </label>` : ''}
+    ${showsBalloon && source.amount > 0 ? `
+      <p class="hint" style="margin-top:12px">${esc(mode.name)} — ${money(tranche(source, source.termYears + 1).balloon)}
+      falls due in year ${source.termYears}.</p>` : ''}
+  </div>`;
+}
