@@ -710,3 +710,108 @@ export function serviceTimeline(schedule, cash, { floor = 1.5 } = {}) {
     </div>
   </figure>`;
 }
+
+/**
+ * How cover gets from where it is to where it has to be.
+ *
+ * A waterfall, because the question is never "what is the number" but "which of these six
+ * things moved it". Each action floats from where the last one left off; the floor is drawn
+ * across so the moment it clears is visible rather than calculated.
+ */
+export function coverWaterfall(steps, floor) {
+  const w = VB;
+  const h = 340;
+  const padL = 20;
+  const padR = 90;
+  const padTop = 44;
+  const padBottom = 76;
+  const covers = steps.map((s) => (isFinite(s.cover) ? s.cover : floor * 3));
+  const max = Math.max(...covers, floor * 1.4) * 1.12;
+  const slot = (w - padL - padR) / steps.length;
+  const barW = Math.min(96, slot * 0.56);
+  const y = (v) => padTop + (1 - bound(v, 0, max) / max) * (h - padTop - padBottom);
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" role="img"
+         aria-label="Cover from ${turns(covers[0])} to ${turns(covers[covers.length - 1])} against a floor of ${turns(floor)}">
+      <line x1="${padL}" y1="${h - padBottom}" x2="${w - padR}" y2="${h - padBottom}"
+            stroke="var(--hair)" stroke-width="1" />
+      <line x1="${padL}" y1="${y(floor).toFixed(1)}" x2="${w - padR}" y2="${y(floor).toFixed(1)}"
+            stroke="var(--ink)" stroke-width="2" />
+      <text x="${w - padR + 10}" y="${(y(floor) + 4).toFixed(1)}" font-size="13" font-weight="600"
+            fill="var(--ink)">${esc(turns(floor))}</text>
+      <text x="${w - padR + 10}" y="${(y(floor) + 21).toFixed(1)}" font-size="12"
+            fill="var(--ink-3)">the floor</text>
+
+      ${steps.map((s, i) => {
+        const cx = padL + slot * i + slot / 2;
+        const value = covers[i];
+        const prev = i === 0 ? 0 : covers[i - 1];
+        const isEdge = i === 0 || i === steps.length - 1;
+        const top = y(Math.max(value, isEdge ? 0 : prev));
+        const bottom = y(isEdge ? 0 : Math.min(value, prev));
+        const rising = value >= prev;
+        const fill = isEdge
+          ? (value >= floor ? 'var(--good)' : 'var(--critical)')
+          : (rising ? 'var(--good)' : 'var(--critical)');
+        return `
+        ${i > 0 ? `<line x1="${(padL + slot * (i - 1) + slot / 2 + barW / 2).toFixed(1)}" y1="${y(prev).toFixed(1)}"
+              x2="${(cx - barW / 2).toFixed(1)}" y2="${y(prev).toFixed(1)}"
+              stroke="var(--hair-strong)" stroke-width="1" />` : ''}
+        <rect class="seg-mark" x="${(cx - barW / 2).toFixed(1)}" y="${top.toFixed(1)}"
+              width="${barW.toFixed(1)}" height="${Math.max(3, bottom - top).toFixed(1)}" rx="4"
+              fill="${fill}" opacity="${isEdge ? 0.9 : 0.7}">
+          <title>${esc(s.name)}: cover ${esc(turns(value))}</title></rect>
+        ${wrapLabel(esc(s.name), cx, h - padBottom + 22, 15)}`;
+      }).join('')}
+      ${/* Labels last and haloed, so a value sitting on the floor line still reads. */ ''}
+      ${steps.map((s, i) => {
+        const cx = padL + slot * i + slot / 2;
+        const value = covers[i];
+        const prev = i === 0 ? 0 : covers[i - 1];
+        const isEdge = i === 0 || i === steps.length - 1;
+        const top = y(Math.max(value, isEdge ? 0 : prev));
+        return `<text x="${cx.toFixed(1)}" y="${(top - 11).toFixed(1)}" text-anchor="middle" font-size="15"
+          font-weight="700" fill="var(--ink)" stroke="var(--paper)" stroke-width="4"
+          paint-order="stroke">${esc(turns(value))}</text>`;
+      }).join('')}
+    </svg>
+  </figure>`;
+}
+
+/** Two short lines of centred label under a column, because names do not fit on one. */
+function wrapLabel(text, cx, y, perLine) {
+  const words = String(text).split(' ');
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    if ((line + ' ' + word).trim().length > perLine && line) { lines.push(line); line = word; }
+    else line = (line + ' ' + word).trim();
+    if (lines.length === 2) break;
+  }
+  if (line && lines.length < 2) lines.push(line);
+  return lines.map((l, i) => `<text x="${cx.toFixed(1)}" y="${y + i * 16}" text-anchor="middle"
+    font-size="12" fill="var(--ink-3)">${l}</text>`).join('');
+}
+
+/**
+ * Before and after, side by side, at a size you can present from.
+ * One row per measure so the eye travels across rather than hunting.
+ */
+export function beforeAfter(rows, { beforeLabel = 'As it stands', afterLabel = 'After' } = {}) {
+  return `
+  <div class="ba">
+    <div class="ba-head">
+      <span></span>
+      <span class="ba-col before">${esc(beforeLabel)}</span>
+      <span class="ba-col after">${esc(afterLabel)}</span>
+    </div>
+    ${rows.map((r) => `
+      <div class="ba-row">
+        <span class="ba-key">${esc(r.label)}</span>
+        <span class="ba-val before ${r.beforeBad ? 'is-critical' : ''}">${r.before}</span>
+        <span class="ba-val after ${r.afterGood ? 'is-good' : ''}">${r.after}</span>
+      </div>`).join('')}
+  </div>`;
+}

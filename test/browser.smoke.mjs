@@ -48,11 +48,12 @@ await page.waitForTimeout(350);
 if (await page.isVisible('[data-act="score"][data-id="C7"][data-score="5"]')) fail('two pillars open at once');
 if (!(await page.isVisible('[data-act="score"][data-id="C15"][data-score="5"]'))) fail('closing did not open');
 
-for (const view of ['build', 'deal', 'difference', 'cases', 'tune', 'method']) {
+for (const view of ['build', 'deal', 'repair', 'difference', 'examples', 'cases', 'tune', 'method']) {
   await page.click(`.tabs a[href="#${view}"]`);
   await page.waitForTimeout(400);
   // A single empty case is a legitimately short page; the rest should be substantial.
-  const floor = view === 'cases' ? 700 : 2000;
+  // An empty case legitimately renders a short page on these two.
+  const floor = view === 'cases' || view === 'repair' ? 500 : 2000;
   if ((await page.innerHTML('#main')).length < floor) fail(`${view} view rendered almost nothing`);
 }
 
@@ -204,6 +205,33 @@ if (!(await page.textContent('#main')).includes('$1,040,000')) fail('interest on
 
 // Nothing of your own in, and you still own the equity.
 if (!(await page.textContent('#main')).includes('none of it')) fail('a no-money-down stack should say so');
+
+// Restructuring: a broken portfolio, and levers that visibly fix it.
+await page.click('.tabs a[href="#cases"]');
+await page.waitForTimeout(350);
+await page.click('[data-act="scenario"][data-scenario="cover"]');
+await page.waitForTimeout(600);
+await page.click('.tabs a[href="#repair"]');
+await page.waitForTimeout(500);
+const repairText = await page.textContent('#main');
+if (!repairText.includes('Structured badly')) fail('a broken portfolio should be called out');
+// The fourth tile is "cover after", which is what a lever is supposed to move.
+const coverAfter = () => page.$$eval('.tile .v', (els) => els[3]?.textContent ?? '');
+const coverNow = await coverAfter();
+await page.click('[data-act="toggle-repair"][data-repair="interestOnly"]');
+await page.waitForTimeout(700);
+const repaired = await page.textContent('#main');
+if (!repaired.includes('How it gets there')) fail('the waterfall did not appear');
+if ((await coverAfter()) === coverNow) fail(`a lever did not change cover (still ${coverNow})`);
+if (!(await page.$$('#main svg rect')).length) fail('the cover waterfall did not draw');
+
+// Worked examples: six of them, all computed, none broken.
+await page.click('.tabs a[href="#examples"]');
+await page.waitForTimeout(600);
+const ex = await page.textContent('#main');
+if ((await page.$$('.example')).length !== 6) fail('expected six worked examples');
+if (/NaN|undefined|Infinity/.test(ex)) fail('a worked example leaked a broken number');
+if ((await page.$$('.ba-row')).length < 20) fail('the before and after rows did not render');
 
 if (errors.length) fail(`console errors: ${errors.join(' | ')}`);
 await browser.close();

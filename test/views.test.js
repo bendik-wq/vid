@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { businessView, buildView, dealView, differenceView, tuneView, methodView, dock, threeCStrip } from '../src/ui/views.js';
+import { businessView, buildView, dealView, repairView, differenceView, examplesView, tuneView, methodView, dock, threeCStrip } from '../src/ui/views.js';
 import { runAudit } from '../src/engine/valuation.js';
 import { state, loadBrokerCase, blankAudit } from '../src/ui/state.js';
 
-const VIEWS = { businessView, buildView, dealView, differenceView, tuneView, methodView };
+const VIEWS = { businessView, buildView, dealView, repairView, differenceView, examplesView, tuneView, methodView };
 // The dock is deliberately empty until there are earnings, so it is checked on its own.
 const ALL = { ...VIEWS, dock };
 

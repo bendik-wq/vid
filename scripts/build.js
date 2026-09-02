@@ -25,6 +25,8 @@ const ORDER = [
   'src/engine/restructure.js',
   'src/engine/build.js',
   'src/engine/stack.js',
+  'src/engine/repair.js',
+  'src/engine/examples.js',
   'src/ui/format.js',
   'src/ui/charts.js',
   'src/ui/canvas.js',

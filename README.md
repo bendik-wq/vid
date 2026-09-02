@@ -163,6 +163,46 @@ business — it takes its place on the web automatically — then drag it anywhe
 it and set what it earns, what you pay, how you fund it, and what you merge. Positions are
 stored as fractions of the box, so the web survives a resize.
 
+## Restructuring what you already own
+
+The third of the original brief, and the one the tool was thinnest on. Most people arrive
+having bought well and structured badly — full price on bank terms, no holiday, everything
+amortising at once. Nothing about those businesses has to change for the group to become
+serviceable again. The debt does.
+
+Six levers, each with its own terms, each priced on its own and in combination:
+
+| Lever | What it really does |
+|---|---|
+| Go back to the sellers | Ask everyone who left money in to take a lower rate |
+| Give it longer to pay | The same money spread thinner — more interest, and the room to keep trading |
+| Interest only for a while | The strongest single lever, and the one that leaves the whole balance standing |
+| Refinance the lot | One rate, one term, one lender, now the group is big enough to be interesting |
+| Sell the worst one | It takes its profit with it, but it takes more of its debt |
+| Put money in | The only lever that costs you cash, and it is here to show how little it buys |
+
+They run cheapest first, and the screen draws a **waterfall of cover** from where it is to
+where it ends, with the floor across it, so which lever did the work is visible rather than
+bundled into one refinanced number. On the worked forecourt portfolio: cover 1.30x against a
+1.50x floor, and interest-only alone takes it to 3.44x — while injecting $250,000 of your own
+money moves it to 1.32x. That comparison is the whole argument for structure over capital,
+computed rather than asserted.
+
+## Worked examples
+
+Six of them, all the way through, at a size you can present from — computed by the same engines
+as everything else, so tuning an assumption moves the examples with it. Each shows what they
+walked in with, the one thing that changes, what it becomes, and the lesson:
+
+| | They walked in with | It becomes |
+|---|---|---|
+| Wants $15m for a $1.5m-profit exporter | $4.0m at 3.72x, sold to regional acquirers | $15m at 7.00x, sold to lower mid-market private equity |
+| Bought a dozen, some are dead weight | 5 of 6 cannot pay for themselves, $1.07m overpaid | All 6 covering, group worth $0.9m more |
+| Thinks he needs money to buy | $653k of cash to buy one like his | Nothing, and the terms are the real lever |
+| $50m of sites, never ran cover | 1.30x cover, $3.60m of repayments | 1.90x cover, $1.13m a year saved, no cash in |
+| $12m telecom wanting to grow | One business, $21m in ten years | Eleven businesses, $77m |
+| Electrician buying a roofer | Two companies with a shared owner | Four things that genuinely merge |
+
 ## Structuring one deal yourself
 
 The presets cover the common shapes; the **One deal** screen is for when the shape is yours.

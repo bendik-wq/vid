@@ -20,6 +20,7 @@ export const SCENARIOS = [
       'Thirty million of sales, a million and a half of profit, and fifteen million in mind. ' +
       'At this size that number is not reachable — but it is reachable at a size you could get to.',
     goto: 'business',
+    remedy: { kind: 'scale', label: 'Get bigger first, then sell', avgDealProfit: 500_000, dealsPerYear: 2 },
     audit: {
       business: { name: 'Meat exporter', sector: 'manufacturing' },
       askingPrice: 15_000_000,
@@ -39,6 +40,7 @@ export const SCENARIOS = [
       'Averages hide it. Priced one at a time on their own cash, it is usually two or three ' +
       'that are eating what the rest earn.',
     goto: 'build',
+    remedy: { kind: 'reprice', label: 'Pay what each one can carry' },
     audit: {
       business: { name: 'Services group', sector: 'facilities' },
       askingPrice: 0,
@@ -69,6 +71,7 @@ export const SCENARIOS = [
       'Seven million of turnover and a good profit, sitting still because of a belief about ' +
       'deposits. Three of the four ways to buy a business need none of your money.',
     goto: 'build',
+    remedy: { kind: 'structure', label: 'Buy without a deposit', industryId: 'proserv' },
     audit: {
       business: { name: 'Music group', sector: 'proserv' },
       askingPrice: 0,
@@ -89,6 +92,7 @@ export const SCENARIOS = [
       'Bought at full price on bank debt, with no test of whether the cash covered the ' +
       'repayments. Priced properly, most of them do not.',
     goto: 'build',
+    remedy: { kind: 'repair', label: 'Restructure the debt', actions: ['renegotiate', 'refinance'] },
     audit: {
       business: { name: 'Forecourt portfolio', sector: 'hospitality' },
       askingPrice: 0,
@@ -101,12 +105,14 @@ export const SCENARIOS = [
     },
     group: {
       nodes: [
-        node(1, 'hospitality', 420_000, 5.0, 'deposit', ['buying', 'backoffice']),
-        node(2, 'hospitality', 380_000, 5.5, 'deposit', ['buying']),
-        node(3, 'hospitality', 300_000, 4.8, 'deposit', ['buying', 'backoffice']),
-        node(4, 'hospitality', 260_000, 5.2, 'deposit', ['buying']),
+        node(1, 'hospitality', 720_000, 5.0, 'deposit', ['buying', 'backoffice']),
+        node(2, 'hospitality', 680_000, 5.5, 'deposit', ['buying']),
+        node(3, 'hospitality', 640_000, 5.2, 'deposit', ['buying', 'backoffice']),
+        node(4, 'hospitality', 700_000, 5.4, 'deposit', ['buying']),
+        node(5, 'hospitality', 610_000, 5.6, 'deposit', ['buying']),
+        node(6, 'hospitality', 750_000, 5.1, 'deposit', ['buying', 'backoffice']),
       ],
-      nextId: 5,
+      nextId: 7,
     },
   },
   {
@@ -117,6 +123,7 @@ export const SCENARIOS = [
       'An established business is the strongest position anyone can buy from — its profit is ' +
       'what covers the first few deals until they cover themselves.',
     goto: 'build',
+    remedy: { kind: 'build', label: 'Use it as a platform', years: 10 },
     audit: {
       business: { name: 'Telecom operator', sector: 'facilities' },
       askingPrice: 0,
@@ -137,6 +144,7 @@ export const SCENARIOS = [
       'One office, one yard, one set of vans and a customer list that buys both — or two ' +
       'companies with a shared owner. The difference decides whether the savings are real.',
     goto: 'build',
+    remedy: { kind: 'merge', label: 'Merge what genuinely merges' },
     audit: {
       business: { name: 'Electrical contractor', sector: 'trades' },
       askingPrice: 0,

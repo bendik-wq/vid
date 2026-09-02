@@ -9,10 +9,12 @@ import { runAudit } from '../engine/valuation.js';
 import { remediationPlan, restructureTrajectory, pillarUplift, sensitivity } from '../engine/restructure.js';
 import { runBuild, capitalOptions, horizon, requiredScale, portfolioHealth, industryFit } from '../engine/build.js';
 import { runStack, tranche } from '../engine/stack.js';
+import { repairPlan, REPAIR_ACTIONS } from '../engine/repair.js';
+import { allExamples } from '../engine/examples.js';
 import { SOURCE_TYPES, REPAYMENT_MODES, blankSource } from '../data/capital-stack.js';
 import { state, groupInput, futureInput, activeCase } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
-import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow, stackBar, serviceTimeline } from './charts.js';
+import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow, stackBar, serviceTimeline, coverWaterfall, beforeAfter } from './charts.js';
 import { groupCanvas, industryTray } from './canvas.js';
 
 const tile = (k, v, s, cls = '') =>
@@ -1188,4 +1190,282 @@ function sourceRow(type, source) {
       <p class="hint" style="margin-top:12px">${esc(mode.name)} — ${money(tranche(source, source.termYears + 1).balloon)}
       falls due in year ${source.termYears}.</p>` : ''}
   </div>`;
+}
+
+// ── Restructure what you already own ──────────────────────────────────────
+export function repairView() {
+  const group = groupInput();
+  const built = runBuild(group);
+  const plan = repairPlan(group, state.repair);
+  const floor = config.dscrFloor;
+
+  if (built.nodes.length === 0) {
+    return `
+    <section>
+      <p class="eyebrow">Restructure</p>
+      <h1 class="display">Nothing to fix yet.</h1>
+      <p class="lede">This screen works on a group you already own. Add the businesses you have bought
+      on the group screen — what they earn, what you paid, and how you funded them — and this will
+      tell you what can be done about the shape they are in.</p>
+      <div class="actions">
+        <button class="btn" data-act="goto" data-view="build">Add what you own</button>
+        <button class="btn quiet" data-act="scenario" data-scenario="cover">Load a portfolio that needs it</button>
+      </div>
+    </section>`;
+  }
+
+  return `
+  <section>
+    <p class="eyebrow">Restructure</p>
+    <h1 class="display">${plan.before.cover >= floor
+      ? 'The shape is sound.'
+      : 'Bought well. Structured badly.'}</h1>
+    <p class="lede">${plan.before.cover >= floor
+      ? `The group covers its repayments ${turns(plan.before.cover)} over. There is still room to make it
+         cheaper — every lever below works whether or not you are in trouble.`
+      : `The group makes ${money(plan.before.profit)} and owes ${money(plan.before.service)} a year against it.
+         That is ${turns(plan.before.cover)} cover, under the ${turns(floor)} a lender wants. Nothing about
+         these businesses has to change for that to be fixed. The debt does.`}</p>
+
+    <div class="grid g4">
+      ${tile('Owed', money(plan.before.debt), 'across every business')}
+      ${tile('Repayments', money(plan.before.service), 'every year')}
+      ${tile('Cover now', turns(plan.before.cover), plan.before.cover >= floor ? 'above the floor' : 'below the floor',
+        plan.before.cover >= floor ? 'flag-good' : 'flag-critical')}
+      ${tile('Cover after', turns(plan.after.cover),
+        plan.fixed ? 'fixed' : state.repair.chosen.length ? 'still short' : 'pick something below',
+        plan.fixed ? 'flag-good' : '')}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="headline">Six things you can do about it</h2>
+    <p class="lede">Turn them on one at a time and watch what each is worth. They run cheapest first,
+    which is also the order anyone sensible would try them.</p>
+    <div class="grid g2">
+      ${REPAIR_ACTIONS.map((a) => leverCard(a, group, plan)).join('')}
+    </div>
+  </section>
+
+  ${state.repair.chosen.length ? `
+  <section>
+    <h2 class="headline">How it gets there</h2>
+    ${coverWaterfall(plan.steps, floor)}
+    <div style="margin-top:26px">
+      ${beforeAfter([
+        { label: 'Owed', before: money(plan.before.debt), after: money(plan.after.debt),
+          afterGood: plan.after.debt < plan.before.debt },
+        { label: 'Repayments a year', before: money(plan.before.service), after: money(plan.after.service),
+          afterGood: plan.after.service < plan.before.service },
+        { label: 'Profit', before: money(plan.before.profit), after: money(plan.after.profit) },
+        { label: 'Cover', before: turns(plan.before.cover), after: turns(plan.after.cover),
+          beforeBad: plan.before.cover < floor, afterGood: plan.after.cover >= floor },
+        { label: 'Cash it costs you', before: money(0), after: money(plan.cashIn),
+          afterGood: plan.cashIn === 0 },
+      ], { beforeLabel: 'As it stands', afterLabel: 'Restructured' })}
+    </div>
+
+    <div class="note ${plan.fixed ? 'good' : 'critical'}" style="margin-top:24px">
+      <p style="margin:0"><strong>${plan.fixed
+        ? `Cover goes from ${turns(plan.before.cover)} to ${turns(plan.after.cover)}${plan.cashIn === 0 ? ' without a penny of your own money' : ''}.`
+        : `Still ${turns(plan.after.cover)} against a ${turns(floor)} floor.`}</strong>
+      ${plan.serviceSaved > 0 ? `That is ${money(plan.serviceSaved)} a year that stops leaving the business.` : ''}
+      ${plan.deferred ? ' Bear in mind that stretching a term or paying interest only moves money into the future rather than removing it — the balance is still there at the end.' : ''}
+      ${plan.sold.length ? ` You have let go of ${plan.sold.length} ${plan.sold.length === 1 ? 'business' : 'businesses'}, and ${money(plan.sold.reduce((s, n) => s + n.contributed, 0))} of profit with ${plan.sold.length === 1 ? 'it' : 'them'}.` : ''}</p>
+    </div>
+  </section>` : ''}
+
+  <section>
+    <h2 class="headline">What each one is actually worth</h2>
+    <p class="lede">Every lever on its own, from where you are now. The order tells you where to start —
+    and note where putting your own money in comes.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Lever</th><th class="n">Cover after</th><th class="n">Saved a year</th>
+          <th class="n">Costs you</th><th>What it really does</th></tr></thead>
+        <tbody>
+          ${REPAIR_ACTIONS
+            .map((a) => ({ action: a, solo: repairPlan(group, { ...state.repair, chosen: [a.id] }) }))
+            .sort((x, y) => y.solo.after.cover - x.solo.after.cover)
+            .map(({ action, solo }) => `
+              <tr>
+                <td><strong>${esc(action.name)}</strong></td>
+                <td class="n ${solo.fixed ? 'is-good' : ''}"><strong>${turns(solo.after.cover)}</strong></td>
+                <td class="n">${solo.serviceSaved > 0 ? money(solo.serviceSaved) : '—'}</td>
+                <td class="n ${solo.cashIn > 0 ? 'is-critical' : 'muted'}">${solo.cashIn > 0 ? money(solo.cashIn) : 'nothing'}</td>
+                <td class="hint">${esc(action.detail)}</td>
+              </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </section>`;
+}
+
+function leverCard(action, group, plan) {
+  const on = state.repair.chosen.includes(action.id);
+  const params = state.repair.params?.[action.id] ?? {};
+  const solo = repairPlan(group, { ...state.repair, chosen: [action.id] });
+  const field = (p) => (p.kind === 'rate'
+    ? rateField(p.label, `${action.id}.${p.key}`, params[p.key] ?? p.value, 1, 'repair')
+    : numField(p.label, `${action.id}.${p.key}`, params[p.key] ?? p.value, null, 'repair'));
+
+  return `
+  <div class="lever ${on ? 'on' : ''}">
+    <div class="lever-head" data-act="toggle-repair" data-repair="${action.id}" role="button" tabindex="0">
+      <span class="choice-mark" style="${on ? 'border-color:var(--ink);background:var(--ink)' : ''}"></span>
+      <span style="min-width:0">
+        <span class="lever-name">${esc(action.name)}</span>
+        <div class="lever-plain">${esc(action.plain)}</div>
+      </span>
+      <span class="lever-effect ${solo.after.cover >= config.dscrFloor ? 'is-good' : ''}">${turns(solo.after.cover)}</span>
+    </div>
+    ${on ? `
+      <div class="lever-params">
+        ${field(action.param)}
+        ${action.param2 ? field(action.param2) : ''}
+      </div>` : ''}
+    <div class="lever-detail">${esc(action.detail)}</div>
+  </div>`;
+}
+
+// ── Worked examples ───────────────────────────────────────────────────────
+export function examplesView() {
+  const examples = allExamples(SCENARIOS);
+  return `
+  <section>
+    <p class="eyebrow">Worked examples</p>
+    <h1 class="display">Six of them, all the way through.</h1>
+    <p class="lede">Real situations, taken from where they walked in to where the arithmetic put them.
+    Every figure here is computed by the same engines the rest of the tool uses — change an assumption on
+    the Tune screen and these move with it.</p>
+  </section>
+
+  ${examples.map((ex, i) => exampleCard(ex, i + 1)).join('')}
+
+  <section>
+    <p class="statement">Six different businesses.
+    <span class="up">One arithmetic.</span></p>
+    <div class="actions" style="margin-top:24px">
+      <button class="btn" data-act="goto" data-view="cases">Start one of your own</button>
+    </div>
+  </section>`;
+}
+
+function exampleCard(ex, n) {
+  const fmt = (v, kind) => {
+    if (typeof v !== 'number') return esc(String(v));
+    if (kind === 'turns') return turns(v);
+    return money(v);
+  };
+  const improved = (row) => {
+    if (typeof row.before !== 'number' || typeof row.after !== 'number') return true;
+    return row.label.toLowerCase().includes('overpaid') || row.label.toLowerCase().includes('owed')
+      || row.label.toLowerCase().includes('repayments') || row.label.toLowerCase().includes('cash')
+      ? row.after <= row.before
+      : row.after >= row.before;
+  };
+
+  return `
+  <section class="example">
+    <div class="example-mark">${n}</div>
+    <h2 class="headline" style="max-width:22ch">“${esc(ex.voice)}”</h2>
+    <p class="lede">${esc(ex.pain)} ${esc(ex.detail)}</p>
+
+    <div class="badge" style="margin-bottom:18px">What changes: ${esc(ex.remedy)}</div>
+
+    ${beforeAfter(ex.rows.map((r) => ({
+      label: r.label,
+      before: fmt(r.before, r.fmt),
+      after: fmt(r.after, r.fmt),
+      beforeBad: typeof r.before === 'number' && !improved(r),
+      afterGood: improved(r),
+    })), { beforeLabel: 'They walked in with', afterLabel: ex.remedy })}
+
+    ${exampleFigure(ex)}
+
+    <div class="note good" style="margin-top:22px">
+      <p style="margin:0">${esc(ex.lesson)}</p>
+    </div>
+
+    <div class="actions" style="margin-top:20px">
+      <button class="btn quiet" data-act="scenario" data-scenario="${ex.id}">Open this as a case</button>
+    </div>
+  </section>`;
+}
+
+/** One picture per example, chosen for what that particular case turns on. */
+function exampleFigure(ex) {
+  if (ex.kind === 'scale') {
+    return `<div style="margin-top:24px">${gapBar({
+      asking: ex.audit.askingPrice,
+      achievable: ex.audit.achievableValue,
+      fundable: ex.audit.dscr.maxFundablePrice,
+    })}</div>`;
+  }
+  if (ex.kind === 'repair') {
+    return `<div style="margin-top:24px">${coverWaterfall(ex.plan.steps, config.dscrFloor)}</div>`;
+  }
+  if (ex.kind === 'build') {
+    return `<div style="margin-top:24px">${trajectory(
+      [1, Math.ceil(ex.horizon.rows.length / 2), ex.horizon.rows.length].map((y) => {
+        const row = ex.horizon.rows[y - 1];
+        return { label: `Year ${row.year}`, value: row.groupEquity };
+      }),
+    )}</div>`;
+  }
+  if (ex.kind === 'reprice') {
+    const max = Math.max(...ex.health.nodes.map((n) => (isFinite(n.dscr) ? n.dscr : 0)), config.dscrFloor * 2);
+    return `
+    <div class="scroll" style="margin-top:24px">
+      <table>
+        <thead><tr><th>Business</th><th class="n">Paid</th><th class="n">Cover</th>
+          <th style="width:160px"></th><th class="n">Should have paid</th></tr></thead>
+        <tbody>
+          ${ex.health.worstFirst.map((node) => `
+            <tr>
+              <td>${esc(node.industry.name)}</td>
+              <td class="n">${turns(node.multiple)}</td>
+              <td class="n ${node.passes ? 'is-good' : 'is-critical'}"><strong>${turns(node.dscr)}</strong></td>
+              <td>${rankBar(Math.min(node.dscr, max), max)}</td>
+              <td class="n ${node.passes ? 'muted' : ''}">${node.passes ? '—' : turns(node.maxMultiple)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+  if (ex.kind === 'merge') {
+    return `
+    <div class="grid g2" style="margin-top:24px">
+      <div class="card">
+        <p class="eyebrow" style="margin:0 0 10px">What merges</p>
+        ${ex.fit.shared.length
+          ? `<ul style="margin:0;padding-left:18px;color:var(--ink-2)">${ex.fit.shared.map((id) => `<li>${esc(LEVER_NAMES[id])}</li>`).join('')}</ul>`
+          : '<p class="muted" style="margin:0">Nothing, really.</p>'}
+      </div>
+      <div class="card">
+        <p class="eyebrow" style="margin:0 0 10px">What does not</p>
+        ${ex.fit.only.length
+          ? `<ul style="margin:0;padding-left:18px;color:var(--ink-3)">${ex.fit.only.map((id) => `<li>${esc(LEVER_NAMES[id])}</li>`).join('')}</ul>`
+          : '<p class="muted" style="margin:0">Everything carries across.</p>'}
+      </div>
+    </div>`;
+  }
+  if (ex.kind === 'structure') {
+    return `
+    <div class="scroll" style="margin-top:24px">
+      <table>
+        <thead><tr><th>How you pay</th><th class="n">Your cash</th><th class="n">Most you can pay</th><th>What limits you</th></tr></thead>
+        <tbody>
+          ${ex.options.map((o) => `
+            <tr${o.needsCash ? '' : ' class="row-total"'}>
+              <td>${esc(o.structure.name)}</td>
+              <td class="n ${o.needsCash ? 'is-critical' : 'is-good'}">${o.needsCash ? '20% of the price' : 'none'}</td>
+              <td class="n">${turns(o.maxMultiple)}</td>
+              <td class="muted">${esc(o.limitedBy)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+  return '';
 }

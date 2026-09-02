@@ -11,6 +11,7 @@ import { DEFAULT_STRUCTURE, DEFAULT_FINANCIALS } from '../engine/valuation.js';
 import { BROKER_CASE } from '../data/cases.js';
 import { SCENARIOS_BY_ID } from '../data/scenarios.js';
 import { defaultStack, blankSource } from '../data/capital-stack.js';
+import { blankRepair } from '../engine/repair.js';
 import { config, applyConfig, resetConfig } from '../data/config.js';
 import { SECTORS_BY_ID } from '../data/sectors.js';
 import { DEFAULT_ASSUMPTIONS } from '../engine/build.js';
@@ -72,6 +73,7 @@ export const blankCase = (name = 'New case') => ({
   capital: blankCapital(),
   future: blankFuture(),
   deal: blankDeal(),
+  repair: blankRepair(),
 });
 
 export const state = {
@@ -83,6 +85,7 @@ export const state = {
   capital: blankCapital(),
   future: blankFuture(),
   deal: blankDeal(),
+  repair: blankRepair(),
   /** Interface state. Not part of any case, never exported. */
   ui: { openPillar: 'credibility', selectedNode: null },
 };
@@ -98,6 +101,7 @@ function syncActive() {
   record.capital = state.capital;
   record.future = state.future;
   record.deal = state.deal;
+  record.repair = state.repair;
   record.updated = Date.now();
   if (state.audit.business.name && record.name === 'New case') record.name = state.audit.business.name;
 }
@@ -113,6 +117,7 @@ export function openCase(id) {
   state.capital = record.capital;
   state.future = record.future;
   state.deal = record.deal;
+  state.repair = record.repair;
   state.ui.selectedNode = null;
   notify();
 }
@@ -136,6 +141,7 @@ export function newCase(name = 'New case', seed = null) {
   state.capital = record.capital;
   state.future = record.future;
   state.deal = record.deal;
+  state.repair = record.repair;
   state.ui.selectedNode = null;
   notify();
   return record.id;
@@ -170,6 +176,7 @@ export function loadScenario(id) {
   state.capital = record.capital;
   state.future = record.future;
   state.deal = record.deal;
+  state.repair = record.repair;
   state.ui.selectedNode = null;
   notify();
   return scenario.goto;
@@ -217,6 +224,7 @@ export function exportCase(id) {
     capital: record.capital,
     future: record.future,
     deal: record.deal,
+    repair: record.repair,
   };
 }
 
@@ -233,6 +241,10 @@ export function importCase(payload) {
   if (payload.group && typeof payload.group === 'object') record.group = { ...blankGroup(), ...payload.group };
   if (payload.capital && typeof payload.capital === 'object') record.capital = { ...blankCapital(), ...payload.capital };
   if (payload.future && typeof payload.future === 'object') record.future = { ...blankFuture(), ...payload.future };
+  if (payload.repair && typeof payload.repair === 'object') {
+    record.repair = { ...blankRepair(), ...payload.repair };
+    if (!Array.isArray(record.repair.chosen)) record.repair.chosen = [];
+  }
   if (payload.deal && typeof payload.deal === 'object') {
     record.deal = { ...blankDeal(), ...payload.deal };
     if (!Array.isArray(record.deal.sources) || !record.deal.sources.length) record.deal.sources = defaultStack();
@@ -322,6 +334,19 @@ export function dealFromNode(id) {
   notify();
 }
 
+/** Turn a restructuring lever on or off. */
+export function toggleRepair(id) {
+  const chosen = state.repair.chosen;
+  state.repair.chosen = chosen.includes(id) ? chosen.filter((x) => x !== id) : [...chosen, id];
+  notify();
+}
+
+export function setRepairParam(id, key, value) {
+  if (!state.repair.params[id]) state.repair.params[id] = {};
+  state.repair.params[id][key] = value;
+  notify();
+}
+
 export function setSource(sourceId, key, value) {
   const source = state.deal.sources.find((s) => s.id === sourceId);
   if (source) { source[key] = value; notify(); }
@@ -376,6 +401,7 @@ export function load() {
           capital: { ...blankCapital(), ...(c.capital ?? {}) },
           future: { ...blankFuture(), ...(c.future ?? {}) },
           deal: { ...blankDeal(), ...(c.deal ?? {}) },
+          repair: { ...blankRepair(), ...(c.repair ?? {}) },
         }));
         state.activeCaseId = state.cases.some((c) => c.id === parsed.activeCaseId)
           ? parsed.activeCaseId : state.cases[0].id;
@@ -409,6 +435,7 @@ export function load() {
   state.capital = live.capital;
   state.future = live.future;
   state.deal = live.deal;
+  state.repair = live.repair;
 }
 
 /** Deep-set on the audit: setAudit('financials.claimedEbitda', 1000000). */

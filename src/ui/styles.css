@@ -531,3 +531,49 @@ svg text { font-family: var(--sans); font-variant-numeric: tabular-nums; }
 .tray-card.scenario { gap: 6px; padding: 16px 18px; }
 .tray-card.scenario .tray-name { font-size: 15px; line-height: 1.35; font-weight: 600; }
 .tray-card.scenario .tray-eg { font-size: 13px; line-height: 1.4; }
+
+/* ── Before and after ───────────────────────────────────────────────────── */
+.ba { border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; background: var(--raised); }
+.ba-head, .ba-row {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px; align-items: baseline; padding: 14px 22px;
+}
+.ba-head { border-bottom: 1px solid var(--hair); background: var(--sunken); padding-top: 12px; padding-bottom: 12px; }
+.ba-col { font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); }
+.ba-col.after { color: var(--credibility); }
+.ba-row { border-bottom: 1px solid var(--hair); }
+.ba-row:last-child { border-bottom: 0; }
+.ba-key { font-size: 14px; color: var(--ink-2); }
+.ba-val { font-size: 20px; font-weight: 600; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }
+.ba-val.before { color: var(--ink-3); }
+.ba-val.after { color: var(--ink); }
+
+/* ── Levers ─────────────────────────────────────────────────────────────── */
+.lever {
+  border: 1px solid var(--hair); border-radius: 14px; background: var(--raised);
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
+  transition: border-color 130ms ease, background 130ms ease;
+}
+.lever.on { border-color: var(--ink); background: var(--sunken); }
+.lever-head { display: flex; gap: 13px; align-items: flex-start; cursor: pointer; }
+.lever-name { font-size: 15.5px; font-weight: 600; letter-spacing: -0.015em; }
+.lever-plain { font-size: 13.5px; color: var(--ink-2); margin-top: 3px; }
+.lever-detail { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+.lever-effect { font-size: 13px; font-weight: 600; margin-left: auto; white-space: nowrap; }
+.lever-params { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+@media (max-width: 720px) {
+  .ba-head, .ba-row { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 12px 16px; }
+  .ba-head { display: none; }
+  .ba-val::before { content: attr(data-label); }
+  .lever-params { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Worked examples ────────────────────────────────────────────────────── */
+.example { position: relative; padding-top: 12px; border-top: 1px solid var(--hair); }
+.example:first-of-type { border-top: 0; }
+.example-mark {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-3);
+  margin-bottom: 14px;
+}
+.example .headline { font-family: inherit; font-style: normal; }
