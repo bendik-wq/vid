@@ -4,6 +4,7 @@ import {
   state, load, notify, setScore, resetAudit, resetTuning, loadBrokerCase,
   addNode, removeNode, findNode, setNode, toggleLever, clearGroup, groupInput, futureInput, stretchAll,
   activeCase, newCase, openCase, renameCase, duplicateCase, deleteCase, exportCase, importCase,
+  loadScenario,
 } from './state.js';
 import { config, setConfig, clearOverride } from '../data/config.js';
 import { state_currency, num, money, moneyShort, esc } from './format.js';
@@ -146,6 +147,7 @@ function onClick(e) {
   else if (act === 'dup-case') { duplicateCase(el.dataset.case); render(); }
   else if (act === 'del-case') { deleteCase(el.dataset.case); render(); }
   else if (act === 'export-case') { saveCaseFile(el.dataset.case); }
+  else if (act === 'scenario') { location.hash = loadScenario(el.dataset.scenario) ?? 'business'; render(); }
   else if (act === 'print') { window.print(); }
   else if (act === 'export') { exportReport(); }
 }

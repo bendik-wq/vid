@@ -150,6 +150,37 @@ const bars = await page.$$eval('#main svg rect', (els) => els.length);
 if (bars < 10) fail(`expected the business screen to draw its figures, found ${bars} marks`);
 if (!(await page.textContent('#main')).includes('What moves the number most')) fail('the tornado section is missing');
 
+// Every situation must open a case that says something, on the screen that answers it.
+for (const id of ['exit', 'serial', 'capital', 'cover', 'expand', 'adjacent']) {
+  await page.click('.tabs a[href="#cases"]');
+  await page.waitForTimeout(350);
+  await page.click(`[data-act="scenario"][data-scenario="${id}"]`);
+  await page.waitForTimeout(500);
+  const view = (await page.evaluate(() => location.hash)) || '#business';
+  if (!['#business', '#build'].includes(view)) fail(`${id} routed to ${view}`);
+  const text = await page.textContent('#main');
+  if (text.length < 3000) fail(`${id} opened on an empty screen`);
+  if (/NaN|undefined/.test(text)) fail(`${id} leaked a broken number`);
+}
+
+// The seller who wants too much gets told what he would have to become.
+await page.click('.tabs a[href="#cases"]');
+await page.waitForTimeout(350);
+await page.click('[data-act="scenario"][data-scenario="exit"]');
+await page.waitForTimeout(600);
+const exitText = await page.textContent('#main');
+if (!exitText.includes('What you would have to become')) fail('the scale answer is missing');
+if (!/\d+ businesses/.test(exitText)) fail('it does not say how many businesses');
+
+// The serial acquirer gets told which of his deals are the problem.
+await page.click('.tabs a[href="#cases"]');
+await page.waitForTimeout(350);
+await page.click('[data-act="scenario"][data-scenario="serial"]');
+await page.waitForTimeout(700);
+const serialText = await page.textContent('#main');
+if (!serialText.includes('Which ones are carrying the rest')) fail('the portfolio check is missing');
+if (!serialText.includes('Overpaid by')) fail('the drag is not priced');
+
 if (errors.length) fail(`console errors: ${errors.join(' | ')}`);
 await browser.close();
 console.log(process.exitCode ? 'smoke: FAILED' : 'smoke: ok');

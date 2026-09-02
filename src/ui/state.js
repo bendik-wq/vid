@@ -9,6 +9,7 @@
 import { CRITERIA } from '../data/criteria.js';
 import { DEFAULT_STRUCTURE, DEFAULT_FINANCIALS } from '../engine/valuation.js';
 import { BROKER_CASE } from '../data/cases.js';
+import { SCENARIOS_BY_ID } from '../data/scenarios.js';
 import { config, applyConfig, resetConfig } from '../data/config.js';
 import { SECTORS_BY_ID } from '../data/sectors.js';
 import { DEFAULT_ASSUMPTIONS } from '../engine/build.js';
@@ -123,6 +124,39 @@ export function newCase(name = 'New case', seed = null) {
   state.ui.selectedNode = null;
   notify();
   return record.id;
+}
+
+/**
+ * Start a case from one of the situations people actually walk in with.
+ * Returns the screen that answers that particular pain.
+ */
+export function loadScenario(id) {
+  const scenario = SCENARIOS_BY_ID[id];
+  if (!scenario) return null;
+
+  const record = blankCase(scenario.audit.business.name);
+  record.scenario = id;
+  record.audit = {
+    ...blankAudit(),
+    business: { ...scenario.audit.business },
+    askingPrice: scenario.audit.askingPrice ?? 0,
+    financials: { ...DEFAULT_FINANCIALS, ...scenario.audit.financials },
+    scores: { ...blankAudit().scores, ...(scenario.audit.scores ?? {}) },
+  };
+  if (scenario.group) record.group = { ...blankGroup(), ...scenario.group };
+  if (scenario.capital) record.capital = { ...blankCapital(), ...scenario.capital };
+  if (scenario.future) record.future = { ...blankFuture(), ...scenario.future };
+
+  syncActive();
+  state.cases.push(record);
+  state.activeCaseId = record.id;
+  state.audit = record.audit;
+  state.group = record.group;
+  state.capital = record.capital;
+  state.future = record.future;
+  state.ui.selectedNode = null;
+  notify();
+  return scenario.goto;
 }
 
 export function renameCase(id, name) {

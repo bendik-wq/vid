@@ -2,11 +2,12 @@
 
 import { PILLARS, criteriaForPillar } from '../data/criteria.js';
 import { SECTORS, SECTORS_BY_ID, SIZE_BANDS, bandFor } from '../data/sectors.js';
+import { SCENARIOS } from '../data/scenarios.js';
 import { STRUCTURES, INTEGRATION_LEVERS, MAX_SYNERGY } from '../data/structures.js';
 import { config, deltaFor, defaultDeltaFor, ceilingFor, isTuned, isSectorTuned, tuningSummary, DEFAULT_CONFIG } from '../data/config.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan, restructureTrajectory, pillarUplift, sensitivity } from '../engine/restructure.js';
-import { runBuild, capitalOptions, horizon } from '../engine/build.js';
+import { runBuild, capitalOptions, horizon, requiredScale, portfolioHealth, industryFit } from '../engine/build.js';
 import { state, groupInput, futureInput, activeCase } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
 import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow } from './charts.js';
@@ -84,9 +85,10 @@ export function businessView() {
       can actually prove. A buyer gets to ${money(r.achievableValue)}.</p>
       ${gapBar({ asking: r.askingPrice, achievable: r.achievableValue, fundable: r.dscr.maxFundablePrice })}
     ` : `
-      <h1 class="display">What do you want for it?</h1>
-      <p class="lede">Two numbers and you have your answer. Everything after that is arithmetic on figures
-      you give us — which is the point. There is nothing here to argue with.</p>
+      <h1 class="display">Which of these is you?</h1>
+      <p class="lede">Pick the one that sounds like your situation and the tool opens on the number that
+      answers it. Or just start typing below — two figures is enough.</p>
+      ${scenarioPicker()}
     `}
   </section>
 
@@ -198,10 +200,13 @@ export function businessView() {
     ${planFold()}
   </section>
 
+  ${scaleSection(r)}
+
   <section>
     <h2 class="headline">What moves the number most</h2>
-    <p class="lede">Every question, worst answer to best, with where you sit now in the middle.
-    The longest bar is where the next twelve months should go.</p>
+    <p class="lede">Every question drawn worst answer to best, with where you sit now down the middle,
+    ordered by how much rides on it either way. Red is what you would lose if it slipped; green is what
+    is still there to win — and the longest green bar is where the next twelve months should go.</p>
     ${tornado(sensitivity(state.audit))}
   </section>
 
@@ -355,6 +360,8 @@ export function buildView() {
       ${esc(band.who.toLowerCase())}.</p>` : ''}
   </section>
 
+  ${portfolioSection(g)}
+
   <section>
     <h2 class="headline">Add a business</h2>
     <p class="lede">Tap one to add it. Drag it anywhere on the web — the group only cares what it earns.</p>
@@ -474,6 +481,8 @@ function nodeInspector(node) {
             </span>
           </button>`).join('')}
       </div>
+
+      ${fitNote(node)}
 
       <p class="eyebrow">What you merge <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">— up to ${pct(MAX_SYNERGY, 0)} of its profit</span></p>
       <div class="choices" style="margin-bottom:20px">
@@ -844,6 +853,12 @@ export function casesView() {
   </section>
 
   <section>
+    <h2 class="headline">Or start from a situation</h2>
+    <p class="lede">Six of the ones that come up most. Each opens on the screen that answers it.</p>
+    ${scenarioPicker()}
+  </section>
+
+  <section>
     <div class="grid g2">
       ${state.cases.map((c) => {
         const r = runAudit(c.audit);
@@ -874,3 +889,134 @@ export function casesView() {
     </div>
   </section>`;
 }
+
+// ── Situations ────────────────────────────────────────────────────────────
+export function scenarioPicker() {
+  return `
+  <div class="tray" style="margin-top:26px">
+    ${SCENARIOS.map((s) => `
+      <button class="tray-card scenario" data-act="scenario" data-scenario="${s.id}">
+        <span class="tray-name">“${esc(s.voice)}”</span>
+        <span class="tray-eg">${esc(s.pain)}</span>
+      </button>`).join('')}
+  </div>`;
+}
+
+// ── What you would have to become ─────────────────────────────────────────
+function scaleSection(r) {
+  if (!(r.askingPrice > 0) || !(r.defensibleEbitda > 0) || r.gap <= 0) return '';
+  const f = state.future;
+  const scale = requiredScale({
+    targetPrice: r.askingPrice,
+    currentProfit: r.defensibleEbitda,
+    industryId: state.audit.business.sector,
+    avgDealProfit: f.avgDealProfit,
+    dealsPerYear: f.dealsPerYear,
+    synergyRate: f.synergyRate,
+  });
+  if (!scale) return '';
+
+  return `
+  <section>
+    <h2 class="headline">What you would have to become</h2>
+    <p class="lede">You are not wrong to want ${money(r.askingPrice)}. You are wrong about the size of
+    business that gets it. Work backwards from your number and it lands on a business
+    ${scale.alreadyThere ? 'you already are' : 'you are not yet'}.</p>
+
+    <div class="grid g4">
+      ${tile('You make now', money(r.defensibleEbitda), `worth ${turns(r.achievableMultiple)} of it`)}
+      ${tile('You would need', money(scale.requiredProfit), `at ${turns(scale.requiredMultiple)}, the best in your industry at that size`, 'flag-good')}
+      ${tile('That is', scale.alreadyThere ? 'nothing more' : `${scale.businesses} businesses`,
+        scale.alreadyThere ? 'you are already big enough' : `of ${money(f.avgDealProfit)} profit each`)}
+      ${tile('Taking', scale.alreadyThere ? '—' : `${scale.years} year${scale.years === 1 ? '' : 's'}`,
+        scale.alreadyThere ? 'fix the business instead' : `at ${f.dealsPerYear} a year`)}
+    </div>
+
+    <div class="note ${scale.alreadyThere ? 'good' : ''}" style="margin-top:22px">
+      <p style="margin:0">${scale.alreadyThere
+        ? `Your business is already the right size for ${money(r.askingPrice)} — what is missing is
+           quality, not scale. The work is on this page, not the next one.`
+        : scale.bandJump
+          ? `<strong>The jump is not just more profit — it is a different bracket of buyer.</strong>
+             Today the people bidding are ${esc(scale.todayBand.who.toLowerCase())}. At
+             ${money(scale.requiredProfit)} they are ${esc(scale.band.who.toLowerCase())}, and they pay
+             ${turns(scale.requiredMultiple)} rather than ${turns(r.achievableMultiple)}. Same trade,
+             different room.`
+          : `You need ${money(scale.profitNeeded)} more profit than you make. Buying it is faster than
+             growing it, and on the right terms it costs you nothing up front.`}</p>
+    </div>
+    ${!scale.alreadyThere ? `
+      <div class="actions" style="margin-top:20px">
+        <button class="btn" data-act="goto" data-view="build">Show me how</button>
+      </div>` : ''}
+  </section>`;
+}
+
+// ── Portfolio health ──────────────────────────────────────────────────────
+export function portfolioSection(group) {
+  const health = portfolioHealth(group);
+  if (health.nodes.length < 3) return '';
+
+  const worst = health.worstFirst.slice(0, 6);
+  const max = Math.max(...health.nodes.map((n) => n.dscr).filter(isFinite), config.dscrFloor * 2, 1);
+
+  return `
+  <section>
+    <h2 class="headline">Which ones are carrying the rest</h2>
+    <p class="lede">${health.failing.length
+      ? `The group average hides it. Priced one at a time on their own cash,
+         <strong>${health.failing.length} of ${health.nodes.length}</strong> cannot pay for themselves.`
+      : 'Every one of them pays for itself. That is rarer than it sounds.'}</p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Business</th><th class="n">Profit</th><th class="n">Paid</th>
+          <th class="n">Cover</th><th style="width:150px"></th><th class="n">Should have paid</th></tr></thead>
+        <tbody>
+          ${worst.map((n) => `
+            <tr>
+              <td><strong>${esc(n.industry.name)}</strong><div class="hint">${esc(n.structure.name)}</div></td>
+              <td class="n">${money(n.ebitda)}</td>
+              <td class="n">${turns(n.multiple)}</td>
+              <td class="n ${n.passes ? 'is-good' : 'is-critical'}"><strong>${turns(n.dscr)}</strong></td>
+              <td>${rankBar(Math.min(n.dscr, max), max)}</td>
+              <td class="n ${n.passes ? 'muted' : ''}">${n.passes ? '—' : turns(n.maxMultiple)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    ${health.failing.length ? `
+      <div class="note critical" style="margin-top:22px">
+        <p style="margin:0"><strong>Overpaid by ${money(health.overpaid)} across ${health.failing.length}
+        deals.</strong> Bought at what each could actually carry, the same group would be worth
+        ${money(health.repriced.equityValue)} instead of ${money(health.equityValue)} —
+        a difference of ${money(health.drag)}. That is the cost of not running the number before signing.</p>
+      </div>` : ''}
+  </section>`;
+}
+
+/** Whether the business next door really merges with yours, or just shares an owner. */
+function fitNote(node) {
+  const platformIndustry = state.group.holdcoIndustry ?? state.audit.business.sector;
+  const fit = industryFit(platformIndustry, node.industryId);
+  if (fit.same) {
+    return `
+    <div class="note good" style="margin-bottom:20px">
+      <p style="margin:0"><strong>Same trade as yours.</strong> One office, one yard, one set of vans,
+      and a customer list that buys both. Everything that can merge, merges.</p>
+    </div>`;
+  }
+  return `
+  <div class="note ${fit.shared.length >= 2 ? '' : 'critical'}" style="margin-bottom:20px">
+    <p style="margin:0"><strong>${esc(fit.verdict)}</strong>
+    ${fit.shared.length
+      ? `Out of ${fit.target.name.toLowerCase()}, ${fit.shared.length} of the savings genuinely apply to
+         a ${fit.platform.name.toLowerCase()} platform: ${fit.shared.map((id) => esc(LEVER_NAMES[id])).join(', ')}.`
+      : 'Almost none of the savings carry across.'}
+    ${fit.only.length ? ` The rest — ${fit.only.map((id) => esc(LEVER_NAMES[id])).join(', ')} — you would be
+      claiming without a reason.` : ''}</p>
+  </div>`;
+}
+
+const LEVER_NAMES = Object.fromEntries(INTEGRATION_LEVERS.map((l) => [l.id, l.name.toLowerCase()]));

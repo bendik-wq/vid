@@ -17,6 +17,7 @@ const ORDER = [
   'src/data/criteria.js',
   'src/data/sectors.js',
   'src/data/structures.js',
+  'src/data/scenarios.js',
   'src/data/config.js',
   'src/data/cases.js',
   'src/engine/valuation.js',
@@ -53,10 +54,26 @@ start();
 </script>`;
 
 const css = await readFile(join(ROOT, 'src/ui/styles.css'), 'utf8');
+const raw = [];
 const parts = [];
 for (const file of ORDER) {
+  const source = await readFile(join(ROOT, file), 'utf8');
+  raw.push(source);
   parts.push(`// ── ${file} ${'─'.repeat(Math.max(0, 60 - file.length))}`);
-  parts.push(strip(await readFile(join(ROOT, file), 'utf8'), file));
+  parts.push(strip(source, file));
+}
+
+// Every module a source file imports has to be in ORDER, or the bundle is missing a
+// definition and the page goes blank at runtime. Catch it here instead.
+const listed = new Set(ORDER);
+for (let i = 0; i < ORDER.length; i += 1) {
+  const dir = dirname(ORDER[i]);
+  for (const m of raw[i].matchAll(/from\s+['"](\.[^'"]+)['"]/g)) {
+    const resolved = join(dir, m[1]).replace(/\\/g, '/');
+    if (!listed.has(resolved)) {
+      throw new Error(`${ORDER[i]} imports ${resolved}, which is missing from the bundle order`);
+    }
+  }
 }
 
 // Concatenation only works while every module's top-level names are unique. Catch a

@@ -81,6 +81,46 @@ value proposition in one number.
 | **Tune** | Every number editable in place beside its justification |
 | **Method** | Formulas, assumptions, and what is not signed off |
 
+## The situations people arrive with
+
+The tool opens on six of them rather than a blank form, each in the owner's own words, each
+routed to the screen that answers it:
+
+| They say | The pain |
+|---|---|
+| I want out, and I have a number in mind | The number and the business are not the same size |
+| I have bought a dozen, some fly and some are dead weight | Nobody screened them the same way, so the good ones carry the bad |
+| I would buy, but I do not have the money | Cash was never the thing stopping you |
+| I own fifty million of sites, I never ran a coverage ratio | You test whether a deal pays for itself before you sign, not after |
+| Twelve million of revenue, I want to grow by buying | You have a platform and do not know what it can carry |
+| I do electrical, I want to buy a roofing company | Next door only counts if the same things actually merge |
+
+Each seeds a case with figures close enough to the real thing that the first screen says
+something true, and every number is meant to be typed over.
+
+## What you would have to become
+
+The sharpest answer in the tool, and the one for anyone whose number is bigger than his
+business. It solves backwards: the smallest profit that, at the price per pound its own size
+earns, is worth the number he has in mind — then how many businesses that is and how long it
+takes. Because the price per pound steps up with scale, the answer is usually not "earn more"
+but "move up a bracket": on the worked meat exporter, $15m needs $2.14m of profit rather than
+$1.08m, and at that size the bidders stop being regional acquirers and start being lower
+mid-market private equity, paying 7.0x rather than 3.7x. Same trade, different room.
+
+## Which ones are carrying the rest
+
+For anyone who has already bought several. The group average hides the problem, so each
+business is priced on its own cash, ranked worst cover first, with the price it should have
+been bought at beside the price it was. The drag is costed: what the same group would be worth
+if the failing deals had been bought at what they could carry.
+
+## Does it actually merge?
+
+An electrician buying a roofer is either one office, one yard and one customer list, or two
+companies with a shared owner. Adding a business from a different industry now names which
+savings genuinely apply to both — and which you would be claiming without a reason.
+
 ## Cases
 
 Everything you enter belongs to a named case — one per business you look at. Start as many as

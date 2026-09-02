@@ -527,3 +527,7 @@ svg text { font-family: var(--sans); font-variant-numeric: tabular-nums; }
   .case-figs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case-chip { max-width: 150px; }
 }
+
+.tray-card.scenario { gap: 6px; padding: 16px 18px; }
+.tray-card.scenario .tray-name { font-size: 15px; line-height: 1.35; font-weight: 600; }
+.tray-card.scenario .tray-eg { font-size: 13px; line-height: 1.4; }

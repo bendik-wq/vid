@@ -6,7 +6,7 @@
  * pull, and tested on its own cash before it is allowed into the group.
  */
 
-import { SECTORS_BY_ID, sizePremium } from '../data/sectors.js';
+import { SECTORS_BY_ID, SIZE_BANDS, sizePremium } from '../data/sectors.js';
 import { STRUCTURES, STRUCTURES_BY_ID, asFunding, synergyFrom } from '../data/structures.js';
 import { config, ceilingFor } from '../data/config.js';
 import { annualDebtService } from './valuation.js';
@@ -259,5 +259,133 @@ export function horizon({
     // Every pound put in, against every pound of extra value out. Large by design when the
     // structures need no deposit — the fee is then genuinely the only cash in the deal.
     returnOnCash: cashIn > 0 ? (final.groupEquity - final.aloneValue) / cashIn : Infinity,
+  };
+}
+
+/**
+ * What you would have to become to get your number.
+ *
+ * The seller who says "I want fifteen million" is usually not wrong about wanting it — he is
+ * wrong about the size of business that gets it. Because the price per pound of profit steps
+ * up with scale, this solves backwards: the smallest profit that, at the multiple its own
+ * size earns, is worth the number he has in mind. Then it says how many businesses that is.
+ */
+export function requiredScale({
+  targetPrice,
+  currentProfit,
+  industryId = 'generic',
+  avgDealProfit = 250_000,
+  dealsPerYear = 2,
+  synergyRate = 0.15,
+}) {
+  // The multiple used here is the best a well-run business in this industry gets, so the
+  // answer already assumes the quality problems are fixed too. Anything less and the profit
+  // needed is higher still.
+  const ceiling = ceilingFor(industryId);
+  if (!(targetPrice > 0) || !(ceiling > 0)) return null;
+
+  // Walk the size bands from the bottom: the first one whose own multiple produces a profit
+  // that actually sits inside that band is the honest answer.
+  let solution = null;
+  for (const band of SIZE_BANDS) {
+    const multiple = ceiling + band.premium;
+    const profit = targetPrice / multiple;
+    if (profit >= band.from && profit < band.to) {
+      solution = { profit, multiple, band };
+      break;
+    }
+  }
+  // No band contains its own answer — the number sits in a gap between two brackets, so it
+  // takes the next bracket up and the profit that bracket starts at.
+  if (!solution) {
+    const band = [...SIZE_BANDS].reverse().find((b) => targetPrice / (ceiling + b.premium) >= b.from)
+      ?? SIZE_BANDS[SIZE_BANDS.length - 1];
+    solution = { profit: Math.max(band.from, targetPrice / (ceiling + band.premium)), multiple: ceiling + band.premium, band };
+  }
+
+  const profitNeeded = Math.max(0, solution.profit - currentProfit);
+  const perDeal = avgDealProfit * (1 + synergyRate);
+  const businesses = perDeal > 0 ? Math.ceil(profitNeeded / perDeal) : Infinity;
+  const years = dealsPerYear > 0 ? Math.ceil(businesses / dealsPerYear) : Infinity;
+
+  return {
+    targetPrice,
+    currentProfit,
+    requiredProfit: solution.profit,
+    requiredMultiple: solution.multiple,
+    band: solution.band,
+    profitNeeded,
+    businesses,
+    years,
+    perDeal,
+    // Reaching the number usually means moving up a bracket, not just earning more. That is
+    // the part sellers never see coming, so it is called out rather than left to be inferred.
+    todayBand: SIZE_BANDS.find((b) => currentProfit >= b.from && currentProfit < b.to) ?? SIZE_BANDS[0],
+    bandJump: solution.band.premium > sizePremium(currentProfit),
+    ceiling,
+    reachable: isFinite(businesses) && businesses >= 0,
+    alreadyThere: profitNeeded <= 0,
+  };
+}
+
+/**
+ * Which of the businesses you already own are dragging the rest down.
+ *
+ * A buyer who has done a dozen deals rarely knows which ones are the problem; the group's
+ * average hides it. This names them and prices the drag: what the group is worth now against
+ * what it would be worth if the ones that cannot cover their own repayments were fixed.
+ */
+export function portfolioHealth(group) {
+  const now = runBuild(group);
+  const failing = now.nodes.filter((n) => !n.passes);
+  if (!failing.length) {
+    return { ...now, failing: [], drag: 0, worstFirst: [], repriced: now };
+  }
+
+  // Repriced: every failing deal bought at the most it could carry instead of what was paid.
+  const repriced = runBuild({
+    ...group,
+    nodes: group.nodes.map((n) => {
+      const priced = priceNode(n, group.assumptions);
+      return priced.passes ? n : { ...n, multiple: Math.max(0.5, priced.maxMultiple) };
+    }),
+  });
+
+  return {
+    ...now,
+    failing,
+    repriced,
+    drag: repriced.equityValue - now.equityValue,
+    overpaid: failing.reduce((s, n) => s + Math.max(0, n.price - n.maxMultiple * n.ebitda), 0),
+    worstFirst: [...now.nodes].sort((a, b) => a.dscr - b.dscr),
+  };
+}
+
+/**
+ * Whether a business next door to yours actually merges with it.
+ *
+ * An electrician buying a roofer is either one van, one office and one customer list, or it is
+ * two companies with a shared owner. The difference is which savings genuinely apply to both,
+ * so this counts the ones they have in common rather than assuming a percentage.
+ */
+export function industryFit(platformIndustryId, targetIndustryId) {
+  const platform = SECTORS_BY_ID[platformIndustryId] ?? SECTORS_BY_ID.generic;
+  const target = SECTORS_BY_ID[targetIndustryId] ?? SECTORS_BY_ID.generic;
+  const shared = (target.levers ?? []).filter((l) => (platform.levers ?? []).includes(l));
+  const only = (target.levers ?? []).filter((l) => !(platform.levers ?? []).includes(l));
+  const possible = (target.levers ?? []).length || 1;
+
+  return {
+    platform, target,
+    shared, only,
+    same: platform.id === target.id,
+    score: shared.length / possible,
+    verdict: platform.id === target.id
+      ? 'The same trade. Everything that can merge, merges.'
+      : shared.length >= 3
+        ? 'Close enough that most of the savings are real.'
+        : shared.length >= 2
+          ? 'Some genuine overlap, but not the full set.'
+          : 'Different businesses with a shared owner. Expect the savings to be thin.',
   };
 }
