@@ -83,6 +83,24 @@ window.OT.theories = [
     ],
     kritikk: 'Dikotomien er forenklet; senere forskning viser at situasjonen og oppgavens karakter betyr mye for hva som virker.'
   },
+  {
+    id: 'teori-z',
+    navn: 'Teori Z',
+    opphav: 'William Ouchi',
+    aar: '1981',
+    modul: 'motivasjon',
+    kategori: 'Menneskesyn',
+    kjerne: 'En hybrid av amerikansk og japansk ledelsespraksis, lansert som et tredje alternativ til McGregors teori X og Y. Organisasjonen binder den ansatte til seg over tid gjennom trygghet, tillit og kollektiv beslutningstaking, og får til gjengjeld lojalitet og innsats.',
+    punkter: [
+      'Langsiktig, tilnærmet livsvarig ansettelse gir trygghet og lojalitet',
+      'Konsensusorienterte beslutninger, men individuelt ansvar for gjennomføring',
+      'Langsom evaluering og forfremmelse, med vekt på modning framfor rask karriere',
+      'Implisitt, uformell kontroll gjennom kultur, kombinert med eksplisitte måltall',
+      'Moderat spesialiserte karriereveier som gir bred organisasjonsforståelse',
+      'Helhetlig omsorg for den ansatte, også utenfor arbeidsrollen'
+    ],
+    kritikk: 'Sterkt kulturelt betinget og bygger på et idealisert bilde av japansk arbeidsliv fra 1970-tallet. Svak empirisk støtte for at modellen lar seg overføre, og forutsetningen om livsvarig ansettelse passer dårlig med dagens arbeidsmarked.'
+  },
 
   /* ---------- Struktur og design ---------- */
   {
