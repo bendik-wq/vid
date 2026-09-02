@@ -112,6 +112,7 @@ window.OT.glossary = [
   { term: 'Mestringstro (self-efficacy)', modul: 'motivasjon', def: 'Troen på egen evne til å gjennomføre det som kreves for å lykkes med en bestemt oppgave.', kilde: 'Bandura' },
   { term: 'Distributiv rettferdighet', modul: 'motivasjon', def: 'Opplevd rettferdighet i selve fordelingen av goder og byrder.' },
   { term: 'Prosedyrerettferdighet', modul: 'motivasjon', def: 'Opplevd rettferdighet i framgangsmåten som førte fram til fordelingen. Påvirker tilliten til ledelsen sterkere enn utfallet selv.' },
+  { term: 'Teori Z', modul: 'motivasjon', def: 'Ouchis hybrid av amerikansk og japansk ledelse: langsiktig ansettelse, konsensusbeslutninger med individuelt ansvar, langsom forfremmelse og helhetlig omsorg for den ansatte.', kilde: 'Ouchi' },
   { term: 'Psykologisk kontrakt', modul: 'motivasjon', def: 'Uskrevne, gjensidige forventninger mellom ansatt og arbeidsgiver om hva partene skylder hverandre.', kilde: 'Rousseau' },
   { term: 'Jobbberikelse', modul: 'motivasjon', def: 'Vertikal utvidelse av jobben med mer ansvar, autonomi og kontroll over eget arbeid.' },
   { term: 'Jobbutvidelse', modul: 'motivasjon', def: 'Horisontal utvidelse av jobben med flere oppgaver på samme ansvarsnivå.' },
