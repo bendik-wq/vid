@@ -255,6 +255,31 @@ Which is why the same screen has one button that changes everything: ask every s
 interest only, with the lump at the end. Nothing about any business changes. Only the terms do,
 and deals that could not cover themselves suddenly can.
 
+## The method is the framework
+
+The Method screen is organised by the three questions rather than by mechanism, because that
+is the argument rather than the filing. It opens with the one diagram that explains why the
+three are not three of the same thing:
+
+**Credibility sets the profit. Closing sets the price per pound. Those two multiply.
+Capital is not a third multiplier — it is a gate on the answer.** Which is why a business can
+be worth a number nobody is able to pay, and why the answer to that is a different structure
+rather than a lower price.
+
+Each pillar then states what it computes and on which screen, the arithmetic behind it, and
+what in that pillar is settled versus a working assumption. Capital is the only one carrying
+"settled" claims — cover is arithmetic — while everything in Closing is still an assumption,
+which is exactly where the review effort belongs.
+
+The same three questions get asked in three voices, which is why one tool serves a seller, a
+buyer and someone running a group:
+
+| | Selling one | Buying one | Running several |
+|---|---|---|---|
+| **Credibility** | Can your numbers be believed? | Can you be believed? | Can the group's numbers be believed? |
+| **Capital** | Can anyone afford to pay it? | Can you fund it? | Can the group carry what it owes? |
+| **Closing** | Can your deal complete? | Can you complete? | Does it hold together once it has? |
+
 ## The pillars compound
 
 Value is earnings times multiple, so a pillar that lifts the earnings base and a pillar that

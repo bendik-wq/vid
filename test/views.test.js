@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import { businessView, buildView, dealView, repairView, differenceView, examplesView, tuneView, methodView, dock, threeCStrip } from '../src/ui/views.js';
 import { runAudit } from '../src/engine/valuation.js';
+import { esc } from '../src/ui/format.js';
 import { state, loadBrokerCase, blankAudit } from '../src/ui/state.js';
 
 const VIEWS = { businessView, buildView, dealView, repairView, differenceView, examplesView, tuneView, methodView };
@@ -63,4 +64,39 @@ test('the dock is empty until there are earnings to report', () => {
   assert.equal(dock(), '');
   loadBrokerCase();
   assert.ok(dock().includes('Short by'));
+});
+
+test('the method screen is organised by the three questions, not by mechanism', async () => {
+  const { METHOD, VOICES } = await import('../src/data/method.js');
+  const { PILLARS } = await import('../src/data/criteria.js');
+  const html = methodView();
+
+  for (const id of ['credibility', 'capital', 'closing']) {
+    assert.ok(html.includes(`data-pillar="${id}"`), `${id} has no section of its own`);
+    assert.ok(html.includes(PILLARS[id].name));
+    // Each pillar states what it computes, how, and what is not settled.
+    for (const d of METHOD[id].does) assert.ok(html.includes(esc(d.what)), `missing: ${d.what}`);
+    for (const f of METHOD[id].formulas) assert.ok(html.includes(esc(f.label)), `missing formula: ${f.label}`);
+  }
+  // The same question in all three voices is the reason one tool serves all three audiences.
+  for (const v of VOICES) assert.ok(html.includes(v.name), `voice missing: ${v.name}`);
+  for (const id of ['credibility', 'capital', 'closing']) {
+    for (const v of VOICES) assert.ok(html.includes(esc(PILLARS[id][v.id])), `${id} has no ${v.id} voice`);
+  }
+  assert.ok(html.includes('threeCMechanism') === false, 'the diagram should be rendered, not named');
+  assert.ok(/<svg[\s\S]*Credibility[\s\S]*Capital[\s\S]*<\/svg>/.test(html), 'the mechanism diagram is missing');
+});
+
+test('every claim on the method screen is marked settled or a working assumption', async () => {
+  const { METHOD } = await import('../src/data/method.js');
+  for (const [id, m] of Object.entries(METHOD)) {
+    assert.ok(m.assumptions.length >= 2, `${id} declares almost nothing`);
+    for (const a of m.assumptions) {
+      assert.ok(['fixed', 'working'].includes(a.status), `${id} has an unlabelled claim`);
+      assert.ok(a.text.length > 30);
+    }
+  }
+  // Capital is arithmetic; the other two carry judgement. That should be visible in the data.
+  assert.ok(METHOD.capital.assumptions.some((a) => a.status === 'fixed'));
+  assert.ok(METHOD.closing.assumptions.every((a) => a.status === 'working'));
 });

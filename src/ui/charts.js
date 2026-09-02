@@ -815,3 +815,83 @@ export function beforeAfter(rows, { beforeLabel = 'As it stands', afterLabel = '
       </div>`).join('')}
   </div>`;
 }
+
+/**
+ * How the three questions combine.
+ *
+ * Credibility and Closing multiply — one sets the profit, the other sets what is paid per
+ * pound of it — and Capital is not a third multiplier but a gate on the answer. That is why
+ * a business can be worth a number nobody can pay, and drawing it is the fastest way to see
+ * that the three are not three of the same thing.
+ */
+export function threeCMechanism() {
+  const w = 1000;
+  const h = 420;
+  const boxW = 250;
+  const boxH = 96;
+  const leftX = 60;
+  const rightX = w - 60 - boxW;
+  const topY = 52;
+  const midY = 212;
+  const gateY = 316;
+  const cx = w / 2;
+
+  const pillar = (x, hue, name, question, role, sub) => `
+    <rect x="${x}" y="${topY}" width="${boxW}" height="${boxH}" rx="14"
+          fill="none" stroke="${hue}" stroke-width="2" />
+    <text x="${x + 18}" y="${topY + 27}" font-size="13" font-weight="700" fill="${hue}"
+          letter-spacing="1">${esc(name.toUpperCase())}</text>
+    <text x="${x + 18}" y="${topY + 51}" font-size="15" fill="currentColor">${esc(question)}</text>
+    <text x="${x + 18}" y="${topY + 75}" font-size="13" fill="currentColor" opacity="0.6">${esc(role)}</text>
+    <text x="${x + boxW / 2}" y="${topY + boxH + 26}" text-anchor="middle" font-size="13"
+          fill="currentColor" opacity="0.6">${esc(sub)}</text>`;
+
+  return `
+  <figure>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;color:var(--ink)" role="img"
+         aria-label="Credibility sets the profit and Closing sets the price per pound; the two multiply to give what the business is worth, and Capital gates whether that price can be paid.">
+      <defs>
+        <marker id="mech-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" opacity="0.55" />
+        </marker>
+      </defs>
+
+      ${pillar(leftX, 'var(--credibility)', 'Credibility', 'Can the numbers be believed?', 'Sets the profit', 'what you actually earn')}
+      ${pillar(rightX, 'var(--closing)', 'Closing', 'Can the deal complete?', 'Sets the price per pound', 'what a buyer will pay for it')}
+
+      <text x="${cx}" y="${topY + boxH / 2 + 8}" text-anchor="middle" font-size="30"
+            font-weight="600" fill="currentColor" opacity="0.45">×</text>
+
+      <line x1="${leftX + boxW / 2}" y1="${topY + boxH + 40}" x2="${leftX + boxW / 2}" y2="${midY - 22}"
+            stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+      <line x1="${rightX + boxW / 2}" y1="${topY + boxH + 40}" x2="${rightX + boxW / 2}" y2="${midY - 22}"
+            stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+      <line x1="${leftX + boxW / 2}" y1="${midY - 22}" x2="${rightX + boxW / 2}" y2="${midY - 22}"
+            stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+      <line x1="${cx}" y1="${midY - 22}" x2="${cx}" y2="${midY - 4}"
+            stroke="currentColor" stroke-width="1.5" opacity="0.55" marker-end="url(#mech-arrow)" />
+
+      <rect x="${cx - 110}" y="${midY}" width="220" height="52" rx="12" fill="currentColor" />
+      <text x="${cx}" y="${midY + 33}" text-anchor="middle" font-size="18" font-weight="600"
+            fill="var(--paper)">What it is worth</text>
+
+      <line x1="${cx}" y1="${midY + 52}" x2="${cx}" y2="${gateY - 4}"
+            stroke="currentColor" stroke-width="1.5" opacity="0.55" marker-end="url(#mech-arrow)" />
+
+      <rect x="${cx - 190}" y="${gateY}" width="380" height="64" rx="14"
+            fill="none" stroke="var(--capital)" stroke-width="2" />
+      <text x="${cx - 172}" y="${gateY + 26}" font-size="13" font-weight="700" fill="var(--capital)"
+            letter-spacing="1">CAPITAL</text>
+      <text x="${cx - 172}" y="${gateY + 50}" font-size="15" fill="currentColor">Can anyone afford to pay that?</text>
+
+      <text x="${cx + 210}" y="${gateY + 26}" font-size="13" fill="currentColor" opacity="0.6">Yes —</text>
+      <text x="${cx + 210}" y="${gateY + 44}" font-size="13" fill="currentColor" opacity="0.6">that is the price.</text>
+      <text x="${cx - 210}" y="${gateY + 26}" text-anchor="end" font-size="13" fill="var(--critical)">No —</text>
+      <text x="${cx - 210}" y="${gateY + 44}" text-anchor="end" font-size="13" fill="var(--critical)">it is unpayable.</text>
+    </svg>
+    <figcaption>Two of the three multiply; the third is a gate, not a multiplier. That is why a
+      business can be worth a number nobody is able to pay — and why the answer to that is a
+      different structure rather than a lower price.</figcaption>
+  </figure>`;
+}

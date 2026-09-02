@@ -24,6 +24,8 @@ export const PILLARS = {
     name: 'Credibility',
     buySide: 'Can you be believed?',
     sellSide: 'Can your numbers be believed?',
+    groupSide: 'Can the group’s numbers be believed?',
+    short: 'Believable',
     blurb:
       'Every pound of claimed profit that will not survive an accountant going through the books. ' +
       'This is where the profit gets cut, not the price.',
@@ -32,16 +34,20 @@ export const PILLARS = {
     id: 'capital',
     name: 'Capital',
     buySide: 'Can you fund it?',
-    sellSide: 'Is your asking price financeable?',
+    sellSide: 'Can anyone afford to pay it?',
+    groupSide: 'Can the group carry what it owes?',
+    short: 'Payable',
     blurb:
-      'A buyer has to service debt on whatever you sell for. If the cash cannot carry the ' +
-      'structure, the price is not high — it is unfundable.',
+      'Somebody has to make the repayments on whatever you sell for out of what the business ' +
+      'earns. If the cash cannot carry it, the price is not ambitious — it is unpayable.',
   },
   closing: {
     id: 'closing',
     name: 'Closing',
     buySide: 'Can you complete?',
     sellSide: 'Can your deal complete?',
+    groupSide: 'Does it hold together once it has?',
+    short: 'Completable',
     blurb:
       'Everything that kills a deal between heads of terms and completion: dependency, ' +
       'concentration, assignability, licences, people.',

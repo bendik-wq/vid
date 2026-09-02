@@ -3,6 +3,7 @@
 import { PILLARS, criteriaForPillar } from '../data/criteria.js';
 import { SECTORS, SECTORS_BY_ID, SIZE_BANDS, bandFor } from '../data/sectors.js';
 import { SCENARIOS } from '../data/scenarios.js';
+import { METHOD, VOICES } from '../data/method.js';
 import { STRUCTURES, INTEGRATION_LEVERS, MAX_SYNERGY } from '../data/structures.js';
 import { config, deltaFor, defaultDeltaFor, ceilingFor, isTuned, isSectorTuned, tuningSummary, DEFAULT_CONFIG } from '../data/config.js';
 import { runAudit } from '../engine/valuation.js';
@@ -14,7 +15,7 @@ import { allExamples } from '../engine/examples.js';
 import { SOURCE_TYPES, REPAYMENT_MODES, blankSource } from '../data/capital-stack.js';
 import { state, groupInput, futureInput, activeCase } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
-import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow, stackBar, serviceTimeline, coverWaterfall, beforeAfter } from './charts.js';
+import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow, stackBar, serviceTimeline, coverWaterfall, beforeAfter, threeCMechanism } from './charts.js';
 import { groupCanvas, industryTray } from './canvas.js';
 
 const tile = (k, v, s, cls = '') =>
@@ -724,99 +725,112 @@ export function tuneView() {
   }).join('')}`;
 }
 
-// ── Method ────────────────────────────────────────────────────────────────
+// ── Method, in three questions ────────────────────────────────────────────
 export function methodView() {
   return `
   <section>
     <p class="eyebrow">Method</p>
-    <h1 class="display">What it does, and what it assumes.</h1>
-    <div class="note" style="margin-bottom:32px">
-      <p style="margin:0;font-size:17px">“A lot of times sellers haven’t set up properly to maximise the
-      value they get when they exit.”</p>
+    <h1 class="display">Three questions. Everything else is arithmetic.</h1>
+    <p class="lede">The framework is not a way of organising this tool — it is what the tool
+    computes. Every number on every screen belongs to one of the three, and saying which one is
+    the argument rather than the filing.</p>
+    <div class="note" style="margin:26px 0 34px">
+      <p style="margin:0;font-size:17px">“A lot of times sellers haven’t set up properly to
+      maximise the value they get when they exit.”</p>
     </div>
+    ${threeCMechanism()}
   </section>
 
   <section>
-    <h2 class="headline">The two cuts</h2>
-    <div class="card">
-      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">Cut 1 — the profit:  what you claim → what you can prove
-   your replacement's wage, rent to yourself, one-offs,
-   personal spending, kit you have put off buying
-   the total is capped at ${pct(config.ebitdaHaircutCap, 0)}
-
-Cut 2 — the price:   the best case → what you actually get
-   how much depends on you, how solid the revenue is,
-   how the cash arrives, who runs it, who the customers are
-   never falls below ${turns(config.multipleFloor)}
-
-worth = provable profit x price per pound
-gap   = what you want − what it is worth</p>
-    </div>
-  </section>
-
-  <section>
-    <h2 class="headline">Scoring</h2>
-    <p class="lede">Each answer costs a share of its number: <span class="mono">(5 − score) ÷ 4</span>.
-    Five costs nothing, one costs the lot, three costs half.</p>
-    <p class="body">Two things are not scored. Your replacement's wage and the loan cover are worked out from
-    your own figures, because those are the two people most want to argue with.</p>
-  </section>
-
-  <section>
-    <h2 class="headline">Loan cover</h2>
-    <div class="card">
-      <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.8;font-size:13.5px">cash the business makes = (provable profit − kit) x (1 − tax)
-repayments             = the loan + whatever you leave in
-cover                  = cash ÷ repayments
-floor                  = ${turns(config.dscrFloor)}
-most anyone can pay    = cash ÷ (floor x repayments per pound of price)</p>
-    </div>
-    <p class="body" style="margin-top:20px">Tax comes off profit less kit rather than off profit after interest.
-    That is deliberately cautious, and it is said here rather than buried: it understates the cash a little,
-    which is the right direction for a test you are going to show a seller.</p>
-  </section>
-
-  <section>
-    <h2 class="headline">The group</h2>
-    <p class="body">Every business is priced on its own cash before it is allowed in, using the same
-    ${turns(config.dscrFloor)} floor. Savings from merging are the levers you tick, not a percentage assumed.
-    The group's price per pound is the average of its industries, weighted by where the profit comes from, plus
-    a premium for size. The twenty-year projection sweeps free cash against the debt, pauses buying whenever
-    another deal would break the cover floor, and stops for good at the number of businesses you say you can run.</p>
-  </section>
-
-  <section>
-    <h2 class="headline">Calibration</h2>
-    <div class="grid g3">
-      ${tile('This tool', '$522,500', 'provable profit, worked example')}
-      ${tile('Josh, on camera', '$500,000', 'same business, off the cuff')}
-      ${tile('Difference', '4.5%', 'with no fiddling', 'flag-good')}
-    </div>
-  </section>
-
-  <section>
-    <h2 class="headline">Not signed off</h2>
+    <h2 class="headline">The same three, whichever side you are on</h2>
+    <p class="lede">A seller, a buyer and someone running a group get asked the same questions
+    in different voices. That is why one tool serves all three.</p>
     <div class="scroll">
       <table>
+        <thead><tr><th style="width:20%"></th>${VOICES.map((v) => `<th>${esc(v.name)}</th>`).join('')}</tr></thead>
         <tbody>
-          <tr><td style="width:210px"><span class="badge warning">working assumption</span> Industry prices</td>
-            <td>Indicative ranges, not transaction data. Replace them for the industries that matter to you.</td></tr>
-          <tr><td><span class="badge warning">working assumption</span> What each answer is worth</td>
-            <td>Calibrated together against the worked example, not one at a time against real deals.</td></tr>
-          <tr><td><span class="badge warning">working assumption</span> Size premium</td>
-            <td>Right direction, unverified size.</td></tr>
-          <tr><td><span class="badge">fixed</span> The arithmetic</td>
-            <td>The formulas above are not opinions. Everything that is an opinion is on the Tune screen.</td></tr>
+          ${['credibility', 'capital', 'closing'].map((id) => {
+            const p = PILLARS[id];
+            return `<tr class="pillar" data-pillar="${id}">
+              <td><span class="dot" style="display:inline-block;margin-right:8px"></span><strong>${esc(p.name)}</strong></td>
+              ${VOICES.map((v) => `<td class="muted">${esc(p[v.id])}</td>`).join('')}
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
     </div>
   </section>
 
+  ${['credibility', 'capital', 'closing'].map(pillarMethod).join('')}
+
+  <section>
+    <h2 class="headline">Calibration</h2>
+    <p class="lede">Built from the questions, not fitted to an answer.</p>
+    <div class="grid g3">
+      ${tile('This tool', '$522,500', 'provable profit, worked example')}
+      ${tile('Josh, on camera', '$500,000', 'same business, off the cuff')}
+      ${tile('Difference', '4.5%', 'with no fiddling', 'flag-good')}
+    </div>
+    <p class="small" style="margin-top:16px">Every worked example on the Examples screen is
+    computed the same way, so tuning a number here moves the examples with it rather than
+    leaving a stale one behind.</p>
+  </section>
+
   <section>
     <h2 class="headline">What this is not</h2>
-    <p class="body">It is a first look, not a valuation. It gives a defensible range and an order of work from
-    what you tell it. It checks nothing, and someone who scores themselves generously gets a generous answer —
-    which is exactly why the two numbers that matter most are worked out rather than scored.</p>
+    <p class="body">A first look, not a valuation. It gives a defensible range and an order of work
+    from what you tell it. It checks nothing, and someone who scores themselves generously gets a
+    generous answer — which is exactly why the two numbers that matter most, your replacement’s
+    wage and whether the cash covers the repayments, are worked out rather than scored.</p>
+  </section>`;
+}
+
+function pillarMethod(id) {
+  const p = PILLARS[id];
+  const m = METHOD[id];
+  return `
+  <section class="pillar" data-pillar="${id}">
+    <div class="between" style="align-items:baseline;margin-bottom:6px">
+      <h2 class="headline" style="display:flex;align-items:center;gap:11px;margin:0">
+        <span class="dot"></span>${esc(p.name)}</h2>
+      <span class="badge">${esc(p.short)}</span>
+    </div>
+    <p class="lede">${esc(m.idea)}</p>
+
+    <h3 class="eyebrow" style="margin-top:26px">What it computes</h3>
+    <div class="scroll">
+      <table>
+        <tbody>
+          ${m.does.map((d) => `
+            <tr><td style="width:150px" class="muted">${esc(d.where)}</td>
+              <td>${esc(d.what)}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="eyebrow" style="margin-top:28px">How</h3>
+    <div class="grid ${m.formulas.length > 1 ? 'g2' : ''}">
+      ${m.formulas.map((f) => `
+        <div class="card">
+          <p class="eyebrow" style="margin:0 0 12px">${esc(f.label)}</p>
+          <p class="mono" style="margin:0;white-space:pre-wrap;line-height:1.75;font-size:13px">${esc(f.lines.join('\n'))}</p>
+        </div>`).join('')}
+    </div>
+
+    <h3 class="eyebrow" style="margin-top:28px">What is settled and what is not</h3>
+    <div class="scroll">
+      <table>
+        <tbody>
+          ${m.assumptions.map((a) => `
+            <tr>
+              <td style="width:190px">
+                <span class="badge ${a.status === 'fixed' ? '' : 'warning'}">${a.status === 'fixed' ? 'settled' : 'working assumption'}</span>
+              </td>
+              <td class="hint">${esc(a.text)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
   </section>`;
 }
 

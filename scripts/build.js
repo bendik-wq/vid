@@ -19,6 +19,7 @@ const ORDER = [
   'src/data/structures.js',
   'src/data/scenarios.js',
   'src/data/capital-stack.js',
+  'src/data/method.js',
   'src/data/config.js',
   'src/data/cases.js',
   'src/engine/valuation.js',
