@@ -311,12 +311,23 @@ not editable — the criteria are uncontroversial, the numbers are the risk.
 ## Running it
 
 ```bash
-npm test        # engine + view tests (22)
+npm test        # engine + view tests
 npm run dev     # http://localhost:5173
-npm run build   # dist/exit-audit.html — one self-contained file
+npm run build   # dist/exit-audit.html (Artifact fragment) + dist/site/index.html (standalone page)
 npm run calibrate
-npm run smoke   # browser smoke test against the built bundle (needs dev server + Chromium)
+npm run smoke   # browser test against the built bundle (needs dev server + Chromium)
 ```
+
+`npm run build` emits two things from the same bundle. The Artifact viewer supplies its own
+doctype, head and reset, so what it wants is a fragment; anywhere else needs a whole document
+or the browser guesses at the encoding.
+
+## Where it is published
+
+- **Live:** <https://bendik-wq.github.io/vid/exit-audit/> — served from the `exit-audit/` folder
+  on the `gh-pages` branch, so the site already at the root of that branch is untouched.
+- To update it: `npm run build`, then copy `dist/site/index.html` to `exit-audit/index.html` on
+  `gh-pages` and push. Pages takes a minute or two to rebuild.
 
 No build step is required for development; the app is plain ES modules. `npm run build` exists
 only to produce a single distributable HTML file — it strips the import/export keywords and

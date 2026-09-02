@@ -46,17 +46,49 @@ const strip = (src, file) => {
   return out;
 };
 
-const html = (css, js) => `<title>Exit Audit</title>
+/**
+ * Two outputs from the same pieces.
+ *
+ * The Artifact viewer supplies the doctype, head and a reset, so what it wants is a fragment.
+ * Anywhere else — GitHub Pages, a file on disk, someone's own server — needs a whole document,
+ * or the browser guesses at the encoding and the page renders in the wrong charset.
+ */
+const headOf = (css) => `<title>Exit Audit</title>
 <style>
 ${css}
-</style>
-<header class="topbar" id="topbar"></header>
+@media print {
+  .topbar, .dock, .actions { display: none !important; }
+}
+</style>`;
+
+const bodyOf = (js) => `<header class="topbar" id="topbar"></header>
 <main class="page" id="main"></main>
 <div id="dock"></div>
 <script type="module">
 ${js}
 start();
 </script>`;
+
+const fragmentOf = (css, js) => `${headOf(css)}\n${bodyOf(js)}`;
+
+const standaloneOf = (css, js) => `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Work out what a business is really worth, what it would take to be worth more, and what buying others alongside it does over twenty years." />
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+${headOf(css)}
+</head>
+<body>
+${bodyOf(js)}
+</body>
+</html>`;
 
 const css = await readFile(join(ROOT, 'src/ui/styles.css'), 'utf8');
 const raw = [];
@@ -93,7 +125,29 @@ for (let i = 0; i < ORDER.length; i += 1) {
   }
 }
 
+const standalone = (fragment) => `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Work out what a business is really worth, what it would take to be worth more, and what buying others alongside it does over twenty years." />
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+${fragment}
+</html>`;
+
 await mkdir(join(ROOT, 'dist'), { recursive: true });
-const output = html(css, parts.join('\n'));
-await writeFile(join(ROOT, 'dist/exit-audit.html'), output);
-console.log(`dist/exit-audit.html — ${(output.length / 1024).toFixed(1)} kB`);
+await mkdir(join(ROOT, 'dist/site'), { recursive: true });
+
+const js = parts.join('\n');
+const fragment = fragmentOf(css, js);
+await writeFile(join(ROOT, 'dist/exit-audit.html'), fragment);
+console.log(`dist/exit-audit.html — ${(fragment.length / 1024).toFixed(1)} kB  (Artifact fragment)`);
+
+const page = standaloneOf(css, js);
+await writeFile(join(ROOT, 'dist/site/index.html'), page);
+console.log(`dist/site/index.html  — ${(page.length / 1024).toFixed(1)} kB  (standalone page)`);
