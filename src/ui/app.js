@@ -5,20 +5,22 @@ import {
   addNode, removeNode, findNode, setNode, toggleLever, clearGroup, groupInput, futureInput, stretchAll,
   activeCase, newCase, openCase, renameCase, duplicateCase, deleteCase, exportCase, importCase,
   loadScenario, setSource, dealFromNode, toggleRepair, setRepairParam,
+  seatRole, unseatRole, moveSeat, clearOrg,
 } from './state.js';
 import { config, setConfig, clearOverride } from '../data/config.js';
 import { state_currency, num, money, moneyShort, esc } from './format.js';
-import { businessView, buildView, dealView, repairView, differenceView, examplesView, casesView, tuneView, methodView, dock } from './views.js';
+import { businessView, buildView, dealView, repairView, teamView, differenceView, examplesView, casesView, tuneView, methodView, dock } from './views.js';
 import { runAudit } from '../engine/valuation.js';
 import { remediationPlan } from '../engine/restructure.js';
 import { runBuild, horizon } from '../engine/build.js';
 
 const VIEWS = {
-  business: { label: 'Your business', primary: true, render: businessView, dock: true },
-  build: { label: 'The group', primary: true, render: buildView },
-  deal: { label: 'One deal', primary: true, render: dealView },
+  business: { label: 'Business', primary: true, render: businessView, dock: true },
+  build: { label: 'Group', primary: true, render: buildView },
+  deal: { label: 'Deal', primary: true, render: dealView },
   repair: { label: 'Restructure', primary: true, render: repairView },
-  difference: { label: 'The difference', primary: true, render: differenceView, mount: mountDifference },
+  team: { label: 'Team', primary: true, render: teamView },
+  difference: { label: 'Difference', primary: true, render: differenceView, mount: mountDifference },
   examples: { label: 'Examples', primary: false, render: examplesView },
   cases: { label: 'Cases', primary: false, render: casesView },
   tune: { label: 'Tune', primary: false, render: tuneView },
@@ -36,7 +38,7 @@ function topbar() {
   const entries = Object.entries(VIEWS);
   const live = activeCase();
   return `
-    <span class="mark">Exit Audit</span>
+    ${brandMark()}
     <a class="case-chip" href="#cases" title="Switch case">
       <span class="dot"></span>${esc(live?.name ?? 'New case')}
     </a>
@@ -166,6 +168,14 @@ function onClick(e) {
   else if (act === 'scenario') { location.hash = loadScenario(el.dataset.scenario) ?? 'business'; render(); }
   else if (act === 'deal-from-node') { dealFromNode(el.dataset.node); render(); }
   else if (act === 'toggle-repair') { toggleRepair(el.dataset.repair); render(); }
+  else if (act === 'seat') {
+    const tier = el.dataset.tier;
+    seatRole(el.dataset.role, tier, tier === 'unit' ? (state.ui.activeUnit ?? 'platform') : null);
+    render();
+  }
+  else if (act === 'unseat') { unseatRole(el.dataset.role, el.dataset.where, el.dataset.unit || null); render(); }
+  else if (act === 'active-unit') { state.ui.activeUnit = el.dataset.unit; notify(); render(); }
+  else if (act === 'clear-org') { clearOrg(); render(); }
   else if (act === 'print') { window.print(); }
   else if (act === 'export') { exportReport(); }
 }
@@ -347,6 +357,10 @@ export function start() {
   document.addEventListener('pointermove', onPointerMove);
   document.addEventListener('pointerup', onPointerUp);
   document.addEventListener('pointercancel', onPointerUp);
+  document.addEventListener('pointerdown', onSeatPointerDown);
+  document.addEventListener('pointermove', onSeatPointerMove);
+  document.addEventListener('pointerup', onSeatPointerUp);
+  document.addEventListener('pointercancel', onSeatPointerUp);
   window.addEventListener('hashchange', render);
   render();
 }
@@ -508,4 +522,95 @@ function readCaseFile(file) {
   };
   reader.onerror = () => notice('That file could not be read.');
   reader.readAsText(file);
+}
+
+// ── Brand ─────────────────────────────────────────────────────────────────
+/**
+ * The logo slot.
+ *
+ * A typographic stand-in until the real asset is dropped in. To swap it, replace the <svg>
+ * below with an <img src="data:image/svg+xml;base64,..."> or an inline SVG of the real mark —
+ * everything else in the bar sizes off it. It is deliberately not an invented logo.
+ */
+function brandMark() {
+  return `
+    <a class="brand-logo" href="#business" aria-label="Exit Audit">
+      <svg viewBox="0 0 64 26" role="img" aria-label="G and L">
+        <text x="0" y="20" font-family="Instrument Sans, system-ui, sans-serif" font-size="21"
+              font-weight="700" letter-spacing="-0.5" fill="currentColor">G&amp;L</text>
+      </svg>
+      <span class="brand-rule" aria-hidden="true"></span>
+      <span class="mark">Exit Audit</span>
+    </a>`;
+}
+
+// ── Dragging people into seats ────────────────────────────────────────────
+/**
+ * Drag from the bench into a band, or from one band to another.
+ *
+ * A ghost follows the pointer and the band underneath lights up; the drop is resolved with
+ * elementFromPoint on release rather than with the HTML drag API, so the same code works
+ * under a finger.
+ */
+let seatDrag = null;
+
+function onSeatPointerDown(e) {
+  const chit = e.target.closest('[data-role-drag]');
+  const seat = e.target.closest('.seat.filled');
+  if (e.target.closest('.seat-x')) return;
+  const source = chit ?? seat;
+  if (!source) return;
+
+  const roleId = chit ? chit.dataset.roleDrag : seat.dataset.seat;
+  seatDrag = {
+    roleId,
+    from: seat ? { where: seat.dataset.where, unit: seat.dataset.unit || null } : null,
+    startX: e.clientX,
+    startY: e.clientY,
+    source,
+    moved: false,
+  };
+  source.setPointerCapture?.(e.pointerId);
+}
+
+function onSeatPointerMove(e) {
+  if (!seatDrag) return;
+  if (!seatDrag.moved) {
+    if (Math.hypot(e.clientX - seatDrag.startX, e.clientY - seatDrag.startY) < 5) return;
+    seatDrag.moved = true;
+    const ghost = seatDrag.source.cloneNode(true);
+    ghost.classList.add('seat-ghost', 'seat', 'filled');
+    ghost.style.width = `${seatDrag.source.offsetWidth}px`;
+    document.body.appendChild(ghost);
+    seatDrag.ghost = ghost;
+    seatDrag.source.classList.add('dragging');
+  }
+  seatDrag.ghost.style.left = `${e.clientX - 60}px`;
+  seatDrag.ghost.style.top = `${e.clientY - 22}px`;
+
+  const band = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-zone]');
+  for (const el of document.querySelectorAll('.band.over')) el.classList.remove('over');
+  if (band) band.classList.add('over');
+  seatDrag.over = band;
+}
+
+function onSeatPointerUp() {
+  if (!seatDrag) return;
+  const { roleId, from, moved, over, ghost, source } = seatDrag;
+  ghost?.remove();
+  source.classList.remove('dragging');
+  for (const el of document.querySelectorAll('.band.over')) el.classList.remove('over');
+  seatDrag = null;
+
+  if (!moved) return;   // a tap is handled by the click handler instead
+  if (!over) { render(); return; }
+
+  const where = over.dataset.zone;
+  const unit = over.dataset.zoneUnit || null;
+  if (from && from.where === 'unit' && where === 'unit') moveSeat(roleId, from.unit, unit);
+  else {
+    if (from) unseatRole(roleId, from.where, from.unit);
+    seatRole(roleId, where, unit);
+  }
+  render();
 }

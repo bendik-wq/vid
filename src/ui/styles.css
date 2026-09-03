@@ -577,3 +577,80 @@ svg text { font-family: var(--sans); font-variant-numeric: tabular-nums; }
   margin-bottom: 14px;
 }
 .example .headline { font-family: inherit; font-style: normal; }
+
+/* ── Brand ──────────────────────────────────────────────────────────────── */
+/*
+ * The logo slot. A typographic stand-in sits here until the real asset is dropped in —
+ * see the note in README under "Brand". Swapping it is one element, not a redesign.
+ */
+.brand-logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.brand-logo svg { display: block; height: 26px; width: auto; }
+.brand-logo .brand-rule { width: 1px; height: 20px; background: var(--hair-strong); }
+
+/* ── Org chart ──────────────────────────────────────────────────────────── */
+.org { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+.org-spine { width: 2px; height: 26px; background: var(--hair-strong); align-self: center; }
+.org-units { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+
+.band {
+  --band: var(--hair-strong);
+  border: 1.5px dashed color-mix(in srgb, var(--band) 45%, var(--hair));
+  border-radius: 16px; padding: 16px 18px; background: var(--raised);
+  transition: border-color 130ms ease, background 130ms ease, transform 90ms ease;
+}
+.band.over {
+  border-style: solid; border-color: var(--band);
+  background: color-mix(in srgb, var(--band) 7%, var(--raised));
+  transform: translateY(-1px);
+}
+.band-head { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
+.band-name { font-size: 15px; font-weight: 600; letter-spacing: -0.015em; }
+.band-sub { font-size: 12.5px; color: var(--ink-3); line-height: 1.4; }
+.band-seats { display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; align-items: flex-start; }
+.band-hint { font-size: 13px; color: var(--ink-3); align-self: center; }
+
+.seat {
+  position: relative; display: flex; flex-direction: column; gap: 2px;
+  padding: 9px 30px 9px 13px; border-radius: 10px; min-width: 132px;
+  border: 1px solid var(--hair-strong); background: var(--paper);
+  cursor: grab; user-select: none; touch-action: none;
+  transition: box-shadow 130ms ease, border-color 130ms ease;
+}
+.seat.filled { border-color: color-mix(in srgb, var(--band) 55%, var(--hair-strong)); }
+.seat.filled:hover { box-shadow: var(--shadow); }
+.seat.empty { border-style: dashed; background: none; opacity: 0.6; cursor: default; padding-right: 13px; }
+.seat.dragging { opacity: 0.4; }
+.seat-title { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+.seat-cost { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.seat-x {
+  position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; padding: 0;
+  border-radius: 50%; border: 0; background: none; color: var(--ink-3);
+  font-size: 15px; line-height: 1; cursor: pointer;
+}
+.seat-x:hover { background: var(--sunken); color: var(--critical); }
+
+.seat-ghost {
+  position: fixed; z-index: 60; pointer-events: none; opacity: 0.94;
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--ink) 24%, transparent);
+  transform: rotate(-1.5deg) scale(1.03);
+}
+
+/* ── The bench ──────────────────────────────────────────────────────────── */
+.bench { display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: 8px; }
+.chit {
+  display: flex; flex-direction: column; gap: 3px; text-align: left; font: inherit;
+  padding: 10px 13px; border-radius: 10px; cursor: grab; touch-action: none;
+  background: var(--raised); border: 1px solid var(--hair); color: var(--ink);
+  transition: border-color 130ms ease, transform 90ms ease;
+}
+.chit:hover { border-color: var(--ink-3); transform: translateY(-1px); }
+.chit.used { opacity: 0.45; }
+.chit-title { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+.chit-meta { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+/* ── Hire economics ─────────────────────────────────────────────────────── */
+.hire-row { display: grid; grid-template-columns: minmax(0, 1.5fr) 110px 130px minmax(0, 1.6fr); gap: 14px; align-items: baseline; }
+@media (max-width: 860px) {
+  .hire-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .org-units { grid-template-columns: minmax(0, 1fr); }
+}

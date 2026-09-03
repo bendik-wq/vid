@@ -48,7 +48,7 @@ await page.waitForTimeout(350);
 if (await page.isVisible('[data-act="score"][data-id="C7"][data-score="5"]')) fail('two pillars open at once');
 if (!(await page.isVisible('[data-act="score"][data-id="C15"][data-score="5"]'))) fail('closing did not open');
 
-for (const view of ['build', 'deal', 'repair', 'difference', 'examples', 'cases', 'tune', 'method']) {
+for (const view of ['build', 'deal', 'repair', 'team', 'difference', 'examples', 'cases', 'tune', 'method']) {
   await page.click(`.tabs a[href="#${view}"]`);
   await page.waitForTimeout(400);
   // A single empty case is a legitimately short page; the rest should be substantial.
@@ -232,6 +232,51 @@ const ex = await page.textContent('#main');
 if ((await page.$$('.example')).length !== 6) fail('expected six worked examples');
 if (/NaN|undefined|Infinity/.test(ex)) fail('a worked example leaked a broken number');
 if ((await page.$$('.ba-row')).length < 20) fail('the before and after rows did not render');
+
+// The team: seats fill by tapping, and dragging moves somebody between businesses.
+await page.click('.tabs a[href="#cases"]');
+await page.waitForTimeout(350);
+await page.click('[data-act="scenario"][data-scenario="serial"]');
+await page.waitForTimeout(600);
+await page.click('.tabs a[href="#team"]');
+await page.waitForTimeout(500);
+if ((await page.$$('.seat.filled')).length !== 0) fail('the org should start empty');
+const worthBefore = await page.$$eval('.tile .v', (els) => els[2]?.textContent ?? '');
+
+await page.click('[data-act="seat"][data-role="chair"]');
+await page.waitForTimeout(450);
+if ((await page.$$('.band[data-zone="board"] .seat.filled')).length !== 1) fail('tapping did not seat the chair');
+if ((await page.$$eval('.tile .v', (els) => els[2]?.textContent ?? '')) === worthBefore) {
+  fail('seating a board member did not move the valuation');
+}
+if (!(await page.textContent('#main')).includes('% equity')) fail('the board should be priced in equity');
+
+await page.click('[data-act="seat"][data-role="gm"]');
+await page.waitForTimeout(450);
+const unitSeats = await page.$$('.band[data-zone="unit"] .seat.filled');
+if (unitSeats.length !== 1) fail(`expected a manager in a unit, found ${unitSeats.length}`);
+
+// Drag the manager from your business into one you bought.
+await page.$eval('.org', (el) => el.scrollIntoView({ block: 'center' }));
+await page.waitForTimeout(300);
+const seatBox = await page.$eval('.band[data-zone="unit"] .seat.filled', (el) => {
+  const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+});
+const targetBox = await page.$$eval('.band[data-zone="unit"]', (els) => {
+  const r = els[1].getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height - 30 };
+});
+await page.mouse.move(seatBox.x, seatBox.y);
+await page.mouse.down();
+await page.mouse.move(targetBox.x, targetBox.y, { steps: 12 });
+await page.mouse.up();
+await page.waitForTimeout(500);
+const secondUnit = await page.$$eval('.band[data-zone="unit"]', (els) => els[1].querySelectorAll('.seat.filled').length);
+if (secondUnit !== 1) fail('dragging did not move the manager into the second business');
+
+// Removing a seat has to put the number back.
+await page.click('[data-act="unseat"][data-role="chair"]');
+await page.waitForTimeout(450);
+if ((await page.$$('.band[data-zone="board"] .seat.filled')).length !== 0) fail('removing a seat did not work');
 
 if (errors.length) fail(`console errors: ${errors.join(' | ')}`);
 await browser.close();

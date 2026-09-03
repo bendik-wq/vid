@@ -11,12 +11,14 @@ import { remediationPlan, restructureTrajectory, pillarUplift, sensitivity } fro
 import { runBuild, capitalOptions, horizon, requiredScale, portfolioHealth, industryFit } from '../engine/build.js';
 import { runStack, tranche } from '../engine/stack.js';
 import { repairPlan, REPAIR_ACTIONS } from '../engine/repair.js';
+import { runOrg } from '../engine/org.js';
 import { allExamples } from '../engine/examples.js';
 import { SOURCE_TYPES, REPAYMENT_MODES, blankSource } from '../data/capital-stack.js';
 import { state, groupInput, futureInput, activeCase } from './state.js';
 import { money, moneyShort, turns, pct, esc } from './format.js';
 import { bridgeBar, pillarMeter, thresholdScale, gapBar, trajectory, rankBar, pillarBars, spreadDiagram, raceChart, tornado, fundingStack, dealCashflow, stackBar, serviceTimeline, coverWaterfall, beforeAfter, threeCMechanism } from './charts.js';
 import { groupCanvas, industryTray } from './canvas.js';
+import { orgChart, rolePalette } from './org-canvas.js';
 
 const tile = (k, v, s, cls = '') =>
   `<div class="tile ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
@@ -1482,4 +1484,120 @@ function exampleFigure(ex) {
     </div>`;
   }
   return '';
+}
+
+// ── The team ──────────────────────────────────────────────────────────────
+export function teamView() {
+  const group = runBuild(groupInput());
+  const units = [
+    { id: 'platform', name: state.audit.business.name || 'Your business' },
+    ...group.nodes.map((n) => ({ id: String(n.id), name: n.industry.name, sub: `${money(n.ebitda)} of profit` })),
+  ];
+  const r = runOrg({ audit: state.audit, org: state.org, units: units.slice(1) });
+  const activeUnit = state.ui.activeUnit && units.some((u) => u.id === state.ui.activeUnit)
+    ? state.ui.activeUnit : 'platform';
+
+  return `
+  <section>
+    <p class="eyebrow">The team</p>
+    <h1 class="display">Who runs it when you don’t.</h1>
+    <p class="lede">The two questions that move the price most are whether the revenue is yours
+    personally and whether anybody else could run the place. Both are answered by people. Drag
+    somebody from the bench into a seat and watch what it costs — and what it is worth.</p>
+
+    <div class="grid g4">
+      ${tile('Salaries', money(r.salaries), r.salaries ? 'a year, off the profit' : 'nobody hired yet')}
+      ${tile('Equity given', pct(r.equityGiven, 0), r.equityGiven ? 'to the board, instead of cash' : 'no board yet')}
+      ${tile('Worth today', money(r.after.achievableValue), `${money(r.before.achievableValue)} before`)}
+      ${tile('What the team adds', money(r.valueGain),
+        r.valueGain > 0 ? 'after paying for all of them' : 'not yet worth its cost',
+        r.valueGain > 0 ? 'flag-good' : '')}
+    </div>
+  </section>
+
+  <section>
+    ${orgChart(state.org, units)}
+    ${r.gaps.length || r.unmanaged.length ? `
+      <div class="note critical" style="margin-top:20px">
+        <p style="margin:0">
+        ${r.gaps.length ? `<strong>${r.gaps.length} seat${r.gaps.length === 1 ? '' : 's'} nobody is in:</strong>
+          ${r.gaps.map((g) => esc(g.role.title.toLowerCase())).join(', ')}.` : ''}
+        ${r.unmanaged.length ? ` <strong>${r.unmanaged.length} of the businesses you have bought have nobody
+          running them</strong> — which means you do.` : ''}</p>
+      </div>` : `
+      <div class="note good" style="margin-top:20px">
+        <p style="margin:0"><strong>Every essential seat is filled.</strong> That is the difference
+        between owning a business and owning a job.</p>
+      </div>`}
+  </section>
+
+  <section>
+    <h2 class="headline">The bench</h2>
+    <p class="lede">Tap to seat somebody, or drag them where you want them. Unit roles go to
+    <strong>${esc(units.find((u) => u.id === activeUnit)?.name ?? 'your business')}</strong> unless you drop
+    them somewhere else.</p>
+    <div class="row" style="margin-bottom:18px">
+      ${units.map((u) => `
+        <button class="btn ${u.id === activeUnit ? '' : 'quiet'} tiny" data-act="active-unit" data-unit="${u.id}">
+          ${esc(u.name)}</button>`).join('')}
+    </div>
+    ${rolePalette(state.org, activeUnit)}
+    <div class="actions"><button class="btn quiet" data-act="clear-org">Empty every seat</button></div>
+  </section>
+
+  <section>
+    <h2 class="headline">What each hire is worth</h2>
+    <p class="lede">The cost lands every month and the value lands at exit, which is exactly why
+    owners put it off. Here they are on the same line, each priced from where you are now.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Role</th><th class="n">Costs</th><th class="n">Worth</th><th>What it unlocks</th></tr></thead>
+        <tbody>
+          ${r.marginal.filter((m) => !m.already && m.worth > 0).slice(0, 10).map((m) => `
+            <tr>
+              <td><strong>${esc(m.role.title)}</strong>
+                <div class="hint">${esc(m.role.plain)}</div></td>
+              <td class="n ${m.cost ? '' : 'is-good'}">${m.cost ? money(m.cost) : `${pct(m.equityPct, 0)} equity`}
+                <div class="hint">${m.cost ? 'a year' : 'no cash'}</div></td>
+              <td class="n is-good"><strong>${money(m.worth)}</strong>
+                ${m.cost ? `<div class="hint">${(m.worth / m.cost).toFixed(1)}x the salary</div>` : ''}</td>
+              <td class="hint">${esc(m.role.unlocks)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    ${r.marginal.some((m) => !m.already && m.equityPct > 0) ? `
+      <div class="note" style="margin-top:22px">
+        <p style="margin:0"><strong>The board costs no cash at all.</strong> Four people are paid in
+        founders’ equity rather than salary, vesting on a signed deal and a year of support afterwards.
+        That is the whole trick: their track record stands in for the capital and the experience you do
+        not have yet.</p>
+      </div>` : ''}
+  </section>
+
+  <section>
+    <h2 class="headline">In what order</h2>
+    <p class="lede">Nobody hires all of this at once. Each stage is what has to be true before the next
+    one is worth doing.</p>
+    <div class="stack">
+      ${r.plan.map((p) => `
+        <div class="card">
+          <div class="between" style="margin-bottom:8px">
+            <div>
+              <strong style="font-size:16px">${esc(p.stage.name)}</strong>
+              <p class="hint" style="margin:4px 0 0">${esc(p.stage.plain)}</p>
+            </div>
+            <span class="badge ${p.complete ? 'good' : ''}">${p.done} of ${p.roles.length}</span>
+          </div>
+          <div class="row" style="gap:8px">
+            ${p.roles.map((role) => {
+              const seated = r.seats.some((s) => s.role.id === role.id);
+              return `<span class="badge ${seated ? 'good' : ''}">${esc(role.title)}</span>`;
+            }).join('')}
+          </div>
+          <p class="small" style="margin:12px 0 0">
+            ${p.cost ? `${money(p.cost)} a year` : ''}${p.cost && p.equity ? ' · ' : ''}${p.equity ? `${pct(p.equity, 0)} of equity` : ''}</p>
+        </div>`).join('')}
+    </div>
+  </section>`;
 }

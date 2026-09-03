@@ -121,6 +121,41 @@ An electrician buying a roofer is either one office, one yard and one customer l
 companies with a shared owner. Adding a business from a different industry now names which
 savings genuinely apply to both — and which you would be claiming without a reason.
 
+## The team
+
+The two questions that move the price most — whether the revenue is the owner's personally and
+whether anybody else could run the place — are both answered by people. So the team is a screen,
+and it is drag-and-drop.
+
+Three bands, and they are paid in different currencies:
+
+| Band | Paid in | Seats |
+|---|---|---|
+| **Board** | founders' equity | Chair, finance lead, legal lead, sector operator |
+| **Head office** | salary | Group MD, group FD, integration lead, group commercial, people and systems |
+| **Each business** | salary | GM, operations, bookkeeper, sales lead, contracts and service |
+
+Drag somebody from the bench into a band, or drag them from one business to another. Every seat
+is wired to the audit: filling it moves the criteria it touches, the salary comes off the profit,
+and the valuation moves. So the chart and the number are the same object seen twice.
+
+**One modelling point worth knowing.** The audit already deducts the cost of replacing the owner.
+When you hire a manager into your own business, that *is* the replacement — so the same job
+cannot be charged twice, once as a salary you now pay and again as an unpriced adjustment a buyer
+would make. Whatever you have hired counts against the replacement and only the shortfall is
+still deducted. Without that correction a full team came out negative, which is exactly the wrong
+answer and the reason owners never hire.
+
+On the worked example a general manager costs $75,000 and is worth **$380,684** — five times the
+salary. The whole board costs no cash at all.
+
+## Brand
+
+The top bar carries a logo slot. It currently holds a typographic "G&L" stand-in, deliberately
+not an invented mark — swap it by replacing the `<svg>` in `brandMark()` in `src/ui/app.js` with
+the real asset (an inline SVG, or an `<img>` pointing at a data URI). Everything else in the bar
+sizes off it.
+
 ## Cases
 
 Everything you enter belongs to a named case — one per business you look at. Start as many as
