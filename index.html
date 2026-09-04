@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Slope</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; overflow: hidden;
+    background: #05060f;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    -webkit-user-select: none; user-select: none; touch-action: none;
+  }
+  #game { display: block; width: 100vw; height: 100vh; }
+
+  .hud {
+    position: fixed; top: 18px; left: 0; right: 0;
+    display: flex; justify-content: space-between;
+    padding: 0 24px; pointer-events: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud div { text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: #7b8aa8; }
+  .hud b { display: block; font-size: 30px; letter-spacing: .02em; color: #e8f0ff; font-weight: 700; }
+  .hud .right { text-align: right; }
+
+  .overlay {
+    position: fixed; inset: 0; display: grid; place-content: center; text-align: center;
+    gap: 14px; background: radial-gradient(ellipse at 50% 40%, rgba(20,26,54,.72), rgba(4,5,14,.94));
+    backdrop-filter: blur(3px); color: #e8f0ff;
+  }
+  .overlay.hidden { display: none; }
+  .overlay h1 { margin: 0; font-size: clamp(46px, 12vw, 92px); letter-spacing: .3em; text-indent: .3em; font-weight: 800; }
+  .overlay h1 span { color: #38e1c4; }
+  .overlay p { margin: 0; color: #8f9dbb; font-size: 15px; line-height: 1.7; }
+  .overlay .score { font-size: 20px; color: #e8f0ff; }
+  .overlay .score b { color: #38e1c4; }
+  .key {
+    display: inline-block; min-width: 26px; padding: 2px 7px; margin: 0 2px;
+    border: 1px solid #364066; border-radius: 5px; background: #161d36; color: #cfe0ff; font-size: 13px;
+  }
+  .hint { margin-top: 10px; font-size: 13px; color: #5f6c8c; letter-spacing: .12em; text-transform: uppercase; }
+  .hint.blink { animation: blink 1.4s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div class="hud">
+  <div>Score<b id="score">0</b></div>
+  <div class="right">Best<b id="best">0</b></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <h1>SL<span>O</span>PE</h1>
+  <p id="msg">Keep the ball on the track for as long as you can.</p>
+  <p><span class="key">&larr;</span><span class="key">&rarr;</span> or <span class="key">A</span><span class="key">D</span> to steer &middot; drag on touch</p>
+  <div class="hint blink" id="hint">Press space to start</div>
+</div>
+
+<script>
+"use strict";
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const els = {
+  score: document.getElementById("score"),
+  best: document.getElementById("best"),
+  overlay: document.getElementById("overlay"),
+  msg: document.getElementById("msg"),
+  hint: document.getElementById("hint")
+};
+
+let W = 0, H = 0, FOV = 0;
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  FOV = Math.max(H * 0.9, W * 0.55);
+}
+window.addEventListener("resize", resize);
+resize();
+
+/* ---------------------------------------------------------------- world */
+
+const ROAD_HALF = 4.6;      // half width of the track
+const SEG = 2;              // depth of one road segment
+const DRAW_DIST = 190;      // how far ahead we render
+const BALL_R = 0.62;
+const GRAVITY_X = 0;        // sideways drift, unused but kept for tuning
+const SLOPE = 0.085;        // how steeply the track falls away
+
+// Track centreline + height are pure functions of z, so nothing has to be
+// stored: any segment can be recreated at any time.
+function centerX(z) {
+  return Math.sin(z * 0.0125) * 4.2 + Math.sin(z * 0.0039 + 1.7) * 9.5;
+}
+function groundY(z) {
+  return -z * SLOPE + Math.sin(z * 0.0088) * 2.6 + Math.sin(z * 0.0031 + 0.6) * 4.2;
+}
+
+const state = {
+  running: false,
+  dead: false,
+  started: false,
+  z: 0,            // distance travelled
+  x: 0,            // lateral offset from track centre
+  vx: 0,
+  y: 0,
+  vy: 0,           // only used while falling to death
+  speed: 26,
+  roll: 0,
+  score: 0,
+  best: Number(localStorage.getItem("slope.best") || 0),
+  shake: 0,
+  deathTimer: 0
+};
+els.best.textContent = state.best;
+
+const TOUCH = matchMedia("(hover: none)").matches;
+if (TOUCH) els.hint.textContent = "Tap to start";
+
+/* ------------------------------------------------------------ obstacles */
+
+// Obstacles live on a rolling list, spawned ahead and dropped behind.
+let obstacles = [];
+let overlayTimer = 0;
+let nextSpawnZ = 0;
+
+function spawnAhead(limitZ) {
+  while (nextSpawnZ < limitZ) {
+    const difficulty = Math.min(1, state.z / 3000);
+    const gap = 26 - difficulty * 12 + Math.random() * (22 - difficulty * 10);
+    nextSpawnZ += gap;
+
+    const r = Math.random();
+    if (r < 0.22 + difficulty * 0.12) {
+      // a gap in the floor: one half of the track disappears
+      const side = Math.random() < 0.5 ? -1 : 1;
+      obstacles.push({ type: "hole", z: nextSpawnZ, len: 6 + Math.random() * 6, side });
+    } else {
+      const count = 1 + (Math.random() < 0.3 + difficulty * 0.35 ? 1 : 0);
+      const slots = [-1, 0, 1].sort(() => Math.random() - 0.5).slice(0, count);
+      for (const s of slots) {
+        obstacles.push({
+          type: "block",
+          z: nextSpawnZ + Math.random() * 3,
+          x: s * (ROAD_HALF * 0.58) + (Math.random() - 0.5) * 1.4,
+          w: 1.5 + Math.random() * 1.6,
+          h: 1.3 + Math.random() * 1.4
+        });
+      }
+    }
+  }
+}
+
+// Is x (offset from centreline) over solid floor at depth z?
+function onFloor(x, z) {
+  if (Math.abs(x) > ROAD_HALF) return false;
+  for (const o of obstacles) {
+    if (o.type !== "hole") continue;
+    if (z > o.z && z < o.z + o.len && Math.sign(x) === o.side && Math.abs(x) > 0.6) return false;
+  }
+  return true;
+}
+
+/* ------------------------------------------------------------- controls */
+
+const keys = { left: false, right: false };
+let pointerX = null;
+
+addEventListener("keydown", (e) => {
+  if (e.code === "ArrowLeft" || e.code === "KeyA") { keys.left = true; e.preventDefault(); }
+  if (e.code === "ArrowRight" || e.code === "KeyD") { keys.right = true; e.preventDefault(); }
+  if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); tryStart(); }
+});
+addEventListener("keyup", (e) => {
+  if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
+  if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
+});
+canvas.addEventListener("pointerdown", (e) => { pointerX = e.clientX; tryStart(); canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener("pointermove", (e) => { if (pointerX !== null) pointerX = e.clientX; });
+canvas.addEventListener("pointerup", () => { pointerX = null; });
+canvas.addEventListener("pointercancel", () => { pointerX = null; });
+els.overlay.addEventListener("pointerdown", tryStart);
+
+function tryStart() {
+  if (state.running) return;
+  if (state.dead && state.deathTimer < 0.7) return;  // ignore mashing on death
+  reset();
+}
+
+function reset() {
+  clearTimeout(overlayTimer);
+  state.running = true;
+  state.dead = false;
+  state.started = true;
+  state.z = 0; state.x = 0; state.vx = 0; state.vy = 0;
+  state.speed = 26; state.roll = 0; state.score = 0;
+  state.shake = 0; state.deathTimer = 0;
+  state.y = groundY(0) + BALL_R;
+  obstacles = [];
+  nextSpawnZ = 60;
+  spawnAhead(DRAW_DIST + 60);
+  els.overlay.classList.add("hidden");
+}
+
+function die(reason) {
+  if (state.dead) return;
+  state.dead = true;
+  state.running = false;
+  state.shake = 1;
+  state.deathTimer = 0;
+  if (state.score > state.best) {
+    state.best = state.score;
+    localStorage.setItem("slope.best", String(state.best));
+    els.best.textContent = state.best;
+
+const TOUCH = matchMedia("(hover: none)").matches;
+if (TOUCH) els.hint.textContent = "Tap to start";
+  }
+  els.msg.innerHTML = reason;
+  els.overlay.querySelector("h1").innerHTML = 'G<span>A</span>ME OVER';
+  const s = document.createElement("p");
+  s.className = "score";
+  s.innerHTML = `Score <b>${state.score}</b> &nbsp;&middot;&nbsp; Best <b>${state.best}</b>`;
+  const old = els.overlay.querySelector(".score");
+  if (old) old.remove();
+  els.msg.after(s);
+  els.hint.textContent = TOUCH ? "Tap to retry" : "Press space to retry";
+  overlayTimer = setTimeout(() => els.overlay.classList.remove("hidden"), 650);
+}
+
+/* -------------------------------------------------------------- physics */
+
+function update(dt) {
+  if (state.running) {
+    state.speed = Math.min(26 + state.z * 0.0075, 72);
+    state.z += state.speed * dt;
+    state.score = Math.floor(state.z / 3);
+    els.score.textContent = state.score;
+
+    let input = 0;
+    if (keys.left) input -= 1;
+    if (keys.right) input += 1;
+    if (pointerX !== null) input += Math.max(-1, Math.min(1, (pointerX - W / 2) / (W * 0.22)));
+
+    const steer = 34 * dt;
+    state.vx += input * steer;
+    state.vx *= Math.pow(0.0016, dt);              // drag
+    state.vx += GRAVITY_X * dt;
+    state.vx = Math.max(-15, Math.min(15, state.vx));
+    state.x += state.vx * dt;
+
+    // The track curves; the ball keeps its own world line, so curvature
+    // shows up as a sideways pull relative to the centreline.
+    const drift = centerX(state.z) - centerX(state.z - state.speed * dt);
+    state.x -= drift * 0.62;
+
+    state.y = groundY(state.z) + BALL_R;
+    state.roll += state.speed * dt / BALL_R;
+
+    spawnAhead(state.z + DRAW_DIST + 60);
+    obstacles = obstacles.filter((o) => o.z > state.z - 20);
+
+    for (const o of obstacles) {
+      if (o.type !== "block") continue;
+      if (Math.abs(o.z - state.z) < 1.1 + BALL_R &&
+          Math.abs(o.x - state.x) < o.w / 2 + BALL_R * 0.85) {
+        die("You hit a block.");
+      }
+    }
+    if (!state.dead && !onFloor(state.x, state.z)) die("You rolled off the track.");
+  } else if (!state.started) {
+    // attract mode: drift down an empty track behind the menu
+    state.z += 18 * dt;
+    state.y = groundY(state.z) + BALL_R;
+    state.roll += 18 * dt / BALL_R;
+    spawnAhead(state.z + DRAW_DIST + 60);
+    obstacles = obstacles.filter((o) => o.z > state.z - 20);
+  } else if (state.dead) {
+    // death animation: keep flying forward while falling away
+    state.deathTimer += dt;
+    state.z += state.speed * dt * 0.55;
+    state.x += state.vx * dt;
+    state.vy -= 42 * dt;
+    state.y += state.vy * dt;
+    state.roll += state.speed * dt / BALL_R * 0.6;
+    state.shake = Math.max(0, state.shake - dt * 3);
+    spawnAhead(state.z + DRAW_DIST + 60);
+  }
+}
+
+/* --------------------------------------------------------------- camera */
+
+const cam = { x: 0, y: 0, z: 0, pitch: 0.16 };
+
+function updateCamera() {
+  const back = 8.5, up = 3.6;
+  const targetX = centerX(state.z) + state.x * 0.72;
+  cam.x += (targetX - cam.x) * 0.14;
+  cam.z = state.z - back;
+  const gy = groundY(cam.z);
+  cam.y += (gy + up - cam.y) * 0.2;
+  // look further down when the slope steepens
+  const ahead = groundY(state.z + 40) - groundY(state.z);
+  cam.pitch = 0.16 - Math.atan2(ahead, 40) * 0.85;
+}
+
+function project(x, y, z) {
+  const dx = x - cam.x, dy = y - cam.y, dz = z - cam.z;
+  const cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+  const rz = -dy * sp + dz * cp;
+  if (rz < 0.6) return null;
+  const ry = dy * cp + dz * sp;
+  const s = FOV / rz;
+  return { x: W / 2 + dx * s, y: H / 2 - ry * s, s, d: rz };
+}
+
+/* -------------------------------------------------------------- drawing */
+
+function fogAmount(d) { return Math.min(1, Math.max(0, (d - 45) / (DRAW_DIST - 30))); }
+function fog(color, d) {
+  const f = fogAmount(d);
+  return `rgb(${Math.round(color[0] * (1 - f) + 10 * f)},${Math.round(color[1] * (1 - f) + 14 * f)},${Math.round(color[2] * (1 - f) + 32 * f)})`;
+}
+
+function poly(points, fill) {
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+}
+
+function drawSky() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#050713");
+  g.addColorStop(0.55, "#0b1130");
+  g.addColorStop(1, "#131b45");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  // starfield, stable across frames, parallaxed by camera
+  ctx.fillStyle = "rgba(190,215,255,.55)";
+  const ox = (cam.x * 1.6) % 220;
+  for (let i = 0; i < 90; i++) {
+    const sx = (((i * 137.5) % 220) - ox + 220) % 220 / 220 * W;
+    const sy = ((i * 79.3) % 100) / 100 * H * 0.55;
+    const r = (i % 5 === 0) ? 1.6 : 0.9;
+    ctx.fillRect(sx, sy, r, r);
+  }
+}
+
+function drawRoad() {
+  const startZ = Math.floor((state.z - 12) / SEG) * SEG;
+  const quads = [];
+
+  for (let z = startZ + DRAW_DIST; z >= startZ; z -= SEG) {
+    const z0 = z, z1 = z + SEG;
+    const c0 = centerX(z0), c1 = centerX(z1);
+    const y0 = groundY(z0), y1 = groundY(z1);
+
+    // solid floor, split into left and right so holes can remove one side
+    const sides = [[-ROAD_HALF, 0], [0, ROAD_HALF]];
+    for (const [a, b] of sides) {
+      const mid = (a + b) / 2;
+      let blocked = false;
+      for (const o of obstacles) {
+        if (o.type === "hole" && z0 >= o.z && z0 < o.z + o.len && Math.sign(mid) === o.side) blocked = true;
+      }
+      if (blocked) continue;
+
+      const p = [
+        project(c0 + a, y0, z0), project(c0 + b, y0, z0),
+        project(c1 + b, y1, z1), project(c1 + a, y1, z1)
+      ];
+      if (p.some((q) => !q)) continue;
+
+      const band = Math.floor(z / (SEG * 4)) % 2;
+      const base = band ? [58, 70, 118] : [46, 57, 100];
+      quads.push({ d: p[0].d, pts: p, fill: fog(base, p[0].d) });
+    }
+
+    // glowing rails down each edge
+    for (const side of [-1, 1]) {
+      const ex = side * ROAD_HALF;
+      const p = [
+        project(c0 + ex, y0, z0), project(c0 + ex - side * 0.35, y0, z0),
+        project(c1 + ex - side * 0.35, y1, z1), project(c1 + ex, y1, z1)
+      ];
+      if (p.some((q) => !q)) continue;
+      const lit = Math.floor(z / (SEG * 3)) % 2 ? [56, 225, 196] : [24, 120, 150];
+      quads.push({ d: p[0].d - 0.01, pts: p, fill: fog(lit, p[0].d) });
+    }
+  }
+
+  quads.sort((a, b) => b.d - a.d);
+  for (const q of quads) poly(q.pts, q.fill);
+}
+
+function drawBox(o) {
+  const c = centerX(o.z);
+  const gy = groundY(o.z);
+  const x0 = c + o.x - o.w / 2, x1 = c + o.x + o.w / 2;
+  const z0 = o.z - o.w / 2, z1 = o.z + o.w / 2;
+  const y0 = gy, y1 = gy + o.h;
+
+  const v = {
+    fbl: project(x0, y0, z0), fbr: project(x1, y0, z0),
+    ftl: project(x0, y1, z0), ftr: project(x1, y1, z0),
+    bbl: project(x0, y0, z1), bbr: project(x1, y0, z1),
+    btl: project(x0, y1, z1), btr: project(x1, y1, z1)
+  };
+  if (Object.values(v).some((p) => !p)) return;
+  const d = v.fbl.d;
+
+  poly([v.btl, v.btr, v.ftr, v.ftl], fog([255, 96, 96], d));          // top
+  const camSide = cam.x - (c + o.x);
+  if (camSide < 0) poly([v.ftl, v.fbl, v.bbl, v.btl], fog([176, 44, 60], d));
+  else poly([v.ftr, v.fbr, v.bbr, v.btr], fog([176, 44, 60], d));
+  poly([v.ftl, v.ftr, v.fbr, v.fbl], fog([228, 64, 74], d));          // front
+}
+
+function drawBall() {
+  const bx = centerX(state.z) + state.x;
+  const p = project(bx, state.y, state.z);
+  if (!p) return;
+  const r = BALL_R * p.s;
+
+  // shadow on the floor beneath
+  const ps = project(bx, groundY(state.z) + 0.02, state.z);
+  if (ps && !state.dead) {
+    ctx.save();
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = "#04060f";
+    ctx.beginPath();
+    ctx.ellipse(ps.x, ps.y, r * 0.95, r * 0.34, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  const g = ctx.createRadialGradient(p.x - r * 0.35, p.y - r * 0.4, r * 0.15, p.x, p.y, r);
+  g.addColorStop(0, "#ffffff");
+  g.addColorStop(0.45, "#d8e6ff");
+  g.addColorStop(1, "#5f79b8");
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+  ctx.fillStyle = g;
+  ctx.fill();
+
+  // a couple of rolling bands so the spin is readable
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.fillStyle = "rgba(56,225,196,.85)";
+  for (let i = 0; i < 3; i++) {
+    const phase = (state.roll / 2 + i * Math.PI * 2 / 3) % (Math.PI * 2);
+    const oy = Math.sin(phase) * r;
+    if (Math.cos(phase) < 0) continue;
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y - oy, r * 0.72, r * 0.16, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawVignette() {
+  const g = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.75);
+  g.addColorStop(0, "rgba(0,0,0,0)");
+  g.addColorStop(1, "rgba(0,0,0,.55)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function render() {
+  ctx.save();
+  if (state.shake > 0) {
+    const m = state.shake * 14;
+    ctx.translate((Math.random() - 0.5) * m, (Math.random() - 0.5) * m);
+  }
+  drawSky();
+  drawRoad();
+
+  const visible = obstacles
+    .filter((o) => o.type === "block" && o.z > state.z - 12 && o.z < state.z + DRAW_DIST)
+    .sort((a, b) => b.z - a.z);
+  for (const o of visible) drawBox(o);
+
+  drawBall();
+  ctx.restore();
+  drawVignette();
+}
+
+/* ----------------------------------------------------------- main  loop */
+
+let last = performance.now();
+function frame(now) {
+  let dt = (now - last) / 1000;
+  last = now;
+  dt = Math.min(dt, 1 / 30);          // clamp so tab switches don't teleport
+
+  update(dt);
+  updateCamera();
+  render();
+  requestAnimationFrame(frame);
+}
+
+// idle attract state: camera drifts down an empty track behind the menu
+state.y = groundY(0) + BALL_R;
+spawnAhead(DRAW_DIST + 60);
+updateCamera();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
