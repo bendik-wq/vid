@@ -24,3 +24,20 @@ Everything renders to a 2D canvas through a hand-written perspective projection
   split into left and right halves so a hole can remove one side.
 - Obstacles live on a rolling list, spawned ahead of the camera and dropped once
   behind it. Spawn density and speed both ramp with distance.
+
+---
+
+# Overrun
+
+A second single-file game in this repo: `shooter.html`, a wave-based arena
+shooter. Same rules — no build step, no dependencies.
+
+## How to play
+
+- `WASD` (or arrows) to move, mouse to aim, hold click to fire, `Shift` to dash.
+- Waves get bigger and faster. Four enemy types: grunts walk at you, darters
+  weave in fast, turrets keep their distance and shoot, tanks soak damage and
+  split into grunts when they die.
+- Enemies drop pickups: `+` repairs, `R` is rapid fire, `T` is a triple shot.
+  Weapon pickups last nine seconds.
+- Score and wave are kept; best score persists in `localStorage`.
