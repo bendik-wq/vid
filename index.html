@@ -219,9 +219,6 @@ function die(reason) {
     state.best = state.score;
     localStorage.setItem("slope.best", String(state.best));
     els.best.textContent = state.best;
-
-const TOUCH = matchMedia("(hover: none)").matches;
-if (TOUCH) els.hint.textContent = "Tap to start";
   }
   els.msg.innerHTML = reason;
   els.overlay.querySelector("h1").innerHTML = 'G<span>A</span>ME OVER';
