@@ -3,7 +3,7 @@
    + Haynes (operator audit, partner webinars) frameworks.
    Every mutation is written to a local, device-only change log. */
 
-const KEY = 'gl.ops.v3';
+const KEY = 'gl.ops.v4';
 const PEOPLE = {
   bendik: { name: 'Bendik', initials: 'B', color: 'var(--accent)' },
   josh:   { name: 'Josh',   initials: 'J', color: 'var(--purple)' }
@@ -25,7 +25,7 @@ function ownerChip(current, label, commit) {
   });
   return chip;
 }
-const REEL_QUOTA = 4;
+
 
 /* ── Seed ───────────────────────────────────────────────────── */
 const seed = () => ({
@@ -54,9 +54,13 @@ const seed = () => ({
     { t: 'One person owns the whole close, start to finish', done: false, who: null },
     { t: 'Automation maps to a named bottleneck, not novelty', done: false, who: null }
   ],
-  reels: {},
+  output: {
+    bendik: { unit: 'tweets', quota: 5 },
+    josh:   { unit: 'reels',  quota: 4 }
+  },
+  posts: {},
   kpis: [
-    { id: 'reels',    label: 'Reels / week',        value: 0,   target: 56,  unit: '',  up: true, derived: true },
+    { id: 'posts',    label: 'Posts / week',        value: 0,   target: 63,  unit: '',  up: true, derived: true },
     { id: 'calls',    label: 'Qualified calls',     value: 14,  target: 20,  unit: '',  up: true },
     { id: 'showups',  label: 'Webinar show-up',     value: 43,  target: 50,  unit: '%', up: true },
     { id: 'close',    label: 'Close rate',          value: 11,  target: 15,  unit: '%', up: true },
@@ -129,6 +133,9 @@ const $ = (s) => document.querySelector(s);
 const el = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
 const esc = (s) => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 const todayKey = () => new Date().toISOString().slice(0, 10);
+const quotaOf = (id) => (state.output[id] && state.output[id].quota) || 4;
+const unitOf = (id) => (state.output[id] && state.output[id].unit) || 'posts';
+const weeklyQuota = () => Object.keys(PEOPLE).reduce((a, id) => a + quotaOf(id) * 7, 0);
 
 /* The one mutation path. Nothing changes state except through here. */
 function change(verb, target, from, to, fn) {
@@ -221,39 +228,55 @@ constraintEl.addEventListener('blur', () => {
 });
 constraintEl.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); constraintEl.blur(); } });
 
-const reelsFor = (day, who) => (state.reels[day] && state.reels[day][who]) || 0;
+const postsFor = (day, id) => (state.posts[day] && state.posts[day][id]) || 0;
 
-function setReels(day, who, n) {
-  const from = reelsFor(day, who);
-  if (n === from) n = n - 1 < 0 ? 0 : n - 1;
-  change('logged reels for', `${PEOPLE[who].name}, ${day}`, from + '/' + REEL_QUOTA, n + '/' + REEL_QUOTA, () => {
-    state.reels[day] = state.reels[day] || {};
-    state.reels[day][who] = n;
+function setPosts(day, id, n) {
+  const from = postsFor(day, id);
+  if (n === from) n = Math.max(0, n - 1);
+  change('logged ' + unitOf(id), `${who(id).name}, ${day}`, `${from}/${quotaOf(id)}`, `${n}/${quotaOf(id)}`, () => {
+    state.posts[day] = state.posts[day] || {};
+    state.posts[day][id] = n;
   });
 }
 
-function renderReelToday() {
+function renderOutputToday() {
   const host = $('#reelToday');
   host.innerHTML = '';
   const day = todayKey();
-  Object.keys(PEOPLE).forEach(who => {
-    const n = reelsFor(day, who);
+  Object.keys(PEOPLE).forEach(id => {
+    const n = postsFor(day, id), q = quotaOf(id);
     const card = el('article', 'card reel-card');
     card.innerHTML = `
       <div class="reel-head">
-        <span class="avatar" style="background:${PEOPLE[who].color}">${PEOPLE[who].initials}</span>
-        <div><div class="reel-name">${PEOPLE[who].name}</div><div class="reel-sub">reels today</div></div>
-        <b class="reel-count ${n >= REEL_QUOTA ? 'hit' : ''}">${n}<small>/${REEL_QUOTA}</small></b>
+        <span class="avatar" style="background:${who(id).color}">${who(id).initials}</span>
+        <div><div class="reel-name">${who(id).name}</div>
+          <div class="reel-sub"><span class="unit-edit" contenteditable="true" spellcheck="false">${esc(unitOf(id))}</span> today</div></div>
+        <b class="reel-count ${n >= q ? 'hit' : ''}">${n}<small>/<span class="quota-edit">${q}</span></small></b>
       </div>
       <div class="dots"></div>`;
     const dots = card.querySelector('.dots');
-    for (let i = 1; i <= REEL_QUOTA; i++) {
+    for (let i = 1; i <= q; i++) {
       const d = el('button', 'dot' + (i <= n ? ' on' : ''));
-      d.style.setProperty('--c', PEOPLE[who].color);
-      d.title = `Set ${i} of ${REEL_QUOTA}`;
-      d.addEventListener('click', () => setReels(day, who, i));
+      d.style.setProperty('--c', who(id).color);
+      d.title = `Set ${i} of ${q}`;
+      d.addEventListener('click', () => setPosts(day, id, i));
       dots.appendChild(d);
     }
+    const unitNode = card.querySelector('.unit-edit');
+    unitNode.addEventListener('blur', () => {
+      const to = unitNode.textContent.trim().toLowerCase();
+      if (to && to !== unitOf(id)) {
+        change('changed output type', who(id).name, unitOf(id), to, () => { state.output[id].unit = to; });
+      } else unitNode.textContent = unitOf(id);
+    });
+    editableNumber(card.querySelector('.quota-edit'), () => quotaOf(id), (v, from) => {
+      const q2 = Math.max(1, Math.min(20, v));
+      change('changed daily quota', `${who(id).name} — ${unitOf(id)}`, from, q2, () => {
+        state.output[id].quota = q2;
+        const k = state.kpis.find(x => x.id === 'posts');
+        if (k) k.target = Object.keys(PEOPLE).reduce((a, p) => a + (p === id ? q2 : quotaOf(p)) * 7, 0);
+      });
+    }, { min: 1, max: 20 });
     host.appendChild(card);
   });
 }
@@ -272,7 +295,7 @@ function kpiCard(k) {
   const fmt = () => (k.unit === '$' ? '$' : k.unit === 'k$' ? '$' : '') + k.value + (k.unit === '%' ? '%' : k.unit === 'k$' ? 'k' : '');
   num.textContent = fmt();
   if (k.derived) {
-    card.querySelector('.kpi-target span').textContent = 'counted from the reel log';
+    card.querySelector('.kpi-target span').textContent = 'counted from the post log';
     return card;
   }
   editableNumber(num, () => k.value, (v, from) => {
@@ -281,12 +304,12 @@ function kpiCard(k) {
   return card;
 }
 
-function reelsLast7() {
+function postsLast7() {
   let total = 0;
   for (let i = 0; i < 7; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const day = state.reels[d.toISOString().slice(0, 10)];
+    const day = state.posts[d.toISOString().slice(0, 10)];
     if (day) total += Object.values(day).reduce((a, b) => a + b, 0);
   }
   return total;
@@ -296,7 +319,7 @@ function renderOverviewKpis() {
   const host = $('#overviewKpis');
   host.innerHTML = '';
   state.kpis.forEach(k => {
-    if (k.derived) k.value = reelsLast7();
+    if (k.derived) { k.value = postsLast7(); k.target = weeklyQuota(); }
     host.appendChild(kpiCard(k));
   });
 }
@@ -433,7 +456,7 @@ function renderDaily() {
   const d = (n) => Math.max(1, Math.round(n / m.workDays));
   const lanes = [
     { id: 'demand', title: 'Demand — content & sales', rows: [
-      ['4', 'reels filmed, each', 'the volume engine, non-negotiable'],
+      [Object.keys(PEOPLE).map(id => `${quotaOf(id)} ${unitOf(id)}`).join(' + '), 'posted, every day', 'the volume engine, non-negotiable'],
       ['100', 'outreach touches', 'Rule of 100 — DMs, comments, replies'],
       [String(d(r.need.held)), 'calls held', `${d(r.need.booked)} booked to hold that many`],
       ['20', 'call minutes reviewed', 'score yesterday against the rubric']
@@ -588,7 +611,7 @@ function renderChecklist(host, items, label) {
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const LADDER = [
   ['1 pillar', 'One 12-minute recorded teaching — the week’s single idea'],
-  ['→ 20 reels', '4 a day each. Every reel is one claim from the pillar'],
+  ['→ short-form, daily', 'Each person’s daily quota, every post one claim from the pillar'],
   ['→ 3 threads', 'The pillar’s argument, unrolled'],
   ['→ 3 emails', 'Value, invite, replay + deadline'],
   ['→ 1 webinar block', 'The pillar becomes the teach segment on Thursday'],
@@ -603,7 +626,15 @@ const ANGLES = [
   ['8 weeks, every number on screen', 'Public metrics compound trust and feed the webinar.']
 ];
 
-function renderReelGrid() {
+function setPostsAbsolute(day, id, n) {
+  const from = postsFor(day, id);
+  change('logged ' + unitOf(id), `${who(id).name}, ${day}`, `${from}/${quotaOf(id)}`, `${n}/${quotaOf(id)}`, () => {
+    state.posts[day] = state.posts[day] || {};
+    state.posts[day][id] = n;
+  });
+}
+
+function renderPostGrid() {
   const host = $('#reelGrid');
   host.innerHTML = '';
   const days = [];
@@ -618,19 +649,24 @@ function renderReelGrid() {
     h.innerHTML = `${DAYS[(d.getDay() + 6) % 7][0]}<small>${d.getDate()}</small>`;
     host.appendChild(h);
   });
-  Object.keys(PEOPLE).forEach(who => {
+  Object.keys(PEOPLE).forEach(id => {
+    const q = quotaOf(id);
     const lbl = el('div', 'rg-label');
-    lbl.innerHTML = `<span class="avatar sm" style="background:${PEOPLE[who].color}">${PEOPLE[who].initials}</span>${PEOPLE[who].name}`;
+    lbl.innerHTML = `<span class="avatar sm" style="background:${who(id).color}">${who(id).initials}</span>
+      <span>${who(id).name}<small class="rg-unit">${esc(unitOf(id))} · ${q}/day</small></span>`;
     host.appendChild(lbl);
     days.forEach(d => {
       const key = d.toISOString().slice(0, 10);
-      const n = reelsFor(key, who);
+      const n = postsFor(key, id);
       const cell = el('button', 'rg-cell');
-      cell.style.setProperty('--c', PEOPLE[who].color);
-      cell.dataset.level = n;
-      cell.title = `${PEOPLE[who].name} · ${key} · ${n}/${REEL_QUOTA}`;
+      if (n) {
+        cell.style.background = `color-mix(in srgb, ${who(id).color} ${Math.round(Math.min(1, n / q) * 100)}%, transparent)`;
+        cell.style.borderColor = 'transparent';
+        cell.style.color = n / q > 0.45 ? '#fff' : 'var(--ink)';
+      }
+      cell.title = `${who(id).name} · ${key} · ${n}/${q} ${unitOf(id)}`;
       cell.textContent = n || '';
-      cell.addEventListener("click", () => setReelsAbsolute(key, who, (n + 1) % (REEL_QUOTA + 1)));
+      cell.addEventListener('click', () => setPostsAbsolute(key, id, (n + 1) % (q + 1)));
       host.appendChild(cell);
     });
   });
@@ -1167,6 +1203,37 @@ $('#markReviewed').addEventListener('click', () => {
   renderFeed();
 });
 $('#undoLast').addEventListener('click', undoLast);
+
+/* localStorage is per-browser, so moving data between devices is a file. */
+$('#exportState').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = el('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `gl-ops-${who(state.me).name.toLowerCase()}-${todayKey()}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+$('#importState').addEventListener('click', () => $('#importFile').click());
+$('#importFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let incoming;
+    try { incoming = JSON.parse(reader.result); } catch { alert('That file is not valid G&L Ops data.'); return; }
+    if (!incoming || !Array.isArray(incoming.log)) { alert('That file is not valid G&L Ops data.'); return; }
+    const mine = state.log.length, theirs = incoming.log.length;
+    if (!confirm(`Replace this device's data (${mine} changes) with the imported file (${theirs} changes)?\n\nYour current data is kept in the undo stack.`)) return;
+    change('imported data', file.name, `${mine} changes`, `${theirs} changes`, () => {
+      const me = state.me;
+      state = incoming;
+      state.me = me;
+    });
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
 $('#exportLog').addEventListener('click', () => {
   const text = state.log.map(e =>
     `${new Date(e.ts).toISOString()}\t${PEOPLE[e.who].name}\t${e.verb}\t${e.target}\t${e.from} -> ${e.to}`).join('\n');
@@ -1213,18 +1280,10 @@ function render() {
   $('#whoAvatar').style.background = PEOPLE[state.me].color;
   $('#whoName').textContent = PEOPLE[state.me].name;
 
-  renderHero(); renderReelToday(); renderOverviewKpis(); renderOwnerLoad();
+  renderHero(); renderOutputToday(); renderOverviewKpis(); renderOwnerLoad();
   renderTarget(); renderLadder(); renderDaily(); renderEcon(); renderLevers(); renderLeadSources(); renderValueEq(); renderChecklist($('#operatorList'), state.operator);
-  renderReelGrid(); renderContentLists();
+  renderPostGrid(); renderContentLists();
   renderRecurring(); renderCalendar(); renderTopics(); renderTeam(); renderBoard(); renderFeed();
   requestAnimationFrame(animateBars);
 }
 render();
-
-function setReelsAbsolute(day, who, n) {
-  const from = reelsFor(day, who);
-  change('logged reels for', `${PEOPLE[who].name}, ${day}`, from + '/' + REEL_QUOTA, n + '/' + REEL_QUOTA, () => {
-    state.reels[day] = state.reels[day] || {};
-    state.reels[day][who] = n;
-  });
-}

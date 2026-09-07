@@ -76,11 +76,13 @@ a content task. No two ideas in a batch repeat a template.
 - **Partner webinars** — trust transfer, not cold outreach. A pipeline of partner lists with
   audience size, status and owner.
 
-## Reels: 4 a day, each
+## Daily output
 
-The volume KPI. Overview has a per-person quota strip for today (tap the blocks), Content has a
-14-day heat log. **Reels / week is derived from that log** — it counts the last seven days across
-both of you against a target of 56 (2 × 4 × 7). It is the one KPI you cannot type a number into.
+Each person has their own unit and their own quota — Bendik posts **tweets**, Josh posts
+**reels** — and both the unit and the number are editable in place on Overview. Tap the blocks
+to log today; Content keeps a 14-day heat log. **Posts / week is derived from that log** — it
+counts the last seven days across both of you against the sum of the two quotas. It is the one
+KPI you cannot type a number into.
 
 ## Every change is marked, locally
 
@@ -93,8 +95,16 @@ records who did it, what changed, and the previous value.
 - **Undo last** — steps back through the last 25 changes.
 - **Export log** — copies the whole history as TSV for a spreadsheet.
 
-Storage is `localStorage` on the device you are using. Nothing is sent anywhere, and Bendik's
-device and Josh's device keep separate logs — export and paste if you want to reconcile them.
+### Storage, honestly
+
+`localStorage` is per browser, per device. **Two people on two machines get two separate
+datasets and two separate logs** — the identity switcher only labels who made a change on the
+device it was made on. Nothing syncs, because nothing leaves the browser.
+
+To move data across, Activity has **Export data** (downloads the whole state as JSON) and
+**Import data** (replaces this device's state with a file, previous state kept in the undo
+stack). That is a hand-off, not a merge: the newer file wins. For genuinely shared state, this
+needs a backend — see the note at the top of `docs/` or ask.
 
 ## Sections
 
