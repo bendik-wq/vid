@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Studio — Project Management</title>
+<meta name="description" content="Apple-style project management for social content teams and hiring." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5A3.5 3.5 0 0 1 7.5 4h9A3.5 3.5 0 0 1 20 7.5v9a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5v-9Z" stroke="currentColor" stroke-width="1.6"/><path d="m10 9.2 5 2.8-5 2.8V9.2Z" fill="currentColor"/></svg>
+    </div>
+    <div>
+      <h1>Studio</h1>
+      <p class="brand-sub">Content &amp; Hiring Operations</p>
+    </div>
+  </div>
+
+  <nav class="segmented" role="tablist" aria-label="Sections">
+    <button class="seg active" role="tab" data-view="overview">Overview</button>
+    <button class="seg" role="tab" data-view="board">Board</button>
+    <button class="seg" role="tab" data-view="hiring">Hiring</button>
+  </nav>
+
+  <div class="topbar-actions">
+    <button class="icon-btn" id="themeToggle" title="Toggle appearance" aria-label="Toggle appearance">
+      <svg class="ico-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4 7 7M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="pill-btn primary" id="newTaskBtn">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      New Task
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ───────────────── OVERVIEW ───────────────── -->
+  <section class="view active" id="view-overview">
+    <div class="hero">
+      <div>
+        <p class="eyebrow" id="todayLabel"></p>
+        <h2 class="hero-title">Good work is shipping.</h2>
+        <p class="hero-sub">Three channels, one pipeline, two roles to fill.</p>
+      </div>
+      <div class="hero-stat">
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 120 120">
+            <circle class="ring-track" cx="60" cy="60" r="52" />
+            <circle class="ring-fill" id="heroRing" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="ring-center">
+            <strong id="heroPct">0%</strong>
+            <span>quarter goal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Channels</h3>
+    <div class="grid channels" id="channelGrid"></div>
+
+    <div class="two-col">
+      <div class="card chart-card">
+        <div class="card-head">
+          <h3>Posts published</h3>
+          <span class="chip" id="chartTotal"></span>
+        </div>
+        <div class="chart" id="chart"></div>
+        <div class="legend">
+          <span><i style="background:var(--yt)"></i>YouTube</span>
+          <span><i style="background:var(--ig)"></i>Instagram</span>
+          <span><i style="background:var(--x)"></i>X</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Pipeline</h3><span class="chip" id="pipeTotal"></span></div>
+        <ul class="pipeline" id="pipelineList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────── BOARD ───────────────── -->
+  <section class="view" id="view-board">
+    <div class="board-head">
+      <h2 class="hero-title small">Board</h2>
+      <div class="filters" id="filters">
+        <button class="chip-btn active" data-filter="all">All</button>
+        <button class="chip-btn" data-filter="youtube">YouTube</button>
+        <button class="chip-btn" data-filter="instagram">Instagram</button>
+        <button class="chip-btn" data-filter="x">X</button>
+        <button class="chip-btn" data-filter="hiring">Hiring</button>
+      </div>
+    </div>
+    <div class="board" id="board"></div>
+  </section>
+
+  <!-- ───────────────── HIRING ───────────────── -->
+  <section class="view" id="view-hiring">
+    <h2 class="hero-title small">Hiring</h2>
+    <p class="hero-sub">Two open roles. Move candidates through the funnel.</p>
+    <div class="grid roles" id="roleGrid"></div>
+  </section>
+</main>
+
+<!-- Task sheet -->
+<div class="sheet-scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="New task">
+  <div class="sheet-grabber"></div>
+  <h3>New task</h3>
+  <label>Title<input id="f-title" type="text" placeholder="Edit the Q4 launch teaser" /></label>
+  <label>Channel
+    <select id="f-channel">
+      <option value="youtube">YouTube</option>
+      <option value="instagram">Instagram</option>
+      <option value="x">X</option>
+      <option value="hiring">Hiring</option>
+    </select>
+  </label>
+  <label>Owner<input id="f-owner" type="text" placeholder="Unassigned" /></label>
+  <label>Status
+    <select id="f-status">
+      <option value="ideas">Ideas</option>
+      <option value="production">In production</option>
+      <option value="review">Review</option>
+      <option value="published">Published</option>
+    </select>
+  </label>
+  <div class="sheet-actions">
+    <button class="pill-btn" id="cancelTask">Cancel</button>
+    <button class="pill-btn primary" id="saveTask">Add task</button>
+  </div>
+</div>
+
+<footer class="foot">Data lives in your browser. <button class="link-btn" id="resetBtn">Reset demo data</button></footer>
+
+<script src="app.js"></script>
+</body>
+</html>
