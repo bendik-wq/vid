@@ -20,6 +20,26 @@ No build step, no dependencies — open `index.html`.
 - Filter by YouTube / Instagram / X / Hiring
 - Add tasks via a bottom sheet; delete from the card
 
+**KPIs**
+- Twelve metrics across Audience, Content output, and Paid & pipeline
+- 8-week sparkline per metric with target and trend direction
+
+**Schedule**
+- Weekly grid: YouTube / IG feed / IG stories / X / Ads / Webinar × Mon–Sun, today highlighted
+- Daily story rhythm (3 per day: BTS → value → CTA) and the weekly operating rituals
+
+**Ads**
+- Campaign cards per platform with CPM / CTR / CPA / ROAS, spend pacing and state
+- Launch checklist with persisted checkboxes
+
+**Webinar**
+- Live countdown to the next Thursday session
+- Registration funnel, 8-step promo sequence (T−14 → T+3), and a 60-minute run of show
+
+**Angles**
+- Six content angles with the reasoning and the formats to ship them in
+- Instagram data-source table — see [`docs/content-intel.md`](docs/content-intel.md)
+
 **Hiring**
 - Two open roles — **Sales Person** and **Content Manager**
 - Candidate funnel per role (Applied → Screened → Interview → Offer)
@@ -42,6 +62,7 @@ Then open http://localhost:8000. Opening `index.html` directly from disk works t
 | `index.html` | Markup and inline SVG shell |
 | `styles.css` | Design tokens, materials, layout, motion |
 | `app.js` | State, rendering, drag & drop, persistence |
+| `docs/content-intel.md` | Instagram API comparison, scraping pipeline, angle logic |
 
 State persists to `localStorage` under `studio.state.v1`; the footer has a reset link.
 Appearance follows the system setting and can be toggled in the top bar.

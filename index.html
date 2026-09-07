@@ -24,6 +24,11 @@
 
   <nav class="segmented" role="tablist" aria-label="Sections">
     <button class="seg active" role="tab" data-view="overview">Overview</button>
+    <button class="seg" role="tab" data-view="kpis">KPIs</button>
+    <button class="seg" role="tab" data-view="schedule">Schedule</button>
+    <button class="seg" role="tab" data-view="ads">Ads</button>
+    <button class="seg" role="tab" data-view="webinar">Webinar</button>
+    <button class="seg" role="tab" data-view="angles">Angles</button>
     <button class="seg" role="tab" data-view="board">Board</button>
     <button class="seg" role="tab" data-view="hiring">Hiring</button>
   </nav>
@@ -85,6 +90,89 @@
         <ul class="pipeline" id="pipelineList"></ul>
       </div>
     </div>
+  </section>
+
+
+  <!-- ───────────────── KPIs ───────────────── -->
+  <section class="view" id="view-kpis">
+    <h2 class="hero-title small">KPIs</h2>
+    <p class="hero-sub">Eight weeks of trend against target. Green means pacing ahead.</p>
+    <div id="kpiGroups"></div>
+  </section>
+
+  <!-- ───────────────── SCHEDULE ───────────────── -->
+  <section class="view" id="view-schedule">
+    <div class="board-head">
+      <div>
+        <h2 class="hero-title small">Weekly schedule</h2>
+        <p class="hero-sub">The cadence that runs whether or not anyone remembers it.</p>
+      </div>
+      <span class="chip" id="slotCount"></span>
+    </div>
+    <div class="card cal-card">
+      <div class="calendar" id="calendar"></div>
+    </div>
+    <div class="two-col" style="margin-top:18px">
+      <div class="card">
+        <div class="card-head"><h3>Stories — daily rhythm</h3><span class="chip">3 / day</span></div>
+        <ul class="story-list" id="storyList"></ul>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Weekly operating rhythm</h3></div>
+        <ul class="ritual-list" id="ritualList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────── ADS ───────────────── -->
+  <section class="view" id="view-ads">
+    <div class="board-head">
+      <div>
+        <h2 class="hero-title small">Ads</h2>
+        <p class="hero-sub">Spend, pacing and unit economics per campaign.</p>
+      </div>
+      <div class="ads-summary" id="adsSummary"></div>
+    </div>
+    <div class="grid campaigns" id="campaignGrid"></div>
+    <h3 class="section-title" style="margin-top:34px">Launch checklist</h3>
+    <div class="card"><ul class="check-list" id="launchList"></ul></div>
+  </section>
+
+  <!-- ───────────────── WEBINAR ───────────────── -->
+  <section class="view" id="view-webinar">
+    <div class="card webinar-hero">
+      <div class="glow" style="background:linear-gradient(145deg,#0a84ff,#bf5af2)"></div>
+      <div>
+        <p class="eyebrow">Live every Thursday · 18:00</p>
+        <h2 class="hero-title small" id="webinarTitle"></h2>
+        <p class="hero-sub" id="webinarSub"></p>
+      </div>
+      <div class="countdown" id="countdown"></div>
+    </div>
+
+    <div class="two-col" style="margin-top:18px">
+      <div class="card">
+        <div class="card-head"><h3>Registration funnel</h3><span class="chip" id="webinarConv"></span></div>
+        <div class="funnel" id="webinarFunnel"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Promo sequence</h3></div>
+        <ul class="promo-list" id="promoList"></ul>
+      </div>
+    </div>
+
+    <h3 class="section-title" style="margin-top:34px">Run of show — 60 minutes</h3>
+    <div class="card"><ol class="runsheet" id="runsheet"></ol></div>
+  </section>
+
+  <!-- ───────────────── ANGLES ───────────────── -->
+  <section class="view" id="view-angles">
+    <h2 class="hero-title small">Angles &amp; intel</h2>
+    <p class="hero-sub">Content angles to push, and the data stack that finds them.</p>
+    <h3 class="section-title" style="margin-top:26px">Angles to push</h3>
+    <div class="grid angles" id="angleGrid"></div>
+    <h3 class="section-title" style="margin-top:34px">Instagram data sources</h3>
+    <div class="card"><div class="api-table" id="apiTable"></div></div>
   </section>
 
   <!-- ───────────────── BOARD ───────────────── -->
