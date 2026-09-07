@@ -138,7 +138,7 @@ function renderChart() {
   const wrap = $('#chart');
   wrap.innerHTML = '';
   const max = Math.max(...state.weekly.map(w => w.youtube + w.instagram + w.x));
-  const colors = { youtube: 'var(--yt)', instagram: 'var(--ig)', x: 'var(--x)' };
+  const colors = { youtube: 'var(--yt)', instagram: 'var(--ig)', x: 'var(--ink-3)' };
   state.weekly.forEach(w => {
     const col = el('div', 'col');
     const stack = el('div', 'stack');
