@@ -86,9 +86,21 @@ grant select, insert on public.activity_log to authenticated;
 -- ─────────────────────────────────────────────────────────────
 -- 6. Realtime — both browsers see each other's writes.
 -- ─────────────────────────────────────────────────────────────
-alter publication supabase_realtime add table public.ops_state;
-alter publication supabase_realtime add table public.post_log;
-alter publication supabase_realtime add table public.activity_log;
+-- Adding a table that is already published raises 42710, so add each
+-- one only if it is missing. This whole file is safe to run repeatedly.
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['ops_state', 'post_log', 'activity_log'] loop
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = t
+    ) then
+      execute format('alter publication supabase_realtime add table public.%I', t);
+    end if;
+  end loop;
+end $$;
 
 -- Full row bodies on updates, so subscribers get the new document.
 alter table public.ops_state    replica identity full;
