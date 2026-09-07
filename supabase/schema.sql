@@ -72,7 +72,19 @@ create policy "authenticated append log"  on public.activity_log
   for insert to authenticated with check (true);
 
 -- ─────────────────────────────────────────────────────────────
--- 5. Realtime — both browsers see each other's writes.
+-- 5. Data API grants. RLS decides which ROWS are visible; these
+--    decide whether the table is reachable at all. Projects that do
+--    not auto-expose new tables need these explicitly.
+-- ─────────────────────────────────────────────────────────────
+grant usage on schema public to anon, authenticated;
+
+grant select, insert, update, delete on public.ops_state to authenticated;
+grant select, insert, update, delete on public.post_log  to authenticated;
+-- Append only, enforced by grant as well as by policy.
+grant select, insert on public.activity_log to authenticated;
+
+-- ─────────────────────────────────────────────────────────────
+-- 6. Realtime — both browsers see each other's writes.
 -- ─────────────────────────────────────────────────────────────
 alter publication supabase_realtime add table public.ops_state;
 alter publication supabase_realtime add table public.post_log;
