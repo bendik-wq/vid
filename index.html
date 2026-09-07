@@ -7,6 +7,7 @@
 <meta name="description" content="Operating system for content, webinars, team and scale. Hormozi + Haynes frameworks, every change logged locally." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>" />
 <link rel="stylesheet" href="styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -33,6 +34,7 @@
   </nav>
 
   <div class="topbar-actions">
+    <button class="sync" id="sync" data-mode="local" title="Where this data lives"><i></i><span id="syncText">This device only</span></button>
     <button class="who" id="whoBtn" title="Switch who is making changes">
       <span class="avatar" id="whoAvatar">B</span>
       <span id="whoName">Bendik</span>
@@ -303,10 +305,34 @@
   </div>
 </div>
 
+<div class="sheet" id="dbSheet" hidden role="dialog" aria-modal="true" aria-label="Database connection">
+  <div class="sheet-grabber"></div>
+  <h3 id="dbTitle">Connect the database</h3>
+  <div id="dbStep1">
+    <p class="sheet-note">Paste the project URL and the anon key from Supabase → Project Settings → API.
+      They are stored in this browser only, never in the repo.</p>
+    <label>Project URL<input id="db-url" type="url" placeholder="https://xxxx.supabase.co" /></label>
+    <label>Anon key<input id="db-key" type="password" placeholder="eyJ…" /></label>
+  </div>
+  <div id="dbStep2" hidden>
+    <p class="sheet-note">Enter your email. Supabase sends a sign-in link — open it on this device
+      and you are in. Only signed-in people can read or write the data.</p>
+    <label>Email<input id="db-email" type="email" placeholder="you@company.com" /></label>
+    <p class="sheet-note" id="dbSent" hidden>Link sent. Open it in this browser.</p>
+  </div>
+  <p class="sheet-error" id="dbError" hidden></p>
+  <div class="sheet-actions">
+    <button class="pill-btn" id="dbCancel">Close</button>
+    <button class="pill-btn" id="dbForget" hidden>Disconnect</button>
+    <button class="pill-btn primary" id="dbNext">Save</button>
+  </div>
+</div>
+
 <footer class="foot">
   <span id="footState"></span> · <button class="link-btn" id="resetBtn">Reset to seed data</button>
 </footer>
 
+<script src="backend.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

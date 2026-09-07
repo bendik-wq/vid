@@ -95,11 +95,36 @@ records who did it, what changed, and the previous value.
 - **Undo last** — steps back through the last 25 changes.
 - **Export log** — copies the whole history as TSV for a spreadsheet.
 
+## The database
+
+The Pages build talks to Supabase. Three tables (`supabase/schema.sql`):
+
+| Table | Holds | Notes |
+|---|---|---|
+| `ops_state` | the board — one row, whole document as `jsonb` | last write wins |
+| `post_log` | one row per person per day | queryable: `select day, person, count from post_log order by day desc` |
+| `activity_log` | every change: actor, verb, target, before, after | insert-only policy — history cannot be rewritten |
+
+Row-level security allows **authenticated users only**, so the anon key alone reads nothing.
+Realtime is on for all three, so both browsers see each other's writes as they happen.
+
+### Setting it up
+
+1. Run `supabase/schema.sql` in the Supabase SQL editor (or through the Supabase MCP server in
+   an interactive session).
+2. Open the app, click the status chip in the top bar, paste the **project URL** and **anon
+   key** from Project Settings → API. They are stored in that browser, never in this repo.
+3. Enter your email, open the sign-in link on the same device. The chip turns green.
+4. Josh does the same on his machine. From then on it is one dataset and one history.
+
+Until step 4 the app runs exactly as before, against `localStorage`, and says "This device
+only" in the chip.
+
 ### Storage, honestly
 
-`localStorage` is per browser, per device. **Two people on two machines get two separate
-datasets and two separate logs** — the identity switcher only labels who made a change on the
-device it was made on. Nothing syncs, because nothing leaves the browser.
+Without a database connected, `localStorage` is per browser, per device: **two people on two
+machines get two separate datasets and two separate logs**. Connecting Supabase (above) is what
+makes it one shared record; the identity switcher then labels who made each change.
 
 To move data across, Activity has **Export data** (downloads the whole state as JSON) and
 **Import data** (replaces this device's state with a file, previous state kept in the undo
@@ -132,4 +157,7 @@ python3 -m http.server 8000   # or: npx serve .
 | `index.html` | Markup |
 | `styles.css` | Design tokens, layout, motion |
 | `app.js` | State, the single `change()` mutation path, rendering |
+| `backend.js` | Supabase client: auth, reads, writes, realtime |
+| `supabase/schema.sql` | Tables, row-level security, realtime publication |
+| `artifact/gl-ops.html` | Single-file build with the artifact document store |
 | `docs/content-intel.md` | Instagram API comparison and the angle-scoring pipeline |
