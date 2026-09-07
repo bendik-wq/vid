@@ -1,68 +1,78 @@
-# Studio — Content & Hiring Operations
+# G&L Ops — Bendik & Josh
 
-A single-page project management app for a social content team, styled after Apple's
-design language: translucent materials, SF typography, springy motion, light + dark.
+The operating system for the week: one constraint, four lead sources, a reel quota,
+a Thursday webinar, two hires, and a change log that never forgets who moved what.
 
-No build step, no dependencies — open `index.html`.
+No build step, no dependencies, no server. Open `index.html`.
 
-## What's in it
+**Live:** https://bendik-wq.github.io/vid/studio/
 
-**Overview**
-- Channel cards for **YouTube**, **Instagram**, and **X** with published post counts,
-  goal progress bars, month-over-month delta, and last-post recency
-- Quarter-goal progress ring across all channels
-- Six-week stacked bar chart of posts published per channel
-- Pipeline breakdown by status
+---
 
-**Board**
-- Four columns: Ideas → In production → Review → Published
-- Drag and drop between columns
-- Filter by YouTube / Instagram / X / Hiring
-- Add tasks via a bottom sheet; delete from the card
+## The frameworks it encodes
 
-**KPIs**
-- Twelve metrics across Audience, Content output, and Paid & pipeline
-- 8-week sparkline per metric with target and trend direction
+**Hormozi**
+- **One constraint a week**, stated at the top of Overview and editable in place. Everything
+  else either relieves it or waits.
+- **Four lead sources** — warm outreach, free content, cold outreach, paid ads — each with an
+  owner and a weekly target. If a source has no owner, it does not happen.
+- **Growth math**: leads × close rate × price. Three numbers. Double the weakest before adding
+  anything new.
+- **Value equation**: (Dream × Likelihood) ÷ (Time × Effort), scored 1–10 per lever, live score.
+- **Repurpose ladder**: one pillar a week → 20 reels, 3 threads, 3 emails, the webinar teach
+  block, and next Monday's ad creative.
+- **Webinar run of show** built on the $100M Leads structure: promise → why the usual route
+  fails → teach → case study → transition → offer → Q&A that closes.
 
-**Schedule**
-- Weekly grid: YouTube / IG feed / IG stories / X / Ads / Webinar × Mon–Sun, today highlighted
-- Daily story rhythm (3 per day: BTS → value → CTA) and the weekly operating rituals
+**Haynes**
+- **Operator audit** — the firefighting → operating checklist. Lead flow that does not depend on
+  either of you posting manually; AI/automation pointed at a named bottleneck, not novelty.
+- **Partner webinars** — trust transfer, not cold outreach. A pipeline of partner lists with
+  audience size, status and owner.
 
-**Ads**
-- Campaign cards per platform with CPM / CTR / CPA / ROAS, spend pacing and state
-- Launch checklist with persisted checkboxes
+## Reels: 4 a day, each
 
-**Webinar**
-- Live countdown to the next Thursday session
-- Registration funnel, 8-step promo sequence (T−14 → T+3), and a 60-minute run of show
+The volume KPI. Overview has a per-person quota strip for today (tap the blocks), Content has a
+14-day heat log. **Reels / week is derived from that log** — it counts the last seven days across
+both of you against a target of 56 (2 × 4 × 7). It is the one KPI you cannot type a number into.
 
-**Angles**
-- Six content angles with the reasoning and the formats to ship them in
-- Instagram data-source table — see [`docs/content-intel.md`](docs/content-intel.md)
+## Every change is marked, locally
 
-**Hiring**
-- Two open roles — **Sales Person** and **Content Manager**
-- Candidate funnel per role (Applied → Screened → Interview → Offer)
-- Compensation band and target start date
+There is one mutation path in the code. Nothing changes state except through `change()`, which
+records who did it, what changed, and the previous value.
+
+- **Who** — the top bar sets who is acting. Switch it and the handover is logged too.
+- **Activity** — the full log, filterable by person, with before → after on every entry.
+- **Unreviewed badge** — the nav counts changes since you last hit *Mark all reviewed*.
+- **Undo last** — steps back through the last 25 changes.
+- **Export log** — copies the whole history as TSV for a spreadsheet.
+
+Storage is `localStorage` on the device you are using. Nothing is sent anywhere, and Bendik's
+device and Josh's device keep separate logs — export and paste if you want to reconcile them.
+
+## Sections
+
+| View | What it holds |
+|---|---|
+| Overview | Constraint, today's reel quota, six weekly KPIs, owner load, latest changes |
+| Scale | Growth math, four lead sources, value equation, operator audit |
+| Content | 14-day reel log, weekly schedule, repurpose ladder, angles |
+| Webinar | Countdown, funnel, promo sequence, run of show, partner pipeline |
+| Team | Us two, open roles with what each hire buys back, delegation ladder |
+| Board | This week / Doing / Review / Done, drag between columns, click an avatar to reassign |
+| Activity | The change log |
 
 ## Run it
 
 ```bash
-git clone https://github.com/bendik-wq/vid.git
-cd vid
 python3 -m http.server 8000   # or: npx serve .
 ```
-
-Then open http://localhost:8000. Opening `index.html` directly from disk works too.
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `index.html` | Markup and inline SVG shell |
-| `styles.css` | Design tokens, materials, layout, motion |
-| `app.js` | State, rendering, drag & drop, persistence |
-| `docs/content-intel.md` | Instagram API comparison, scraping pipeline, angle logic |
-
-State persists to `localStorage` under `studio.state.v1`; the footer has a reset link.
-Appearance follows the system setting and can be toggled in the top bar.
+| `index.html` | Markup |
+| `styles.css` | Design tokens, layout, motion |
+| `app.js` | State, the single `change()` mutation path, rendering |
+| `docs/content-intel.md` | Instagram API comparison and the angle-scoring pipeline |
