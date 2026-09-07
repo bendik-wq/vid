@@ -3,7 +3,7 @@
    + Haynes (operator audit, partner webinars) frameworks.
    Every mutation is written to a local, device-only change log. */
 
-const KEY = 'gl.ops.v1';
+const KEY = 'gl.ops.v2';
 const PEOPLE = {
   bendik: { name: 'Bendik', initials: 'B', color: 'var(--accent)' },
   josh:   { name: 'Josh',   initials: 'J', color: 'var(--purple)' }
@@ -14,21 +14,28 @@ const REEL_QUOTA = 4;
 const seed = () => ({
   me: 'bendik',
   constraint: 'Not enough qualified calls. Fix the top of funnel before touching anything else.',
-  growth: { leads: 420, close: 11, price: 9500 },
+  model: {
+    target: 150000,
+    workDays: 22,
+    now:   { leads: 620, book: 12, show: 60, close: 11, price: 9500 },
+    bench: { book: 15, show: 70, close: 20, price: 9500 }
+  },
+  econ: { cac: 850, ltgp: 6200, cash30: 4750 },
   leadSources: [
-    { id: 'warm',    label: 'Warm outreach', note: 'People who know us — old clients, LinkedIn 1st degree', owner: 'josh',   target: 100, done: 62 },
-    { id: 'content', label: 'Free content',  note: 'Reels, threads, long-form — 4 reels a day each',        owner: 'bendik', target: 56,  done: 41 },
-    { id: 'cold',    label: 'Cold outreach', note: 'Owner lists, 55–70, EBITDA £300k+',                      owner: 'josh',   target: 250, done: 180 },
-    { id: 'paid',    label: 'Paid ads',      note: 'Meta + YouTube to the Thursday webinar',                 owner: 'bendik', target: 120, done: 88 }
+    { id: 'warm',    label: 'Warm outreach', note: 'Old clients, LinkedIn 1st degree, past webinar no-shows', owner: 'josh',   target: 100, done: 14 },
+    { id: 'content', label: 'Free content',  note: 'Reels, threads, long-form — 4 reels a day, Josh on camera', owner: 'josh',   target: 56,  done: 38 },
+    { id: 'cold',    label: 'Cold outreach', note: 'Owner lists, 55–70, EBITDA £300k+ — sequences Bendik built', owner: 'josh',   target: 250, done: 24 },
+    { id: 'paid',    label: 'Paid ads',      note: 'Meta + YouTube to the webinar funnel',                       owner: 'bendik', target: 120, done: 45 }
   ],
   valueEq: { dream: 9, likelihood: 7, time: 5, effort: 6 },
   operator: [
-    { t: 'Every recurring task has a written SOP, not a person', done: true,  who: 'josh' },
+    { t: 'Every recurring task has a written SOP, not a person', done: true,  who: 'bendik' },
     { t: 'Weekly scorecard reviewed Friday — numbers before opinions', done: true, who: 'bendik' },
     { t: 'One dashboard is the source of truth (this one)', done: true, who: 'bendik' },
-    { t: 'Lead flow does not depend on either of us posting manually', done: false, who: 'bendik' },
-    { t: 'Sales calls are not on Bendik’s calendar by default', done: false, who: 'josh' },
-    { t: 'AI/automation layer maps to a named bottleneck, not novelty', done: false, who: 'bendik' }
+    { t: 'CRM fires the booking, reminder and no-show sequences without us', done: false, who: 'bendik' },
+    { t: 'Call recordings scored against a rubric every week', done: false, who: 'josh' },
+    { t: 'Bendik is not in any sales call — Josh owns the whole close', done: false, who: 'josh' },
+    { t: 'Automation maps to a named bottleneck, not novelty', done: false, who: 'bendik' }
   ],
   reels: {},
   kpis: [
@@ -44,40 +51,45 @@ const seed = () => ({
     sub: 'The 3C model, live — Capabilities, Capital, Closing. Then the offer.',
     funnel: { registered: 412, showed: 178, stayed: 121, bought: 39 },
     partners: [
-      { name: 'Accountancy network — SE England', audience: '4,200 owners', status: 'Booked 14 Oct', owner: 'josh' },
-      { name: 'Business brokers association',      audience: '1,800',       status: 'Proposal sent',  owner: 'josh' },
-      { name: 'Exit-planning newsletter',          audience: '9,500',       status: 'In conversation', owner: 'bendik' },
-      { name: 'Franchise owners community',        audience: '2,600',       status: 'To approach',     owner: 'bendik' }
+      { name: 'Accountancy network — SE England', audience: '4,200 owners', status: 'Booked 14 Oct',   owner: 'josh' },
+      { name: 'Business brokers association',      audience: '1,800',       status: 'Proposal sent',   owner: 'josh' },
+      { name: 'Exit-planning newsletter',          audience: '9,500',       status: 'In conversation', owner: 'josh' },
+      { name: 'Franchise owners community',        audience: '2,600',       status: 'To approach',     owner: 'josh' }
     ]
   },
   us: [
-    { id: 'bendik', role: 'Content, offer, paid', focus: 'Get the webinar filling itself', hours: 'Deep work 09–13' },
-    { id: 'josh',   role: 'Deals, outreach, close', focus: 'Book and run the calls', hours: 'Calls 13–18' }
+    { id: 'bendik', role: 'Systems, funnels, paid, data', focus: 'Build the machine that books Josh’s calendar without either of us touching it', hours: 'Build 09–15 · no calls' },
+    { id: 'josh',   role: 'Content, sales, closing', focus: 'On camera every day, on the phone every afternoon', hours: 'Film 09–11 · calls 12–18' }
   ],
   roles: [
-    { id: 'setter', title: 'Appointment setter', dept: 'Revenue · Remote', comp: '$2.5k + per booked call',
-      buys: 'Buys back Josh’s outreach hours', target: 'Start Oct 6', owner: 'josh',
+    { id: 'setter', title: 'Appointment setter', dept: 'Revenue · Remote', comp: '$2.5k + $100 / held call',
+      buys: 'Takes outreach off Josh so he only talks to booked prospects', target: 'Hire at 40 booked calls/mo', owner: 'josh',
       stages: [['Applied', 34], ['Screened', 12], ['Interview', 5], ['Offer', 1]] },
-    { id: 'editor', title: 'Video editor / content manager', dept: 'Studio · Hybrid', comp: '$3.5–4.5k',
-      buys: 'Buys back Bendik’s editing hours — makes 8 reels/day possible', target: 'Start Oct 20', owner: 'bendik',
-      stages: [['Applied', 21], ['Screened', 8], ['Interview', 3], ['Offer', 0]] }
+    { id: 'editor', title: 'Video editor', dept: 'Content · Remote', comp: '$2.5–3.5k',
+      buys: 'Josh films, editor ships — the only way 4 reels/day survives a full call calendar', target: 'Hire now', owner: 'josh',
+      stages: [['Applied', 21], ['Screened', 8], ['Interview', 3], ['Offer', 0]] },
+    { id: 'closer', title: 'Second closer', dept: 'Revenue · Remote', comp: '$3k + 8% commission',
+      buys: 'Josh cannot hold more than ~60 calls a month alone', target: 'Hire at 60 held calls/mo', owner: 'josh',
+      stages: [['Applied', 6], ['Screened', 2], ['Interview', 0], ['Offer', 0]] }
   ],
   delegation: [
-    { t: 'Reel editing and captions → editor', done: false, who: 'bendik' },
+    { t: 'Reel editing and captions → editor (Josh films only)', done: false, who: 'josh' },
     { t: 'First-touch outreach and follow-up → setter', done: false, who: 'josh' },
-    { t: 'Webinar reminder sequence → automation', done: true, who: 'bendik' },
-    { t: 'Partner webinar sourcing → setter, once trained', done: false, who: 'josh' },
-    { t: 'Ad creative uploads and naming → editor', done: false, who: 'bendik' }
+    { t: 'Webinar reminders and no-show follow-up → automation', done: true, who: 'bendik' },
+    { t: 'Proposal and contract generation → templated in the CRM', done: false, who: 'bendik' },
+    { t: 'Ad creative uploads, naming and reporting → automated', done: false, who: 'bendik' },
+    { t: 'Partner webinar sourcing → setter, once trained', done: false, who: 'josh' }
   ],
   tasks: [
-    { id: 't1', title: 'Rewrite webinar offer stack against value equation', track: 'webinar', owner: 'bendik', status: 'now' },
-    { id: 't2', title: 'Book 3 partner webinars for October', track: 'webinar', owner: 'josh', status: 'now' },
-    { id: 't3', title: 'Pillar: “The 3C model in 12 minutes”', track: 'content', owner: 'bendik', status: 'doing' },
-    { id: 't4', title: 'Cold list: 500 owners, EBITDA £300k+', track: 'content', owner: 'josh', status: 'doing' },
-    { id: 't5', title: 'Kill ad sets under 1.5× ROAS', track: 'ads', owner: 'bendik', status: 'doing' },
-    { id: 't6', title: 'Setter role — final interviews', track: 'team', owner: 'josh', status: 'review' },
-    { id: 't7', title: 'Retarget campaign to webinar replay', track: 'ads', owner: 'bendik', status: 'review' },
-    { id: 't8', title: 'Weekly scorecard automated', track: 'team', owner: 'bendik', status: 'done' }
+    { id: 't1', title: 'Call rubric + score last 20 recordings — close rate is the constraint', track: 'sales', owner: 'josh', status: 'now' },
+    { id: 't2', title: 'Rebuild booking flow: qualify on the form, not on the call', track: 'systems', owner: 'bendik', status: 'now' },
+    { id: 't3', title: 'No-show sequence: SMS + call at T−10min', track: 'systems', owner: 'bendik', status: 'now' },
+    { id: 't4', title: 'Pillar: “The 3C model in 12 minutes”', track: 'content', owner: 'josh', status: 'doing' },
+    { id: 't5', title: 'Retarget campaign to webinar replay', track: 'ads', owner: 'bendik', status: 'doing' },
+    { id: 't6', title: 'Book 3 partner webinars for October', track: 'webinar', owner: 'josh', status: 'doing' },
+    { id: 't7', title: 'Editor hire — final trial edits', track: 'team', owner: 'josh', status: 'review' },
+    { id: 't8', title: 'Attribution: every booked call tagged to its source', track: 'systems', owner: 'bendik', status: 'review' },
+    { id: 't9', title: 'Weekly scorecard automated', track: 'systems', owner: 'bendik', status: 'done' }
   ],
   log: [],
   reviewedTs: 0
@@ -294,37 +306,192 @@ function renderHero() {
 }
 
 /* ── Scale ──────────────────────────────────────────────────── */
-function renderGrowth() {
-  const g = state.growth;
-  const rev = Math.round(g.leads * (g.close / 100) * g.price);
-  const host = $('#growthCalc');
+const pct = (x) => x / 100;
+const money = (n) => '$' + Math.round(n).toLocaleString();
+
+/* The whole engine: five numbers in, one revenue number out. */
+function funnel(m, rates, leads) {
+  const booked = leads * pct(rates.book);
+  const held = booked * pct(rates.show);
+  const sales = held * pct(rates.close);
+  return { leads, booked, held, sales, cash: sales * rates.price };
+}
+
+function modelState() {
+  const m = state.model;
+  const now = funnel(m, m.now, m.now.leads);
+  const salesNeeded = m.target / m.bench.price;
+  const perLead = pct(m.bench.book) * pct(m.bench.show) * pct(m.bench.close);
+  const leadsNeeded = salesNeeded / perLead;
+  const need = funnel(m, m.bench, leadsNeeded);
+  const levers = [
+    { key: 'book',  label: 'Booking rate', ratio: m.now.book / m.bench.book },
+    { key: 'show',  label: 'Show rate',    ratio: m.now.show / m.bench.show },
+    { key: 'close', label: 'Close rate',   ratio: m.now.close / m.bench.close },
+    { key: 'leads', label: 'Lead volume',  ratio: m.now.leads / leadsNeeded }
+  ].sort((a, b) => a.ratio - b.ratio);
+  return { now, need, salesNeeded, leadsNeeded, constraint: levers[0], levers };
+}
+
+function renderTarget() {
+  const m = state.model, r = modelState();
+  const done = Math.min(100, (r.now.cash / m.target) * 100);
+  const host = $('#targetCard');
   host.innerHTML = `
-    <div class="calc-row">
-      <div class="calc-cell"><span>Leads / month</span><b id="c-leads"></b></div>
-      <div class="calc-op">×</div>
-      <div class="calc-cell"><span>Close rate</span><b id="c-close"></b></div>
-      <div class="calc-op">×</div>
-      <div class="calc-cell"><span>Price</span><b id="c-price"></b></div>
-      <div class="calc-op">=</div>
-      <div class="calc-cell out"><span>Monthly revenue</span><b>$${rev.toLocaleString()}</b></div>
+    <div class="target-top">
+      <div>
+        <p class="eyebrow">Monthly target</p>
+        <div class="target-num"><b class="t-target"></b><span class="target-now">run rate ${money(r.now.cash)}</span></div>
+      </div>
+      <div class="target-gap">
+        <b>${money(Math.max(0, m.target - r.now.cash))}</b><span>gap to close</span>
+      </div>
     </div>
-    <p class="card-note">Hormozi: you only have three numbers. Double the weakest one before adding anything new.</p>`;
-  const bind = (sel, key, fmt) => {
+    <div class="bar big"><i data-w="${Math.round(done)}" style="background:var(--green)"></i></div>
+    <div class="meta-row"><span>${Math.round(done)}% of $150k</span><span>${r.salesNeeded.toFixed(1)} sales a month at ${money(m.bench.price)}</span></div>
+    <div class="constraint-call">
+      <span class="pill-flag">Constraint</span>
+      <b>${r.constraint.label}</b>
+      <span>at ${Math.round(r.constraint.ratio * 100)}% of what $150k needs — fix this before anything else</span>
+    </div>`;
+  const t = host.querySelector('.t-target');
+  t.textContent = money(m.target);
+  editableNumber(t, () => m.target, (v, from) => {
+    change('changed the target', 'Monthly target', money(from), money(v), () => { state.model.target = v; });
+  });
+}
+
+const LADDER_ROWS = [
+  ['leads',  'Leads',            'people who enter the world',        null],
+  ['booked', 'Calls booked',     'lead → booked',                     'book'],
+  ['held',   'Calls held',       'booked → showed',                   'show'],
+  ['sales',  'Sales',            'held → closed',                     'close'],
+  ['cash',   'Cash collected',   'sales × price',                     'price']
+];
+
+function renderLadder() {
+  const m = state.model, r = modelState();
+  const host = $('#ladderTable');
+  const fmt = (k, v) => k === 'cash' ? money(v) : Math.round(v).toLocaleString();
+  host.innerHTML = ['Stage', 'Rate now', 'Today', 'Needed for $150k', 'Rate needed']
+    .map(h => `<div class="th">${h}</div>`).join('');
+  LADDER_ROWS.forEach(([key, label, sub, rate]) => {
+    const rowNow = rate ? (rate === 'price' ? money(m.now.price) : m.now[rate] + '%') : '—';
+    const rowNeed = rate ? (rate === 'price' ? money(m.bench.price) : m.bench[rate] + '%') : '—';
+    host.insertAdjacentHTML('beforeend', `
+      <div class="lt-stage"><b>${label}</b><span>${sub}</span></div>
+      <div class="lt-now" data-rate="${rate || ''}">${rowNow}</div>
+      <div class="lt-val">${fmt(key, r.now[key])}</div>
+      <div class="lt-val need">${fmt(key, r.need[key])}</div>
+      <div class="lt-bench" data-rate="${rate || ''}">${rowNeed}</div>`);
+  });
+  host.querySelectorAll('[data-rate]').forEach(cell => {
+    const rate = cell.dataset.rate;
+    if (!rate) return;
+    const bench = cell.classList.contains('lt-bench');
+    const bag = bench ? state.model.bench : state.model.now;
+    editableNumber(cell, () => bag[rate], (v, from) => {
+      change('updated the model', `${bench ? 'target' : 'current'} ${rate}`, from, v, () => {
+        (bench ? state.model.bench : state.model.now)[rate] = v;
+        if (rate === 'price' && bench) state.model.bench.price = v;
+      });
+    });
+  });
+  const mult = (r.leadsNeeded / m.now.leads);
+  $('#ladderNote').textContent =
+    `At the target rates you need ${Math.round(r.leadsNeeded).toLocaleString()} leads a month — ${mult.toFixed(1)}× today. ` +
+    `Conversion first: fixing close rate alone is worth ${money(funnel(m, { ...m.now, close: m.bench.close }, m.now.leads).cash - r.now.cash)}/mo without one extra lead.`;
+}
+
+function renderDaily() {
+  const m = state.model, r = modelState();
+  const d = (n) => Math.max(1, Math.round(n / m.workDays));
+  const plan = {
+    josh: { title: 'Josh — content & sales', color: PEOPLE.josh.color, rows: [
+      ['4', 'reels filmed', 'non-negotiable, editor ships them'],
+      ['100', 'outreach touches', 'Rule of 100 — DMs, comments, replies'],
+      [String(d(r.need.held)), 'calls held', `${d(r.need.booked)} booked to hold that many`],
+      ['1', 'webinar a week', 'he presents, every Thursday'],
+      ['20', 'call minutes reviewed', 'score yesterday against the rubric']
+    ]},
+    bendik: { title: 'Bendik — systems & funnels', color: PEOPLE.bendik.color, rows: [
+      ['$' + Math.max(100, Math.round((r.need.leads * 6) / m.workDays)), 'ad spend / day', 'at ~$6 a lead, held to CAC'],
+      ['1', 'funnel fix shipped', 'one measurable improvement, daily'],
+      ['0', 'sales calls', 'his calendar stays clear of them'],
+      ['100%', 'of bookings attributed', 'no lead lands without a source tag'],
+      ['1', 'automation removed from us', 'weekly: one manual step deleted']
+    ]}
+  };
+  const host = $('#dailyEngine');
+  host.innerHTML = '';
+  Object.entries(plan).forEach(([who, p]) => {
+    const card = el('article', 'card');
+    card.innerHTML = `
+      <div class="reel-head">
+        <span class="avatar" style="background:${p.color}">${PEOPLE[who].initials}</span>
+        <div><div class="reel-name">${p.title}</div><div class="reel-sub">every working day</div></div>
+      </div>
+      <ul class="daily-list">${p.rows.map(([n, l, note]) =>
+        `<li><b>${n}</b><span class="dl-label">${l}</span><span class="dl-note">${note}</span></li>`).join('')}</ul>`;
+    host.appendChild(card);
+  });
+}
+
+function renderEcon() {
+  const e = state.econ, r = modelState();
+  const ratio = e.ltgp / e.cac;
+  const ok = ratio >= 3;
+  const cashOk = e.cash30 > e.cac;
+  const host = $('#econCard');
+  host.innerHTML = `
+    <div class="econ-row">
+      <div class="econ-cell"><span>CAC</span><b class="e-cac"></b></div>
+      <div class="econ-cell"><span>LTGP</span><b class="e-ltgp"></b></div>
+      <div class="econ-cell ${ok ? 'good' : 'bad'}"><span>LTGP : CAC</span><b>${ratio.toFixed(1)} : 1</b></div>
+      <div class="econ-cell ${cashOk ? 'good' : 'bad'}"><span>Cash in 30 days</span><b class="e-cash"></b></div>
+    </div>
+    <p class="card-note">${ok ? 'Above 3:1 — the model funds itself.' : 'Under 3:1 — do not scale spend yet.'}
+      ${cashOk ? `First payment of ${money(e.cash30)} covers CAC of ${money(e.cac)}, so every sale funds the next one — client-financed acquisition.`
+               : 'First payment does not cover CAC — you are funding growth out of pocket. Raise the deposit or cut CAC.'}
+      At ${money(e.cac)} CAC, ${r.need.sales.toFixed(1)} customers a month costs about ${money(r.need.sales * e.cac)} to acquire against ${money(state.model.target)} collected.</p>`;
+  const bind = (sel, key) => {
     const n = host.querySelector(sel);
-    n.textContent = fmt(g[key]);
-    editableNumber(n, () => g[key], (v, from) => {
-      change('updated growth math', key, fmt(from), fmt(v), () => { state.growth[key] = v; });
+    n.textContent = money(e[key]);
+    editableNumber(n, () => e[key], (v, from) => {
+      change('updated economics', key.toUpperCase(), money(from), money(v), () => { state.econ[key] = v; });
     });
   };
-  bind('#c-leads', 'leads', v => v.toLocaleString());
-  bind('#c-close', 'close', v => v + '%');
-  bind('#c-price', 'price', v => '$' + v.toLocaleString());
+  bind('.e-cac', 'cac'); bind('.e-ltgp', 'ltgp'); bind('.e-cash', 'cash30');
+}
+
+const LEVERS = [
+  ['More customers', 'Lead volume × booking rate', 'Bendik — paid, funnels, attribution', 'bendik'],
+  ['Higher price', 'Raise price or add a premium tier', 'Josh — hold price on the call, no discounting', 'josh'],
+  ['Buy more often', 'A second offer for people who already bought', 'Both — deal-support retainer after the programme', 'bendik'],
+  ['Keep them longer', 'Retention is revenue you already earned', 'Josh — onboarding call in the first 48 hours', 'josh']
+];
+
+function renderLevers() {
+  const host = $('#leverGrid');
+  host.innerHTML = '';
+  LEVERS.forEach(([title, what, who, id]) => {
+    const card = el('article', 'card lever');
+    card.innerHTML = `
+      <div class="lead-top"><div class="lead-name">${title}</div>
+        <span class="avatar sm" style="background:${PEOPLE[id].color}" title="${PEOPLE[id].name}">${PEOPLE[id].initials}</span></div>
+      <p class="lead-note">${what}</p>
+      <p class="lever-who">${who}</p>`;
+    host.appendChild(card);
+  });
 }
 
 function renderLeadSources() {
   const host = $('#leadSources');
   host.innerHTML = '';
+  const weeklyLeads = modelState().leadsNeeded / 4.3;
+  const share = { warm: 0.15, content: 0.35, cold: 0.2, paid: 0.3 };
   state.leadSources.forEach(s => {
+    s.target = Math.round(weeklyLeads * (share[s.id] || 0.25));
     const pct = Math.min(100, Math.round((s.done / s.target) * 100));
     const card = el('article', 'card lead');
     card.innerHTML = `
@@ -333,7 +500,7 @@ function renderLeadSources() {
         <span class="avatar sm" style="background:${PEOPLE[s.owner].color}" title="${PEOPLE[s.owner].name}">${PEOPLE[s.owner].initials}</span>
       </div>
       <p class="lead-note">${esc(s.note)}</p>
-      <div class="lead-count"><b class="lead-done"></b><span>/ ${s.target} this week</span></div>
+      <div class="lead-count"><b class="lead-done"></b><span>/ ${s.target} leads this week</span></div>
       <div class="bar"><i data-w="${pct}" style="background:${pct >= 100 ? 'var(--green)' : 'var(--accent)'}"></i></div>`;
     const n = card.querySelector('.lead-done');
     n.textContent = s.done;
@@ -408,13 +575,13 @@ const LANES = [
   { id: 'webinar', label: 'Webinar',        color: 'var(--accent)' }
 ];
 const SCHEDULE = {
-  reels:   { Mon: ['8 reels out', 'B+J'], Tue: ['8 reels out', 'B+J'], Wed: ['8 reels out', 'B+J'],
-             Thu: ['8 reels out', 'B+J'], Fri: ['8 reels out', 'B+J'], Sat: ['4 reels', 'B'], Sun: ['4 reels', 'J'] },
+  reels:   { Mon: ['8 reels out', 'Josh + editor'], Tue: ['8 reels out', 'Josh + editor'], Wed: ['8 reels out', 'Josh + editor'],
+             Thu: ['8 reels out', 'Josh + editor'], Fri: ['8 reels out', 'Josh + editor'], Sat: ['4 reels', 'J'], Sun: ['Batch film', 'J'] },
   pillar:  { Tue: ['Record pillar', '10:00'], Wed: ['Publish long-form', '16:00'] },
   x:       { Mon: ['Thread', '08:00'], Wed: ['Thread', '08:00'], Fri: ['Carousel', '09:00'] },
   email:   { Mon: ['Value email', '07:00'], Wed: ['Webinar invite', '07:00'], Fri: ['Replay + deadline', '07:00'] },
-  ads:     { Mon: ['New creative live', '10:00'], Thu: ['Kill / scale review', '09:00'] },
-  webinar: { Thu: ['LIVE 18:00', 'Bendik'] }
+  ads:     { Mon: ['New creative live', '10:00'], Thu: ['Kill / scale — Bendik', '09:00'] },
+  webinar: { Thu: ['LIVE 18:00', 'Josh presents'] }
 };
 const LADDER = [
   ['1 pillar', 'One 12-minute recorded teaching — the week’s single idea'],
@@ -505,14 +672,14 @@ function renderContentLists() {
 /* ── Webinar ────────────────────────────────────────────────── */
 const FUNNEL_ROWS = [['registered', 'Registered'], ['showed', 'Showed up'], ['stayed', 'Stayed to offer'], ['bought', 'Bought']];
 const PROMO = [
-  ['T−14', 'Announce + open registration on every channel', 'Bendik'],
+  ['T−14', 'Registration page live, tracking verified', 'Bendik'],
   ['T−10', 'Ads live: broad + retarget 75% viewers', 'Bendik'],
   ['T−7',  'Partner sends invite to their list', 'Josh'],
-  ['T−3',  'Reel sequence: 3 hooks pointing at the session', 'Bendik'],
-  ['T−1',  'Email 2 + personal DMs to warm list', 'Josh'],
-  ['T−2h', 'SMS + story reminder — “starting in 2 hours”', 'Bendik'],
-  ['T+1',  'Replay email, 48h deadline on the offer', 'Bendik'],
-  ['T+3',  'Best 90 seconds becomes 4 reels and an ad', 'Bendik']
+  ['T−3',  'Reel sequence: 3 hooks pointing at the session', 'Josh'],
+  ['T−1',  'Email 2 + personal DMs to the warm list', 'Josh'],
+  ['T−2h', 'Automated SMS + story reminder', 'Bendik'],
+  ['T+1',  'Replay email, 48h deadline, no-shows into a call sequence', 'Bendik'],
+  ['T+3',  'Best 90 seconds becomes 4 reels and an ad', 'Josh']
 ];
 const RUNSHEET = [
   ['0–5',   'Open + promise', 'Name the outcome and the time it takes. No credentials yet.'],
@@ -810,7 +977,7 @@ function render() {
   $('#whoName').textContent = PEOPLE[state.me].name;
 
   renderHero(); renderReelToday(); renderOverviewKpis(); renderOwnerLoad();
-  renderGrowth(); renderLeadSources(); renderValueEq(); renderChecklist($('#operatorList'), state.operator);
+  renderTarget(); renderLadder(); renderDaily(); renderEcon(); renderLevers(); renderLeadSources(); renderValueEq(); renderChecklist($('#operatorList'), state.operator);
   renderReelGrid(); renderCalendar(); renderContentLists();
   renderWebinar(); renderTeam(); renderBoard(); renderFeed();
   requestAnimationFrame(animateBars);
