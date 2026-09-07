@@ -3,37 +3,39 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Studio — Project Management</title>
-<meta name="description" content="Apple-style project management for social content teams and hiring." />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+<title>G&amp;L Ops — Bendik &amp; Josh</title>
+<meta name="description" content="Operating system for content, webinars, team and scale. Hormozi + Haynes frameworks, every change logged locally." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
 
 <header class="topbar">
   <div class="brand">
     <div class="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5A3.5 3.5 0 0 1 7.5 4h9A3.5 3.5 0 0 1 20 7.5v9a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5v-9Z" stroke="currentColor" stroke-width="1.6"/><path d="m10 9.2 5 2.8-5 2.8V9.2Z" fill="currentColor"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 21 8v8l-9 5-9-5V8l9-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 8.5 16 11v4l-4 2.2L8 15v-4l4-2.5Z" fill="currentColor"/></svg>
     </div>
     <div>
-      <h1>Studio</h1>
-      <p class="brand-sub">Content &amp; Hiring Operations</p>
+      <h1>G&amp;L Ops</h1>
+      <p class="brand-sub">Bendik &amp; Josh · operating system</p>
     </div>
   </div>
 
   <nav class="segmented" role="tablist" aria-label="Sections">
     <button class="seg active" role="tab" data-view="overview">Overview</button>
-    <button class="seg" role="tab" data-view="kpis">KPIs</button>
-    <button class="seg" role="tab" data-view="schedule">Schedule</button>
-    <button class="seg" role="tab" data-view="ads">Ads</button>
+    <button class="seg" role="tab" data-view="scale">Scale</button>
+    <button class="seg" role="tab" data-view="content">Content</button>
     <button class="seg" role="tab" data-view="webinar">Webinar</button>
-    <button class="seg" role="tab" data-view="angles">Angles</button>
+    <button class="seg" role="tab" data-view="team">Team</button>
     <button class="seg" role="tab" data-view="board">Board</button>
-    <button class="seg" role="tab" data-view="hiring">Hiring</button>
+    <button class="seg" role="tab" data-view="activity">Activity<span class="nav-badge" id="navBadge" hidden></span></button>
   </nav>
 
   <div class="topbar-actions">
+    <button class="who" id="whoBtn" title="Switch who is making changes">
+      <span class="avatar" id="whoAvatar">B</span>
+      <span id="whoName">Bendik</span>
+    </button>
     <button class="icon-btn" id="themeToggle" title="Toggle appearance" aria-label="Toggle appearance">
       <svg class="ico-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4 7 7M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
       <svg class="ico-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
@@ -46,13 +48,14 @@
 </header>
 
 <main>
-  <!-- ───────────────── OVERVIEW ───────────────── -->
+  <!-- ═══ OVERVIEW ═══ -->
   <section class="view active" id="view-overview">
     <div class="hero">
       <div>
         <p class="eyebrow" id="todayLabel"></p>
-        <h2 class="hero-title">Good work is shipping.</h2>
-        <p class="hero-sub">Three channels, one pipeline, two roles to fill.</p>
+        <h2 class="hero-title">This week’s constraint</h2>
+        <p class="constraint" id="constraintText" contenteditable="true" spellcheck="false"></p>
+        <p class="hero-note">Hormozi: one constraint at a time. Everything below either relieves it or waits.</p>
       </div>
       <div class="hero-stat">
         <div class="ring-wrap">
@@ -60,90 +63,75 @@
             <circle class="ring-track" cx="60" cy="60" r="52" />
             <circle class="ring-fill" id="heroRing" cx="60" cy="60" r="52" />
           </svg>
-          <div class="ring-center">
-            <strong id="heroPct">0%</strong>
-            <span>quarter goal</span>
-          </div>
+          <div class="ring-center"><strong id="heroPct">0%</strong><span>tasks done</span></div>
         </div>
       </div>
     </div>
 
-    <h3 class="section-title">Channels</h3>
-    <div class="grid channels" id="channelGrid"></div>
+    <h3 class="section-title">Today — reels quota <span class="hint">4 per person, per day</span></h3>
+    <div class="grid two" id="reelToday"></div>
 
-    <div class="two-col">
-      <div class="card chart-card">
-        <div class="card-head">
-          <h3>Posts published</h3>
-          <span class="chip" id="chartTotal"></span>
-        </div>
-        <div class="chart" id="chart"></div>
-        <div class="legend">
-          <span><i style="background:var(--yt)"></i>YouTube</span>
-          <span><i style="background:var(--ig)"></i>Instagram</span>
-          <span><i style="background:var(--ink-3)"></i>X</span>
-        </div>
-      </div>
+    <h3 class="section-title" style="margin-top:30px">This week</h3>
+    <div class="grid kpi-grid" id="overviewKpis"></div>
 
+    <div class="two-col" style="margin-top:22px">
       <div class="card">
-        <div class="card-head"><h3>Pipeline</h3><span class="chip" id="pipeTotal"></span></div>
-        <ul class="pipeline" id="pipelineList"></ul>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ───────────────── KPIs ───────────────── -->
-  <section class="view" id="view-kpis">
-    <h2 class="hero-title small">KPIs</h2>
-    <p class="hero-sub">Eight weeks of trend against target. Green means pacing ahead.</p>
-    <div id="kpiGroups"></div>
-  </section>
-
-  <!-- ───────────────── SCHEDULE ───────────────── -->
-  <section class="view" id="view-schedule">
-    <div class="board-head">
-      <div>
-        <h2 class="hero-title small">Weekly schedule</h2>
-        <p class="hero-sub">The cadence that runs whether or not anyone remembers it.</p>
-      </div>
-      <span class="chip" id="slotCount"></span>
-    </div>
-    <div class="card cal-card">
-      <div class="calendar" id="calendar"></div>
-    </div>
-    <div class="two-col" style="margin-top:18px">
-      <div class="card">
-        <div class="card-head"><h3>Stories — daily rhythm</h3><span class="chip">3 / day</span></div>
-        <ul class="story-list" id="storyList"></ul>
+        <div class="card-head"><h3>Owner load</h3><span class="chip">open tasks</span></div>
+        <ul class="pipeline" id="ownerLoad"></ul>
       </div>
       <div class="card">
-        <div class="card-head"><h3>Weekly operating rhythm</h3></div>
-        <ul class="ritual-list" id="ritualList"></ul>
+        <div class="card-head"><h3>Latest changes</h3><button class="link-btn" data-goto="activity">See all</button></div>
+        <ul class="feed" id="miniFeed"></ul>
       </div>
     </div>
   </section>
 
-  <!-- ───────────────── ADS ───────────────── -->
-  <section class="view" id="view-ads">
-    <div class="board-head">
-      <div>
-        <h2 class="hero-title small">Ads</h2>
-        <p class="hero-sub">Spend, pacing and unit economics per campaign.</p>
-      </div>
-      <div class="ads-summary" id="adsSummary"></div>
-    </div>
-    <div class="grid campaigns" id="campaignGrid"></div>
-    <h3 class="section-title" style="margin-top:34px">Launch checklist</h3>
-    <div class="card"><ul class="check-list" id="launchList"></ul></div>
+  <!-- ═══ SCALE ═══ -->
+  <section class="view" id="view-scale">
+    <h2 class="hero-title small">Scale</h2>
+    <p class="hero-sub">Hormozi: four lead sources, one offer, one constraint. Haynes: operate, don’t firefight.</p>
+
+    <h3 class="section-title" style="margin-top:26px">Growth math</h3>
+    <div class="card calc" id="growthCalc"></div>
+
+    <h3 class="section-title" style="margin-top:30px">The four lead sources <span class="hint">$100M Leads</span></h3>
+    <div class="grid four" id="leadSources"></div>
+
+    <h3 class="section-title" style="margin-top:30px">Value equation <span class="hint">score the offer 1–10</span></h3>
+    <div class="card" id="valueEq"></div>
+
+    <h3 class="section-title" style="margin-top:30px">Operator audit <span class="hint">Haynes — firefighting → operating</span></h3>
+    <div class="card"><ul class="check-list" id="operatorList"></ul></div>
   </section>
 
-  <!-- ───────────────── WEBINAR ───────────────── -->
+  <!-- ═══ CONTENT ═══ -->
+  <section class="view" id="view-content">
+    <h2 class="hero-title small">Content</h2>
+    <p class="hero-sub">One pillar a week, cut into everything else. Reels are the volume engine: 4 a day each.</p>
+
+    <h3 class="section-title" style="margin-top:26px">Reels — 14 day log</h3>
+    <div class="card"><div class="reel-grid" id="reelGrid"></div></div>
+
+    <h3 class="section-title" style="margin-top:30px">Weekly schedule</h3>
+    <div class="card cal-card"><div class="calendar" id="calendar"></div></div>
+
+    <div class="two-col" style="margin-top:22px">
+      <div class="card">
+        <div class="card-head"><h3>Repurpose ladder</h3><span class="chip">1 pillar → 28 assets</span></div>
+        <ul class="ladder" id="ladder"></ul>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Angles to push</h3></div>
+        <ul class="angle-list" id="angleList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WEBINAR ═══ -->
   <section class="view" id="view-webinar">
     <div class="card webinar-hero">
-      <div class="glow" style="background:linear-gradient(145deg,#0a84ff,#bf5af2)"></div>
       <div>
-        <p class="eyebrow">Live every Thursday · 18:00</p>
+        <p class="eyebrow">Live every Thursday · 18:00 CET</p>
         <h2 class="hero-title small" id="webinarTitle"></h2>
         <p class="hero-sub" id="webinarSub"></p>
       </div>
@@ -152,8 +140,9 @@
 
     <div class="two-col" style="margin-top:18px">
       <div class="card">
-        <div class="card-head"><h3>Registration funnel</h3><span class="chip" id="webinarConv"></span></div>
+        <div class="card-head"><h3>Funnel</h3><span class="chip" id="webinarConv"></span></div>
         <div class="funnel" id="webinarFunnel"></div>
+        <p class="card-note">Click a number to update it. Every edit is logged.</p>
       </div>
       <div class="card">
         <div class="card-head"><h3>Promo sequence</h3></div>
@@ -161,64 +150,89 @@
       </div>
     </div>
 
-    <h3 class="section-title" style="margin-top:34px">Run of show — 60 minutes</h3>
+    <h3 class="section-title" style="margin-top:30px">Run of show <span class="hint">Hormozi $100M Leads structure</span></h3>
     <div class="card"><ol class="runsheet" id="runsheet"></ol></div>
+
+    <h3 class="section-title" style="margin-top:30px">Partner webinars <span class="hint">Haynes — trust transfer, not cold outreach</span></h3>
+    <div class="card"><div class="partner-table" id="partnerTable"></div></div>
   </section>
 
-  <!-- ───────────────── ANGLES ───────────────── -->
-  <section class="view" id="view-angles">
-    <h2 class="hero-title small">Angles &amp; intel</h2>
-    <p class="hero-sub">Content angles to push, and the data stack that finds them.</p>
-    <h3 class="section-title" style="margin-top:26px">Angles to push</h3>
-    <div class="grid angles" id="angleGrid"></div>
-    <h3 class="section-title" style="margin-top:34px">Instagram data sources</h3>
-    <div class="card"><div class="api-table" id="apiTable"></div></div>
+  <!-- ═══ TEAM ═══ -->
+  <section class="view" id="view-team">
+    <h2 class="hero-title small">Team</h2>
+    <p class="hero-sub">Two of us today. Every hire buys back a specific block of hours.</p>
+
+    <h3 class="section-title" style="margin-top:26px">Us</h3>
+    <div class="grid two" id="usGrid"></div>
+
+    <h3 class="section-title" style="margin-top:30px">Open roles</h3>
+    <div class="grid roles" id="roleGrid"></div>
+
+    <h3 class="section-title" style="margin-top:30px">Delegation ladder <span class="hint">what leaves our hands next</span></h3>
+    <div class="card"><ul class="check-list" id="delegationList"></ul></div>
   </section>
 
-  <!-- ───────────────── BOARD ───────────────── -->
+  <!-- ═══ BOARD ═══ -->
   <section class="view" id="view-board">
     <div class="board-head">
       <h2 class="hero-title small">Board</h2>
       <div class="filters" id="filters">
         <button class="chip-btn active" data-filter="all">All</button>
-        <button class="chip-btn" data-filter="youtube">YouTube</button>
-        <button class="chip-btn" data-filter="instagram">Instagram</button>
-        <button class="chip-btn" data-filter="x">X</button>
-        <button class="chip-btn" data-filter="hiring">Hiring</button>
+        <button class="chip-btn" data-filter="bendik">Bendik</button>
+        <button class="chip-btn" data-filter="josh">Josh</button>
+        <button class="chip-btn" data-filter="content">Content</button>
+        <button class="chip-btn" data-filter="webinar">Webinar</button>
+        <button class="chip-btn" data-filter="ads">Ads</button>
+        <button class="chip-btn" data-filter="team">Team</button>
       </div>
     </div>
     <div class="board" id="board"></div>
   </section>
 
-  <!-- ───────────────── HIRING ───────────────── -->
-  <section class="view" id="view-hiring">
-    <h2 class="hero-title small">Hiring</h2>
-    <p class="hero-sub">Two open roles. Move candidates through the funnel.</p>
-    <div class="grid roles" id="roleGrid"></div>
+  <!-- ═══ ACTIVITY ═══ -->
+  <section class="view" id="view-activity">
+    <div class="board-head">
+      <div>
+        <h2 class="hero-title small">Activity</h2>
+        <p class="hero-sub">Every change, who made it, and what it was before. Stored on this device only.</p>
+      </div>
+      <div class="act-actions">
+        <button class="pill-btn" id="markReviewed">Mark all reviewed</button>
+        <button class="pill-btn" id="exportLog">Export log</button>
+        <button class="pill-btn" id="undoLast">Undo last</button>
+      </div>
+    </div>
+    <div class="filters" id="actFilters" style="margin-bottom:16px">
+      <button class="chip-btn active" data-actor="all">Everyone</button>
+      <button class="chip-btn" data-actor="bendik">Bendik</button>
+      <button class="chip-btn" data-actor="josh">Josh</button>
+    </div>
+    <div class="card"><ul class="feed full" id="feed"></ul></div>
   </section>
 </main>
 
-<!-- Task sheet -->
 <div class="sheet-scrim" id="scrim" hidden></div>
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="New task">
   <div class="sheet-grabber"></div>
   <h3>New task</h3>
-  <label>Title<input id="f-title" type="text" placeholder="Edit the Q4 launch teaser" /></label>
-  <label>Channel
-    <select id="f-channel">
-      <option value="youtube">YouTube</option>
-      <option value="instagram">Instagram</option>
-      <option value="x">X</option>
-      <option value="hiring">Hiring</option>
+  <label>Title<input id="f-title" type="text" placeholder="Book 3 partner webinars for October" /></label>
+  <label>Track
+    <select id="f-track">
+      <option value="content">Content</option>
+      <option value="webinar">Webinar</option>
+      <option value="ads">Ads</option>
+      <option value="team">Team</option>
     </select>
   </label>
-  <label>Owner<input id="f-owner" type="text" placeholder="Unassigned" /></label>
+  <label>Owner
+    <select id="f-owner"><option value="bendik">Bendik</option><option value="josh">Josh</option></select>
+  </label>
   <label>Status
     <select id="f-status">
-      <option value="ideas">Ideas</option>
-      <option value="production">In production</option>
+      <option value="now">This week</option>
+      <option value="doing">Doing</option>
       <option value="review">Review</option>
-      <option value="published">Published</option>
+      <option value="done">Done</option>
     </select>
   </label>
   <div class="sheet-actions">
@@ -227,7 +241,9 @@
   </div>
 </div>
 
-<footer class="foot">Data lives in your browser. <button class="link-btn" id="resetBtn">Reset demo data</button></footer>
+<footer class="foot">
+  <span id="footState"></span> · <button class="link-btn" id="resetBtn">Reset to seed data</button>
+</footer>
 
 <script src="app.js"></script>
 </body>
