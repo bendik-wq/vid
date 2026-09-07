@@ -52,6 +52,24 @@ above 3:1, and the first payment covering CAC inside 30 days so each sale funds 
 - **Webinar run of show** built on the $100M Leads structure: promise → why the usual route
   fails → teach → case study → transition → offer → Q&A that closes.
 
+**Nothing is pre-assigned.** Every task, lead source, checklist line, commitment and hiring
+slot starts unassigned. Click the dashed avatar to cycle it — Unassigned → Bendik → Josh →
+Unassigned — and the assignment lands in the log. The two profiles on Team are blank until you
+write them.
+
+## Calendar
+
+Recurring commitments you define yourself: what, which track, weekly / weekdays / daily, and a
+time. Each one shows its streak, its next occurrence, and the last eight times it was due —
+click a date to mark it done. They render into the week grid. A webinar is just one of these.
+
+## Topics
+
+A hook generator for reels, Shorts and YouTube, built entirely from the ICP cards below it —
+their pains, desires, objections and triggers. Edit any ICP line and the output changes; every
+edit is logged. Generate ten at a time, save the good ones, or send one straight to the board as
+a content task. No two ideas in a batch repeat a template.
+
 **Haynes**
 - **Operator audit** — the firefighting → operating checklist. Lead flow that does not depend on
   either of you posting manually; AI/automation pointed at a named bottleneck, not novelty.
@@ -85,7 +103,8 @@ device and Josh's device keep separate logs — export and paste if you want to 
 | Overview | Constraint, today's reel quota, six weekly KPIs, owner load, latest changes |
 | Scale | $150k model, reverse funnel, daily engine, unit economics, four lead sources, four growth levers, value equation, operator audit |
 | Content | 14-day reel log, weekly schedule, repurpose ladder, angles |
-| Webinar | Countdown, funnel, promo sequence, run of show, partner pipeline |
+| Calendar | Recurring commitments you create, each with a streak, plus the week they fall into |
+| Topics | Reel / Short / YouTube hook generator built from your ICPs |
 | Team | Us two, open roles with what each hire buys back, delegation ladder |
 | Board | This week / Doing / Review / Done, drag between columns, click an avatar to reassign |
 | Activity | The change log |
