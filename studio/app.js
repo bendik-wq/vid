@@ -128,7 +128,10 @@ try { state = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { state =
 if (!state.log) state = seed();
 
 let undoStack = [];
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+const save = (localOnly) => {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+  if (!localOnly && remote && !applyingRemote) Backend.pushState(sharedSlice(), state.me);
+};
 const $ = (s) => document.querySelector(s);
 const el = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
 const esc = (s) => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
@@ -143,9 +146,12 @@ function change(verb, target, from, to, fn) {
   if (undoStack.length > 25) undoStack.shift();
   const actor = state.me;
   fn();
-  state.log.unshift({ ts: Date.now(), who: actor, verb, target, from: from == null ? '' : String(from), to: to == null ? '' : String(to) });
+  const entry = { ts: Date.now(), who: actor, verb, target,
+                  from: from == null ? '' : String(from), to: to == null ? '' : String(to) };
+  state.log.unshift(entry);
   if (state.log.length > 400) state.log.pop();
   save();
+  if (remote && !applyingRemote) Backend.appendLog(entry);
   render();
 }
 
@@ -237,6 +243,8 @@ function setPosts(day, id, n) {
     state.posts[day] = state.posts[day] || {};
     state.posts[day][id] = n;
   });
+  if (remote) Backend.pushPost(day, id, n, unitOf(id));
+  if (remote) Backend.pushPost(day, id, n, unitOf(id));
 }
 
 function renderOutputToday() {
@@ -1274,6 +1282,119 @@ $('#resetBtn').addEventListener('click', () => {
   render();
 });
 
+/* ═══════════════════════════════════════════════════════════════
+   Backend: ops_state (board), post_log (output), activity_log (history)
+   ═══════════════════════════════════════════════════════════════ */
+
+const LOCAL_ONLY = ['me', 'reviewedTs', 'log', 'posts'];
+const sharedSlice = () => {
+  const out = {};
+  Object.keys(state).forEach(k => { if (!LOCAL_ONLY.includes(k)) out[k] = state[k]; });
+  return out;
+};
+
+let remote = false;          // true once signed in and loaded
+let applyingRemote = false;  // guard so incoming data does not echo back
+
+function syncChip(mode, detail) {
+  const chip = $('#sync');
+  if (!chip) return;
+  chip.dataset.mode = mode;
+  $('#syncText').textContent = detail;
+}
+
+Backend.onStatus = syncChip;
+
+Backend.onChange = async (what, row) => {
+  if (!row) return;
+  applyingRemote = true;
+  if (what === 'state' && row.data) {
+    Object.keys(row.data).forEach(k => { if (!LOCAL_ONLY.includes(k)) state[k] = row.data[k]; });
+  } else if (what === 'post') {
+    state.posts[row.day] = state.posts[row.day] || {};
+    state.posts[row.day][row.person] = row.count;
+  } else if (what === 'log') {
+    const entry = { ts: new Date(row.ts).getTime(), who: row.actor, verb: row.verb,
+                    target: row.target, from: row.from_val || '', to: row.to_val || '' };
+    if (!state.log.some(e => e.ts === entry.ts && e.who === entry.who && e.target === entry.target)) {
+      state.log.unshift(entry);
+      state.log.sort((a, b) => b.ts - a.ts);
+    }
+  }
+  applyingRemote = false;
+  save(true);
+  render();
+};
+
+async function goLive() {
+  const ok = await Backend.connect();
+  if (!ok) return;
+  try {
+    const data = await Backend.loadAll();
+    applyingRemote = true;
+    if (data.state) Object.keys(data.state).forEach(k => { if (!LOCAL_ONLY.includes(k)) state[k] = data.state[k]; });
+    state.posts = data.posts || {};
+    state.log = data.log || [];
+    applyingRemote = false;
+    remote = true;
+    if (!data.state) await Backend.pushState(sharedSlice(), state.me);  // first run seeds the table
+    save(true);
+    render();
+  } catch (e) {
+    Backend.setStatus('error', 'Load failed');
+  }
+}
+
+/* ── Connection sheet ───────────────────────────────────────── */
+const dbSheet = $('#dbSheet');
+const showErr = (msg) => { const e = $('#dbError'); e.hidden = !msg; e.textContent = msg || ''; };
+
+function openDb() {
+  const cfg = Backend.config();
+  const configured = !!cfg;
+  $('#dbStep1').hidden = configured;
+  $('#dbStep2').hidden = !configured;
+  $('#dbForget').hidden = !configured;
+  $('#dbTitle').textContent = configured ? (Backend.status === 'live' ? 'Database' : 'Sign in') : 'Connect the database';
+  $('#dbNext').textContent = configured ? 'Send link' : 'Save';
+  $('#dbNext').hidden = Backend.status === 'live';
+  $('#dbSent').hidden = true;
+  showErr('');
+  if (cfg) { $('#db-url').value = cfg.url; }
+  dbSheet.hidden = false;
+  scrim.hidden = false;
+}
+const closeDb = () => { dbSheet.hidden = true; scrim.hidden = true; };
+
+$('#sync').addEventListener('click', openDb);
+$('#dbCancel').addEventListener('click', closeDb);
+$('#dbForget').addEventListener('click', async () => {
+  await Backend.signOut().catch(() => {});
+  Backend.clearConfig();
+  remote = false;
+  syncChip('local', 'This device only');
+  closeDb();
+});
+$('#dbNext').addEventListener('click', async () => {
+  showErr('');
+  if (!Backend.config()) {
+    const url = $('#db-url').value.trim().replace(/\/$/, '');
+    const key = $('#db-key').value.trim();
+    if (!url || !key) { showErr('Both fields are needed.'); return; }
+    Backend.saveConfig(url, key);
+    openDb();
+    return;
+  }
+  const email = $('#db-email').value.trim();
+  if (!email) { showErr('Enter your email.'); return; }
+  try {
+    await Backend.signIn(email);
+    $('#dbSent').hidden = false;
+  } catch (e) {
+    showErr(e.message || 'Could not send the link.');
+  }
+});
+
 /* ── Render ─────────────────────────────────────────────────── */
 function render() {
   $('#whoAvatar').textContent = PEOPLE[state.me].initials;
@@ -1287,3 +1408,4 @@ function render() {
   requestAnimationFrame(animateBars);
 }
 render();
+goLive();
