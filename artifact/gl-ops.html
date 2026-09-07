@@ -1126,7 +1126,10 @@ async function connect() {
     if (!snap.exists) { setSync('live', 'Shared · empty'); return; }
     const incoming = snap.data();
     if (snap.metadata.hasPendingWrites) return;
-    Object.keys(incoming).forEach(k => { state[k] = incoming[k]; });
+    Object.keys(incoming).forEach(k => {
+      if (k === 'log' || k === 'reviewedTs' || LOCAL_ONLY.includes(k)) return;
+      state[k] = incoming[k];
+    });
     mergeLogs();
     save(true);
     render();
