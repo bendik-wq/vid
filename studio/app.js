@@ -3,11 +3,28 @@
    + Haynes (operator audit, partner webinars) frameworks.
    Every mutation is written to a local, device-only change log. */
 
-const KEY = 'gl.ops.v2';
+const KEY = 'gl.ops.v3';
 const PEOPLE = {
   bendik: { name: 'Bendik', initials: 'B', color: 'var(--accent)' },
   josh:   { name: 'Josh',   initials: 'J', color: 'var(--purple)' }
 };
+const NOBODY = { name: 'Unassigned', initials: '–', color: 'var(--ink-3)' };
+const who = (id) => PEOPLE[id] || NOBODY;
+const nextOwner = (id) => (id === 'bendik' ? 'josh' : id === 'josh' ? null : 'bendik');
+
+/* One owner chip, one behaviour: click to cycle, always logged. */
+function ownerChip(current, label, commit) {
+  const chip = el('span', 'avatar sm' + (current ? '' : ' none'));
+  chip.style.background = who(current).color;
+  chip.textContent = who(current).initials;
+  chip.title = who(current).name + ' — click to reassign';
+  chip.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const to = nextOwner(current);
+    change('assigned', label, who(current).name, who(to).name, () => commit(to));
+  });
+  return chip;
+}
 const REEL_QUOTA = 4;
 
 /* ── Seed ───────────────────────────────────────────────────── */
@@ -22,20 +39,20 @@ const seed = () => ({
   },
   econ: { cac: 850, ltgp: 6200, cash30: 4750 },
   leadSources: [
-    { id: 'warm',    label: 'Warm outreach', note: 'Old clients, LinkedIn 1st degree, past webinar no-shows', owner: 'josh',   target: 100, done: 14 },
-    { id: 'content', label: 'Free content',  note: 'Reels, threads, long-form — 4 reels a day, Josh on camera', owner: 'josh',   target: 56,  done: 38 },
-    { id: 'cold',    label: 'Cold outreach', note: 'Owner lists, 55–70, EBITDA £300k+ — sequences Bendik built', owner: 'josh',   target: 250, done: 24 },
-    { id: 'paid',    label: 'Paid ads',      note: 'Meta + YouTube to the webinar funnel',                       owner: 'bendik', target: 120, done: 45 }
+    { id: 'warm',    label: 'Warm outreach', note: 'Old clients, LinkedIn 1st degree, past no-shows', owner: null,   target: 100, done: 14 },
+    { id: 'content', label: 'Free content',  note: 'Reels, threads, long-form — 4 reels a day', owner: null,   target: 56,  done: 38 },
+    { id: 'cold',    label: 'Cold outreach', note: 'Owner lists, 55–70, EBITDA £300k+', owner: null,   target: 250, done: 24 },
+    { id: 'paid',    label: 'Paid ads',      note: 'Meta + YouTube to the funnel',                       owner: null, target: 120, done: 45 }
   ],
   valueEq: { dream: 9, likelihood: 7, time: 5, effort: 6 },
   operator: [
-    { t: 'Every recurring task has a written SOP, not a person', done: true,  who: 'bendik' },
-    { t: 'Weekly scorecard reviewed Friday — numbers before opinions', done: true, who: 'bendik' },
-    { t: 'One dashboard is the source of truth (this one)', done: true, who: 'bendik' },
-    { t: 'CRM fires the booking, reminder and no-show sequences without us', done: false, who: 'bendik' },
-    { t: 'Call recordings scored against a rubric every week', done: false, who: 'josh' },
-    { t: 'Bendik is not in any sales call — Josh owns the whole close', done: false, who: 'josh' },
-    { t: 'Automation maps to a named bottleneck, not novelty', done: false, who: 'bendik' }
+    { t: 'Every recurring task has a written SOP, not a person', done: false, who: null },
+    { t: 'Weekly scorecard reviewed Friday — numbers before opinions', done: false, who: null },
+    { t: 'One dashboard is the source of truth (this one)', done: false, who: null },
+    { t: 'CRM fires the booking, reminder and no-show sequences without us', done: false, who: null },
+    { t: 'Call recordings scored against a rubric every week', done: false, who: null },
+    { t: 'One person owns the whole close, start to finish', done: false, who: null },
+    { t: 'Automation maps to a named bottleneck, not novelty', done: false, who: null }
   ],
   reels: {},
   kpis: [
@@ -46,50 +63,56 @@ const seed = () => ({
     { id: 'cac',      label: 'CAC',                 value: 142, target: 150, unit: '$', up: false },
     { id: 'cash',     label: 'Cash collected',      value: 46,  target: 60,  unit: 'k$', up: true }
   ],
-  webinar: {
-    title: 'How to buy a business without using your own money',
-    sub: 'The 3C model, live — Capabilities, Capital, Closing. Then the offer.',
-    funnel: { registered: 412, showed: 178, stayed: 121, bought: 39 },
-    partners: [
-      { name: 'Accountancy network — SE England', audience: '4,200 owners', status: 'Booked 14 Oct',   owner: 'josh' },
-      { name: 'Business brokers association',      audience: '1,800',       status: 'Proposal sent',   owner: 'josh' },
-      { name: 'Exit-planning newsletter',          audience: '9,500',       status: 'In conversation', owner: 'josh' },
-      { name: 'Franchise owners community',        audience: '2,600',       status: 'To approach',     owner: 'josh' }
-    ]
-  },
+  recurring: [],
+  icps: [
+    { id: 'seller', name: 'The owner ready to exit', audience: 'owners in their sixties', verb: 'get out without gutting the business',
+      who: 'UK/EU owner, 55–70, £300k–£3m EBITDA, no succession plan',
+      pains: ['The business cannot run a week without them', 'Brokers quoted a multiple that felt like an insult', 'Their kids do not want it'],
+      desires: ['A clean exit that does not gut the team', 'A number that funds the rest of their life', 'To stop being the bottleneck'],
+      objections: ['“Nobody would buy a business this dependent on me”', '“I would be handing it to a stranger”', '“I will just work two more years”'],
+      triggers: ['A health scare', 'A key employee resigning', 'An unsolicited approach from a competitor'] },
+    { id: 'buyer', name: 'The would-be acquirer', audience: 'first-time buyers', verb: 'buy a cash-flowing business without a deposit',
+      who: 'Operator or exec, 30–50, wants to own rather than start',
+      pains: ['No capital and assumes that ends the conversation', 'Cannot find deals that are not already picked over', 'Does not know what a fair structure looks like'],
+      desires: ['Own a cash-flowing business inside 12 months', 'Terms instead of a deposit', 'A repeatable process, not one lucky deal'],
+      objections: ['“You need money to buy a business”', '“Sellers will never finance it”', '“The good ones never come to market”'],
+      triggers: ['Redundancy or a stalled career', 'Selling a first business', 'Watching a peer buy one'] }
+  ],
+  savedTopics: [],
+  laneOwners: { demand: null, machine: null },
   us: [
-    { id: 'bendik', role: 'Systems, funnels, paid, data', focus: 'Build the machine that books Josh’s calendar without either of us touching it', hours: 'Build 09–15 · no calls' },
-    { id: 'josh',   role: 'Content, sales, closing', focus: 'On camera every day, on the phone every afternoon', hours: 'Film 09–11 · calls 12–18' }
+    { id: 'bendik', role: '', focus: '', hours: '' },
+    { id: 'josh',   role: '', focus: '', hours: '' }
   ],
   roles: [
     { id: 'setter', title: 'Appointment setter', dept: 'Revenue · Remote', comp: '$2.5k + $100 / held call',
-      buys: 'Takes outreach off Josh so he only talks to booked prospects', target: 'Hire at 40 booked calls/mo', owner: 'josh',
+      buys: 'Outreach comes off whoever sells — they only talk to booked prospects', target: 'Hire at 40 booked calls/mo', owner: null,
       stages: [['Applied', 34], ['Screened', 12], ['Interview', 5], ['Offer', 1]] },
     { id: 'editor', title: 'Video editor', dept: 'Content · Remote', comp: '$2.5–3.5k',
-      buys: 'Josh films, editor ships — the only way 4 reels/day survives a full call calendar', target: 'Hire now', owner: 'josh',
+      buys: 'One person films, the editor ships — the only way 4 reels/day survives a full calendar', target: 'Hire now', owner: null,
       stages: [['Applied', 21], ['Screened', 8], ['Interview', 3], ['Offer', 0]] },
     { id: 'closer', title: 'Second closer', dept: 'Revenue · Remote', comp: '$3k + 8% commission',
-      buys: 'Josh cannot hold more than ~60 calls a month alone', target: 'Hire at 60 held calls/mo', owner: 'josh',
+      buys: 'One closer caps out around 60 held calls a month', target: 'Hire at 60 held calls/mo', owner: null,
       stages: [['Applied', 6], ['Screened', 2], ['Interview', 0], ['Offer', 0]] }
   ],
   delegation: [
-    { t: 'Reel editing and captions → editor (Josh films only)', done: false, who: 'josh' },
-    { t: 'First-touch outreach and follow-up → setter', done: false, who: 'josh' },
-    { t: 'Webinar reminders and no-show follow-up → automation', done: true, who: 'bendik' },
-    { t: 'Proposal and contract generation → templated in the CRM', done: false, who: 'bendik' },
-    { t: 'Ad creative uploads, naming and reporting → automated', done: false, who: 'bendik' },
-    { t: 'Partner webinar sourcing → setter, once trained', done: false, who: 'josh' }
+    { t: 'Reel editing and captions → editor', done: false, who: null },
+    { t: 'First-touch outreach and follow-up → setter', done: false, who: null },
+    { t: 'Webinar reminders and no-show follow-up → automation', done: false, who: null },
+    { t: 'Proposal and contract generation → templated in the CRM', done: false, who: null },
+    { t: 'Ad creative uploads, naming and reporting → automated', done: false, who: null },
+    { t: 'Partner webinar sourcing → setter, once trained', done: false, who: null }
   ],
   tasks: [
-    { id: 't1', title: 'Call rubric + score last 20 recordings — close rate is the constraint', track: 'sales', owner: 'josh', status: 'now' },
-    { id: 't2', title: 'Rebuild booking flow: qualify on the form, not on the call', track: 'systems', owner: 'bendik', status: 'now' },
-    { id: 't3', title: 'No-show sequence: SMS + call at T−10min', track: 'systems', owner: 'bendik', status: 'now' },
-    { id: 't4', title: 'Pillar: “The 3C model in 12 minutes”', track: 'content', owner: 'josh', status: 'doing' },
-    { id: 't5', title: 'Retarget campaign to webinar replay', track: 'ads', owner: 'bendik', status: 'doing' },
-    { id: 't6', title: 'Book 3 partner webinars for October', track: 'webinar', owner: 'josh', status: 'doing' },
-    { id: 't7', title: 'Editor hire — final trial edits', track: 'team', owner: 'josh', status: 'review' },
-    { id: 't8', title: 'Attribution: every booked call tagged to its source', track: 'systems', owner: 'bendik', status: 'review' },
-    { id: 't9', title: 'Weekly scorecard automated', track: 'systems', owner: 'bendik', status: 'done' }
+    { id: 't1', title: 'Call rubric + score the last 20 recordings — close rate is the constraint', track: 'sales', owner: null, status: 'now' },
+    { id: 't2', title: 'Rebuild booking flow: qualify on the form, not on the call', track: 'systems', owner: null, status: 'now' },
+    { id: 't3', title: 'No-show sequence: SMS + call at T−10min', track: 'systems', owner: null, status: 'now' },
+    { id: 't4', title: 'Pillar: “The 3C model in 12 minutes”', track: 'content', owner: null, status: 'doing' },
+    { id: 't5', title: 'Retarget campaign to webinar replay', track: 'ads', owner: null, status: 'doing' },
+    { id: 't6', title: 'Book 3 partner webinars for October', track: 'webinar', owner: null, status: 'doing' },
+    { id: 't7', title: 'Editor hire — final trial edits', track: 'team', owner: null, status: 'review' },
+    { id: 't8', title: 'Attribution: every booked call tagged to its source', track: 'systems', owner: null, status: 'review' },
+    { id: 't9', title: 'Weekly scorecard automated', track: 'systems', owner: null, status: 'done' }
   ],
   log: [],
   reviewedTs: 0
@@ -282,13 +305,15 @@ function renderOwnerLoad() {
   const host = $('#ownerLoad');
   host.innerHTML = '';
   const open = state.tasks.filter(t => t.status !== 'done');
-  const max = Math.max(1, ...Object.keys(PEOPLE).map(w => open.filter(t => t.owner === w).length));
-  Object.keys(PEOPLE).forEach(w => {
-    const n = open.filter(t => t.owner === w).length;
+  const keys = [...Object.keys(PEOPLE), null];
+  const count = (k) => open.filter(t => (k ? t.owner === k : !t.owner)).length;
+  const max = Math.max(1, ...keys.map(count));
+  keys.forEach(k => {
+    const n = count(k);
     const li = el('li');
-    li.innerHTML = `<span class="dot" style="background:${PEOPLE[w].color}"></span>
-      <span class="lbl">${PEOPLE[w].name}</span>
-      <span class="track"><i data-w="${Math.round((n / max) * 100)}" style="background:${PEOPLE[w].color}"></i></span>
+    li.innerHTML = `<span class="dot" style="background:${who(k).color}"></span>
+      <span class="lbl">${who(k).name}</span>
+      <span class="track"><i data-w="${Math.round((n / max) * 100)}" style="background:${who(k).color}"></i></span>
       <span class="val">${n}</span>`;
     host.appendChild(li);
   });
@@ -406,33 +431,33 @@ function renderLadder() {
 function renderDaily() {
   const m = state.model, r = modelState();
   const d = (n) => Math.max(1, Math.round(n / m.workDays));
-  const plan = {
-    josh: { title: 'Josh — content & sales', color: PEOPLE.josh.color, rows: [
-      ['4', 'reels filmed', 'non-negotiable, editor ships them'],
+  const lanes = [
+    { id: 'demand', title: 'Demand — content & sales', rows: [
+      ['4', 'reels filmed, each', 'the volume engine, non-negotiable'],
       ['100', 'outreach touches', 'Rule of 100 — DMs, comments, replies'],
       [String(d(r.need.held)), 'calls held', `${d(r.need.booked)} booked to hold that many`],
-      ['1', 'webinar a week', 'he presents, every Thursday'],
       ['20', 'call minutes reviewed', 'score yesterday against the rubric']
     ]},
-    bendik: { title: 'Bendik — systems & funnels', color: PEOPLE.bendik.color, rows: [
+    { id: 'machine', title: 'Machine — funnels, paid, data', rows: [
       ['$' + Math.max(100, Math.round((r.need.leads * 6) / m.workDays)), 'ad spend / day', 'at ~$6 a lead, held to CAC'],
       ['1', 'funnel fix shipped', 'one measurable improvement, daily'],
-      ['0', 'sales calls', 'his calendar stays clear of them'],
       ['100%', 'of bookings attributed', 'no lead lands without a source tag'],
-      ['1', 'automation removed from us', 'weekly: one manual step deleted']
+      ['1', 'manual step deleted', 'weekly — something stops needing a human']
     ]}
-  };
+  ];
   const host = $('#dailyEngine');
   host.innerHTML = '';
-  Object.entries(plan).forEach(([who, p]) => {
+  lanes.forEach(lane => {
+    const owner = state.laneOwners[lane.id] || null;
     const card = el('article', 'card');
     card.innerHTML = `
       <div class="reel-head">
-        <span class="avatar" style="background:${p.color}">${PEOPLE[who].initials}</span>
-        <div><div class="reel-name">${p.title}</div><div class="reel-sub">every working day</div></div>
+        <div><div class="reel-name">${lane.title}</div><div class="reel-sub">every working day</div></div>
       </div>
-      <ul class="daily-list">${p.rows.map(([n, l, note]) =>
+      <ul class="daily-list">${lane.rows.map(([n, l, note]) =>
         `<li><b>${n}</b><span class="dl-label">${l}</span><span class="dl-note">${note}</span></li>`).join('')}</ul>`;
+    card.querySelector('.reel-head').appendChild(
+      ownerChip(owner, lane.title, (to) => { state.laneOwners[lane.id] = to; }));
     host.appendChild(card);
   });
 }
@@ -465,22 +490,21 @@ function renderEcon() {
 }
 
 const LEVERS = [
-  ['More customers', 'Lead volume × booking rate', 'Bendik — paid, funnels, attribution', 'bendik'],
-  ['Higher price', 'Raise price or add a premium tier', 'Josh — hold price on the call, no discounting', 'josh'],
-  ['Buy more often', 'A second offer for people who already bought', 'Both — deal-support retainer after the programme', 'bendik'],
-  ['Keep them longer', 'Retention is revenue you already earned', 'Josh — onboarding call in the first 48 hours', 'josh']
+  ['More customers', 'Lead volume × booking rate', 'Paid, funnels, attribution'],
+  ['Higher price', 'Raise price or add a premium tier', 'Hold price on the call, no discounting'],
+  ['Buy more often', 'A second offer for people who already bought', 'Deal-support retainer after the programme'],
+  ['Keep them longer', 'Retention is revenue you already earned', 'Onboarding call inside 48 hours']
 ];
 
 function renderLevers() {
   const host = $('#leverGrid');
   host.innerHTML = '';
-  LEVERS.forEach(([title, what, who, id]) => {
+  LEVERS.forEach(([title, what, how]) => {
     const card = el('article', 'card lever');
     card.innerHTML = `
-      <div class="lead-top"><div class="lead-name">${title}</div>
-        <span class="avatar sm" style="background:${PEOPLE[id].color}" title="${PEOPLE[id].name}">${PEOPLE[id].initials}</span></div>
+      <div class="lead-top"><div class="lead-name">${title}</div></div>
       <p class="lead-note">${what}</p>
-      <p class="lever-who">${who}</p>`;
+      <p class="lever-who">${how}</p>`;
     host.appendChild(card);
   });
 }
@@ -497,7 +521,6 @@ function renderLeadSources() {
     card.innerHTML = `
       <div class="lead-top">
         <div class="lead-name">${esc(s.label)}</div>
-        <span class="avatar sm" style="background:${PEOPLE[s.owner].color}" title="${PEOPLE[s.owner].name}">${PEOPLE[s.owner].initials}</span>
       </div>
       <p class="lead-note">${esc(s.note)}</p>
       <div class="lead-count"><b class="lead-done"></b><span>/ ${s.target} leads this week</span></div>
@@ -507,12 +530,9 @@ function renderLeadSources() {
     editableNumber(n, () => s.done, (v, from) => {
       change('updated lead source', s.label, from, v, () => { state.leadSources.find(x => x.id === s.id).done = v; });
     });
-    card.querySelector('.avatar').addEventListener('click', () => {
-      const next = s.owner === 'bendik' ? 'josh' : 'bendik';
-      change('reassigned', s.label, PEOPLE[s.owner].name, PEOPLE[next].name, () => {
-        state.leadSources.find(x => x.id === s.id).owner = next;
-      });
-    });
+    card.querySelector('.lead-top').appendChild(ownerChip(s.owner, s.label, (to) => {
+      state.leadSources.find(x => x.id === s.id).owner = to;
+    }));
     host.appendChild(card);
   });
 }
@@ -553,8 +573,8 @@ function renderChecklist(host, items, label) {
   host.innerHTML = '';
   items.forEach((item, i) => {
     const li = el('li', item.done ? 'done' : '');
-    li.innerHTML = `<span class="box">${TICK}</span><span class="txt">${esc(item.t)}</span>
-      <span class="avatar sm" style="background:${PEOPLE[item.who].color}">${PEOPLE[item.who].initials}</span>`;
+    li.innerHTML = `<span class="box">${TICK}</span><span class="txt">${esc(item.t)}</span>`;
+    li.appendChild(ownerChip(item.who, item.t, (to) => { items[i].who = to; }));
     li.addEventListener('click', () => {
       change(item.done ? 'unchecked' : 'checked', item.t, item.done ? 'done' : 'open', item.done ? 'open' : 'done', () => {
         items[i].done = !items[i].done;
@@ -566,23 +586,6 @@ function renderChecklist(host, items, label) {
 
 /* ── Content ────────────────────────────────────────────────── */
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const LANES = [
-  { id: 'reels',   label: 'Reels (4×/day)', color: 'var(--ig)' },
-  { id: 'pillar',  label: 'Pillar',         color: 'var(--yt)' },
-  { id: 'x',       label: 'X / LinkedIn',   color: 'var(--ink-3)' },
-  { id: 'email',   label: 'Email',          color: 'var(--green)' },
-  { id: 'ads',     label: 'Ads',            color: 'var(--orange)' },
-  { id: 'webinar', label: 'Webinar',        color: 'var(--accent)' }
-];
-const SCHEDULE = {
-  reels:   { Mon: ['8 reels out', 'Josh + editor'], Tue: ['8 reels out', 'Josh + editor'], Wed: ['8 reels out', 'Josh + editor'],
-             Thu: ['8 reels out', 'Josh + editor'], Fri: ['8 reels out', 'Josh + editor'], Sat: ['4 reels', 'J'], Sun: ['Batch film', 'J'] },
-  pillar:  { Tue: ['Record pillar', '10:00'], Wed: ['Publish long-form', '16:00'] },
-  x:       { Mon: ['Thread', '08:00'], Wed: ['Thread', '08:00'], Fri: ['Carousel', '09:00'] },
-  email:   { Mon: ['Value email', '07:00'], Wed: ['Webinar invite', '07:00'], Fri: ['Replay + deadline', '07:00'] },
-  ads:     { Mon: ['New creative live', '10:00'], Thu: ['Kill / scale — Bendik', '09:00'] },
-  webinar: { Thu: ['LIVE 18:00', 'Josh presents'] }
-};
 const LADDER = [
   ['1 pillar', 'One 12-minute recorded teaching — the week’s single idea'],
   ['→ 20 reels', '4 a day each. Every reel is one claim from the pillar'],
@@ -635,32 +638,49 @@ function renderReelGrid() {
 
 function renderCalendar() {
   const cal = $('#calendar');
+  if (!cal) return;
   cal.innerHTML = '';
   const todayIdx = (new Date().getDay() + 6) % 7;
+  const tracks = [...new Set(state.recurring.map(r => r.track))];
   cal.appendChild(el('div', 'cal-h'));
   DAYS.forEach((d, i) => {
     const h = el('div', 'cal-h' + (i === todayIdx ? ' today' : ''));
     h.textContent = d;
     cal.appendChild(h);
   });
-  LANES.forEach(lane => {
+  if (!tracks.length) {
+    const empty = el('div', 'cal-empty');
+    empty.textContent = 'Nothing scheduled. Add a commitment and it lands here.';
+    cal.appendChild(empty);
+    return;
+  }
+  tracks.forEach(track => {
+    const color = TRACK_COLOR[track] || 'var(--ink-3)';
     const lbl = el('div', 'cal-row-label');
-    lbl.innerHTML = `<span class="dotc" style="background:${lane.color}"></span>${lane.label}`;
+    lbl.innerHTML = `<span class="dotc" style="background:${color}"></span>${track}`;
     cal.appendChild(lbl);
     DAYS.forEach((d, i) => {
       const cell = el('div', 'cal-cell' + (i === todayIdx ? ' today' : ''));
-      const item = SCHEDULE[lane.id][d];
-      if (item) {
+      state.recurring.filter(r => r.track === track).forEach(r => {
+        const hits = r.cadence === 'daily'
+          || (r.cadence === 'weekdays' && i < 5)
+          || (r.cadence === 'weekly' && r.day === DAYS[i]);
+        if (!hits) return;
         const s = el('div', 'slot');
-        s.style.background = `color-mix(in srgb, ${lane.color} 13%, transparent)`;
-        s.style.color = lane.color;
-        s.innerHTML = `${esc(item[0])}<small>${esc(item[1])}</small>`;
+        s.style.background = `color-mix(in srgb, ${color} 13%, transparent)`;
+        s.style.color = color;
+        s.innerHTML = `${esc(r.title)}<small>${esc(r.time)}${r.owner ? ' · ' + who(r.owner).name : ''}</small>`;
         cell.appendChild(s);
-      }
+      });
       cal.appendChild(cell);
     });
   });
 }
+
+const TRACK_COLOR = {
+  webinar: 'var(--accent)', content: 'var(--ig)', sales: 'var(--green)',
+  systems: 'var(--purple)', ads: 'var(--orange)', team: 'var(--yt)'
+};
 
 function renderContentLists() {
   $('#ladder').innerHTML = LADDER.map(([a, b]) =>
@@ -669,110 +689,327 @@ function renderContentLists() {
     `<li><span class="angle-hook">${esc(a)}</span><span class="rung-note">${esc(b)}</span></li>`).join('');
 }
 
-/* ── Webinar ────────────────────────────────────────────────── */
-const FUNNEL_ROWS = [['registered', 'Registered'], ['showed', 'Showed up'], ['stayed', 'Stayed to offer'], ['bought', 'Bought']];
-const PROMO = [
-  ['T−14', 'Registration page live, tracking verified', 'Bendik'],
-  ['T−10', 'Ads live: broad + retarget 75% viewers', 'Bendik'],
-  ['T−7',  'Partner sends invite to their list', 'Josh'],
-  ['T−3',  'Reel sequence: 3 hooks pointing at the session', 'Josh'],
-  ['T−1',  'Email 2 + personal DMs to the warm list', 'Josh'],
-  ['T−2h', 'Automated SMS + story reminder', 'Bendik'],
-  ['T+1',  'Replay email, 48h deadline, no-shows into a call sequence', 'Bendik'],
-  ['T+3',  'Best 90 seconds becomes 4 reels and an ad', 'Josh']
-];
-const RUNSHEET = [
-  ['0–5',   'Open + promise', 'Name the outcome and the time it takes. No credentials yet.'],
-  ['5–12',  'Why the usual route fails', 'Why “save up and buy” has not worked for them.'],
-  ['12–28', 'Teach the 3C model', 'Capabilities, Capital, Closing — one real deal on screen.'],
-  ['28–40', 'Case study with numbers', 'The deal, the terms, the seller’s motivation.'],
-  ['40–46', 'Transition', 'What it takes to do this without ten years of learning.'],
-  ['46–54', 'The offer', 'Stack, price, guarantee, deadline. Read the value equation aloud.'],
-  ['54–60', 'Q&A that closes', 'Three objections, each answered into a call to action.']
-];
+/* ── Calendar: recurring commitments you define ─────────────── */
+const DAY_IDX = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 0 };
 
-function nextThursday() {
-  const d = new Date();
-  const days = (4 - d.getDay() + 7) % 7;
-  const next = new Date(d);
-  next.setDate(d.getDate() + days);
-  next.setHours(18, 0, 0, 0);
-  if (next <= d) next.setDate(next.getDate() + 7);
-  return next;
+function nextOccurrence(r) {
+  const now = new Date();
+  const [hh, mm] = (r.time || '09:00').split(':').map(Number);
+  for (let i = 0; i < 14; i++) {
+    const d = new Date();
+    d.setDate(now.getDate() + i);
+    d.setHours(hh, mm, 0, 0);
+    const dow = d.getDay();
+    const hits = r.cadence === 'daily'
+      || (r.cadence === 'weekdays' && dow >= 1 && dow <= 5)
+      || (r.cadence === 'weekly' && dow === DAY_IDX[r.day]);
+    if (hits && d > now) return d;
+  }
+  return null;
 }
 
-function renderWebinar() {
-  const w = state.webinar;
-  $('#webinarTitle').textContent = w.title;
-  $('#webinarSub').textContent = w.sub;
+/* The last N dates this commitment was due, most recent first. */
+function dueDates(r, count) {
+  const out = [];
+  const [hh, mm] = (r.time || '09:00').split(':').map(Number);
+  for (let i = 0; i < 60 && out.length < count; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    d.setHours(hh, mm, 0, 0);
+    const dow = d.getDay();
+    const hits = r.cadence === 'daily'
+      || (r.cadence === 'weekdays' && dow >= 1 && dow <= 5)
+      || (r.cadence === 'weekly' && dow === DAY_IDX[r.day]);
+    if (hits && d <= new Date()) out.push(d.toISOString().slice(0, 10));
+  }
+  return out;
+}
 
-  const max = w.funnel.registered || 1;
-  const host = $('#webinarFunnel');
+function streakOf(r) {
+  let n = 0;
+  for (const d of dueDates(r, 30)) {
+    if (r.done && r.done.includes(d)) n++;
+    else break;
+  }
+  return n;
+}
+
+function renderRecurring() {
+  const host = $('#recurGrid');
   host.innerHTML = '';
-  FUNNEL_ROWS.forEach(([k, label]) => {
-    const n = w.funnel[k];
-    const row = el('div', 'stage');
-    row.innerHTML = `<span class="name">${label}</span>
-      <span class="track"><i data-w="${Math.round((n / max) * 100)}" style="background:var(--accent)"></i></span>
-      <span class="n fn-n">${n}</span>`;
-    editableNumber(row.querySelector('.fn-n'), () => w.funnel[k], (v, from) => {
-      change('updated funnel', label, from, v, () => { state.webinar.funnel[k] = v; });
+  if (!state.recurring.length) {
+    host.innerHTML = `<div class="card empty-card">
+      <p><b>No commitments yet.</b></p>
+      <p class="card-note">Add the things that only work if they happen on schedule — a webinar every
+      Thursday, a batch-filming block on Sunday, a Friday numbers review. Each one shows up in the week
+      below and keeps a streak.</p></div>`;
+    return;
+  }
+  state.recurring.forEach((r, i) => {
+    const next = nextOccurrence(r);
+    const streak = streakOf(r);
+    const card = el('article', 'card recur');
+    const cadence = r.cadence === 'weekly' ? `Every ${r.day}` : r.cadence === 'weekdays' ? 'Every weekday' : 'Every day';
+    card.innerHTML = `
+      <div class="recur-top">
+        <div>
+          <div class="reel-name">${esc(r.title)}</div>
+          <div class="reel-sub">${cadence} · ${esc(r.time)} · ${esc(r.track)}</div>
+        </div>
+      </div>
+      <div class="recur-mid">
+        <div><b>${streak}</b><span>streak</span></div>
+        <div><b>${next ? next.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) : '—'}</b><span>next</span></div>
+        <div><b>${next ? Math.max(0, Math.round((next - new Date()) / 36e5)) + 'h' : '—'}</b><span>from now</span></div>
+      </div>
+      <div class="recur-hist"></div>
+      <button class="link-btn del-recur">Remove</button>`;
+    card.querySelector('.recur-top').appendChild(ownerChip(r.owner, r.title, (to) => { state.recurring[i].owner = to; }));
+
+    const hist = card.querySelector('.recur-hist');
+    dueDates(r, 8).reverse().forEach(day => {
+      const doneIt = (r.done || []).includes(day);
+      const b = el('button', 'hist-cell' + (doneIt ? ' hit' : ''));
+      b.textContent = day.slice(8);
+      b.title = day + (doneIt ? ' — done' : ' — click to mark done');
+      b.addEventListener('click', () => {
+        change(doneIt ? 'un-marked' : 'marked done', `${r.title} · ${day}`, doneIt ? 'done' : 'missed', doneIt ? 'missed' : 'done', () => {
+          const rec = state.recurring[i];
+          rec.done = rec.done || [];
+          rec.done = doneIt ? rec.done.filter(x => x !== day) : rec.done.concat(day);
+        });
+      });
+      hist.appendChild(b);
     });
-    host.appendChild(row);
+    card.querySelector('.del-recur').addEventListener('click', () => {
+      change('removed commitment', r.title, 'recurring', 'deleted', () => { state.recurring.splice(i, 1); });
+    });
+    host.appendChild(card);
   });
-  const conv = ((w.funnel.bought / Math.max(1, w.funnel.registered)) * 100).toFixed(1);
-  $('#webinarConv').textContent = conv + '% register → buy';
+}
 
-  $('#promoList').innerHTML = PROMO.map(([when, what, who]) =>
-    `<li><span class="when">${when}</span><span>${esc(what)}<br><span class="ch">${who}</span></span></li>`).join('');
-  $('#runsheet').innerHTML = RUNSHEET.map(([m, t, n]) =>
-    `<li><span class="mins">${m} min</span><div><p class="rs-title">${esc(t)}</p><p class="rs-note">${esc(n)}</p></div></li>`).join('');
+const recurSheet = $('#recurSheet');
+const closeRecur = () => { recurSheet.hidden = true; scrim.hidden = true; $('#r-title').value = ''; };
+$('#newRecurBtn').addEventListener('click', () => {
+  recurSheet.hidden = false; scrim.hidden = false; $('#r-title').focus();
+});
+$('#cancelRecur').addEventListener('click', closeRecur);
+$('#r-cadence').addEventListener('change', () => {
+  $('#r-day-wrap').style.display = $('#r-cadence').value === 'weekly' ? '' : 'none';
+});
+$('#saveRecur').addEventListener('click', () => {
+  const title = $('#r-title').value.trim();
+  if (!title) { $('#r-title').focus(); return; }
+  const r = {
+    id: 'r' + Date.now(), title,
+    track: $('#r-track').value, cadence: $('#r-cadence').value,
+    day: $('#r-day').value, time: $('#r-time').value || '09:00',
+    owner: null, done: []
+  };
+  closeRecur();
+  change('added commitment', title, '', r.cadence === 'weekly' ? `every ${r.day} ${r.time}` : `${r.cadence} ${r.time}`,
+    () => { state.recurring.push(r); });
+});
 
-  const pt = $('#partnerTable');
-  pt.innerHTML = ['Partner', 'Their audience', 'Status', 'Owner'].map(h => `<div class="th">${h}</div>`).join('');
-  state.webinar.partners.forEach((p, i) => {
-    pt.insertAdjacentHTML('beforeend',
-      `<div class="nm">${esc(p.name)}</div><div class="muted">${esc(p.audience)}</div><div>${esc(p.status)}</div><div></div>`);
-    const cell = pt.lastElementChild;
-    const av = el('span', 'avatar sm');
-    av.style.background = PEOPLE[p.owner].color;
-    av.textContent = PEOPLE[p.owner].initials;
-    av.title = 'Click to reassign';
-    av.addEventListener('click', () => {
-      const next = p.owner === 'bendik' ? 'josh' : 'bendik';
-      change('reassigned partner', p.name, PEOPLE[p.owner].name, PEOPLE[next].name, () => {
-        state.webinar.partners[i].owner = next;
+/* ── Topic generator, built from the ICPs ───────────────────── */
+const HOOKS = {
+  reel: [
+    (c) => `“${c.objection}” — here’s the maths that says otherwise`,
+    (c) => `If ${c.pain.toLowerCase()}, you do not have a ${c.noun} problem`,
+    (c) => `The 60-second version of how ${c.audience} ${c.verb}`,
+    (c) => `Nobody tells ${c.audience} this: ${c.pain.toLowerCase()}`,
+    (c) => `What happens the week after ${c.trigger.toLowerCase()}`,
+    (c) => `Three words that change the answer to “${c.objection}”`,
+    (c) => `${c.desire} — without the part everyone assumes you need`,
+    (c) => `I would not touch this deal. Here is the one line that gave it away`,
+    (c) => `${c.pain}. That is a solvable problem, and here is the order to solve it in`,
+    (c) => `The question to ask before you believe anyone about ${c.topic}`,
+    (c) => `${c.audience.charAt(0).toUpperCase() + c.audience.slice(1)} keep losing money on ${c.topic}. Here is where`
+  ],
+  short: [
+    (c) => `“${c.objection}” Wrong. Here’s why`,
+    (c) => `${c.pain} → the fix takes one conversation`,
+    (c) => `The number ${c.audience} always get wrong`,
+    (c) => `${c.trigger}? That is the moment to move`,
+    (c) => `${c.desire}, explained in 40 seconds`,
+    (c) => `Stop asking about price. Ask this instead`,
+    (c) => `One sentence that reframes ${c.topic}`,
+    (c) => `${c.pain} — 30 seconds on why that is fixable`
+  ],
+  youtube: [
+    (c) => `How ${c.audience} ${c.verb} — the full process, start to finish`,
+    (c) => `Deal teardown: ${c.pain} and what we would have paid`,
+    (c) => `“${c.objection}” — answered with real numbers on screen`,
+    (c) => `The 12-minute version of everything we know about ${c.topic}`,
+    (c) => `What to do in the 90 days after ${c.trigger.toLowerCase()}`,
+    (c) => `We ran the numbers on ${c.topic}. Here is where it breaks`,
+    (c) => `${c.desire}: the structure, the terms, the mistakes`,
+    (c) => `Everything ${c.audience} get wrong about ${c.topic}`,
+    (c) => `A full walkthrough for anyone facing ${c.trigger.toLowerCase()}`
+  ]
+};
+const WHY = [
+  'Leads with their objection, so the sceptics stay to argue.',
+  'Specific enough that only your ICP feels spoken to.',
+  'A number in the hook — the fastest credibility you can buy.',
+  'Names the moment they are already living through.',
+  'Contradicts the thing everyone repeats, so it earns a comment.',
+  'Process transparency: they can steal it, which is why they save it.'
+];
+const NOUNS = ['pricing', 'buyer', 'timing', 'valuation', 'marketing'];
+const TOPICS = ['seller financing', 'earn-outs', 'owner dependency', 'deal structure', 'due diligence', 'exit multiples'];
+
+
+let genSeed = Date.now();
+const rnd = () => { genSeed = (genSeed * 1103515245 + 12345) % 2147483648; return genSeed / 2147483648; };
+const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const k = Math.floor(rnd() * (i + 1));
+    [a[i], a[k]] = [a[k], a[i]];
+  }
+  return a;
+}
+
+function generateTopics(icp, format, n = 10) {
+  const out = [];
+  const seen = new Set();
+  let deck = [];
+  const audience = icp.audience || 'them';
+  for (let guard = 0; out.length < n && guard < n * 8; guard++) {
+    if (!deck.length) deck = shuffle(HOOKS[format]);
+    const template = deck.pop();
+    const ctx = {
+      pain: pick(icp.pains), desire: pick(icp.desires),
+      objection: pick(icp.objections).replace(/[“”]/g, ''),
+      trigger: pick(icp.triggers),
+      audience, who: audience, verb: icp.verb || 'get there',
+      noun: pick(NOUNS), topic: pick(TOPICS)
+    };
+    const title = template(ctx);
+    if (seen.has(title)) continue;
+    seen.add(title);
+    out.push({ title, why: pick(WHY), format, icp: icp.id });
+  }
+  return out;
+}
+
+let lastGenerated = [];
+
+function renderTopics() {
+  const sel = $('#genIcp');
+  if (sel.options.length !== state.icps.length) {
+    sel.innerHTML = state.icps.map(i => `<option value="${i.id}">${esc(i.name)}</option>`).join('');
+  }
+  const host = $('#topicGrid');
+  const items = lastGenerated.length ? lastGenerated : state.savedTopics;
+  host.innerHTML = '';
+  if (!items.length) {
+    host.innerHTML = `<div class="card empty-card"><p><b>Nothing generated yet.</b></p>
+      <p class="card-note">Pick an ICP and a format, then hit Generate. Ideas are built from the pains,
+      objections and triggers you have written below — edit those and the output changes.</p></div>`;
+  }
+  items.forEach((t, i) => {
+    const saved = state.savedTopics.some(s => s.title === t.title);
+    const card = el('article', 'card topic');
+    card.innerHTML = `
+      <span class="fmt">${t.format === 'youtube' ? 'YouTube' : t.format === 'short' ? 'Short' : 'Reel'}</span>
+      <p class="angle-hook">${esc(t.title)}</p>
+      <p class="rung-note">${esc(t.why)}</p>
+      <div class="topic-actions">
+        <button class="chip-btn ${saved ? 'active' : ''}">${saved ? 'Saved' : 'Save'}</button>
+        <button class="chip-btn to-board">Send to board</button>
+      </div>`;
+    const [saveBtn, boardBtn] = card.querySelectorAll('.chip-btn');
+    saveBtn.addEventListener('click', () => {
+      if (saved) return;
+      change('saved topic', t.title, '', 'saved', () => { state.savedTopics.unshift(t); });
+    });
+    boardBtn.addEventListener('click', () => {
+      change('added task', t.title, 'topic', 'This week', () => {
+        state.tasks.unshift({ id: 't' + Date.now() + i, title: t.title, track: 'content', owner: null, status: 'now' });
       });
     });
-    cell.appendChild(av);
+    host.appendChild(card);
   });
-  tickCountdown();
+  renderIcps();
 }
 
-function tickCountdown() {
-  const cd = $('#countdown');
-  if (!cd) return;
-  const diff = Math.max(0, nextThursday() - new Date());
-  const d = Math.floor(diff / 864e5), h = Math.floor(diff / 36e5) % 24,
-        m = Math.floor(diff / 6e4) % 60, s = Math.floor(diff / 1e3) % 60;
-  cd.innerHTML = [[d, 'days'], [h, 'hrs'], [m, 'min'], [s, 'sec']]
-    .map(([v, l]) => `<div class="cd-unit"><b>${String(v).padStart(2, '0')}</b><span>${l}</span></div>`).join('');
+$('#genBtn').addEventListener('click', () => {
+  const icp = state.icps.find(i => i.id === $('#genIcp').value) || state.icps[0];
+  const format = $('#genFormat').value;
+  genSeed = Date.now();
+  lastGenerated = generateTopics(icp, format);
+  change('generated topics', `10 ${format} ideas for ${icp.name}`, '', 'drafted', () => {});
+});
+
+const ICP_FIELDS = [['pains', 'Pains'], ['desires', 'Desires'], ['objections', 'Objections'], ['triggers', 'Triggers']];
+
+function renderIcps() {
+  const host = $('#icpGrid');
+  host.innerHTML = '';
+  state.icps.forEach((icp, idx) => {
+    const card = el('article', 'card icp');
+    card.innerHTML = `<div class="reel-name">${esc(icp.name)}</div>
+      <div class="icp-who" contenteditable="true" spellcheck="false">${esc(icp.who)}</div>
+      ${ICP_FIELDS.map(([k, label]) => `
+        <div class="icp-block" data-field="${k}">
+          <div class="icp-label">${label}</div>
+          <ul>${icp[k].map((v, i) => `<li contenteditable="true" spellcheck="false" data-i="${i}">${esc(v)}</li>`).join('')}</ul>
+          <button class="link-btn add-line">+ add</button>
+        </div>`).join('')}`;
+
+    card.querySelector('.icp-who').addEventListener('blur', (e) => {
+      const to = e.target.textContent.trim();
+      if (to && to !== icp.who) change('edited ICP', `${icp.name} — who`, icp.who, to, () => { state.icps[idx].who = to; });
+    });
+    card.querySelectorAll('.icp-block').forEach(block => {
+      const field = block.dataset.field;
+      block.querySelectorAll('li').forEach(li => {
+        li.addEventListener('blur', () => {
+          const i = Number(li.dataset.i);
+          const to = li.textContent.trim();
+          const from = state.icps[idx][field][i];
+          if (to === from) return;
+          change('edited ICP', `${icp.name} — ${field}`, from, to || '(removed)', () => {
+            if (to) state.icps[idx][field][i] = to;
+            else state.icps[idx][field].splice(i, 1);
+          });
+        });
+      });
+      block.querySelector('.add-line').addEventListener('click', () => {
+        change('added ICP line', `${icp.name} — ${field}`, '', 'new line', () => {
+          state.icps[idx][field].push('New line — click to edit');
+        });
+      });
+    });
+    host.appendChild(card);
+  });
 }
-setInterval(tickCountdown, 1000);
 
 /* ── Team ───────────────────────────────────────────────────── */
 function renderTeam() {
   const us = $('#usGrid');
   us.innerHTML = '';
-  state.us.forEach(p => {
+  state.us.forEach((p, idx) => {
     const card = el('article', 'card person');
     card.innerHTML = `
       <div class="reel-head">
-        <span class="avatar" style="background:${PEOPLE[p.id].color}">${PEOPLE[p.id].initials}</span>
-        <div><div class="reel-name">${PEOPLE[p.id].name}</div><div class="reel-sub">${esc(p.role)}</div></div>
+        <span class="avatar" style="background:${who(p.id).color}">${who(p.id).initials}</span>
+        <div><div class="reel-name">${who(p.id).name}</div>
+          <div class="reel-sub role-edit" contenteditable="true" spellcheck="false" data-k="role">${esc(p.role) || 'Role — click to write'}</div></div>
       </div>
-      <p class="person-focus">${esc(p.focus)}</p>
-      <div class="meta-row"><span>${esc(p.hours)}</span><span>${state.tasks.filter(t => t.owner === p.id && t.status !== 'done').length} open tasks</span></div>`;
+      <p class="person-focus role-edit" contenteditable="true" spellcheck="false" data-k="focus">${esc(p.focus) || 'What they are actually responsible for this quarter'}</p>
+      <div class="meta-row"><span class="role-edit" contenteditable="true" spellcheck="false" data-k="hours">${esc(p.hours) || 'Working pattern'}</span><span>${state.tasks.filter(t => t.owner === p.id && t.status !== 'done').length} open tasks</span></div>`;
+    card.querySelectorAll('.role-edit').forEach(node => {
+      node.addEventListener('blur', () => {
+        const k = node.dataset.k, to = node.textContent.trim(), from = state.us[idx][k];
+        if (to === from || to.startsWith('Role —') || to.startsWith('What they') || to === 'Working pattern') return;
+        change('edited profile', `${who(p.id).name} — ${k}`, from || '(empty)', to, () => { state.us[idx][k] = to; });
+      });
+    });
     us.appendChild(card);
   });
 
@@ -787,16 +1024,19 @@ function renderTeam() {
           <h3>${esc(role.title)}</h3>
           <div class="role-meta">${esc(role.dept)}</div>
         </div>
-        <span class="avatar sm" style="background:${PEOPLE[role.owner].color}" title="Hiring owner">${PEOPLE[role.owner].initials}</span>
+
       </div>
       <p class="buys">${esc(role.buys)}</p>
       <div class="funnel">
         ${role.stages.map(([n, v]) => `
           <div class="stage"><span class="name">${n}</span>
-          <span class="track"><i data-w="${Math.round((v / max) * 100)}" style="background:${PEOPLE[role.owner].color}"></i></span>
+          <span class="track"><i data-w="${Math.round((v / max) * 100)}" style="background:${who(role.owner).color}"></i></span>
           <span class="n">${v}</span></div>`).join('')}
       </div>
       <div class="role-foot"><span>${esc(role.comp)}</span><span>${esc(role.target)}</span></div>`;
+    card.querySelector('.role-head').appendChild(ownerChip(role.owner, role.title + ' (hiring owner)', (to) => {
+      state.roles.find(r => r.id === role.id).owner = to;
+    }));
     grid.appendChild(card);
   });
 
@@ -817,7 +1057,7 @@ function renderBoard() {
   board.innerHTML = '';
   COLUMNS.forEach(col => {
     const tasks = state.tasks.filter(t => t.status === col.id &&
-      (filter === 'all' || t.owner === filter || t.track === filter));
+      (filter === 'all' || t.track === filter || t.owner === filter || (filter === 'unassigned' && !t.owner)));
     const wrap = el('div', 'column');
     const head = el('div', 'column-head');
     head.innerHTML = `<h4>${col.label}</h4><span class="count-pill">${tasks.length}</span>`;
@@ -848,14 +1088,12 @@ function taskCard(t) {
       <span class="tag">${esc(t.track)}</span>
       <span style="display:flex;align-items:center;gap:6px">
         <button class="del" title="Delete task" aria-label="Delete task">&times;</button>
-        <span class="avatar sm" style="background:${PEOPLE[t.owner].color}" title="Click to reassign">${PEOPLE[t.owner].initials}</span>
+
       </span>
     </div>`;
   card.querySelector('.task-title').textContent = t.title;
-  card.querySelector('.avatar').addEventListener('click', () => {
-    const next = t.owner === 'bendik' ? 'josh' : 'bendik';
-    change('reassigned', t.title, PEOPLE[t.owner].name, PEOPLE[next].name, () => { t.owner = next; });
-  });
+  card.querySelector('.task-foot > span:last-child').appendChild(
+    ownerChip(t.owner, t.title, (to) => { t.owner = to; }));
   card.querySelector('.del').addEventListener('click', () => {
     change('deleted task', t.title, 'on board', 'removed', () => {
       state.tasks = state.tasks.filter(x => x.id !== t.id);
@@ -895,7 +1133,7 @@ function ago(ts) {
 }
 
 function entryHtml(e, full) {
-  const p = PEOPLE[e.who] || PEOPLE.bendik;
+  const p = who(e.who);
   const delta = e.from || e.to
     ? `<span class="delta-pair"><span class="was">${esc(e.from)}</span><span class="arrow">→</span><span class="now">${esc(e.to)}</span></span>` : '';
   return `<li class="${e.ts > state.reviewedTs ? 'unseen' : ''}">
@@ -943,18 +1181,17 @@ const sheet = $('#sheet'), scrim = $('#scrim');
 const closeSheet = () => { sheet.hidden = true; scrim.hidden = true; $('#f-title').value = ''; };
 $('#newTaskBtn').addEventListener('click', () => {
   sheet.hidden = false; scrim.hidden = false;
-  $('#f-owner').value = state.me;
   $('#f-title').focus();
 });
 $('#cancelTask').addEventListener('click', closeSheet);
-scrim.addEventListener('click', closeSheet);
+scrim.addEventListener('click', () => { closeSheet(); closeRecur(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !sheet.hidden) closeSheet(); });
 $('#saveTask').addEventListener('click', () => {
   const title = $('#f-title').value.trim();
   if (!title) { $('#f-title').focus(); return; }
   const task = {
     id: 't' + Date.now(), title,
-    track: $('#f-track').value, owner: $('#f-owner').value, status: $('#f-status').value
+    track: $('#f-track').value, owner: $('#f-owner').value || null, status: $('#f-status').value
   };
   closeSheet();
   change('added task', title, '', COLUMNS.find(c => c.id === task.status).label, () => { state.tasks.unshift(task); });
@@ -978,8 +1215,8 @@ function render() {
 
   renderHero(); renderReelToday(); renderOverviewKpis(); renderOwnerLoad();
   renderTarget(); renderLadder(); renderDaily(); renderEcon(); renderLevers(); renderLeadSources(); renderValueEq(); renderChecklist($('#operatorList'), state.operator);
-  renderReelGrid(); renderCalendar(); renderContentLists();
-  renderWebinar(); renderTeam(); renderBoard(); renderFeed();
+  renderReelGrid(); renderContentLists();
+  renderRecurring(); renderCalendar(); renderTopics(); renderTeam(); renderBoard(); renderFeed();
   requestAnimationFrame(animateBars);
 }
 render();
