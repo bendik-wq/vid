@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <h3 class="section-title">Today — reels quota <span class="hint">4 per person, per day</span></h3>
+    <h3 class="section-title">Today — daily output <span class="hint">click the unit or the number to change it</span></h3>
     <div class="grid two" id="reelToday"></div>
 
     <h3 class="section-title" style="margin-top:30px">This week</h3>
@@ -119,9 +119,9 @@
   <!-- ═══ CONTENT ═══ -->
   <section class="view" id="view-content">
     <h2 class="hero-title small">Content</h2>
-    <p class="hero-sub">One pillar a week, cut into everything else. Reels are the volume engine: 4 a day each.</p>
+    <p class="hero-sub">One pillar a week, cut into everything else. Daily short-form is the volume engine.</p>
 
-    <h3 class="section-title" style="margin-top:26px">Reels — 14 day log</h3>
+    <h3 class="section-title" style="margin-top:26px">Output — 14 day log</h3>
     <div class="card"><div class="reel-grid" id="reelGrid"></div></div>
 
     <div class="two-col" style="margin-top:22px">
@@ -217,11 +217,14 @@
     <div class="board-head">
       <div>
         <h2 class="hero-title small">Activity</h2>
-        <p class="hero-sub">Every change, who made it, and what it was before. Stored on this device only.</p>
+        <p class="hero-sub">Every change, who made it, and what it was before. Stored in this browser only — export to move it to another device.</p>
       </div>
       <div class="act-actions">
         <button class="pill-btn" id="markReviewed">Mark all reviewed</button>
-        <button class="pill-btn" id="exportLog">Export log</button>
+        <button class="pill-btn" id="exportLog">Copy log</button>
+        <button class="pill-btn" id="exportState">Export data</button>
+        <button class="pill-btn" id="importState">Import data</button>
+        <input type="file" id="importFile" accept="application/json" hidden />
         <button class="pill-btn" id="undoLast">Undo last</button>
       </div>
     </div>
