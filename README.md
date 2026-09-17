@@ -28,7 +28,13 @@ python3 scripts/screen.py --nace 27.110 27.120 33.140 --min-ansatte 12
 
 # Bygg styrekandidatgrafen for en region
 python3 scripts/styregraf.py --kommune bergen --ut styrekandidater.csv
+
+# Hvem har rørt på seg i registeret siden i sommer?
+python3 scripts/bevegelse.py --fra 2026-06-01 --orgnr-fil maal.txt
 ```
+
+Bransjegrupper: `elektro`, `testing`, `lagring`, `installasjon`, `tjenester`,
+`helse`, `avfall`, `kraft`, `metall`, `kabel`, `elkraftradgivning`, `logistikk`.
 
 Krever Python 3.9+. Ingen avhengigheter utover standardbiblioteket.
 
@@ -37,6 +43,7 @@ Krever Python 3.9+. Ingen avhengigheter utover standardbiblioteket.
 | `scripts/brreg.py` | Klient mot Enhetsregisteret, rolleregisteret og Regnskapsregisteret |
 | `scripts/screen.py` | Selskapsscreening med scoring på eieralder, margin og soliditet |
 | `scripts/styregraf.py` | Bygger personnettverk fra rolleregisteret og rangerer styrekandidater |
+| `scripts/bevegelse.py` | Krysser oppdateringsfeeden mot en målliste — hvem er i bevegelse |
 | `index.html` | Selve analysen |
 
 ## Tre fallgruver i Brønnøysunddataene
@@ -54,6 +61,11 @@ Disse kostet tid å finne, og de er ikke dokumentert noe sted:
 3. **SN2025 renummererte næringskodene.** Engroshandel ligger ikke lenger på
    46.5x/46.6x — de gir null treff. Sjekk alltid en kjent aktør i bransjen før
    du stoler på en kode.
+
+4. **Kunngjøringsregisteret svarer ikke.** `data.brreg.no/kunngjoring/api/` gir
+   tom respons. Fisjoner og fusjoner må derfor spores via oppdateringsfeeden
+   eller manuelt — og feeden er tynn på korte vinduer: seks uker ga treff på
+   7 av 4 215 overvåkede selskaper.
 
 I tillegg: `overordnetEnhet` er nesten aldri utfylt, så konserntilhørighet kan
 ikke screenes fra registeret. Og **Aksjonærregisteret er ikke åpne data** — det

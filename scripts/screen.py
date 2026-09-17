@@ -23,6 +23,12 @@ BRANSJER = {
     "tjenester": ["69.201", "69.202", "81.210", "80.100", "96.011"],
     "helse": ["86.230", "86.901", "86.906", "86.907"],
     "avfall": ["38.110", "38.210", "38.320", "39.000"],
+    # Utvidet univers: ligger rundt flaskehalsen uten å være den selv.
+    "kraft": ["35.120", "35.130", "35.140", "27.200"],
+    "metall": ["25.110", "25.620", "28.110", "28.290", "33.110", "33.170"],
+    "kabel": ["27.310", "27.320", "27.400", "61.100"],
+    "elkraftradgivning": ["71.121", "42.220"],
+    "logistikk": ["52.230", "52.240"],
 }
 
 # Kommunenummer for Bergensregionen.
@@ -34,8 +40,26 @@ FELT = [
     "score", "navn", "orgnr", "nace", "nace_tekst", "ansatte", "stiftet", "sted", "kommune",
     "omsetning_mnok", "driftsresultat_mnok", "margin_pct", "egenkapital_mnok", "regnskapsaar",
     "eierprofil", "alder_topp", "daglig_leder", "dl_alder", "styreleder", "styre_snitt",
-    "styre_antall", "brreg",
+    "styre_antall", "lokasjoner", "flerstedlig", "kommuner_drift", "brreg",
 ]
+
+
+def lokasjoner(orgnr):
+    """Underenheter: hvor selskapet faktisk har folk.
+
+    Et selskap med avdelinger i flere kommuner er en plattform du bygger
+    fra, ikke et objekt du kjøper inn i. Skillet er verdt åtte poeng.
+    """
+    data = brreg.get(
+        "https://data.brreg.no/enhetsregisteret/api/underenheter"
+        f"?overordnetEnhet={orgnr}&size=100"
+    )
+    if not data or "_embedded" not in data:
+        return []
+    return [
+        (u.get("beliggenhetsadresse") or {}).get("kommune")
+        for u in data["_embedded"]["underenheter"]
+    ]
 
 
 def vurder(enhet, aar):
@@ -80,6 +104,12 @@ def vurder(enhet, aar):
         # Brreg kan ikke svare. Aksjonærregisteret hos Skatteetaten kan.
         rad["eierprofil"] = "ukjent"
 
+    steder = lokasjoner(orgnr)
+    kommuner = {k for k in steder if k}
+    rad["lokasjoner"] = len(steder)
+    rad["flerstedlig"] = len(kommuner) > 1
+    rad["kommuner_drift"] = "; ".join(sorted(kommuner))
+
     tall = brreg.regnskap(orgnr) or {}
     oms = tall.get("omsetning")
     dr = tall.get("driftsresultat")
@@ -114,6 +144,8 @@ def vurder(enhet, aar):
     if oms and oms >= 15e6:
         score += 10
     if tall.get("egenkapital") and oms and oms > 0 and tall["egenkapital"] / oms >= 0.3:
+        score += 8
+    if rad["flerstedlig"]:
         score += 8
     if rad["eierprofil"] == "konsern":
         score -= 45
