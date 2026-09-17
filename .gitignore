@@ -1,0 +1,14 @@
+# Resultatfiler fra screeningen inneholder navn og fødselsår på
+# identifiserbare personer. De skal ikke inn i et offentlig repo.
+*.csv
+*.json
+!package.json
+!tsconfig.json
+kandidater*
+styrekandidater*
+bergen*
+data/
+
+__pycache__/
+*.pyc
+.DS_Store
