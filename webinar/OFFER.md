@@ -39,3 +39,9 @@ won't be.
 The webinar closes into Owners Academy enrolment; Foundations given free on the
 call is the on-ramp, not the product. OTO sequencing (Capability Accelerator →
 Capital Module → G&L done-with-you retainer) is unchanged by this page.
+
+## Where this sits
+
+This is Rung 1 of the ladder in `../offers/offer-ladder.md`, built with the
+Hormozi method. The full reasoning — value equation, problem/solution
+inventory, pricing and guarantees for every rung — lives in `../offers/`.
