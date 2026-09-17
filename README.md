@@ -46,7 +46,7 @@ Krever Python 3.9+. Ingen avhengigheter utover standardbiblioteket.
 | `scripts/bevegelse.py` | Krysser oppdateringsfeeden mot en målliste — hvem er i bevegelse |
 | `index.html` | Selve analysen |
 
-## Tre fallgruver i Brønnøysunddataene
+## Fire fallgruver i Brønnøysunddataene
 
 Disse kostet tid å finne, og de er ikke dokumentert noe sted:
 
