@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flaskehalsen — oppkjøpstese for elektroteknisk kapasitet på Vestlandet</title>
+<meta name="description" content="Hvorfor knapp elektroteknisk kapasitet og et generasjonsskifte i eierleddet treffer samtidig — metode og funn fra en registeranalyse av 3 652 norske selskaper.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%E2%9A%A1</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#eef0ef; --surface:#ffffff; --surface-2:#f7f8f7;
+  --ink:#15191a; --ink-soft:#5b6a6b; --ink-faint:#8b9897;
+  --line:#d2d8d6; --line-soft:#e3e7e5;
+  --accent:#e8ab00; --accent-deep:#8a6400; --accent-wash:#fdf3d6;
+  --petrol:#0e3a38; --petrol-soft:#2b6360;
+  --pos:#18684a; --neg:#a5291c; --warn:#9a6508;
+  --pos-wash:#dff0e6; --neg-wash:#fbe2de; --warn-wash:#fbeed2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0c100f; --surface:#151a19; --surface-2:#1b2120;
+    --ink:#e9edea; --ink-soft:#97a6a3; --ink-faint:#6d7c79;
+    --line:#26302e; --line-soft:#1e2625;
+    --accent:#ffc32b; --accent-deep:#ffc32b; --accent-wash:#2a2213;
+    --petrol:#7fd0c6; --petrol-soft:#7fd0c6;
+    --pos:#54c28d; --neg:#ef7a68; --warn:#e0a63a;
+    --pos-wash:#13301f; --neg-wash:#331715; --warn-wash:#2e2412;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0c100f; --surface:#151a19; --surface-2:#1b2120;
+  --ink:#e9edea; --ink-soft:#97a6a3; --ink-faint:#6d7c79;
+  --line:#26302e; --line-soft:#1e2625;
+  --accent:#ffc32b; --accent-deep:#ffc32b; --accent-wash:#2a2213;
+  --petrol:#7fd0c6; --petrol-soft:#7fd0c6;
+  --pos:#54c28d; --neg:#ef7a68; --warn:#e0a63a;
+  --pos-wash:#13301f; --neg-wash:#331715; --warn-wash:#2e2412;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%}
+.wrap{max-width:1040px; margin:0 auto; padding-inline:20px; padding-block:0 72px}
+h1,h2,h3,.disp{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif; text-wrap:balance}
+a{color:var(--petrol-soft)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.masthead{border-bottom:1px solid var(--line); padding-block:36px 26px}
+.kicker{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint); display:flex; gap:14px; flex-wrap:wrap}
+.kicker b{color:var(--accent-deep); font-weight:600}
+h1{font-size:clamp(42px,9vw,84px); line-height:.94; font-weight:700; margin:16px 0 0; letter-spacing:-.02em}
+h1 .thin{font-weight:500; color:var(--ink-soft)}
+.standfirst{font-size:clamp(16px,2.2vw,19px); color:var(--ink-soft); max-width:62ch; margin:18px 0 0}
+.standfirst strong{color:var(--ink); font-weight:600}
+
+section{padding-block:44px; border-top:1px solid var(--line-soft)}
+section:first-of-type{border-top:0}
+.sechead{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:6px}
+.node{width:9px; height:9px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 0 4px var(--accent-wash); flex:none}
+h2{font-size:clamp(24px,4vw,34px); font-weight:600; margin:0; letter-spacing:-.01em}
+.sectag{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-faint)}
+.lede{color:var(--ink-soft); max-width:68ch; margin:10px 0 24px}
+p{max-width:70ch}
+
+.goals{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1px;
+  background:var(--line-soft); border:1px solid var(--line-soft); margin:26px 0 0}
+.goal{background:var(--surface); padding:20px 18px}
+.goal .n{font-family:"IBM Plex Sans Condensed",sans-serif; font-size:34px; font-weight:700;
+  line-height:1.05; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.goal .n small{font-size:17px; font-weight:600; color:var(--ink-soft); margin-left:3px}
+.goal .l{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-faint); margin-top:8px}
+.goal .d{font-size:13px; color:var(--ink-soft); margin-top:8px; line-height:1.45; max-width:none}
+
+.horizon{display:grid; gap:1px; background:var(--line-soft); border:1px solid var(--line-soft);
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); margin-top:26px}
+.hz{background:var(--surface); padding:20px 18px}
+.hz .yr{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent-deep); font-weight:600}
+.hz h3{font-size:19px; margin:8px 0 6px; font-weight:600}
+.hz p{margin:0; font-size:13.5px; color:var(--ink-soft); max-width:none}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--line-soft); background:var(--surface); margin-top:20px}
+table{border-collapse:collapse; width:100%; min-width:620px; font-size:13.5px}
+th{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-faint); text-align:left; font-weight:500;
+  padding:12px 13px; border-bottom:1px solid var(--line); white-space:nowrap; background:var(--surface-2)}
+td{padding:11px 13px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+.co{font-weight:600}
+.chip{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  padding:2px 7px; border-radius:2px; letter-spacing:.04em; white-space:nowrap}
+.chip.p{background:var(--pos-wash); color:var(--pos)}
+.chip.w{background:var(--warn-wash); color:var(--warn)}
+.chip.q{background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--line-soft)}
+
+.note{border-left:3px solid var(--accent); background:var(--surface); padding:16px 18px;
+  margin-top:22px; font-size:14px}
+.note p{max-width:none; margin:0}
+.note.redact{border-left-color:var(--petrol)}
+
+.deals{display:grid; gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); margin-top:22px}
+.deal{background:var(--surface); padding:17px 18px; display:grid; gap:4px 18px;
+  grid-template-columns:minmax(0,1fr) auto; align-items:start}
+.deal .t{font-weight:600; font-size:15px}
+.deal .m{font-size:13px; color:var(--ink-soft); grid-column:1/-1; max-width:none; margin:0}
+.deal .st{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; white-space:nowrap; padding-top:3px}
+.st.done{color:var(--ink-faint)} .st.live{color:var(--pos)} .st.watch{color:var(--warn)}
+
+.steps{counter-reset:s; margin-top:22px; display:grid; gap:1px;
+  background:var(--line-soft); border:1px solid var(--line-soft)}
+.step{background:var(--surface); padding:17px 18px 17px 54px; position:relative}
+.step::before{counter-increment:s; content:counter(s); position:absolute; left:18px; top:17px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; color:var(--accent-deep);
+  border:1px solid var(--line); width:22px; height:22px; display:grid; place-items:center; border-radius:50%}
+.step h3{font-size:16px; margin:0 0 3px; font-weight:600}
+.step p{margin:0; font-size:13.5px; color:var(--ink-soft); max-width:none}
+
+.foot{border-top:1px solid var(--line); margin-top:52px; padding-top:26px; font-size:12.5px; color:var(--ink-faint)}
+.foot h3{font-size:14px; color:var(--ink-soft); margin:0 0 10px; font-weight:600}
+.foot p{margin:0 0 9px; max-width:82ch}
+
+@media (max-width:640px){
+  .deal{grid-template-columns:1fr}
+  .deal .st{grid-row:1; justify-self:start}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="kicker">
+    <span><b>Arbeidsnotat</b></span>
+    <span>Bergen / Vestland</span>
+    <span>September 2026</span>
+    <span>Kilde: Brønnøysundregistrene</span>
+  </div>
+  <h1>Flaskehalsen<span class="thin">.</span></h1>
+  <p class="standfirst">Ledetiden på en høyspenttransformator er 128 uker. På koblingsanlegg
+  opptil tre år. Den som eier kapasiteten i mellomtiden, setter prisen.
+  <strong>Tesen er ikke å handle flaskehalsen — men å kjøpe dem som allerede eier den</strong>,
+  fra en generasjon som er i ferd med å gå av og priser bedriftene sine på fjorårets tall.</p>
+</header>
+
+<section>
+  <div class="sechead"><span class="node"></span><h2>Tesen</h2><span class="sectag">Hvorfor nå</span></div>
+  <p class="lede">Tre forhold treffer samtidig, og ingen av dem er drevet av hverandre. Det er
+  sammenfallet som skaper vinduet. Vinduet lukkes når eierne enten dør fra bedriftene eller selger
+  dem til industrielle kjøpere som allerede har begynt å lete.</p>
+
+  <div class="goals">
+    <div class="goal">
+      <div class="n">128<small>uker</small></div>
+      <div class="l">Leveringstid trafo</div>
+      <div class="d">Opp fra rundt 52 uker i 2020. Priser opp 77 % siden 2019. Koblingsanlegg 52–104 uker.</div>
+    </div>
+    <div class="goal">
+      <div class="n">179<small>av 329</small></div>
+      <div class="l">Familieeid</div>
+      <div class="d">Norske AS i flaskehalsbransjene med 10–250 ansatte. Snittalder på styret: 60+.</div>
+    </div>
+    <div class="goal">
+      <div class="n">27<small>%</small></div>
+      <div class="l">Toppmargin i klyngen</div>
+      <div class="d">Tavlebyggere med 20 %+ driftsmargin har allerede prismakt. Det er eiendelen.</div>
+    </div>
+    <div class="goal">
+      <div class="n">3–5×</div>
+      <div class="l">Inngangsmultippel</div>
+      <div class="d">Småbedrifter prises på historisk EBITDA. Plattformer omsettes til 8–12×.</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><b>Arbitrasjen i én setning.</b> Selgeren priser en flat, moden bedrift på fjorårets
+    resultat. Kjøperen priser en posisjon i en kjede der kapasitet er den knappe varen i minst tre
+    år til. Begge har rett om sin egen tidshorisont. Bare den ene av dem blir betalt for det.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="node"></span><h2>Målet</h2><span class="sectag">Visjon og horisont</span></div>
+  <p class="lede">Bli den samlende eieren av elektroteknisk kapasitet på Vestlandet —
+  tavlebygging, transformatorservice, testing og sertifisering — før nettutbyggingen, datasentrene
+  og forsvarsinvesteringene gjør den kapasiteten umulig å kjøpe til fornuftig pris.</p>
+
+  <div class="horizon">
+    <div class="hz"><div class="yr">År 1</div><h3>Plattform + to</h3>
+      <p>Én plattformbedrift med 25 %+ margin, deretter to nabo-oppkjøp i samme klynge.
+      Felles innkjøp og prosjektledelse. Rundt 100 mNOK omsetning.</p></div>
+    <div class="hz"><div class="yr">År 3</div><h3>Klyngen samlet</h3>
+      <p>6–8 selskaper i Bergensregionen. Rundt 520 mNOK omsetning og 50 mNOK EBITDA — summen av
+      klyngen slik den faktisk står i registrene i dag.</p></div>
+    <div class="hz"><div class="yr">År 5</div><h3>Én motpart</h3>
+      <p>Regionens eneste leverandør som kan ta et komplett elektroteknisk leveranseomfang.
+      Da er prisingen industriell, ikke lokal.</p></div>
+    <div class="hz"><div class="yr">Exit</div><h3>Multippelarbitrasjen</h3>
+      <p>Kjøpt til 3–5× på enkeltselskaper, solgt som plattform til 8–12×. Forskjellen er
+      betalingen for integrasjonsarbeidet ingen andre gjorde.</p></div>
+  </div>
+
+  <div class="note">
+    <p><b>Kapitalstrukturen.</b> Selgerfinansiering som førstevalg — kjøpesum som selgerkreditt,
+    6–12 måneders avdragsfrihet, 3–5 % rente over 5–7 år. Alternativt 60 % bankgjeld mot 40 %
+    selgerrullering, slik at banken validerer og selgeren beholder eksponering. Minimum 1,5× i
+    rentedekningsgrad i alle scenarier. Ingen personlig kausjon.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="node"></span><h2>Metoden</h2><span class="sectag">Reproduserbar</span></div>
+  <p class="lede">Hele analysen er bygget på åpne API-er. Ingen betalte datakilder, ingen skraping
+  av nettsteder som forbyr det. Skriptene ligger i dette repoet og kan kjøres på nytt av hvem som
+  helst mot en annen bransje eller en annen region.</p>
+
+  <div class="steps">
+    <div class="step"><h3>Hent selskapsuniverset</h3>
+      <p>Enhetsregisteret, filtrert på næringskode, organisasjonsform AS og ansatteintervall.
+      Merk at Norge gikk over til SN2025 — engroskodene er renummerert, og gamle 46.5x/46.6x
+      gir null treff.</p></div>
+    <div class="step"><h3>Legg på roller og alder</h3>
+      <p>Rolleregisteret gir daglig leder og styre med fødselsår. Fallgruve: korporative roller er
+      som regel <em>revisor og regnskapsfører</em>, ikke eiere — leser du dem som morselskap, blir
+      hele eierklassifiseringen feil.</p></div>
+    <div class="step"><h3>Legg på regnskap</h3>
+      <p>Regnskapsregisteret gir omsetning, driftsresultat og egenkapital — men <b>kun siste
+      år</b>. Flerårig trend må hentes andre steder.</p></div>
+    <div class="step"><h3>Score</h3>
+      <p>Eier- og styrealder, marginnivå, egenkapitalandel, styrestørrelse, familiesignal og
+      bransjenærhet til flaskehalsen. Konserneide trekkes fra.</p></div>
+    <div class="step"><h3>Verifiser eierskap manuelt</h3>
+      <p>Aksjonærregisteret er ikke åpne data. Det må bestilles fra Skatteetaten og leveres på fil
+      innen fem virkedager. Uten det er eierskap en kvalifisert antakelse, ikke et faktum.</p></div>
+  </div>
+
+  <div class="note">
+    <p><b>Omfang.</b> 329 selskaper i kjernebransjene og 3 323 i femten tilgrensende bransjer,
+    samt rolleregisteret til 1 368 selskaper i Bergensregionen — til sammen 3 920 unike personer
+    kartlagt for styresammensetning.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="node"></span><h2>Funnene</h2><span class="sectag">Aggregert</span></div>
+  <p class="lede">Femten bransjer screenet mot samme krav: uavhengig av konsern, over 10 mNOK
+  omsetning, driftsmargin over 5 %, og eier eller styre over 56 år.
+  <strong>1 086 selskaper kvalifiserte nasjonalt — 74 av dem i Bergensregionen.</strong></p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr>
+      <th>Bransje</th><th class="num">Kvalifiserte</th><th class="num">I Bergen</th>
+      <th class="num">Median margin</th><th class="num">Median oms.</th><th>Relevans for tesen</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="co">Elektroinstallasjon</td><td class="num">281</td><td class="num">18</td>
+        <td class="num"><span class="chip w">9,5 %</span></td><td class="num">41 mNOK</td>
+        <td>Samme kunder som tavleklyngen</td></tr>
+      <tr><td class="co">Teknisk rådgivning</td><td class="num">212</td><td class="num">16</td>
+        <td class="num"><span class="chip p">12,2 %</span></td><td class="num">60 mNOK</td>
+        <td>Kompetansen som kvalifiserer alt annet</td></tr>
+      <tr><td class="co">Regnskap og bokføring</td><td class="num">203</td><td class="num">10</td>
+        <td class="num"><span class="chip p">12,8 %</span></td><td class="num">26 mNOK</td>
+        <td>Høyest marginer, tyngst eierdemografi</td></tr>
+      <tr><td class="co">Anlegg og grunnarbeid</td><td class="num">163</td><td class="num">6</td>
+        <td class="num"><span class="chip w">9,0 %</span></td><td class="num">55 mNOK</td>
+        <td>Maskintungt, krever annen finansiering</td></tr>
+      <tr><td class="co">Industrivedlikehold</td><td class="num">58</td><td class="num">7</td>
+        <td class="num"><span class="chip w">8,1 %</span></td><td class="num">74 mNOK</td>
+        <td>Reparasjon slår nybygg ved lange ledetider</td></tr>
+      <tr><td class="co">Avfall og gjenvinning</td><td class="num">55</td><td class="num">5</td>
+        <td class="num"><span class="chip w">8,8 %</span></td><td class="num">89 mNOK</td>
+        <td>Konsesjonsbeskyttet, gjentakende inntekt</td></tr>
+      <tr><td class="co">Renhold og facility</td><td class="num">50</td><td class="num">4</td>
+        <td class="num"><span class="chip w">7,6 %</span></td><td class="num">22 mNOK</td>
+        <td>Lav margin, lav kapitalbinding</td></tr>
+      <tr><td class="co">Tannhelse</td><td class="num">22</td><td class="num">3</td>
+        <td class="num"><span class="chip p">14,5 %</span></td><td class="num">21 mNOK</td>
+        <td>Allerede under konsolidering</td></tr>
+      <tr><td class="co">Kran og løft</td><td class="num">22</td><td class="num">2</td>
+        <td class="num"><span class="chip p">14,3 %</span></td><td class="num">100 mNOK</td>
+        <td>Sertifisering skaper inngangsbarriere</td></tr>
+      <tr><td class="co">Tak, ventilasjon, klima</td><td class="num">20</td><td class="num">3</td>
+        <td class="num"><span class="chip w">8,8 %</span></td><td class="num">34 mNOK</td>
+        <td>Naturlig tillegg til elektroplattform</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <p><b>Kjernefunnet.</b> I Bergensregionen ligger det sju tavle- og elektroselskaper innenfor en
+    times kjøring fra sentrum. Ingen av dem er store nok til å interessere industrielle kjøpere
+    alene. Til sammen er de regionens elektrotekniske kapasitet — rundt 520 mNOK omsetning og
+    50 mNOK driftsresultat. Toppmarginen i klyngen er 27 %.</p>
+  </div>
+
+  <div class="note redact">
+    <p><b>Selskapslistene er ikke publisert her.</b> Navngitte oppkjøpskandidater, styrekandidater
+    og de underliggende datasettene inneholder personopplysninger — navn og fødselsår på
+    identifiserbare personer — og er dessuten kommersielt sensitive. De ligger utenfor dette
+    repoet. Se <a href="#tilgang">Tilgang til datasettene</a>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="node"></span><h2>Divesteringer</h2><span class="sectag">Den andre dealflowen</span></div>
+  <p class="lede">Konsern som rendyrker kjernen selger deler som er noen andres kjerne. Det er den
+  andre kilden til dealflow ved siden av generasjonsskifte — og den eneste der selgeren er
+  profesjonell, rask og ikke emosjonelt bundet til bedriften. Alle transaksjonene under er
+  offentlig annonserte.</p>
+
+  <div class="deals">
+    <div class="deal">
+      <div class="t">Eviny → Eviny Solutions til AF Gruppen</div>
+      <div class="st done">Gjennomført</div>
+      <p class="m">Bergens kraftkonsern solgte entreprenørselskapet sitt: 80 % av aksjene for
+      71 mNOK, samlet selskapsverdi inntil 140 mNOK gjeldfritt. Omdøpt til AF Elkraft i november
+      2025. <b>Dette er presedensen</b> — et elektroselskap i Bergen med rundt 150 ansatte skiftet
+      eier til under 1× omsetning fordi det ikke var kjernevirksomhet for eieren.</p>
+    </div>
+    <div class="deal">
+      <div class="t">Eviny → Eviny Fast Charging inn i Mer</div>
+      <div class="st done">Gjennomført</div>
+      <p class="m">Hurtigladevirksomheten slått sammen med Statkraft-eide Mer i 2026. Eviny
+      avhender systematisk alt som ikke er nett og kraft. Spørsmålet er hva som står for tur.</p>
+    </div>
+    <div class="deal">
+      <div class="t">AKVA Group — strategisk gjennomgang</div>
+      <div class="st live">Pågår gjennom 2026</div>
+      <p class="m">Varslet gjennomgang som eksplisitt åpner for salg av hele virksomheten eller
+      verdiskapende kombinasjoner. Egersund Group kontrollerer 51 %, Israel Corporation 18 %.
+      For stor for denne strukturen, men gjennomganger av denne typen produserer carve-outs
+      nedover i konsernet.</p>
+    </div>
+    <div class="deal">
+      <div class="t">GK → dansk servicevirksomhet til Caverion</div>
+      <div class="st done">April 2026</div>
+      <p class="m">GK forlot det danske markedet og solgte servicevirksomheten; prosjektdelen ble
+      avviklet. Mønsteret gjentar seg: teknisk service selges ut når konsernet snevrer inn
+      geografisk.</p>
+    </div>
+    <div class="deal">
+      <div class="t">Strukturelt — Vestlandet 2026</div>
+      <div class="st watch">Signal</div>
+      <p class="m">Private equity sto for nær halvparten av oppkjøpene i Norge i 2025, og
+      industriselskaper fortsetter å rendyrke kjernevirksomheten — som gir flere carve-outs på
+      Vestlandet. De aktive sektorene er oljeservice og subsea, fornybar og kraftsystem, CCS og
+      datasentre. <b>Alle fire trenger tavler, trafo og sertifisering.</b> Etterspørselen etter det
+      vi kjøper, kommer fra de samme prosessene som produserer selgerne.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><b>Hvordan du finner den neste før den annonseres.</b> Brønnøysund fører nesten aldri
+    konserntilhørighet, så registerdata kan ikke screene dette — det må bygges manuelt. Mønsteret
+    å lete etter: et datterselskap med 12+ ansatte, margin under 3 %, i en næringskode som ligger
+    langt fra morselskapets egen. Eviny Solutions oppfylte alle tre i to år før salget.</p>
+  </div>
+</section>
+
+<section id="tilgang">
+  <div class="sechead"><span class="node"></span><h2>Tilgang til datasettene</h2><span class="sectag">Ikke publisert</span></div>
+  <p class="lede">Fem datasett hører til denne analysen. De inneholder navn og fødselsår på
+  identifiserbare personer hentet fra offentlige registre, og deles ikke på en åpen side.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Datasett</th><th class="num">Rader</th><th>Innhold</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="co">Flaskehalsselskaper, Norge</td><td class="num">329</td>
+        <td>Kjernebransjer, regnskap 2025, styrealder</td><td><span class="chip q">Ikke publisert</span></td></tr>
+      <tr><td class="co">Flaskehalsselskaper, Bergen</td><td class="num">26</td>
+        <td>Samme, avgrenset til regionen</td><td><span class="chip q">Ikke publisert</span></td></tr>
+      <tr><td class="co">Styrekandidater, Bergen</td><td class="num">400</td>
+        <td>Verifiserte verv, fagprofil, alder</td><td><span class="chip q">Ikke publisert</span></td></tr>
+      <tr><td class="co">Andre bransjer, Norge</td><td class="num">1 086</td>
+        <td>Femten bransjer, scoret</td><td><span class="chip q">Ikke publisert</span></td></tr>
+      <tr><td class="co">Andre bransjer, Bergen</td><td class="num">74</td>
+        <td>Samme, avgrenset til regionen</td><td><span class="chip q">Ikke publisert</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <p><b>Alt kan gjenskapes.</b> Skriptene i <code>scripts/</code> bygger datasettene fra
+    Brønnøysunds åpne API-er på under en time. Ingen nøkler, ingen kontoer, ingen betalte kilder.
+    Det er derfor analysen ligger her og dataene ikke gjør det.</p>
+  </div>
+</section>
+
+<div class="foot">
+  <h3>Kilder og forbehold</h3>
+  <p><b>Datagrunnlag:</b> Enhetsregisteret, rolleregisteret og Regnskapsregisteret hos
+  Brønnøysundregistrene, hentet 16. september 2026.</p>
+  <p><b>Tre kjente svakheter.</b> Regnskapsregisterets API leverer kun siste regnskapsår, så
+  flerårig trend er ikke testet. Eierskap er ikke verifisert — Aksjonærregisteret er ikke åpne
+  data og må bestilles fra Skatteetaten. Alder er utledet av fødselsår og sier ingenting om
+  hvorvidt noen faktisk vil selge.</p>
+  <p><b>Divesteringsdelen</b> bygger på offentlig annonserte transaksjoner og bransjeanalyse, ikke
+  på registerdata. Den er retningsgivende, ikke uttømmende.</p>
+  <p>Kilder:
+  <a href="https://www.thommessen.no/aktuelt/m-a-pa-vestlandet-i-2026-drivere-muligheter-og-forutsigbare-transaksjonsprosesser">Thommessen — M&amp;A på Vestlandet i 2026</a> ·
+  <a href="https://kommunikasjon.ntb.no/pressemelding/18572467/entreprenorselskapet-eviny-solutions-blir-en-del-av-af-gruppen">Eviny / AF Gruppen</a> ·
+  <a href="https://ilaks.no/akva-group-varsler-strategisk-gjennomgang-og-apner-for-salg/">AKVA Group</a> ·
+  <a href="https://norskbyggebransje.no/nyheter/gk-selger-virksomhet-til-caverion">GK / Caverion</a> ·
+  <a href="https://data.brreg.no/enhetsregisteret/api/dokumentasjon">Brønnøysund API-dokumentasjon</a></p>
+  <p style="margin-top:14px">Internt arbeidsnotat. Ingen av de omtalte selskapene har uttrykt
+  salgsinteresse, og ingen personer er kontaktet.</p>
+</div>
+
+</div>
+</body>
+</html>
