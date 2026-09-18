@@ -31,6 +31,12 @@ python3 scripts/styregraf.py --kommune bergen --ut styrekandidater.csv
 
 # Hvem har rørt på seg i registeret siden i sommer?
 python3 scripts/bevegelse.py --fra 2026-06-01 --orgnr-fil maal.txt
+
+# Selskaper i formell krise: konkurs, avvikling, tvangsavvikling
+python3 scripts/krise.py --formelt --ut konkurs.csv
+
+# Selskaper som lever, men taper penger eller egenkapital
+python3 scripts/krise.py --sliter --hardcore --ut sliter.csv
 ```
 
 Bransjegrupper: `elektro`, `testing`, `lagring`, `installasjon`, `tjenester`,
@@ -44,9 +50,10 @@ Krever Python 3.9+. Ingen avhengigheter utover standardbiblioteket.
 | `scripts/screen.py` | Selskapsscreening med scoring på eieralder, margin og soliditet |
 | `scripts/styregraf.py` | Bygger personnettverk fra rolleregisteret og rangerer styrekandidater |
 | `scripts/bevegelse.py` | Krysser oppdateringsfeeden mot en målliste — hvem er i bevegelse |
+| `scripts/krise.py` | Konkurs og avvikling, og selskaper som taper penger mens de lever |
 | `index.html` | Selve analysen |
 
-## Fire fallgruver i Brønnøysunddataene
+## Seks fallgruver i Brønnøysunddataene
 
 Disse kostet tid å finne, og de er ikke dokumentert noe sted:
 
@@ -62,7 +69,16 @@ Disse kostet tid å finne, og de er ikke dokumentert noe sted:
    46.5x/46.6x — de gir null treff. Sjekk alltid en kjent aktør i bransjen før
    du stoler på en kode.
 
-4. **Kunngjøringsregisteret svarer ikke.** `data.brreg.no/kunngjoring/api/` gir
+4. **Dyp paginering kuttes på 10 000 treff.** En spørring som matcher mer enn
+   det gir deg stille de første 10 000 og ikke noe mer. Del opp på
+   ansattintervall eller næringskode. Dette er lett å overse — du får et svar
+   som ser komplett ut.
+
+5. **Ansatttallet nulles ved konkurs.** Av 3 039 konkursrammede AS har bare 57
+   registrert fem eller flere ansatte. Du kan ikke filtrere konkurslister på
+   størrelse; bruk næringskode og sted i stedet.
+
+6. **Kunngjøringsregisteret svarer ikke.** `data.brreg.no/kunngjoring/api/` gir
    tom respons. Fisjoner og fusjoner må derfor spores via oppdateringsfeeden
    eller manuelt — og feeden er tynn på korte vinduer: seks uker ga treff på
    7 av 4 215 overvåkede selskaper.
