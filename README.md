@@ -37,6 +37,9 @@ python3 scripts/krise.py --formelt --ut konkurs.csv
 
 # Selskaper som lever, men taper penger eller egenkapital
 python3 scripts/krise.py --sliter --hardcore --ut sliter.csv
+
+# Löw-underwriting: Z - V - L15 på alle tapsbringende selskaper
+python3 scripts/low.py --kun-konsern --ut low.csv
 ```
 
 Bransjegrupper: `elektro`, `testing`, `lagring`, `installasjon`, `tjenester`,
@@ -51,6 +54,7 @@ Krever Python 3.9+. Ingen avhengigheter utover standardbiblioteket.
 | `scripts/styregraf.py` | Bygger personnettverk fra rolleregisteret og rangerer styrekandidater |
 | `scripts/bevegelse.py` | Krysser oppdateringsfeeden mot en målliste — hvem er i bevegelse |
 | `scripts/krise.py` | Konkurs og avvikling, og selskaper som taper penger mens de lever |
+| `scripts/low.py` | Underwriting etter Peter Löws modell: likvidasjonsverdi minus gjeld minus 15 måneders brenn |
 | `index.html` | Selve analysen |
 
 ## Seks fallgruver i Brønnøysunddataene
