@@ -642,5 +642,686 @@ window.OT.lectures = [
         ]
       }
     ]
+  },
+
+  /* =================== 6. Jobbholdninger =================== */
+  {
+    id: 'f6', modul: 'motivasjon', nr: 6,
+    tittel: 'Jobbholdninger og psykososialt arbeidsmiljø',
+    kilde: 'HSM121 forelesning 6', foreleser: 'Reidar Hillesund', lysbilder: 63,
+    litteratur: 'K&K kap. 9',
+    hovedpunkter: [
+      'Arbeidsmiljø kan studeres fra to sider: belastning og berikelse',
+      'Holdninger har tre komponenter — tanke, følelse og handlingstendens',
+      'Jobbforpliktelse finnes i tre former, med ulike konsekvenser',
+      'Konflikt er normalt, og håndtering er ikke det samme som løsning'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Arbeidsmiljø og HR',
+        blokker: [
+          { t: 'def', term: 'Arbeidsmiljø', tekst: 'Det fysiske, sosiale og psykologiske miljøet vi møter på jobb. <strong>Psykososialt arbeidsmiljø</strong> er kvaliteten i de personlige og menneskelige relasjonene på jobben.' },
+          { t: 'liste', tittel: 'To hovedfokus', punkter: [
+            '<strong>Belastningsperspektivet:</strong> vektlegger de negative, nedbrytende faktorene',
+            '<strong>Berikelsesperspektivet:</strong> vektlegger de positive, oppbyggende faktorene'
+          ]},
+          { t: 'boks', tittel: 'Arbeidsmiljøloven § 4-3', tekst: 'Loven navngir de psykososiale faktorene eksplisitt: uklare eller motstridende krav og forventninger, emosjonelle krav i arbeid med mennesker, arbeidsmengde og tidspress som gir ubalanse mellom oppgaven og tiden til rådighet, og støtte og hjelp i arbeidet. Arbeidet skal legges til rette slik at arbeidstakerens integritet og verdighet ivaretas, og ingen skal utsettes for trakassering eller annen utilbørlig opptreden.' },
+          { t: 'liste', tittel: 'HR og HRM', punkter: [
+            '<strong>HR</strong> — de menneskelige ressursene i organisasjonen, og samspillet mellom organisasjonen og medarbeiderne',
+            '<strong>HRM</strong> — ledelse av de menneskelige ressursene: evner, egenskaper, kunnskaper, erfaringer og ferdigheter, gjennom planlegging, ansettelser, utvikling og avvikling'
+          ]},
+          { t: 'liste', tittel: 'Personalpolitikkens områder', punkter: [
+            'Arbeidsmiljø, medarbeidersamtale og kompetanseutvikling',
+            'Lederutvikling og rekruttering',
+            'Lønnspolitikk — for å rekruttere, beholde og utvikle',
+            'Livsfasepolitikk — balanse mellom arbeid og privatliv i ulike livsfaser',
+            'Sykefravær — forebygge og følge opp',
+            'Mangfold og likestilling'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Holdninger og jobbholdninger',
+        blokker: [
+          { t: 'def', term: 'Holdning', tekst: 'Evaluerende, vurderende reaksjoner på noe — en summarisk evaluering av et psykologisk objekt (god–dårlig, like–mislike). En generell evaluerende innstilling til mennesker og sosiale situasjoner.' },
+          { t: 'liste', tittel: 'Holdningens tre komponenter (ABC)', punkter: [
+            '<strong>Kognitiv komponent</strong> — hva du tror',
+            '<strong>Affektiv komponent</strong> — hva du føler',
+            '<strong>Handlingskomponent</strong> — hvordan du er tilbøyelig til å handle'
+          ]},
+          { t: 'p', tekst: 'Verdier er abstrakte idealer uten referanse til bestemte personer eller objekter, og de påvirker holdningene våre. Stereotyper, fordommer og diskriminering er holdninger som slår negativt ut.' },
+          { t: 'def', term: 'Jobbholdninger', tekst: 'Relativt konsistente tanker, følelser og handlingsintensjoner tilknyttet ulike sider ved jobben. De to viktigste er jobbtilfredshet og jobbforpliktelse.' }
+        ]
+      },
+      {
+        tittel: 'Jobbtilfredshet',
+        blokker: [
+          { t: 'def', term: 'Jobbtilfredshet', tekst: 'En evaluerende tilstand som uttrykker ens forventninger, tilfredshet og positive følelser i relasjon til jobben.' },
+          { t: 'liste', tittel: 'Historisk utvikling', punkter: [
+            '<strong>Taylor, 1920-tallet:</strong> medarbeidere vil trives best i jobber som gir god lønn for liten innsats',
+            '<strong>Hawthorne-studiene, 1930-tallet:</strong> lønn spiller mindre rolle for tilfredshet enn sosial anerkjennelse'
+          ]},
+          { t: 'liste', tittel: 'To typer teorier', punkter: [
+            '<strong>Innholdsteorier:</strong> handler om faktorene som påvirker holdningen — forventninger, behov og verdier. Maslow og Herzberg hører hjemme her',
+            '<strong>Prosessteorier:</strong> handler om hvordan slike faktorer i samspill med selve jobben utvikler tilfredshet. Diskrepansteorier forklarer mistrivsel som forskjellen mellom det man ønsker og det man faktisk erfarer'
+          ]},
+          { t: 'p', tekst: 'Det er sammenheng mellom jobbtilfredshet og produktivitet, og jobbatferd som turnover, nærvær og fravær har stor betydning for ytelsen.' }
+        ]
+      },
+      {
+        tittel: 'Jobbforpliktelse og psykologisk kontrakt',
+        blokker: [
+          { t: 'def', term: 'Jobbforpliktelse', tekst: 'Individets grad av tilknytning til, identifikasjon med og engasjement for jobben og organisasjonen. Sterk forpliktelse innebærer tro på organisasjonens mål og verdier, og vilje til å yte mer på organisasjonens vegne.' },
+          { t: 'liste', tittel: 'Tre former for jobbforpliktelse', punkter: [
+            '<strong>Basert på kontinuitet:</strong> jeg blir fordi det koster for mye å slutte',
+            '<strong>Affektiv:</strong> jeg blir fordi jeg vil — følelsesmessig tilknytning',
+            '<strong>Normativ:</strong> jeg blir fordi jeg bør — opplevd forpliktelse'
+          ]},
+          { t: 'def', term: 'Psykologisk kontrakt', tekst: 'En medarbeiders oppfatning av utvekslingsforholdet mellom seg selv og organisasjonen. <strong>Transaksjonskontrakten</strong> er kortvarig med få løfter og forpliktelser; <strong>relasjonskontrakten</strong> innebærer utstrakte psykologiske forpliktelser og løfter begge veier.' },
+          { t: 'boks', tittel: 'Hvorfor dette er eksamensrelevant', tekst: 'Den psykologiske kontrakten er nøkkelen til å forstå endringsmotstand: en omorganisering som endrer arbeidsoppgaver eller forventninger, bryter en kontrakt som aldri ble skrevet ned — men som medarbeideren opplever som reell.' }
+        ]
+      },
+      {
+        tittel: 'Belastningsperspektivet: stress',
+        blokker: [
+          { t: 'def', term: 'Stress', tekst: 'Av latin <em>stringere</em>, å stramme til. Brukes om en overbelastning påført utenfra som overstiger toleransegrensen. Psykologisk stress er opplevelsen av manglende samsvar mellom mestringsevne og de utfordringene man står overfor.' },
+          { t: 'p', tekst: 'Stress i vid forstand er opplevelsen av muligheter og trusler som oppfattes som viktige, men som man ikke klarer å håndtere. Oppleves det som en <strong>mulighet</strong>, gir det positivt stress; oppleves det som en <strong>trussel</strong>, gir det negativt stress.' },
+          { t: 'liste', tittel: 'McGraths transaksjonsmodell — fire elementer', punkter: [
+            '<strong>Krav</strong> — de objektive kravene, kalt belastninger',
+            '<strong>Tolking</strong> — hvordan personen oppfatter kravene',
+            '<strong>Responser</strong> — fysiologiske, psykologiske eller atferdsmessige',
+            '<strong>Konsekvenser</strong> — for individet og for organisasjonen'
+          ]},
+          { t: 'liste', tittel: 'Reaksjonsmønstre på stress', punkter: [
+            '<strong>Fysiologiske:</strong> høyt blodtrykk, immunreaksjoner, svette',
+            '<strong>Atferdsmessige:</strong> lavere ytelse, flere feilhandlinger, høyere sykefravær, isolering',
+            '<strong>Psykologiske:</strong> misnøye, bekymring, angst, irritabilitet',
+            '<strong>Kognitive:</strong> svekket oppmerksomhet, konsentrasjonsvansker, svekket hukommelse',
+            '<strong>Utbrenthet:</strong> fysisk, mental og følelsesmessig utmattelse'
+          ]},
+          { t: 'liste', tittel: 'Stressorer i arbeidslivet', punkter: [
+            '<strong>Arbeidsarenaen:</strong> jobbkrav, rollekrav, sosiale relasjoner, karriereutvikling, organisasjonsstruktur og -klima',
+            '<strong>Hjem- og sosial arena</strong>',
+            '<strong>Individet</strong>',
+            '<strong>Manifestasjonsarenaen</strong>'
+          ]},
+          { t: 'liste', tittel: 'Hvordan organisasjonen kan motvirke stress', punkter: [
+            'Organisatoriske mestringsstrategier',
+            '<strong>Sosial støtte</strong> i fire former: følelsesmessig, oppgavestøtte, informasjonsstøtte og praktisk støtte',
+            'På individnivå: hardførhet, resiliens og mestring'
+          ]},
+          { t: 'p', tekst: '<strong>Psykologisk kapital</strong> består av mestringstro, optimisme, håp og resiliens, og henger sammen med jobbengasjement gjennom vigør, dedikasjon og absorpsjon.' }
+        ]
+      },
+      {
+        tittel: 'Konflikt i arbeidslivet',
+        blokker: [
+          { t: 'p', tekst: 'Konflikt er en uoverensstemmelse med utgangspunkt i forskjeller — i mål, ønsker, preferanser, interesser, kommunikasjon og atferd. Konflikter er normalt og en naturlig del av organisasjonslivet. Bolman og Deal formulerer poenget skarpt: <em>en rolig, harmonisk organisasjon kan godt være en apatisk, ikke-kreativ, stagnert, rigid og urokkelig organisasjon.</em>' },
+          { t: 'liste', tittel: 'Årsaker på organisatorisk nivå', punkter: [
+            'Kamp om knappe ressurser', 'Uklare ansvarsforhold', 'Belønningssystemer som er uklare eller oppleves urettferdige'
+          ]},
+          { t: 'liste', tittel: 'Årsaker i mellommenneskelig samspill', punkter: [
+            'Psykologisk sabotasje',
+            '«Tap av ansikt» — man bærer siden nag',
+            'Feilkommunikasjon, for eksempel ved korrektive tilbakemeldinger',
+            'Personlighetsstil — men dette bør ikke overdrives; konflikter får lett personlige konsekvenser når de får pågå over tid',
+            'Attribueringsprosesser — hvordan vi tilskriver egne og andres handlinger motiver'
+          ]},
+          { t: 'liste', tittel: 'Fire konflikttyper', punkter: [
+            '<strong>Intrapersonell</strong> — med meg selv',
+            '<strong>Interpersonell</strong> — med andre',
+            '<strong>Person/funksjon</strong> — med min rolle',
+            '<strong>Person/organisasjon</strong> — med min organisasjon'
+          ]},
+          { t: 'tabell', kolonner: ['Overflatestruktur', 'Konflikttype', 'Fokus i håndteringen', 'Nøkkelspørsmål'], rader: [
+            ['Misforståelser', 'Begrepskonflikt', 'Språk', 'Har partene et felles språk?'],
+            ['Misforståelser', 'Fortolkningskonflikt', 'Forståelse', 'Har de svært ulik fortolkning av konflikten?'],
+            ['Saklig uenighet', 'Argumentasjonskonflikt', 'Begrunnelse', 'Er de opptatt av svært ulike argumenter?'],
+            ['Opplevd rett til å handle', 'Verdikonflikt', 'Normer', 'Har partene uforenlige verdier?'],
+            ['Opplevd rett til å handle', 'Interessekonflikt', 'Mål', 'Har partene motstridende interesser?'],
+            ['Opplevd rett til å handle', 'Rollekonflikt', 'Grenseoppganger', 'Er de uenige om ansvar og rollefordeling?'],
+            ['Personlighetstrekk', 'Personkonflikt', 'Væremåte', 'Står personlighetstrekk i veien for samhandling?']
+          ]},
+          { t: 'liste', tittel: 'Konfliktens stadier', punkter: [
+            'Latent konflikt', 'Oppfattet konflikt', 'Følt konflikt', 'Manifest konflikt', 'Etterkonflikt'
+          ]},
+          { t: 'p', tekst: 'Opptrappingen går fra uoverensstemmelse, via personifisering, at problemet vokser, at man gir opp å samtale, fiendebilder og polarisering, til full krig. Poenget med stadiemodellen er at en manifest konflikt kan bringe en langvarig latent konflikt fram i dagen — slik at den endelig kan håndteres.' },
+          { t: 'def', term: 'Konflikthåndtering', tekst: 'Hva man faktisk velger å gjøre, eller ikke gjøre, når man blir klar over at en konflikt eksisterer (Einarsen og Pedersen). Det er ikke det samme som konfliktløsning: å håndtere i positiv forstand er å ta tak i konflikten og utnytte kraften som har oppstått ut fra ulikheten.' },
+          { t: 'liste', tittel: 'Positive effekter av konflikt', punkter: [
+            'Konflikten er et varsel — den gjør endring nødvendig',
+            'Den er en drivkraft for forandring, og kan «rense luften»',
+            'Den øker forståelsen for motpartens syn og bringer problemet ut i åpenhet',
+            'Den kan føre til bedre beslutninger og økt gruppelojalitet'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Berikelsesperspektivet: det gode arbeidsmiljøet',
+        blokker: [
+          { t: 'liste', tittel: 'Ivaretakelse av behov knyttet til jobbinnhold', punkter: [
+            'Utfordringer og variasjon',
+            'Beslutningsmyndighet og ansvar',
+            'Sosial støtte og anseelse',
+            'Hensyn til generell livssituasjon',
+            'Jobbengasjement',
+            'Stressforebygging'
+          ]},
+          { t: 'p', tekst: 'Listen er gjenkjennelig fra Thorsrud-programmets jobbkrav i forelesning 5 — og det er poenget: det som motiverer, og det som gir et forsvarlig psykososialt arbeidsmiljø, er i stor grad det samme.' }
+        ]
+      }
+    ]
+  },
+
+  /* =================== 7. Beslutningsprosesser =================== */
+  {
+    id: 'f7', modul: 'beslutning', nr: 7,
+    tittel: 'Beslutningsprosesser i organisasjoner',
+    kilde: 'HSM121 forelesning 7', foreleser: 'Reidar Hillesund', lysbilder: 39,
+    litteratur: 'JT kap. 9',
+    hovedpunkter: [
+      'Idealene for rasjonell beslutning brytes systematisk av realitetene',
+      'Seks beslutningsmodeller, fra rasjonell aktør til organisert anarki',
+      'Struktur, kultur og makt er beslutningspremisser',
+      'Iverksetting er et eget problem, ikke en formalitet'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hva er en beslutning?',
+        blokker: [
+          { t: 'def', term: 'Beslutning', tekst: 'Et valg mellom ulike alternativer, der valget innebærer en forpliktelse til handling. Beslutningen er også det endelige utfallet av en prosess.' },
+          { t: 'def', term: 'Beslutningsprosess', tekst: 'Hele rekken av handlinger eller vurderinger som fører fram til vedtak og iverksetting: identifikasjon av et problem eller en mulighet, innsamling og vurdering av informasjon, valg mellom alternativer, og iverksetting.' },
+          { t: 'liste', tittel: 'Hvorfor studere beslutninger?', punkter: [
+            'Effektivitet — hvordan fattes gode beslutninger?',
+            'Hvordan mål, strategier og struktur faktisk utformes',
+            'Organisasjonskultur — beslutninger er viktige symboler',
+            'Maktforhold — hvem som deltar, og hvem som ikke gjør det',
+            'Ledelse'
+          ]},
+          { t: 'p', tekst: 'Forholdet går begge veier: den organisatoriske konteksten — mål og strategi, formell struktur, kultur og maktforhold — påvirker beslutningsprosessene og dermed beslutningsinnholdet, og beslutningene former i sin tur konteksten.' }
+        ]
+      },
+      {
+        tittel: 'Rasjonell beslutningsatferd — ideal og realitet',
+        blokker: [
+          { t: 'liste', tittel: 'Den rasjonelle modellen forutsetter at aktøren', punkter: [
+            'Har klar forståelse av situasjonen og et klart mål',
+            'Har informasjon om alternative løsninger',
+            'Kan rangere alle alternativer etter hva som gir best resultat',
+            'Velger det alternativet som gir best resultat i forhold til målet'
+          ]},
+          { t: 'p', tekst: 'Forelesningens hovedtabell setter idealet mot realiteten. Dette er kjernen i kapitlet, og den mest siterte figuren til eksamen.' },
+          { t: 'tabell', kolonner: ['Ideal', 'Realitet'], rader: [
+            ['Fanger opp alle viktige problemer og siler viktige fra uviktige', 'Vi legger stort sett bare merke til problemer vi kjenner igjen fra før. Nye problemer fanges ofte ikke opp, uansett hvor viktige de er'],
+            ['Klar og objektiv oppfatning av problemet', 'Hvordan problemet forstås avhenger av hvordan det formuleres. Formuleres det som en trussel, oppfattes det slik — selv om det burde vært sett som en mulighet'],
+            ['Klare mål og preferanser', 'Mål er ofte uklare, vage og motstridende. Mål utvikles i mange tilfeller <em>etter</em> at beslutningen er fattet, for å legitimere den'],
+            ['Samler inn all relevant informasjon', 'Man leter der informasjonen er lettest å finne, gjerne i nærheten av tidligere løsninger på liknende problemer'],
+            ['Velger det beste alternativet', 'Man unngår ofte å velge, fordi valg skaper konflikt eller negative følelser. Valget avhenger av hvordan alternativene er formulert, og vi velger bort risiko og alternativer som kan bety tap'],
+            ['Beslutninger iverksettes slik de var intendert', 'Beslutninger blir ofte ikke iverksatt, men «lagt i skuffen»']
+          ]},
+          { t: 'boks', tittel: 'Konklusjonen', tekst: 'Mennesket er ikke rasjonelt, men <strong>begrenset rasjonelt</strong>. Den rasjonelle modellen er normativ — den sier hvordan det burde vært, ikke hvordan det er.' }
+        ]
+      },
+      {
+        tittel: 'Seks beslutningsmodeller',
+        blokker: [
+          { t: 'liste', tittel: '1. Organisasjonen som rasjonell aktør', punkter: [
+            'Organisasjonen er etablert for å oppnå bestemte mål',
+            'Modellen er normativ',
+            'Bestemte arbeidsoppgaver fokuserer og begrenser arbeidet',
+            'Klare forventninger til hvordan oppgaver løses styrer og koordinerer atferden'
+          ]},
+          { t: 'liste', tittel: '2. Regelmodellen', punkter: [
+            'Kjennetegner byråkratiske organisasjoner',
+            'Regler og prosedyrer spesifiserer hva beslutningstakeren skal gjøre i ulike situasjoner',
+            'Beslutningen blir et spørsmål om å finne riktig regel, ikke om å veie konsekvenser'
+          ]},
+          { t: 'liste', tittel: '3. Forhandlingsmodellen', punkter: [
+            'Håndterer interessekonflikt ved at partene møtes for å finne en løsning',
+            'Partene kan opptre opportunistisk, eller preges av informasjonsdeling og tillit',
+            'Situasjonen kan gi vinn–tap eller vinn–vinn',
+            'Underliggende felles interesser er en fordel',
+            'Alle forhandlinger har både saklige og følelsesmessige sider'
+          ]},
+          { t: 'liste', tittel: 'Råd for en gunstig forhandlingssituasjon', punkter: [
+            'Legg vekt på åpen kommunikasjon, felles mål og nytte, og tillitsbygging',
+            'Vær villig til å foreta innrømmelser',
+            'Analyser personlige fiendskap som kan påvirke forhandlingene',
+            'Utform forhandlingspakker som åpner for kompromiss på tvers av saker'
+          ]},
+          { t: 'liste', tittel: '4. Kommunikativ rasjonalitet', punkter: [
+            'Handler om utvikling av <em>intersubjektivitet</em> — i hvilken grad aktørene klarer å komme til forståelse av hverandre',
+            'Forutsetter felles møteplasser for diskusjon',
+            'Deltakerne må forstå hverandre, ha felles språk og være åpne',
+            'Deltakerne må være sannferdige, og ingen må tvinges til å bytte mening',
+            'Man må samtidig ønske å komme fram til en riktig forståelse',
+            'Passer best med enkel struktur, få nivåer, desentralisert makt og stabile sosiale relasjoner'
+          ]},
+          { t: 'liste', tittel: '5. Inkrementell handling', punkter: [
+            'Små, ukoordinerte handlinger der mål og alternativvurdering skjer samtidig',
+            'Man velger tiltaket de fleste er enige i',
+            'Ufullstendig analyse av situasjon, alternativer og konsekvenser',
+            'Endringene skjer som små skritt, men kan koples sammen slik at de gir store endringer',
+            'Valgene påvirkes av det som er gjort før, ikke av nøye konsekvensvurdering',
+            'Reduserer konflikt fordi endringene er små og gradvise — brukes derfor hyppigere der interessemotsetningene er store, som ved offentlige budsjetter',
+            'Kan være rasjonelt dersom utgangssituasjonen er fornuftig'
+          ]},
+          { t: 'liste', tittel: '6. Organisert anarki (søppelkassemodellen)', punkter: [
+            'Problemer, løsninger, deltakere og beslutningsanledninger ses som uavhengige strømmer',
+            'Utfallet er resultatet av uavhengige beslutningstakere, og muligheten til å påvirke er begrenset',
+            'Individuelle strategier framfor en samlet form',
+            'Sammenkoplingen av strømmene bestemmes av organisasjonsstrukturen (formell og uformell), av <strong>tid</strong> — når problemet kommer opp og hva annet som er oppe samtidig — og av hvilken <strong>energi</strong> deltakerne har til rådighet'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Organisatoriske forhold som beslutningspremisser',
+        blokker: [
+          { t: 'liste', punkter: [
+            '<strong>Mål og strategier</strong> gir signaler om fokus og hvilken informasjon som er nyttig. Jo mer konkrete mål, desto sterkere beslutningspremiss',
+            '<strong>Formell struktur:</strong> arbeidsområdene begrenser oppmerksomhetsområdene. Spesialisering øker kapasiteten til å behandle informasjon, men gjør samtidig at noe fokuseres og annet overses',
+            '<strong>Organisasjonskultur</strong> sorterer bort informasjon som oppfattes som en trussel, og søker informasjon som passer kulturen. Vage regler og uklare mål gir rom for personlig skjønn som er sterkt kulturelt preget',
+            '<strong>Maktforhold:</strong> kontroll over informasjon, dagsorden og hvilke premisser som legges til grunn'
+          ]},
+          { t: 'liste', tittel: 'Tre idealtypiske beslutningsprosesser', punkter: [
+            '<strong>Usegmentert:</strong> alle deltakere har legitim tilgang til beslutningsarenaen',
+            '<strong>Spesialisert:</strong> spesialister løser problemer på de områdene der de er legitime som spesialister',
+            '<strong>Hierarkisk:</strong> deltakelsesrettigheter bestemmes av posisjon i hierarkiet'
+          ]},
+          { t: 'p', tekst: 'De vanligste deltakelseskriteriene er hierarkisk posisjon og spesialistkompetanse. I tillegg spiller trekk ved oppgaven, organisasjonsmessig slakk, tidspress og krav om medbestemmelse inn.' }
+        ]
+      },
+      {
+        tittel: 'Deltakelse og iverksetting',
+        blokker: [
+          { t: 'liste', tittel: 'Grader av ansattes deltakelse — fra ingen til full', punkter: [
+            'Ledelsen fatter beslutninger uten å informere de ansatte',
+            'Ledelsen informerer før beslutningen fattes',
+            'Ansatte kan uttale seg om saken før beslutningen fattes',
+            'Ansatte er med og fatter beslutningen',
+            'Ansatte kan nedlegge veto',
+            'Ansatte fatter selv beslutningen'
+          ]},
+          { t: 'liste', tittel: 'Iverksettingsproblemer', punkter: [
+            'Kunnskapsgrunnlaget for beslutningen kan være utilstrekkelig',
+            'Ressursene som stilles til rådighet kan være utilstrekkelige',
+            'Kombinasjonen av ressurser kan være feil',
+            'Politisk motstand kan gjøre iverksettingen problematisk',
+            'Beslutningene er ofte uklare og gir rom for flere fortolkninger',
+            'Iverksetterne vet ikke nøyaktig hva som skal gjøres, eller hva som forventes'
+          ]},
+          { t: 'boks', tittel: 'Deskriptiv og normativ', tekst: 'Skillet går igjen i hele kapitlet. <strong>Deskriptiv</strong> beskriver hvordan noe faktisk er, uten å vurdere om det er bra eller dårlig. <strong>Normativ</strong> fastsetter eller foreslår hvordan noe bør være, ut fra regler eller verdier. Den rasjonelle modellen er normativ; begrenset rasjonalitet er deskriptiv.' }
+        ]
+      }
+    ]
+  },
+
+  /* =================== 8. Omgivelser =================== */
+  {
+    id: 'f8', modul: 'omgivelser', nr: 8,
+    tittel: 'Organisasjonens omgivelser',
+    kilde: 'HSM121 forelesning 8', foreleser: 'Reidar Hillesund', lysbilder: 23,
+    litteratur: 'JT kap. 6',
+    hovedpunkter: [
+      'Tekniske omgivelser handler om effektivitet, institusjonelle om legitimitet',
+      'To dimensjoner: kompleksitet og endringstakt — og hver kombinasjon har sin struktur',
+      'Ni strategier for å håndtere tekniske omgivelser',
+      'De tre institusjonelle søylene forklarer hvorfor organisasjoner blir like'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hva er omgivelser?',
+        blokker: [
+          { t: 'def', term: 'Omgivelser', tekst: 'Alle samfunnsøkonomiske, sosiale og kulturelle forhold, nasjonale politikker og politisk styring, demografiske forhold og aktører som organisasjonen samhandler med (Jacobsen og Thorsvik 2025, s. 173).' },
+          { t: 'liste', tittel: 'Hvorfor studere omgivelser?', punkter: [
+            '<strong>Avhengighet og usikkerhet</strong> — markedssituasjon og samfunnsendringer',
+            '<strong>Press</strong> — markedspress, press om å bli noe annet',
+            '<strong>Legitimitet</strong> — lover og normer i samfunnet',
+            '<strong>Strategi</strong> — omgivelsene former struktur, kultur og interne maktforhold',
+            '<strong>Endringer</strong> — organisasjonens evne til å fange opp, forstå og tilpasse seg'
+          ]},
+          { t: 'p', tekst: 'Omgivelsene kan tegnes i tre ringer: <strong>domenet</strong> med de spesielle forholdene nærmest organisasjonen — kunder, leverandører, konkurrenter, regulerende organer; <strong>nasjonale forhold</strong> som økonomi, politikk, kultur, demografi og media; og <strong>internasjonale forhold</strong> som internasjonal økonomi, overnasjonale politiske organer og teknologisk utvikling.' }
+        ]
+      },
+      {
+        tittel: 'Tekniske omgivelser',
+        blokker: [
+          { t: 'def', term: 'Tekniske omgivelser', tekst: 'Forhold som har direkte betydning for organisasjonens ressurstilgang, produksjon eller resultater — kunder, konkurrenter og samarbeidspartnere. Perspektivet setter effektivitet og produktivitet i fokus; utfordringen er å finne optimal strategi og struktur i forhold til dem.' },
+          { t: 'liste', tittel: 'To dimensjoner', punkter: [
+            '<strong>Grad av kompleksitet:</strong> homogene (ensartede, enkle) mot heterogene (komplekse) omgivelser',
+            '<strong>Grad av endring:</strong> stabile mot dynamiske omgivelser'
+          ]},
+          { t: 'tabell', kolonner: ['', 'Stabile omgivelser', 'Dynamiske omgivelser'], rader: [
+            ['<strong>Homogene</strong>', 'Maskinbyråkrati — strategi ofte kostnadseffektivitet', 'Entreprenørorganisasjon — strategi ofte ett enkelt segment eller marked'],
+            ['<strong>Heterogene</strong>', 'Divisjonalisert struktur — strategi ofte diversifisering i ulike markeder', 'Profesjonelt byråkrati og adhokrati — strategi ofte å mestre usikkerhet, både endring og kompleksitet']
+          ]},
+          { t: 'liste', tittel: 'To konsekvenser for struktur', punkter: [
+            'Jo mer <strong>heterogene</strong> omgivelsene er, desto flere enheter må organisasjonen etablere — avdelinger, kontorer, seksjoner. Det reduserer usikkerheten fordi hver enhet forholder seg til relativt like fenomener, slik et sykehus deler opp etter typer skader og sykdommer',
+            'Jo mer <strong>dynamiske</strong> omgivelsene er, desto mer må beslutningsmyndighet desentraliseres. Beslutninger tas lenger ned, noe som gir fleksibilitet til å tilpasse seg raskt'
+          ]},
+          { t: 'liste', tittel: 'Ni strategier for å håndtere tekniske omgivelser', punkter: [
+            'Opprette buffer mot omgivelsene',
+            'Glatte ut topper i arbeidsbelastningen',
+            'Forutse svingninger i belastningen',
+            'Vokse',
+            'Integrere vertikalt — kontrollere eller kjøpe opp underleverandører',
+            'Integrere horisontalt — slå seg sammen',
+            'Diversifisere — få flere ben å stå på',
+            'Samarbeide',
+            'Kooptere — rekruttere fra andre'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Institusjonelle omgivelser',
+        blokker: [
+          { t: 'p', tekst: 'De institusjonelle omgivelsene handler om oppfatninger, verdier, normer og forventninger. De setter organisasjoner under press for å gjøre noe bestemt, for å sikre <strong>legitimitet</strong>.' },
+          { t: 'tabell', kolonner: ['', 'Regulativ søyle', 'Normativ søyle', 'Kognitiv søyle'], rader: [
+            ['Grunnlag for press', 'Lovgivning', 'Verdier og forventninger', '«Tatt for gitt»-oppfatninger om hva som bør gjøres'],
+            ['Grunnlag for tilpasning', 'Tvang', 'Sosial forpliktelse', 'Ønske om å etterligne'],
+            ['Grunnlag for legitimitet', 'Formell godkjenning', 'Moralsk aksept', 'Man gjør det som oppfattes som riktig'],
+            ['Eksempel', 'Regulering og kontroll av forurensning', 'Standarder for personellbehandling', 'Organisasjonsoppskrifter, for eksempel balansert målstyring']
+          ]},
+          { t: 'def', term: 'Isomorfi', tekst: 'Organisasjoner som befinner seg innenfor samme type institusjonelle omgivelser, blir stadig likere hverandre.' },
+          { t: 'p', tekst: 'Organisasjoner påvirkes ulikt av de to typene omgivelser. Banker og sykehus står sterkt i begge; mindre produksjonsbedrifter og helsestudio står sterkt i tekniske og svakt i institusjonelle; skoler og kirker omvendt. Plasseringen forklarer mye av hvorfor de styres så ulikt.' }
+        ]
+      },
+      {
+        tittel: 'Hvorfor er ikke alle tilpasset omgivelsene sine?',
+        blokker: [
+          { t: 'liste', punkter: [
+            'Strukturer og strategier «vedtas» — bare delvis rasjonelt',
+            'Beslutningsprosessene preges lett av maktkamp, forhandlinger, kompromisser, følelser, feiloppfatninger og manglende endringsvilje',
+            'Organisasjoner står ikke alltid fritt til å tilpasse seg, fordi de er avhengige av andre',
+            'Det er ikke bare tekniske forhold som bestemmer strukturen',
+            'En organisasjon kan befinne seg i flere ulike tekniske omgivelser samtidig, ved å produsere flere varer eller tjenester'
+          ]},
+          { t: 'boks', tittel: 'Digitalisering og disrupsjon', tekst: 'Sosiale medier er blitt en global maktfaktor, og netthandelen har endret domenet for hele bransjer. Nokia og Kodak forsto ikke at ny teknologi skulle ødelegge forutsetningene for deres egen suksess. Airbnb traff hotellene, Uber drosjene, Vipps bankene — og KI treffer nå konsulenttjenestene.' }
+        ]
+      }
+    ]
+  },
+
+  /* =================== 9. Læring og innovasjon =================== */
+  {
+    id: 'f9', modul: 'laering', nr: 9,
+    tittel: 'Læring og innovasjon',
+    kilde: 'HSM121 forelesning 9', foreleser: 'Reidar Hillesund', lysbilder: 32,
+    litteratur: 'JT kap. 10',
+    hovedpunkter: [
+      'Læring i organisasjonen formes av struktur, kultur og makt',
+      'Enkel- og dobbeltkretslæring skiller mellom å endre atferd og å endre målene',
+      'SEKI-modellen forklarer hvordan taus kunnskap blir felles',
+      'Suksessfellen: de som har lyktes lengst, endrer seg vanskeligst'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hva er læring?',
+        blokker: [
+          { t: 'def', term: 'Læring', tekst: 'En prosess der mennesker og organisasjoner tilegner seg ny kunnskap og endrer sin atferd på grunnlag av dette. Tilegnelse og utvikling av kunnskaper og ferdigheter med utgangspunkt i erfaring, som fører til relativt varige endringer i tenkesett og atferd.' },
+          { t: 'liste', tittel: 'Læring skjer i organisasjonen når man', punkter: [
+            'Erfarer noe man mener det bør gjøres noe med — for eksempel at etterspørselen avtar',
+            'Foretar en problemanalyse — hvorfor har dette skjedd?',
+            'Utvikler og iverksetter tiltak for å løse problemet, og dermed endrer atferd'
+          ]},
+          { t: 'liste', tittel: 'Hvorfor læring?', punkter: [
+            'Tilpasning til omgivelsene', 'Utvikle langsiktige konkurransefortrinn', 'Økt innovasjonsevne', 'Effektivisering', 'Endring og endringsprosesser'
+          ]},
+          { t: 'p', tekst: 'Erfaringslæring beskrives som en sirkel: konkrete erfaringer, observasjon og refleksjon, utvikling av abstrakte begreper og generalisering, og uttesting av handlingsimplikasjoner i en ny situasjon.' }
+        ]
+      },
+      {
+        tittel: 'Konteksten former læringen',
+        blokker: [
+          { t: 'liste', punkter: [
+            '<strong>Struktur:</strong> plasseringen i strukturen påvirker læringen. Fokus blir læring innenfor det ansvarsområdet strukturen angir',
+            '<strong>Kultur:</strong> påvirker hvilken informasjon som oppfattes som viktig, og hvilken som ikke gjør det',
+            '<strong>Makt:</strong> kontroll over informasjon og intern kommunikasjon kan påvirke læringen — gjennom å skjule, selektere eller styre dagsordenen'
+          ]},
+          { t: 'liste', tittel: 'To læringsteoretiske utgangspunkt', punkter: [
+            '<strong>Kognitiv læringsteori:</strong> mennesker har begrenset kognitiv kapasitet, velger ut informasjon de antar er viktig, ignorerer resten, og lagrer det i kognitive skjemaer i korttids- eller langtidsminnet',
+            '<strong>Sosial læringsteori:</strong> mennesker kan lære uten selv å erfare. Læring skjer gjennom imitasjon — man overtar handlemåter andre har utviklet fordi man tror de vil fungere hos oss. Avhenger av tillit til kilden'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Enkel- og dobbeltkretslæring',
+        blokker: [
+          { t: 'p', tekst: 'Man registrerer feil eller dårlige resultater. <strong>Enkelkretslæring</strong> endrer atferden — man forbedrer innenfor gjeldende mål. <strong>Dobbeltkretslæring</strong> endrer målene eller verdiene selv, ved å stille spørsmål ved dem.' },
+          { t: 'liste', tittel: 'Argyris om hva som må til for å utvikle læring', punkter: [
+            'Få sann informasjon',
+            'La valget av handlingsplan basere seg på kunnskap',
+            'Kontinuerlig vurdere konsekvensene av handlingene vi gjør'
+          ]},
+          { t: 'p', tekst: 'All intendert atferd er motivert av noe vi ønsker å oppnå. Derfor holder det ikke å lære <em>hvordan</em> — man må også lære <em>hvorfor</em>.' }
+        ]
+      },
+      {
+        tittel: 'Taus og eksplisitt kunnskap',
+        blokker: [
+          { t: 'liste', tittel: 'Læring i organisasjoner innebærer', punkter: [
+            'At flere mennesker i organisasjonen lærer',
+            'At organisasjonen handler som en enhet på grunnlag av den nye kunnskapen'
+          ]},
+          { t: 'p', tekst: 'Dette kompliseres av at læringen ofte skjer hos ett individ, og at kunnskapen er skjult for andre. <strong>Taus kunnskap</strong> er vanskelig å sette ord på; <strong>eksplisitt kunnskap</strong> er erfaringer og forhold vi kan formulere.' },
+          { t: 'tabell', kolonner: ['Fra ↓ / Til →', 'Taus kunnskap', 'Eksplisitt kunnskap'], rader: [
+            ['<strong>Taus kunnskap</strong>', 'Sosialisering', 'Eksternalisering'],
+            ['<strong>Eksplisitt kunnskap</strong>', 'Internalisering', 'Kombinering']
+          ]},
+          { t: 'liste', tittel: 'De fire formene', punkter: [
+            '<strong>Sosialisering</strong> (taus til taus): kunnskap overføres ubevisst, gjennom felles praksis',
+            '<strong>Eksternalisering</strong> (taus til eksplisitt): kunnskapen blir skriftlig- eller muntliggjort og tilgjengelig for alle',
+            '<strong>Kombinering</strong> (eksplisitt til eksplisitt): kunnskap spres ved at man setter sammen åpne informasjonskilder',
+            '<strong>Internalisering</strong> (eksplisitt til taus): den ansatte bruker eksplisitt kunnskap, tilpasser sin egen tause kunnskap og får ny kunnskap'
+          ]},
+          { t: 'boks', tittel: 'Kompetansebeholdning (Linda Lai)', tekst: 'Den samlede kompetansebeholdningen er større enn den anvendte kompetansen. Avstanden mellom dem er <em>mobiliseringspotensialet</em>. Avstanden mellom beholdningen og de definerte kompetansekravene er <em>læringsbehovet</em>. Mange organisasjoner har derfor et mobiliseringsproblem, ikke et kompetanseproblem.' }
+        ]
+      },
+      {
+        tittel: 'Den lærende organisasjonen',
+        blokker: [
+          { t: 'p', tekst: 'Organisasjonen må kunne lære og tilpasse seg endringer i eksisterende handlingsbetingelser, på samme måte som en levende organisme. Vi må forstå både <em>læringsprosessen</em> — hvordan organisasjonen lærer — og <em>læringsinnholdet</em> — hva den lærer.' },
+          { t: 'liste', tittel: 'Kjennetegn på en lærende organisasjon', punkter: [
+            '<strong>Systemtenkning</strong> — leting etter rotproblemet framfor symptomet',
+            '<strong>Kunnskapsproduksjon</strong>',
+            '<strong>Absorptiv kapasitet</strong> — evnen til å fange opp, vurdere, tilegne seg, innpasse eller endre, og ta i bruk',
+            '<strong>Praksisfellesskap og læring</strong> — for eksempel kollegaveiledning'
+          ]},
+          { t: 'tabell', kolonner: ['Nivå', 'Hvorfor?', 'Tiltak på tilsvarende nivå'], rader: [
+            ['Synlig problem', 'Det ligger olje på gulvet', 'Tørk opp oljen'],
+            ['Hvorfor 1', 'Maskinen lekker olje', 'Reparer maskinen'],
+            ['Hvorfor 2', 'Pakningen er utslitt', 'Skift pakningen'],
+            ['Hvorfor 3', 'Vi har kjøpt pakninger av for dårlig kvalitet', 'Endre kravene til pakningskvalitet'],
+            ['Hvorfor 4', 'Pakningene ble valgt fordi prisen var gunstig', 'Endre innkjøpspraksis og kriterier'],
+            ['Hvorfor 5', 'Innkjøperne vurderes primært på kortsiktige kostnadsbesparelser', 'Endre evaluerings- og styringskriteriene']
+          ]},
+          { t: 'p', tekst: 'Poenget med Toyotas hvorfor-analyse er å ikke stoppe ved symptomet. Gjentatte hvorfor flytter oppmerksomheten fra symptom, via dypere årsak, til systemnivå — til underliggende insentiver og styring.' },
+          { t: 'liste', tittel: 'Kunnskapsmedarbeideren er', punkter: [
+            '<strong>Proaktiv:</strong> tar initiativ, involverer seg, søker aktivt informasjon og forbedringer',
+            '<strong>Strategisk:</strong> ser etter bedre løsninger i møte med kunder og medarbeidere, og kjenner virksomhetens mål',
+            '<strong>Lærende:</strong> søker ny kunnskap, deler den, finner skjult kunnskap i organisasjonen og hos kundene, og tør prøve og feile',
+            '<strong>Kulturbærende:</strong> etterlever verdiene, styrker samhandlingen og bygger «vi-et»'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Innovasjon',
+        blokker: [
+          { t: 'liste', tittel: 'Typer innovasjon', punkter: [
+            'Produkt- og tjenesteinnovasjon, og prosessinnovasjon',
+            'Etter omfang: radikal, modulær, arkitektonisk og inkrementell innovasjon'
+          ]},
+          { t: 'boks', tittel: 'Suksessfellen', tekst: 'Organisasjoner som har opplevd lange perioder med suksess, har ofte størst problemer med å endre måten de har gjort tingene på. Når alt fungerer bra, blir produktet, tjenesten, prosessen, markedet, distribusjonen og kundene lett tatt for gitt — og omstillingen kan ende i fiasko.' },
+          { t: 'liste', tittel: 'Effektivitet eller innovasjon?', punkter: [
+            '<strong>Exploitation:</strong> kunnskap knyttet til å forbedre eksisterende produkter, tjenester, markeder og arbeidsmåter — bedre ressursutnyttelse',
+            '<strong>Exploration:</strong> kunnskap knyttet til å utvikle nye produkter, tjenester og markeder — utforske, lære noe nytt, se nye muligheter og trusler',
+            'Begge deler er nødvendig. Utfordringen er balansen'
+          ]},
+          { t: 'p', tekst: 'Forelesningen bruker også bildet av komfortsonen: fra komfortsone, via fryktsone og læringssone, til vekstsone. Poenget er at læring krever at man forlater det trygge — og at fryktsonen, der man finner unnskyldninger og er opptatt av andres meninger, er stedet de fleste stopper.' }
+        ]
+      }
+    ]
+  },
+
+  /* =================== 10. Endring =================== */
+  {
+    id: 'f10', modul: 'endring', nr: 10,
+    tittel: 'Endring i organisasjoner',
+    kilde: 'HSM121 forelesning 10', foreleser: 'Reidar Hillesund', lysbilder: 45,
+    litteratur: 'JT kap. 11',
+    hovedpunkter: [
+      'Endring handler om formaliteter og følelser samtidig',
+      'Ti navngitte årsaker til motstand — og motstand kan være positivt',
+      'Lewin og Kotter besvarer ulike deler av samme problem',
+      'Fire endringsstrategier, avhengig av tempo og maktgrunnlag'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hva slags endring?',
+        blokker: [
+          { t: 'p', tekst: 'Ved omorganisering og omstilling kommer to forhold til uttrykk samtidig: <strong>formaliteter</strong> og <strong>følelser</strong>. Behandler man bare det første, får man ikke gjennomført det andre.' },
+          { t: 'liste', tittel: 'Endring kan gi nye eller endrede', punkter: ['Produkter og tjenester', 'Markeder', 'Produksjonsmetoder'] },
+          { t: 'liste', tittel: 'Endringer klassifiseres ofte etter om de er', punkter: [
+            'Radikale eller inkrementelle',
+            'Planlagte og hierarkisk styrt, eller ikke'
+          ]},
+          { t: 'liste', tittel: 'Fem perspektiver på endring', punkter: [
+            'Planlagt endring',
+            'Endring som livssykluser',
+            'Endring som evolusjon',
+            'Endring som dialektisk prosess og maktprosess',
+            'Endring som tilfeldighet'
+          ]},
+          { t: 'liste', tittel: 'Måter å forstå en endringsprosess på', punkter: [
+            'Offensiv eller defensiv', 'Grad av frivillighet mot tvang', 'Planlagt eller ikke planlagt', 'Transaksjonsbasert eller transformasjonsbasert'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Organisasjonsutvikling og Lewins faser',
+        blokker: [
+          { t: 'def', term: 'Organisasjonsutvikling (OU)', tekst: 'En egen strategi for endring, som forankrer endringsarbeidet i demokratiske prosesser. Strategien forutsetter at det ikke er noen grunnleggende interessekonflikt i organisasjonen, at alle parter kan samarbeide om en forbedring, og at alle ønsker å utvikle seg og lære.' },
+          { t: 'liste', tittel: 'Lewins tre faser', punkter: [
+            '<strong>Opptining (mobilisere):</strong> skape motivasjon for endring og forberede de ansatte',
+            '<strong>Endring:</strong> tiltakene iverksettes, og ny atferd og nye holdninger skapes. Det er her drivkreftene og motkreftene gjør seg gjeldende. Endringslederen må holde trykket og repetere. Støtte, trening og kompetanseutvikling er avgjørende',
+            '<strong>Nedfrysing (stabilisering):</strong> de nye tiltakene stabiliseres og rutiniseres, slik at organisasjonen ikke faller tilbake til gamle mønstre'
+          ]},
+          { t: 'p', tekst: 'Lewins grunntanke er at endring er resultatet av <em>motstridende krefter</em> som må håndteres. Fasene kan også leses som en kompetansereise: fra ubevisst inkompetanse, via bevisst inkompetanse og bevisst kompetanse, til ubevisst kompetanse.' },
+          { t: 'liste', tittel: 'Kotters åtte steg', punkter: [
+            'Skape en opplevelse av at noe er prekært — kriseforståelse',
+            'Sette sammen et styringsteam med kompetanse, troverdighet, autoritet og nettverk',
+            'Lage en stimulerende visjon og strategi',
+            'Kommunisere visjonen gjennom ord, handling og symboler',
+            'Istandsette organisasjonen til å handle — fjerne hindringer',
+            'Skape synlige symboler på framgang gjennom raske seire',
+            'Holde seg til prosessen og ikke gi opp når det røyner på',
+            'Dyrke og forme en ny kultur som støtter det nye som vokser fram'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Motstand mot endring',
+        blokker: [
+          { t: 'liste', tittel: 'Ti årsaker til motstand', punkter: [
+            'Frykt for det ukjente',
+            'Brudd på den psykologiske kontrakten',
+            'Tap av identitet',
+            'Den symbolske ordenen endres',
+            'Maktforholdene endres',
+            'Krav om nyinvestering',
+            'Dobbeltarbeid i en periode',
+            'Sosiale bånd brytes',
+            'Utsikter til personlig tap',
+            'Eksterne aktører ønsker stabilitet'
+          ]},
+          { t: 'liste', tittel: 'Slik det oppleves innenfra', punkter: [
+            'Frykt for det ukjente, og ønsket om å bli i komfortsonen',
+            'Endring i rutiner — vi er vanemennesker',
+            '«What is in it for me»',
+            'Sikkerhet — frykt for å miste jobben eller utviklingsmulighetene',
+            'Trussel mot egen posisjon — sosial status, anerkjennelse, nedrykk i hierarkiet',
+            'Forstyrrelse av det sosiale nettverket, som ofte veier tyngre enn den tekniske endringen',
+            'Endring i kultur og normer'
+          ]},
+          { t: 'p', tekst: 'Forelesningens diagnose av hvorfor endringer feiler er skarp: <em>mer fokus på drivkreftene enn på å ta hensyn til det som skaper frykt.</em>' },
+          { t: 'liste', tittel: 'Motstand kan reduseres ved', punkter: [
+            'Å gå tidlig ut med saklig informasjon og god kommunikasjon med de berørte',
+            'Å involvere medarbeidere i beslutningsprosessen',
+            'Å bygge positive relasjoner og tillit mellom endringsagenter og ansatte',
+            'Rettferdighet i gjennomføringen av tiltakene',
+            'Å fremme erkjennelsen av at partene har sammenfallende interesse i at endringen lykkes'
+          ]},
+          { t: 'boks', tittel: 'Kan motstand være positivt?', tekst: 'Motstand holder samtalen om endringen i gang. Medarbeidere med gjennomtenkte motforestillinger kan bli de mest motiverte om de skifter standpunkt, og de som yter motstand har ofte sterkere engasjement enn de som aksepterer alt. Konflikt knyttet til endring bidrar dessuten til at endringene blir varige. Vanskeligheten er å skille funksjonelle fra dysfunksjonelle konflikter.' }
+        ]
+      },
+      {
+        tittel: 'Å lykkes med endring',
+        blokker: [
+          { t: 'liste', tittel: 'Forutsetninger for vellykket endring', punkter: [
+            'Opplevd behov for endring',
+            'Organisasjonen har kapasitet til å gjennomføre den',
+            'Forskningsbasert tilnærming',
+            'Klar visjon for hva som skal oppnås',
+            'En prosess kjennetegnet av prosedural rettferdighet',
+            'Strukturelle trekk som hindrer endring fjernes',
+            'Åpenhet for eksperimentering og utforsking',
+            'Framdriften følges tett',
+            'Forbedringer konsolideres underveis og forankres i kulturen'
+          ]},
+          { t: 'liste', tittel: 'Hva øker sannsynligheten for å lykkes?', punkter: [
+            'Utvikle en felles virkelighetsforståelse og forklare hvorfor endringen er nødvendig',
+            'Sette klare mål med en bestemt tidsramme',
+            'Involvere medarbeiderne',
+            'Topplederens engasjement',
+            'Jobbe med mange små forbedringer',
+            'Skape tidlige og synlige suksesser',
+            'Ha en eksperimenterende holdning til hele prosessen',
+            'Utvikle kultur og struktur som støtter prosessen',
+            'Evaluere kontinuerlig og lære av det',
+            'Kommunisere, kommunisere, kommunisere'
+          ]},
+          { t: 'tabell', kolonner: ['Grunnlag', 'Revolusjon', 'Evolusjon'], rader: [
+            ['Orden og tvang', 'Diktatorisk omforming', 'Tvungen utvikling'],
+            ['Samarbeid og konsultasjon', 'Karismatisk omforming', 'Deltakende utvikling']
+          ]},
+          { t: 'p', tekst: 'Omstillingskurven beskriver den individuelle reisen gjennom endringen: benektning («sjokk»), reaksjon («motstand»), undersøkelse («bearbeiding») og tilpasning («satsing») — fra å oppleve endringen som en trussel til å se den som en mulighet.' },
+          { t: 'liste', tittel: 'Endringsplanens fem steg', punkter: [
+            'Erkjenne og forstå behovet for endring',
+            'Analysere endringsutfordringen',
+            'Lage endringsplanen',
+            'Implementere planen',
+            'Følge opp og sikre varig endring'
+          ]},
+          { t: 'boks', tittel: 'The knowing–doing gap', tekst: 'Utfordringen i praksis er gapet mellom nåsituasjonen og ønsket posisjon — og mellom det vi vet og det vi gjør (Pfeffer og Sutton). Endringsplaner strander sjelden på manglende kunnskap om hva som burde gjøres.' }
+        ]
+      },
+      {
+        tittel: 'Makt i endringsprosesser',
+        blokker: [
+          { t: 'p', tekst: 'Forelesningen avslutter med makt, fordi endring alltid flytter på den. «Makt er det samme for organisasjoner som oksygen er for å puste.» Makt er en sosial relasjon, alle har en viss grad av den, og den er dynamisk.' },
+          { t: 'liste', tittel: 'Åpen og skjult maktbruk', punkter: [
+            '<strong>Åpen:</strong> byttemakt, overtalelse, tvangsmakt',
+            '<strong>Skjult:</strong> manipulering, strukturmakt, normativ makt, meningsmakt'
+          ]},
+          { t: 'liste', tittel: 'Syv maktbaser', punkter: [
+            'Hierarkisk posisjon',
+            'Kontroll over dagsordenen',
+            'Kontroll over informasjon',
+            'Kontroll over arbeidsoppgaver og kunnskap',
+            'Kontroll over sosiale prosesser',
+            'Personlige ressurser',
+            'Allianser og nettverk'
+          ]},
+          { t: 'p', tekst: 'Et sentralt poeng: <strong>autoritet er noe de underordnede gir til ledelsen</strong> — den kommer ikke ovenfra. Og en organisasjon uten konflikt er sannsynligvis i stagnasjon, fordi innovasjon og utvikling som regel skaper konflikt.' },
+          { t: 'liste', tittel: 'Bemyndiggjøring (empowerment)', punkter: [
+            'Delegering av myndighet',
+            'Deltakelsesrettigheter i beslutningsprosesser',
+            'Tilgang til informasjon',
+            'Systemer for å fange opp maktmisbruk',
+            'Opprettelse av nettverk på tvers'
+          ]},
+          { t: 'boks', tittel: 'Kotter gjennom fire fortolkningsrammer', tekst: 'Forelesningen kobler Kotters stadier til Bolman og Deals rammer. Samme steg ser helt ulikt ut avhengig av rammen: å skape kriseforståelse er å involvere folk og be om innspill (HR), å drive nettverksarbeid mot viktige aktører (politisk), eller å fortelle en overbevisende historie (symbolsk). Å fjerne hindringer er å endre strukturer og prosedyrer (strukturell), sørge for opplæring og støtte (HR), eller iscenesette offentlige oppgjør med motstanderne (politisk).' }
+        ]
+      }
+    ]
   }
 ];

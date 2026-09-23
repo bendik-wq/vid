@@ -254,11 +254,15 @@
       '</ul><div style="margin-top:.8rem">' + ui.bar(f.prosent, f.prosent >= 80) +
       '<p class="count-note" style="margin-top:.5rem">' + f.prosent + ' % fullført i dette kapitlet</p></div></div>';
 
-    var forelesning = window.OT.lectures.filter(function (l) { return l.modul === id; })[0];
-    if (forelesning) {
-      html += '<div class="callout"><strong>Forelesningsnotat finnes for dette kapitlet</strong>' +
-        ui.esc(forelesning.kilde) + ' &middot; ' + forelesning.lysbilder + ' lysbilder sammenfattet. ' +
-        '<a href="#/forelesning/' + forelesning.id + '">Åpne notatet</a></div>';
+    var forelesninger = window.OT.lectures.filter(function (l) { return l.modul === id; });
+    if (forelesninger.length) {
+      html += '<div class="callout"><strong>' +
+        (forelesninger.length > 1 ? 'Forelesningsnotater for dette kapitlet' : 'Forelesningsnotat for dette kapitlet') +
+        '</strong>' +
+        forelesninger.map(function (f2) {
+          return '<a href="#/forelesning/' + f2.id + '">' + ui.esc(f2.tittel) + '</a> (' +
+            ui.esc(f2.kilde) + ', ' + f2.lysbilder + ' lysbilder)';
+        }).join('<br>') + '</div>';
     }
 
     html += '<div class="module-toc"><strong>Innhold</strong><ol>' +
@@ -297,6 +301,10 @@
     if (teorier.length > 1) html += tile('#/kobling/teoretiker/' + id, 'Koble teori og opphav', 'Par teoriene med opphavspersonene.');
     caser.forEach(function (c) {
       html += tile('#/case/' + c.id, 'Case: ' + c.tittel, c.tid + ' &middot; analyseoppgave med veiledende svar');
+    });
+    forelesninger.forEach(function (f2) {
+      html += tile('#/forelesning/' + f2.id, 'Forelesning: ' + f2.tittel,
+        f2.kilde + ' &middot; ' + f2.litteratur);
     });
     eksamener.forEach(function (e) {
       html += tile('#/eksamensoppgave/' + e.id, 'Eksamensoppgave: ' + e.tittel,
