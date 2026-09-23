@@ -131,5 +131,69 @@ window.OT.sources = [
       'I drøftinger av om en verdiforankret ledelsesteori kan vurderes med samme målestokk som effektivitetsorienterte teorier',
       'Som kilde til forvalterbegrepet (stewardship) og dets kobling til kall og arbeidsetikk'
     ]
+  },
+
+  {
+    id: 'kk-kap4',
+    type: 'Lærebokkapittel',
+    kortnavn: 'Kaufmann & Kaufmann (2023), kap. 4',
+    tittel: 'Motivasjon',
+    forfattere: 'Kaufmann, G., Kaufmann, A. & Hærem, T.',
+    aar: 2023,
+    publikasjon: 'I Psykologi i organisasjon og ledelse (6. utg., s. 127–165). Fagbokforlaget',
+    apa: 'Kaufmann, G., Kaufmann, A. & Hærem, T. (2023). Motivasjon. I Psykologi i organisasjon og ledelse (6. utg., s. 127–165). Fagbokforlaget.',
+    moduler: ['motivasjon'],
+    forelesninger: ['f5'],
+    hva: 'Grunnkapitlet bak forelesningen om motivasjon, ytelse og personlighet. Det er herfra motivasjonskvartetten og syntesemodellen kommer, og det er den kilden du skal oppgi når du definerer motivasjon i en besvarelse.',
+    hovedfunn: [
+      'Definisjonen du skal bruke: motivasjon er <strong>de biologiske, psykologiske og sosiale faktorene som aktiverer, gir retning til og opprettholder atferd i ulike grader av intensitet for å nå et mål</strong>.',
+      'Ordet kommer av latin <em>movere</em>, å bevege. Kapitlet skiller mellom tre spørsmål: hva som <em>driver</em> handlingen, hva som gir den <em>retning</em>, og hva som forklarer forskjeller i <em>intensitet</em> mellom to personer med samme kompetanse, lønn og jobb.',
+      '<strong>Motivasjonskvartetten</strong> er kapitlets organiserende grep: behovsteorier (atferd utløst av grunnleggende behov), kognitive teorier (forventninger om måloppnåelse og belønning), sosiale teorier (opplevd likeverd og rettferdighet, og prososial motivasjon) og situasjonsteorier (motivasjonselementer i selve jobben).',
+      'Behovsteoriene dekker Maslow, Alderfer og McClelland; de kognitive dekker forventningsteori, målsettingsteori og kognitiv evalueringsteori; de sosiale dekker likeverdsteori, fordelings- og prosedyrerettferdighet og prososial motivasjonsteori; situasjonsteoriene dekker Herzberg, Thorsruds jobbkrav og jobbkarakteristikamodellen.',
+      '<strong>Syntesemodellen</strong> binder kvartetten sammen: indre og ytre påvirkningsfaktorer virker gjennom psykologiske prosesser — behov, aktivering, sosial fasilitering, tankeprosesser — via intendert atferd og faktisk atferd, og ender i ytelse.'
+    ],
+    funn: [
+      { t: 'Motivasjon er ikke nok alene', b: 'Kapitlets konklusjon er verdt å sitere når du drøfter: selv om motivasjon betyr mye for jobbytelse, kommer man til kort uten de nødvendige evnene, kunnskapene og ferdighetene. Ledelsens oppgave blir å legge oppgavene innenfor rekkevidden av medarbeiderens faktiske kompetanse, samtidig som de byr på rimelige utfordringer.' },
+      { t: 'Ytre forhold på slutten av kjeden', b: 'Både fysisk arbeidsmiljø — maskineri, støy, lys — og psykososiale forhold påvirker den endelige jobbytelsen. Det er her Herzbergs tofaktorteori, Thorsruds jobbkrav og jobbkarakteristikamodellen har sin plass i motivasjonskjeden.' },
+      { t: 'Konklusjonen', b: 'Jobbatferd er et produkt av mange ytre og indre faktorer i et komplekst samspill. Poenget med syntesemodellen er å kunne tenke systematisk om <em>flere</em> virkemidler i sammenheng, i stedet for å velge én teori og se bort fra resten.' }
+    ],
+    kritisk: 'Kapitlet er en lærebokframstilling, ikke en forskningsartikkel. Det oppsummerer feltet ryddig, men tar i liten grad stilling til hvor sterk evidensen er for hver enkelt teori. Skal du drøfte holdbarheten i for eksempel Maslows hierarki, trenger du en kilde som går inn på den empiriske kritikken — læreboka gir deg vokabularet, ikke dommen.',
+    brukTil: [
+      'Definisjonen av motivasjon, og skillet mellom drivkraft, retning og intensitet',
+      'Motivasjonskvartetten som struktur på en langsvarsoppgave — den gir deg fire avsnitt med en gang',
+      'Syntesemodellen når oppgaven ber deg se flere motivasjonsteorier i sammenheng framfor å velge én'
+    ]
+  },
+
+  {
+    id: 'kk-kap9',
+    type: 'Lærebokkapittel',
+    kortnavn: 'Kaufmann & Kaufmann (2023), kap. 9',
+    tittel: 'Jobbholdninger og psykososialt arbeidsmiljø',
+    forfattere: 'Kaufmann, G., Kaufmann, A. & Hærem, T.',
+    aar: 2023,
+    publikasjon: 'I Psykologi i organisasjon og ledelse (6. utg., s. 315–350). Fagbokforlaget',
+    apa: 'Kaufmann, G., Kaufmann, A. & Hærem, T. (2023). Jobbholdninger og psykososialt arbeidsmiljø. I Psykologi i organisasjon og ledelse (6. utg., s. 315–350). Fagbokforlaget.',
+    moduler: ['motivasjon'],
+    forelesninger: ['f6'],
+    hva: 'Kapitlet bak forelesning 6. Det dekker holdningsbegrepet, de to sentrale jobbholdningene, den psykologiske kontrakten, og det psykososiale arbeidsmiljøet sett fra både belastnings- og berikelsessiden.',
+    hovedfunn: [
+      'Holdninger plasseres i skjæringspunktet mellom individ- og sosialpsykologi: en psykologisk tilstand eller disposisjon som bare får mening sett i forhold til objekter, situasjoner og mennesker i omgivelsene.',
+      'Vanlig definisjon: holdninger er vurderinger av saksforhold langs dimensjoner som god–dårlig, behagelig–ubehagelig, like–mislike. Vi kan ha holdninger til alt — personer, grupper, begivenheter og saksforhold.',
+      'Et nyttig skille: <strong>personlighetstrekk</strong> regnes som relativt stabile, mens <strong>holdninger</strong> antas å være mer foranderlige. Det kan ta år å endre et personlighetstrekk.',
+      'De to sentrale jobbholdningene er <strong>jobbtilfredshet</strong> og <strong>jobbforpliktelse</strong>. Kapitlet behandler også stereotypier og fordommer som holdningsfenomener.',
+      'Teoriene om jobbtilfredshet deles i <strong>innholdsteorier</strong> — som Maslow og Herzberg, om hvilke faktorer som påvirker holdningen — og <strong>prosessteorier</strong>, om hvordan faktorene i samspill med jobben utvikler tilfredshet. <strong>Diskrepansteorier</strong> forklarer mistrivsel som avstanden mellom det man ønsker og det man faktisk erfarer.'
+    ],
+    funn: [
+      { t: 'Den psykologiske jobbkontrakten', b: 'Medarbeiderens oppfatning av utvekslingsforholdet mellom seg selv og organisasjonen, i to former: transaksjonskontrakten, som er kortvarig med få løfter og forpliktelser, og relasjonskontrakten, med utstrakte psykologiske forpliktelser begge veier. Dette er broen mellom motivasjonskapitlet og endringskapitlet — det er den psykologiske kontrakten som brytes når en omstilling oppleves som svik.' },
+      { t: 'Belastning og berikelse', b: 'Det psykososiale arbeidsmiljøet kan studeres fra to sider. Belastningsperspektivet ser på det negative og nedbrytende: stress, konflikt, mobbing, kontraproduktiv atferd og utbrenthet. Berikelsesperspektivet ser på det positive og oppbyggende: jobbengasjement, resiliens og psykologisk kapital. Begge er nødvendige — et arbeidsmiljø uten belastninger er ikke det samme som et godt arbeidsmiljø.' },
+      { t: 'Jobbtilfredshet og produktivitet', b: 'Kapitlet har et eget avsnitt om forholdet mellom jobbtilfredshet og jobbproduktivitet. Det er verdt å lese nøye før du påstår noe om årsaksretningen i en besvarelse — sammenhengen er veletablert, men hva som forårsaker hva er et annet spørsmål.' }
+    ],
+    kritisk: 'Konflikt er det klart mest omtalte temaet i kapitlet, mens mobbing og trakassering behandles kortere. Bruker du kapitlet på en case om psykososialt arbeidsmiljø, bør du supplere med arbeidsmiljøloven § 4-3, som forelesningen trekker inn og som navngir de psykososiale faktorene direkte.',
+    brukTil: [
+      'Definisjoner av holdning, jobbtilfredshet og jobbforpliktelse med presis kildehenvisning',
+      'Den psykologiske kontrakten — som er brukbar i oppgaver om både motivasjon, endring og ledelse',
+      'Skillet mellom belastnings- og berikelsesperspektivet som struktur på en arbeidsmiljøoppgave'
+    ]
   }
 ];
