@@ -51,7 +51,9 @@
 
   function markerAktiv(rute) {
     /* Detaljsider merker av på sin oversiktsside. */
-    var normalisert = rute.indexOf('/eksamensoppgave/') === 0 ? '/eksamensoppgaver' : rute;
+    var normalisert = rute;
+    if (rute.indexOf('/eksamensoppgave/') === 0) normalisert = '/eksamensoppgaver';
+    else if (rute.indexOf('/forelesning/') === 0) normalisert = '/forelesninger';
     document.querySelectorAll('.nav-item').forEach(function (a) {
       var href = a.getAttribute('href').replace('#', '');
       var treff = href === normalisert ||
@@ -78,6 +80,10 @@
     });
     window.OT.cases.forEach(function (c) {
       poster.push({ kind: 'Case', title: c.tittel, sub: ui.modulNavn(c.modul), href: '#/case/' + c.id, tekst: c.tittel + ' ' + c.scenario });
+    });
+    window.OT.lectures.forEach(function (l) {
+      poster.push({ kind: 'Forelesning', title: l.tittel, sub: l.kilde,
+        href: '#/forelesning/' + l.id, tekst: l.tittel + ' ' + l.hovedpunkter.join(' ') });
     });
     window.OT.exams.forEach(function (e) {
       poster.push({ kind: 'Eksamensoppgave', title: e.tittel, sub: window.OT.examview.modulEtikett(e.modul),
@@ -159,6 +165,7 @@
 
     html += '<h2>Start her</h2><div class="grid">';
     html += tile('#/modul/grunnlag', 'Les kapitlene', 'Tolv moduler med læringsmål, teoritabeller og definisjoner.');
+    html += tile('#/forelesninger', 'Forelesningsnotater', 'Sammenfattet innhold fra forelesningene, koblet til kapitlene.');
     html += tile('#/quiz', 'Ta en quiz', 'Flervalgsspørsmål med forklaring på hvert svar, per kapittel eller på tvers.');
     html += tile('#/flashcards', 'Puggekort', 'Snu kort med begrep og definisjon, og marker hva du kan.');
     html += tile('#/kobling', 'Koblingsoppgaver', 'Par teori med opphavsperson, eller begrep med definisjon.');
@@ -246,6 +253,13 @@
       m.laeringsmaal.map(function (l) { return '<li>' + ui.rik(l) + '</li>'; }).join('') +
       '</ul><div style="margin-top:.8rem">' + ui.bar(f.prosent, f.prosent >= 80) +
       '<p class="count-note" style="margin-top:.5rem">' + f.prosent + ' % fullført i dette kapitlet</p></div></div>';
+
+    var forelesning = window.OT.lectures.filter(function (l) { return l.modul === id; })[0];
+    if (forelesning) {
+      html += '<div class="callout"><strong>Forelesningsnotat finnes for dette kapitlet</strong>' +
+        ui.esc(forelesning.kilde) + ' &middot; ' + forelesning.lysbilder + ' lysbilder sammenfattet. ' +
+        '<a href="#/forelesning/' + forelesning.id + '">Åpne notatet</a></div>';
+    }
 
     html += '<div class="module-toc"><strong>Innhold</strong><ol>' +
       m.seksjoner.map(function (s, i) {
@@ -574,6 +588,124 @@
     main.innerHTML = html;
   }
 
+  function sideForelesninger() {
+    var html = ui.sideHode('Pensum', 'Forelesningsnotater',
+      'Innholdet fra forelesningene, sammenfattet og koblet til kapitlene. Notatene viser hva foreleser vektlegger — ' +
+      'de erstatter ikke boka, men sier noe om hvor tyngdepunktet ligger.');
+
+    html += '<div class="grid">';
+    window.OT.lectures.forEach(function (l) {
+      html += '<a class="tile" href="#/forelesning/' + l.id + '">' +
+        '<span class="chip chip-accent">' + ui.esc(ui.modulNavn(l.modul)) + '</span>' +
+        '<h3>' + ui.esc(l.tittel) + '</h3>' +
+        '<p>' + ui.esc(l.kilde) + ' &middot; ' + l.lysbilder + ' lysbilder &middot; ' + ui.esc(l.litteratur) + '</p></a>';
+    });
+    html += '</div>';
+
+    var uten = window.OT.modules.filter(function (m) {
+      return !window.OT.lectures.some(function (l) { return l.modul === m.id; });
+    });
+    if (uten.length) {
+      html += '<h2>Kapitler uten forelesningsnotat ennå</h2>' +
+        '<p class="lede">Disse kommer etter hvert som presentasjonene blir lagt inn.</p><ul class="bullets">' +
+        uten.map(function (m) {
+          return '<li><a href="#/modul/' + m.id + '">' + ui.esc(m.nr + '. ' + m.tittel) + '</a></li>';
+        }).join('') + '</ul>';
+    }
+
+    main.innerHTML = html;
+  }
+
+  function sideForelesning(id) {
+    var l = window.OT.lectures.filter(function (x) { return x.id === id; })[0];
+    if (!l) return sideIkkeFunnet();
+    var m = ui.modulById(l.modul);
+
+    var html = ui.sideHode('Forelesning ' + l.nr, l.tittel, null);
+
+    html += '<div class="chip-row">' +
+      '<span class="chip">' + ui.esc(l.kilde) + '</span>' +
+      '<span class="chip">' + ui.esc(l.foreleser) + '</span>' +
+      '<span class="chip">' + l.lysbilder + ' lysbilder</span>' +
+      '<span class="chip chip-accent">' + ui.esc(l.litteratur) + '</span>' +
+      '</div>';
+
+    html += '<div class="card"><h3 style="margin-top:0">Hovedpunkter</h3><ul class="bullets">' +
+      l.hovedpunkter.map(function (h) { return '<li>' + ui.rik(h) + '</li>'; }).join('') + '</ul></div>';
+
+    html += '<div class="module-toc"><strong>Innhold</strong><ol>' +
+      l.seksjoner.map(function (s, i) {
+        return '<li><a href="#/forelesning/' + id + '#fs' + i + '">' + ui.esc(s.tittel) + '</a></li>';
+      }).join('') + '</ol></div>';
+
+    html += '<div class="prose">';
+    l.seksjoner.forEach(function (s, i) {
+      html += '<h2 id="fs' + i + '">' + ui.esc(s.tittel) + '</h2>';
+      s.blokker.forEach(function (b) { html += blokkHtml(b); });
+    });
+    html += '</div>';
+
+    html += '<div class="btn-row">' +
+      (m ? '<a class="btn btn-primary" href="#/modul/' + m.id + '">Til kapittel ' + m.nr + '</a>' : '') +
+      '<a class="btn btn-ghost" href="#/forelesninger">Alle forelesningsnotater</a></div>';
+
+    html += '<div class="callout callout-warn"><strong>Om notatet</strong>' +
+      'Dette er en sammenfatning av forelesningens innhold, strukturert for repetisjon. ' +
+      'Sjekk mot egne notater og pensumboka før eksamen — og bruk boka som kilde i innleveringer, ikke notatet.</div>';
+
+    main.innerHTML = html;
+  }
+
+  function sideEmnet() {
+    var e = window.OT.emne;
+    var html = ui.sideHode(e.kode, e.navn, e.ingress);
+
+    html += '<div class="card"><h3 style="margin-top:0">Fagets tre hensikter</h3><ul class="bullets">' +
+      e.hensikter.map(function (h) { return '<li>' + ui.rik(h) + '</li>'; }).join('') + '</ul></div>';
+
+    html += '<h2>Undervisningsplan</h2>';
+    e.hovedtemaer.forEach(function (t) {
+      html += '<h3>Hovedtema ' + t.nr + ': ' + ui.esc(t.navn) + '</h3>' +
+        '<div class="table-wrap"><table><thead><tr><th>Nr</th><th>Emne</th><th>Litteratur</th></tr></thead><tbody>';
+      t.emner.forEach(function (em) {
+        var lenke = em.modul && ui.modulById(em.modul)
+          ? '<a href="#/modul/' + em.modul + '">' + ui.esc(em.tittel) + '</a>'
+          : ui.esc(em.tittel);
+        html += '<tr><td>' + em.nr + '</td><td>' + lenke + '</td><td>' + ui.rik(em.litt || '&mdash;') + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    });
+
+    html += '<h2>Obligatorisk litteratur</h2><ul class="bullets">' +
+      e.litteratur.map(function (k) { return '<li>' + ui.rik(k) + '</li>'; }).join('') + '</ul>';
+
+    html += '<h2>Vurdering og krav</h2><ul class="bullets">' +
+      e.vurdering.map(function (v) { return '<li>' + ui.rik(v) + '</li>'; }).join('') + '</ul>';
+
+    html += '<h2>Akademisk skriving</h2><ul class="bullets">' +
+      e.akademiskSkriving.map(function (a) { return '<li>' + ui.rik(a) + '</li>'; }).join('') + '</ul>';
+
+    html += '<h2>Bruk av KI</h2>';
+    html += '<div class="callout"><strong>Kjernebudskapet</strong>' + ui.rik(e.ki.kjerne) + '</div>';
+    html += '<div class="grid-2">' +
+      '<div class="card"><h3 style="margin-top:0">Mulighetene</h3><ul class="bullets">' +
+      e.ki.muligheter.map(function (x) { return '<li>' + ui.rik(x) + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="card"><h3 style="margin-top:0">Farene</h3><ul class="bullets">' +
+      e.ki.farer.map(function (x) { return '<li>' + ui.rik(x) + '</li>'; }).join('') + '</ul></div></div>';
+
+    html += '<div class="table-wrap"><table><thead><tr>' +
+      '<th>Lov og trygt</th><th>Avklar og oppgi</th><th>Fusk og risiko</th></tr></thead><tbody><tr>' +
+      '<td><ul class="bullets">' + e.ki.lov.map(function (x) { return '<li>' + ui.rik(x) + '</li>'; }).join('') + '</ul></td>' +
+      '<td><ul class="bullets">' + e.ki.avklar.map(function (x) { return '<li>' + ui.rik(x) + '</li>'; }).join('') + '</ul></td>' +
+      '<td><ul class="bullets">' + e.ki.fusk.map(function (x) { return '<li>' + ui.rik(x) + '</li>'; }).join('') + '</ul></td>' +
+      '</tr></tbody></table></div>';
+
+    html += '<h2>Tre ting å ta med videre</h2><ul class="bullets">' +
+      e.takeaway.map(function (t) { return '<li>' + ui.rik(t) + '</li>'; }).join('') + '</ul>';
+
+    main.innerHTML = html;
+  }
+
   function sideEksamensoppgaver(filter) {
     var s = store.get();
     var alle = window.OT.exams;
@@ -761,6 +893,9 @@
         else sideKoblingOversikt();
         break;
       case 'case': d[1] ? window.OT.caseview.vis(main, d[1]) : sideCaseOversikt(); break;
+      case 'forelesninger': sideForelesninger(); break;
+      case 'forelesning': d[1] ? sideForelesning(d[1]) : sideForelesninger(); break;
+      case 'emnet': sideEmnet(); break;
       case 'eksamensoppgaver': sideEksamensoppgaver(d[1] || null); break;
       case 'eksamensoppgave': d[1] ? window.OT.examview.vis(main, d[1]) : sideEksamensoppgaver(null); break;
       case 'eksamen': sideEksamen(); break;
