@@ -1323,5 +1323,477 @@ window.OT.lectures = [
         ]
       }
     ]
+  },
+
+  /* =================== 11. Sentrale ledelsesteorier =================== */
+  {
+    id: 'f11', modul: 'ledelse', nr: 11,
+    tittel: 'Sentrale ledelsesteorier',
+    kilde: 'HSM121 forelesning 11', foreleser: 'Reidar Hillesund', lysbilder: 70,
+    litteratur: 'JT kap. 12',
+    hovedpunkter: [
+      'Ledelse virker direkte og indirekte — gjennom formelle og uformelle elementer',
+      'Lederstiltabellen fra den sterke mann til den tjenende lederen er forelesningens røde tråd',
+      'Situasjonsbestemt ledelse kobler fire lederstiler til fire utviklingsnivåer',
+      'Institusjonell ledelse (Selznick) handler om å skape et felles verdigrunnlag'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hva er ledelse?',
+        blokker: [
+          { t: 'liste', tittel: 'Tre kjennetegn', punkter: [
+            'Ledelse er en type atferd som utøves av én eller flere personer',
+            'Ledelse har til hensikt å få andre mennesker til å gjøre noe',
+            'Ledelse skal bidra til at organisasjonen når sine mål på best mulig måte'
+          ]},
+          { t: 'liste', tittel: 'Direkte og indirekte ledelse', punkter: [
+            '<strong>Direkte ledelse:</strong> lederens atferd påvirker medarbeiderens atferd umiddelbart',
+            '<strong>Indirekte gjennom formelle elementer:</strong> lederen utformer mål, struktur, rutiner og systemer',
+            '<strong>Indirekte gjennom uformelle elementer:</strong> lederen påvirker kultur, normer og maktforhold'
+          ]},
+          { t: 'p', tekst: 'Poenget med skillet er at mye av det en leder faktisk gjør, virker på medarbeiderne uten at lederen er til stede — og at de indirekte virkemidlene ofte er de sterkeste.' }
+        ]
+      },
+      {
+        tittel: 'Ledelse og administrasjon',
+        blokker: [
+          { t: 'p', tekst: '<strong>Administrasjon</strong> skaper forutsigbarhet og orden og bidrar til de kortsiktige målene — å «gjøre ting riktig». <strong>Ledelse</strong> skaper forandring, ofte store forandringer, og har potensial til å gi langsiktige resultater og konkurransefortrinn — å «gjøre de riktige tingene». Flere nyere studier indikerer at forskjellen mellom de to er blitt overdrevet.' },
+          { t: 'tabell', kolonner: ['Administrasjon', 'Ledelse'], rader: [
+            ['Gjøre tingene riktig', 'Gjøre de riktige tingene'],
+            ['Effektivitet gjennom styring og kontroll', 'Klokskap gjennom grensekryssing'],
+            ['Søken etter «beste praksis»', 'Søken etter «neste praksis»'],
+            ['Vitenskap', 'Kunst'],
+            ['Oppsyn med reisen', 'Skaper tanken og reisen'],
+            ['Effektivitetsfokus', 'Resultatfokus'],
+            ['Får ting til å fortsette å skje', 'Får ting til å skje'],
+            ['Fullfører prosjekter', 'Starter prosjekter']
+          ]},
+          { t: 'liste', tittel: 'Ledelse mot styring, langs flere akser', punkter: [
+            'Endring, relasjon og transformasjon mot administrasjon og forvaltning',
+            'Personorientert, relasjonsdrevet og uformell mot systemorientert, strukturdrevet og formell',
+            'Skjønn mot regler',
+            'Forandring og utvikling mot standardisering og stabilitet',
+            'Verdier mot regler — med sosiale normer og kultur i mellomposisjonen',
+            'Transformasjon mot transaksjon — med rolle, fag og mandat i mellom'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Fire innfallsvinkler og fem ledelsesnivåer',
+        blokker: [
+          { t: 'liste', tittel: 'Fire måter å studere ledelse på', punkter: [
+            '<strong>Lederstil</strong> — hva slags stil bør velges for å få mest mulig ut av medarbeiderne?',
+            '<strong>Relasjoner</strong> mellom leder og medarbeidere — hvilken relasjon er mest hensiktsmessig?',
+            '<strong>Gi retning, mening og endre</strong> — ofte omtalt som institusjonell eller verdibasert ledelse',
+            '<strong>Lederroller</strong> — hva ledere faktisk gjør, og hvilke oppgaver de har (rolleteorier)'
+          ]},
+          { t: 'p', tekst: 'Personlighetstrekk er tatt ut som egen innfallsvinkel, fordi ledelse i dag oppfattes som en <em>relasjon</em> mellom ledere og følgere, ikke som en egenskap ved lederen.' },
+          { t: 'tabell', kolonner: ['Nivå', 'Virker på', 'Oppgave'], rader: [
+            ['Ideologisk ledelse', 'Samfunnsnivå', 'Utvikle virksomhetens oppdrag, visjon og lederfilosofi'],
+            ['Strategisk ledelse', 'Organisasjon og samfunn', 'Tilpasse seg og påvirke omgivelsene for å realisere visjonen'],
+            ['Administrativ ledelse', 'Organisasjonsnivå', 'Sikre at valgt strategi følges — struktur, lønnssystem, ansvarsområder'],
+            ['Operativ ledelse', 'Gruppenivå', 'Det daglige samarbeidet: ros og ris, motivering, konfliktløsning, tilbakemelding'],
+            ['Selvledelse', 'Individnivå', 'Lede medarbeiderne til å lede seg selv — styre egne tanker, atferd og følelser']
+          ]}
+        ]
+      },
+      {
+        tittel: 'Lederstil: fra den sterke mann til den tjenende lederen',
+        blokker: [
+          { t: 'p', tekst: 'Denne tabellen går igjen gjennom hele forelesningsrekken, og er verdt å kunne utenat.' },
+          { t: 'tabell', kolonner: ['', 'Den sterke mann', 'Transaksjonslederen', 'Den visjonære helt', 'Transformasjonslederen', 'Tjenende leder'], rader: [
+            ['<strong>Fokus</strong>', 'Ordre', 'Belønning', 'Visjoner', 'Selvledelse', 'Den andre'],
+            ['<strong>Maktgrunnlag</strong>', 'Posisjon og autoritet', 'Belønning', 'Inspirasjon og relasjon', 'Delt makt', 'Forvalter'],
+            ['<strong>Kunnskapskilde</strong>', 'Leder', 'Leder', 'Leder', 'Medarbeidere og leder', 'Medarbeider og leder'],
+            ['<strong>Grunnlag for medarbeiders atferd</strong>', 'Fryktbasert', 'Kalkulert og forpliktet', 'Emosjonelt, basert på lederens visjon', 'Forpliktelse basert på psykologisk eierskap', 'Tillit og myndiggjøring']
+          ]},
+          { t: 'tabell', kolonner: ['Retning', 'Kjerne'], rader: [
+            ['<strong>Transformasjonsledelse</strong>', 'Lederens evne til å få medarbeiderne til å yte ut over det som kan forventes, gjennom de fire I-ene: idealisert innflytelse, inspirerende motivasjon, intellektuell stimulering og individuelle hensyn'],
+            ['<strong>Autentisk ledelse</strong>', 'Ledere som er svært opptatt av moral, og som av andre oppfattes som bevisste på egne og andres moralske perspektiver, kunnskaper og styrker. Gir høy motivasjon, jobbtilfredshet og ytelse'],
+            ['<strong>Etisk ledelse</strong>', 'Ledere som er opptatt av å gjøre de riktige tingene og opptre etisk i lederskapet og ellers i livet. Moralsk ledelse, åpenhet og transparens'],
+            ['<strong>Tjenende lederskap</strong>', 'Ledere som setter medarbeidernes og andre interessenters behov foran sine egne, og myndiggjør andre slik at de kan utvikle seg. Tillitsbasert, ydmyk, autentisk — forvalter og veileder']
+          ]},
+          { t: 'liste', tittel: 'To hovedkategorier lederstil', punkter: [
+            '<strong>Oppgaveorientert (autoritær):</strong> organisere aktiviteter, klargjøre roller og arbeidsdeling, skaffe ressurser, klargjøre hvordan arbeidet skal utføres og overholde tidsfrister. Omfatter transaksjonsledelse, strukturerende ledelse og kontakt utover teamets grenser',
+            '<strong>Relasjonsorientert (demokratisk):</strong> å bry seg om og ta vare på medlemmene. Verdsetter godt utført arbeid, vektlegger jobbtrivsel, ivaretar underordnedes selvrespekt og spør om råd. Omfatter transformasjonsledelse, støttende ledelse, myndiggjøring og motiverende ledelse'
+          ]},
+          { t: 'liste', tittel: 'Fire lederstiler i kunnskapsarbeid', punkter: [
+            '<strong>Direkte ledelse:</strong> koordinering og delegering av arbeidsoppgaver',
+            '<strong>Transaksjonsledelse:</strong> instrumentelt betinget transaksjon mellom leder og medarbeider',
+            '<strong>Transformasjonsledelse:</strong> kommuniserer en visjon om en attraktiv framtid, slik at det utløses emosjonelle responser og et ønske om å oppfylle visjonen',
+            '<strong>Myndiggjørende ledelse:</strong> legger til rette for selvledelse, der medarbeiderne selv kan ha innflytelse og lede seg mot bedriftens mål'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Situasjonsbestemt ledelse',
+        blokker: [
+          { t: 'liste', tittel: 'Tre ferdigheter en situasjonsbasert leder trenger (Blanchard)', punkter: [
+            '<strong>Diagnostisering av utviklingsnivå</strong> — hvor er medarbeideren? Det finnes ingen beste form for lederskap; den avhenger av nivået til den du skal lede',
+            '<strong>Fleksibilitet</strong> i utøvelsen av lederstil',
+            '<strong>Samarbeid</strong> for å få fram høy prestasjon — omdanne entusiasme til prestasjon'
+          ]},
+          { t: 'tabell', kolonner: ['Utviklingsstadium', 'Medarbeideren', 'Lederstil', 'Kjennetegn ved stilen'], rader: [
+            ['Forventning', 'Entusiastisk nybegynner: høy entusiasme og selvtillit, lav erfaring og kompetanse', '<strong>Instruerende</strong> — sterkt styrende, lite støttende', 'Bestemmer mål, planlegger, setter i gang, tar avgjørelser. Enveiskommunikasjon. Sier tydelig hva, hvor, hvem og når'],
+            ['Frustrasjon', 'Desillusjonert medarbeider: lav entusiasme, erfaring, selvtillit og kompetanse', '<strong>Coachende</strong> — sterkt styrende og sterkt støttende', 'Viser vei, tar avgjørelser i samråd. Toveiskommunikasjon. Berømmer initiativ, bygger selvtillit og mestringstro'],
+            ['Optimisme', 'Kapabel, forsiktig prøvende: økende entusiasme og erfaring, periodevis høy selvtillit', '<strong>Deltakende</strong> — sterkt støttende, mindre styrende', 'Spør hvordan medarbeideren vil løse oppgaven, gir oppmuntring og hjelp ved behov. Lytter og legger til rette'],
+            ['Effektivitet', 'Kompetent utøver: høy entusiasme, erfaring, selvtillit og kompetanse', '<strong>Delegerende</strong> — lite støttende, lite styrende', 'Medarbeideren planlegger og bestemmer selv. Lederen holder kontakt og gir tilbakemelding']
+          ]},
+          { t: 'p', tekst: 'Hver stil har også en <em>bør ikke brukes</em>-regel: instruerende ikke med høy kompetanse og komplekse oppgaver, coachende ikke med dyktige medarbeidere med lang fartstid, deltakende ikke når medarbeideren mangler kunnskap, delegerende ikke før opplæringen og erfaringen er på plass.' },
+          { t: 'liste', tittel: 'Fiedlers tre situasjonstrekk', punkter: [
+            '<strong>Forholdet mellom leder og medarbeider</strong> — aksept og kvaliteten på samarbeidsklimaet',
+            '<strong>Oppgavestruktur</strong> — er målet klart formulert og kjent, kan man avgjøre om resultatet er godt, finnes det prosedyrer, og finnes det én eller flere løsninger?',
+            '<strong>Stillingsmakt</strong> — graden av formell autoritet'
+          ]},
+          { t: 'p', tekst: 'Fiedlers spørsmål er presist: hvorfor er noen ledere effektive i én situasjon og ineffektive i en annen, selv med samme formelle kvalifikasjoner? Svaret er at innflytelse ikke er en personlig egenskap, men en sosial relasjon.' }
+        ]
+      },
+      {
+        tittel: 'Institusjonell og verdibasert ledelse',
+        blokker: [
+          { t: 'p', tekst: 'Ifølge <strong>Selznick</strong> er ledelse først og fremst å skape et felles verdigrunnlag i organisasjonen. Ledelsesbegrepet knyttes da til verdier, normer, legitimitet og tillit.' },
+          { t: 'liste', tittel: 'Fire oppgaver for den institusjonelle lederen', punkter: [
+            'Utforme visjon, mål og verdier',
+            'Institusjonalisere formålet — støtte opp om oppgaveløsning og sosiale samhandlingsmønstre',
+            'Forsvare institusjonell integritet — verne verdigrunnlaget mot indre og ytre utfordringer',
+            'Mestre intern konflikt'
+          ]},
+          { t: 'p', tekst: 'Bakgrunnen er at større turbulens i omgivelsene og en arbeidsstokk med høyere kompetanse tvinger ledere til å dele myndighet og innflytelse med underordnede. At en ledelsesteori er <em>verdibasert</em>, betyr at verdiene i lederskapet er retningsgivende, motiverende, fellesskapsdannende og utviklende — og at de fungerer som hjelpemiddel ved beslutninger og rettesnor i konfliktløsning.' },
+          { t: 'liste', tittel: 'Distribuert eller delt ledelse', punkter: [
+            'Ledelse forstås som noe leder og medarbeidere gjør sammen',
+            'Både som planlagt ordning og som framvoksende prosess',
+            'Finnes særlig i profesjonsbyråkratier — skoler, universiteter, sykehus — der organisasjonsmakten allerede er desentralisert'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Fullspektrumsmodellen og hva forskningen viser',
+        blokker: [
+          { t: 'tabell', kolonner: ['Transaksjonsledelse', 'Transformasjonsledelse'], rader: [
+            ['<strong>Betinget belønning:</strong> avtaler belønning etter innsats, anerkjenner gode resultater', '<strong>Idealisert innflytelse:</strong> skaper visjon og følelse av et overordnet mål'],
+            ['<strong>Ledelse ved unntak, aktiv:</strong> følger med, leter etter avvik fra regler og rutiner, korrigerer', '<strong>Inspirerende motivasjon:</strong> kommuniserer høye forventninger, bruker symboler, uttrykker mål'],
+            ['<strong>Ledelse ved unntak, passiv:</strong> griper bare inn dersom regler ikke blir fulgt', '<strong>Intellektuell stimulering:</strong> understøtter rasjonalitet og grundig problemløsning, gir nye utfordringer'],
+            ['<strong>Laissez-faire:</strong> unngår ansvar, unngår å ta avgjørelser', '<strong>Individuelle hensyn:</strong> gir oppmerksomhet, behandler ansatte individuelt, instruerer og gir råd']
+          ]},
+          { t: 'liste', tittel: 'Hva som får det beste ut av de fleste (Kuvaas)', punkter: [
+            'Indre motivasjon, jobbengasjement og mestringsorientering framfor ytre motivasjon og prestasjonsorientering',
+            'Autonomi og psykologisk empowerment framfor kontroll og styring',
+            'Sosiale bytterelasjoner til leder og organisasjon framfor økonomiske',
+            'Affektiv og normativ organisasjonsforpliktelse framfor kalkulerende',
+            'Rettferdige prosedyrer, utfall og ledere',
+            'Opplevelse av organisatorisk støtte'
+          ]},
+          { t: 'boks', tittel: 'Prestasjonsfremmende klima', tekst: 'Ledelsesforskningen peker i samme retning: transformasjonsledelse er mer effektfullt enn transaksjonsledelse; relasjonelle psykologiske kontrakter slår transaksjonelle; gode relasjoner preget av tillit og rettferdighet betyr mye; empowerment og jobbautonomi slår måling og kontroll; og indre motivasjon slår ytre.' }
+        ]
+      }
+    ]
+  },
+
+  /* =================== 12. Tjenende lederskap =================== */
+  {
+    id: 'f12', modul: 'ledelse', nr: 12,
+    tittel: 'Tjenende lederskap',
+    kilde: 'HSM121 forelesning 12', foreleser: 'Reidar Hillesund', lysbilder: 42,
+    litteratur: 'Eva m.fl. (2019), Liland (2021, 2024)',
+    hovedpunkter: [
+      'Tjenende ledere setter andres behov foran sine egne — og myndiggjør systematisk',
+      'van Dierendoncks seks kjennetegn er kjernepensum',
+      'Southwest Airlines viser at kulturen er det vanskeligste å kopiere',
+      'Norsk forskning: sterk effekt på engasjement og endringsvilje, ingen målbar på lønnsomhet'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hva er tjenende lederskap?',
+        blokker: [
+          { t: 'p', tekst: 'Det avgjørende trekket er at tjenende ledere setter andre foran seg selv. Det primære er å legge til rette for at ikke bare medarbeiderne skal utvikle seg positivt, men også at interessene til kunder, brukere og andre interessenter ivaretas og fremmes. Tjenende ledere arbeider konstant med å myndiggjøre andre (Jacobsen og Thorsvik 2025).' },
+          { t: 'liste', tittel: 'Greenleafs opprinnelige definisjon (1970)', punkter: [
+            'Et ønske om å tjene andre',
+            'Ikke-materialistisk orientering',
+            'Ikke fokusert på makt og kontroll',
+            'Fokusert på å utvikle mennesker',
+            'Ønske om å gi de vanskeligstilte en stemme og hjelpe dem å lykkes'
+          ]},
+          { t: 'p', tekst: 'Begrepet kommer fra Robert Greenleafs essay <em>The Servant as Leader</em> (1970), og er siden tatt i bruk som ledelsesfilosofi i selskaper som Starbucks, Walmart og Southwest Airlines. De siste årene har det fått økt interesse også i akademia.' },
+          { t: 'liste', tittel: 'W. Wrights fem prinsipper', punkter: [
+            'Påvirkning og betjening',
+            'Visjon og håp',
+            'Karakter og tillit',
+            'Relasjon og makt',
+            'Avhengighet og ansvarlighet'
+          ]},
+          { t: 'boks', tittel: 'Blanchards formulering', tekst: 'Tjenende ledere forstår at alle trenger å bli hørt, rost, oppmuntret, tilgitt, akseptert — og ledet tilbake til riktig kurs når de har kommet ut av drift.' }
+        ]
+      },
+      {
+        tittel: 'van Dierendoncks seks kjennetegn',
+        blokker: [
+          { t: 'p', tekst: 'Dette er den mest eksamensrelevante listen i forelesningen (van Dierendonck, gjengitt hos Liland 2024, s. 71).' },
+          { t: 'tabell', kolonner: ['Kjennetegn', 'Konkret innhold'], rader: [
+            ['<strong>Myndiggjør og utvikler mennesker</strong><br>(empowering and developing people)', 'Coaching og trening. Se potensialet i mennesker. Oppmuntre og dele informasjon'],
+            ['<strong>Ydmykhet</strong> (humility)', 'Lydhørhet. Erkjenner feil. Kjenner sine begrensninger'],
+            ['<strong>Autentisitet</strong> (authenticity)', 'Holder det en lover. Ærlig og integrert. Ser mennesker'],
+            ['<strong>Mellommenneskelig aksept</strong> (interpersonal acceptance)', 'Empati. Tilgivelse og nåde. Atmosfære av tillit'],
+            ['<strong>Gir retning</strong> (providing direction)', 'Skreddersyr og plasserer ansvar. Innovasjon basert på verdier'],
+            ['<strong>Forvaltning</strong> (stewardship)', 'Tar overordnet ansvar. Opplevelse av forpliktelse til det gode']
+          ]},
+          { t: 'p', tekst: 'Modellen for tjenende lederskap går fra <strong>forløpere</strong> — kontekst og kultur, lederens egenskaper, medarbeidernes egenskaper — via <strong>tjenende lederatferd</strong> — sette medarbeideren først, hjelpe folk å vokse, etisk atferd, myndiggjøre, skape verdi for de rundt seg — til <strong>utfall</strong>: medarbeidernes prestasjoner og vekst, organisasjonens prestasjoner, og betydning for samfunnet.' },
+          { t: 'tabell', kolonner: ['Styrker', 'Svakheter'], rader: [
+            ['Altruismen står sterkt', 'Virker ikke i miljøer der medarbeidere ikke er åpne for å bli veiledet, støttet eller myndiggjort'],
+            ['Innflytelse og makt er reversert', 'Kvaliteten ved å «tjene» kan skape forvirring om lederrollen'],
+            ['Det finnes tilgjengelige måleverktøy som gjør effektene enkle å undersøke', 'Altruismen kan gå på bekostning av det praktiske']
+          ]}
+        ]
+      },
+      {
+        tittel: 'Hva forskningen viser',
+        blokker: [
+          { t: 'p', tekst: 'Kuvaas peker på at sammenhengen mellom tjenende lederskap og ledereffektivitet er <em>sterkere</em> enn mellom transformasjonsledelse og ledereffektivitet. Det betyr at tjenende lederskap forklarer medarbeidernes ytelse, engasjement, jobbtilfredshet, lojalitet, tillit og relasjonskvalitet bedre enn transformasjonsledelse gjør. Det er kanskje ikke enkelt å opptre slik — men det er effektivt.' },
+          { t: 'boks', tittel: 'Norsk studie av regnskapsbedrifter', tekst: 'Aulie og Sundnes (NHH 2016) undersøkte 148 regnskapsbedrifter med 751 respondenter, både ledere og medarbeidere. Tjenende ledelse hadde klar positiv sammenheng med jobbengasjement, tillit til ledelsen, ansattes ekstra ytelse og engasjement, kreativitet og endringsvilje — og ekstrarolleatferden forsterket forholdet mellom tjenende ledelse og endringsvilje. <strong>Men: undersøkelsen viste ingen sammenheng mellom tjenende ledelse og lønnsomhet.</strong>' },
+          { t: 'p', tekst: 'En SINTEF-studie av fem store nordiske selskap, basert på intervjuer med 60 ledere og ansatte gjennom hjemmekontoråret, fant at de lederne som lyktes best, var de som allerede før pandemien hadde lagt om til tjenende lederskap — en stil der sjefene i en viss forstand gjør seg selv overflødige.' },
+          { t: 'liste', tittel: 'Lederrollen i en nettverksorganisasjon — seks råd', punkter: [
+            'Skape arenaer der ansatte kan bygge nettverk',
+            'Utforme oppgaver slik at folk jobber sammen og ikke alene',
+            'Gripe inn når det oppstår flaskehalser i nettverkene',
+            'Tilrettelegge for god teknologistøtte — standardisering av teknologi blir ofte feil, fordi ulike samhandlingsmønstre krever ulike verktøy',
+            'Kjenne nettverkene godt, så man ikke tar uheldige valg når folk flyttes',
+            'Hjelpe innleide inn i nettverkene — verdens beste på et felt hjelper lite om vedkommende blir sittende alene'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Southwest Airlines',
+        blokker: [
+          { t: 'p', tekst: 'Southwests suksess forklares med sammenhengen mellom selskapets verdier og de organisatoriske systemene og HR-tiltakene som brukes for å implementere strategien: lave kostnader, lavere bemanning, kortere tid på bakken og høy kundetilfredshet. Medarbeiderne ønsker å gi «det lille ekstra» — og det er nettopp holdningene som har vært vanskelige å kopiere.' },
+          { t: 'liste', tittel: 'Strategi og HR i Southwest', punkter: [
+            'Strategi: korte flygninger, morsomt å fly, lave kostnader, kort tid på bakken',
+            'Jobbsikkerhet og langsiktig relasjon',
+            'Selektiv rekruttering',
+            'Selvstyrte team og desentralisering som grunnleggende organisasjonsprinsipp — teamene erstatter mye av behovet for hierarkisk kontroll, noe som gir mer autonom jobbdesign og dermed indre motivasjon',
+            'Relativt høye lønninger basert på organisatorisk prestasjon',
+            'Stor investering i trening og utvikling',
+            'Små statusforskjeller mellom ansatte, og mellom ansatte og ledelse',
+            'Utpreget deling av informasjon i hele organisasjonen'
+          ]},
+          { t: 'liste', tittel: 'Forpliktelsesbasert HR (Pfeffer og Veiga)', punkter: [
+            'Medarbeiderne jobber <strong>hardere</strong> på grunn av sterkere involvering og engasjement, som skyldes høy grad av medbestemmelse og egen kontroll',
+            'De jobber <strong>smartere</strong> fordi de oppfordres til å utvikle og bruke ferdighetene sine',
+            'De jobber <strong>mer ansvarlig</strong> fordi ansvaret er plassert i deres hender'
+          ]},
+          { t: 'p', tekst: 'Andre virksomheter forelesningen trekker fram som preget av tjenende lederskap: Max Havelaar / Fairtrade Norge, Umoe Catering, Starbucks og AT&T.' }
+        ]
+      },
+      {
+        tittel: 'Røtter og lederlogikker',
+        blokker: [
+          { t: 'liste', tittel: 'Tjenende lederskap hos Jesus — trekkene forelesningen framhever', punkter: [
+            'Bygger relasjon og jobber teambasert',
+            'Utruster gjennom å gå sammen med folk i praksis',
+            'Myndiggjør etterfølgerne til samme oppdrag som seg selv, og sender dem ut',
+            'Tydelig visjon og misjon',
+            'Frigjøring, omsorg for fattige og syke, og likeverd',
+            'Maktgrunnlaget er tjeneren, og lederskapet modelleres ved å vaske føttene til medarbeiderne'
+          ]},
+          { t: 'tabell', kolonner: ['Lederstil E (Jacobsen) / Maxwell 1', 'Lederstil O (Jacobsen) / Maxwell 2'], rader: [
+            ['Kartlegger motstand og støtte, kartlegger maktbaser, knytter allianser', 'Ser den enkelte, tilfører ressurser og energi, motiverer den enkelte'],
+            ['Identifiserer sentrale slagmarker, definerer brohoder og kamper, overvåker prosessen', 'Benytter delegasjon og støttende atferd, fungerer som bindeledd og som lærer'],
+            ['Jakter på makt og prestasjon, ser andre som fiender og konkurrenter, er villig til å bruke trussel og tvang', 'Jakter på kjærlighet og tjeneste for andre, ser andre som utfyllende, motiveres av å møte behov og jobbe for saken'],
+            ['Gir større velstand og status som leder', 'Gir større velferd til folket']
+          ]},
+          { t: 'boks', tittel: 'Mor Teresas to spørsmål', tekst: '«Kjenner du folkene dine? Elsker du dem?» Forelesningens kommentar: du kan ikke lede folk du ikke kjenner — men du kan administrere dem.' }
+        ]
+      }
+    ]
+  },
+
+  /* =================== 12a. Hans Nielsen Hauge =================== */
+  {
+    id: 'f12a', modul: 'ledelse', nr: 12,
+    tittel: 'Hans Nielsen Hauge som leder og samfunnsbygger',
+    kilde: 'HSM121 forelesning 12a', foreleser: 'Reidar Hillesund', lysbilder: 27,
+    litteratur: 'Liland (2021, 2024)',
+    hovedpunkter: [
+      'Haugianismen regnes som Norges første landsomfattende folkebevegelse',
+      'Hauge kombinerte kall, næringsutvikling og folkeopplysning',
+      'Menneskesyn som ledelsesprinsipp: potensialet før posisjonen',
+      'Forløper for den norske samarbeidsmodellen'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hvem var han?',
+        blokker: [
+          { t: 'liste', tittel: 'Hovedtrekk (1771–1824)', punkter: [
+            'Født i Tune i Østfold, nummer fem av ti barn',
+            'Åndelig gjennombrudd 5. april 1796',
+            'Gikk til fots gjennom mesteparten av Norge, primært i perioden 1797–1804',
+            'Satt omtrent ti år i fengsel fra 1804 til 1814, arrestert etter konventikkelplakaten',
+            'Forfattet mellom 33 og 40 bøker og skrifter',
+            'Startet eller restartet minst 30 bedrifter'
+          ]},
+          { t: 'boks', tittel: 'Historikerens vurdering', tekst: '«Det er vanlig å regne haugianismen som den aller første landsomfattende folkebevegelse i Norge. Skapt på et tidspunkt hvor all folkelig organisering var forbudt» (Trygve Riiser Gundersen).' },
+          { t: 'p', tekst: 'Konteksten: 80–90 % av befolkningen bodde på landsbygda og levde av jordbruk. Utover 1800-tallet skjøt industrialiseringen fart, med skipsfart, fiske og fangst, trelast, industri og bergverk som de viktigste eksportnæringene.' }
+        ]
+      },
+      {
+        tittel: 'Hvorfor startet han virksomheter?',
+        blokker: [
+          { t: 'liste', punkter: [
+            'Drevet av et kall: «Mitt kallsbrev er å elske Gud og min neste»',
+            'Et brennende samfunnsengasjement',
+            'Folkeopplysning, utvikling av talent og forvalterskap',
+            'Lindre nød og lidelse, og bekjempe fattigdom',
+            'Skaper- og virketrang, evne til å se muligheter og potensial i andre'
+          ]},
+          { t: 'p', tekst: 'Metoden var å se ressurser der andre så landskap: så han en foss, så han vannkraft, og slik ble møllene til. På reisene sine så han at noen steder hadde overskudd på det andre steder manglet — og slik ble handelsbedriftene født. Det ble papirmøller, kornmøller, benmøller, garveri, støpeverk, strømpeveving i Trondheim, pottaskanlegg i Bardu, fiskevær med gjestgiveri i Nord-Trøndelag og gruvedrift i Nord-Østerdal.' },
+          { t: 'boks', tittel: 'Økonomisk betydning', tekst: 'Ola Grytten ved NHH har anslått at Hauge gjennom sitt nettverk direkte eller indirekte bidro til å skape mellom 7 000 og 8 000 arbeidsplasser i Norge i perioden 1801–1828, og at han sto for omtrent 1,5–2 % av landets samlede investeringer i 1804.' },
+          { t: 'p', tekst: 'Dag Kullerud (1996) omtaler ham som «vekkelsespredikant, organisator, kjøpmann, skipsreder, ekteskapsformidler, vår første store industrigründer, vår første forfatter med masseopplag, og vår første store forlegger».' }
+        ]
+      },
+      {
+        tittel: 'Ledelsesprinsippene',
+        blokker: [
+          { t: 'liste', tittel: 'Frigjøring av potensial', punkter: [
+            'Satte i gang omfattende opplæring og utdannelse, ofte ved å formidle lærlingplasser',
+            'Var flink til å se potensialet i mennesker, og sørget for at de fikk muligheter',
+            'Valgte ut ledere etter egnethet — og krevde at gode holdninger og ansvar for andre var vist i praksis',
+            'Gjorde ikke forskjell på kvinner og menn, gamle eller unge, fattige eller rike',
+            'Satte ofte sammen grupper av mennesker som utfylte hverandre'
+          ]},
+          { t: 'boks', tittel: 'Kommunist eller kapitalist?', tekst: 'Hauge tenkte først at bedriftene skulle eies i fellesskap av «det kristelige samfunn», men det viste seg nødvendig med private, spesifiserte eiere. Bedriftene sto derfor med konkrete haugianere som eiere. De oppfattet seg likevel som et fellesskap: overskuddet ble brukt til å starte nye bedrifter, ofte eid av andre haugianere, og de etablerte samarbeid på tvers av bransjer og geografi — strategiske allianser som økte konkurranseevnen.' },
+          { t: 'p', tekst: 'Sporene finnes fortsatt: Devold, som etablerte det første telenettet i Europa, Möllers Tran, som var først i verden med å framstille medisintran av fiskelever, og boktrykkeriet Grøndahl & Søn.' }
+        ]
+      },
+      {
+        tittel: 'Samtidig og etterpå',
+        blokker: [
+          { t: 'boks', tittel: 'Robert Owen (1771–1858)', tekst: 'Hauges britiske samtidige kjøpte en bomullsfabrikk i New Lanark i 1799 og gjorde den til en mønsterfabrikk: høyere lønn, kortere arbeidstid, bedre boliger, skole for barna som ble tatt ut av fabrikken, forbud mot fysisk avstraffelse — og samtidig høy lønnsomhet. Men ingen ville tro at det å investere i mennesker kunne gi større utbytte enn å investere i maskiner.' },
+          { t: 'liste', tittel: 'Kjennetegn på norsk og skandinavisk arbeidsliv', punkter: [
+            'Høy produktivitet og lav arbeidsledighet',
+            'Lik representasjon av begge kjønn på de fleste felt',
+            'En rekke lov- og avtalefestede velferdsordninger — sykelønn, foreldrepermisjon, fravær ved barns sykdom',
+            'Høy organisasjonsgrad, både fagforening og arbeidsgiverforening',
+            'Lavt nivå av streik og konflikt',
+            'Høy lønn og små lønnsforskjeller i hierarkiet'
+          ]},
+          { t: 'liste', tittel: 'Samarbeidsmodellens fem trekk', punkter: [
+            'Gruppe- eller teamarbeid i selvstyrte grupper',
+            'Partnerskap — medvirkning og tett samarbeid mellom ledelse og tillitsvalgte, framfor ren forhandling',
+            'Representativ medvirkning, med ansatte i styret',
+            'Arbeidsmiljølov med tilrettelegging, sosioteknisk tenkning og økt egenkontroll',
+            'Demokratisk ledelse med sterkt fokus på medvirkning i det daglige arbeidet'
+          ]},
+          { t: 'p', tekst: 'Trepartssamarbeidet hviler på tre grunnpilarer: offentlig velferd, organisert arbeidsliv og økonomisk styring.' }
+        ]
+      }
+    ]
+  },
+
+  /* =================== 13. Etikk og ledelse =================== */
+  {
+    id: 'f13', modul: 'ledelse', nr: 13,
+    tittel: 'Etikk og ledelse',
+    kilde: 'HSM121 forelesning 13', foreleser: 'Reidar Hillesund', lysbilder: 41,
+    litteratur: 'Yukl kap. 9, Northouse kap. 15',
+    hovedpunkter: [
+      'Fire etiske teorier svarer på fire ulike spørsmål',
+      'Etisk ledelse hviler på personlig integritet — konsistens mellom uttalte verdier og atferd',
+      'Regelstyrt og målstyrt ledelse er pliktetikk og konsekvensetikk i praksis',
+      'Den giftige triangelen: destruktiv ledelse krever også følgere og et gunstig miljø'
+    ],
+    seksjoner: [
+      {
+        tittel: 'Hvorfor ledelse og etikk?',
+        blokker: [
+          { t: 'p', tekst: 'Gini (2004) formulerer kjernen: det handler ikke om hvorvidt ledere <em>vil</em> bruke makt, men om de vil bruke den klokt og godt.' },
+          { t: 'liste', tittel: 'Etisk ledelse', punkter: [
+            'Involverer først og fremst <strong>personlig integritet</strong>, som topper lister over kriterier på tvers av kulturer',
+            'Basisdefinisjonen legger vekt på ærlighet og konsistens mellom en persons uttalte verdier og faktiske oppførsel',
+            'Moralsk anerkjent atferd inkluderer å følge de samme reglene som andre, ærlighet og åpenhet, å holde løfter og forpliktelser, og å erkjenne ansvar for feil og søke å korrigere dem'
+          ]},
+          { t: 'p', tekst: 'Bedømmelsen er krevende fordi den involverer subjektiv vurdering, og den må omfatte tre ting: <strong>hensikten</strong> (målet), <strong>konsistensen mellom oppførsel og moral</strong> (middelet), og <strong>konsekvensene for seg selv og andre</strong> (resultatet).' },
+          { t: 'def', term: 'Etikk og moral', tekst: '<strong>Etikk</strong> er læren om moral — moralfilosofi. Formålet er å studere hvordan man bør handle, og å forstå begrepene vi bruker når vi evaluerer handlinger, personer og utfall. <strong>Moral</strong> brukes deskriptivt om det settet av normer, verdier og holdninger som faktisk aksepteres og praktiseres, og normativt om normer som har gyldighet.' },
+          { t: 'p', tekst: 'Etikk handler ikke bare om regler og prinsipper, men også om hvordan mennesker inngår i relasjoner og avhengighetsforhold og utvikler dem på en god måte. Etikken er forankret i den moralske personligheten.' }
+        ]
+      },
+      {
+        tittel: 'De fire etiske teoriene',
+        blokker: [
+          { t: 'tabell', kolonner: ['Teori', 'Spørsmål den stiller', 'Kjerne'], rader: [
+            ['<strong>Konsekvensetikk</strong> (nytteetikk, utilitarisme)', 'Hva er konsekvensen av valget?', 'Handlingen vurderes etter hva den fører til. Varianter: etisk egoisme (profittmaksimerende), utilitarisme (nytte for flest mulig), altruisme'],
+            ['<strong>Pliktetikk</strong> (regeletikk, deontologi)', 'Hva er rett å gjøre?', 'Visse midler kan aldri rettferdiggjøres, selv med et godt mål. Kants kategoriske imperativ: handle bare etter den regelen du kan ville skal bli allmenn lov'],
+            ['<strong>Dydsetikk</strong>', 'Hvilke dyder og egenskaper er viktige?', 'Dydene er forankret i personen, formes gjennom øvelse, og hører selv med til det gode livet — ikke bare som middel'],
+            ['<strong>Diskursetikk</strong>', 'Hvilke normer oppstår i dialog mellom alle berørte?', 'Habermas: en norm kan bare kreve gyldighet dersom konsekvensene av å følge den kan få utvungen tilslutning fra alle berørte parter gjennom praktisk diskurs']
+          ]},
+          { t: 'p', tekst: 'Plikt har tre kjennetegn: den er <strong>absolutt</strong>, den er vanligvis formulert som en <strong>regel eller norm</strong>, og den skal hjelpe oss å gjøre det som er <strong>rett</strong> — ikke først og fremst det som er godt eller best. Pliktetikken hevder at det gode følger av at vi gjør det rette.' },
+          { t: 'p', tekst: 'Forskjellen mellom dydsetikk og konsekvensetikk er verdt å merke seg: konsekvensetikken er bare opptatt av hva handlingen fører til, mens dydsetikken er opptatt av hva handlingen uttrykker om den som handler, og hvordan den utvikler oss som mennesker og fellesskap.' },
+          { t: 'p', tekst: 'I diskursetikken er den moralske aktøren ikke det enkelte mennesket alene, men mennesker som gjennom fellesskap og dialog har funnet fram til gode løsninger de deler (Henriksen og Vetlesen 2017).' }
+        ]
+      },
+      {
+        tittel: 'Etikk i praktisk ledelse',
+        blokker: [
+          { t: 'liste', tittel: 'Kvalnes seks spørsmål å stille før du handler', punkter: [
+            '<strong>Jus:</strong> er det lovlig?',
+            '<strong>Identitet:</strong> er det i samsvar med verdiene våre?',
+            '<strong>Moral:</strong> er det riktig?',
+            '<strong>Etikk:</strong> lar det seg begrunne?',
+            '<strong>Omdømme:</strong> beholder vi troverdigheten?',
+            '<strong>Økonomi:</strong> lønner det seg?'
+          ]},
+          { t: 'p', tekst: 'Etikk er et fag som gir oss et språk og prinsipper vi kan bruke når vi fatter beslutninger (Kvalnes 2006). Teoriene skal gi oss både nærhet og distanse til problemet, og de er et alternativ til tradisjonsstrategien, følelsesstrategien og den dogmatiske strategien (Føllesdal).' },
+          { t: 'tabell', kolonner: ['Ledelsesform', 'Etisk grunnlag', 'Hvordan det virker'], rader: [
+            ['<strong>Regelstyrt ledelse</strong>', 'Pliktetikk (Weber)', 'Moralsk verdi tillegges handlingen, ikke konsekvensen. Den ideelle byråkrat beslutter <em>sine ira et studio</em> — uten sinne eller glede. Lager man gode nok regler, behandles alle likt fordi avgjørelsene ikke er subjektive. Dette er den vanligste formen for delegering'],
+            ['<strong>Målstyrt ledelse</strong>', 'Konsekvensetikk (Hume)', 'Organisasjonens mål og underliggende verdier kommuniseres, slik at beslutningsmyndighet og ansvar for delmål kan desentraliseres. Ledere får fullmakt til selv å gjøre strategiske valg ved å bedømme konsekvensene mot målet. Drucker og McGregor er pionerer']
+          ]},
+          { t: 'boks', tittel: 'Regel eller konsekvens — det klassiske eksempelet', tekst: 'Løwendahl og Wenstøp (BI) leser fortellingen om helbredelsen på sabbaten som det første skrevne eksempelet på konflikten mellom regelstyrt og målstyrt ledelse: fariseernes regel kan etterleves ved å holde seg til lovens bokstav, uten å bli emosjonelt involvert, mens Jesus setter opp et mål — du skal gjøre det gode — som krever at man først bedømmer hva som er godt, og dermed involverer seg. For å bedømme hva som er godt, må man ha en idé om konsekvensene.' },
+          { t: 'liste', tittel: 'Hva kjennetegner en etisk robust virksomhet?', punkter: [
+            '<strong>Kunnskap</strong> om lover, regler, mål og rammer',
+            '<strong>Kultur</strong> — etisk bevisst atferd, gode prinsipper, og arenaer og enkle verktøy for å håndtere dilemmaer',
+            '<strong>Arbeidsrutiner</strong> som er dokumenterte og etterprøvbare, en åpen organisasjon og god intern og ekstern kommunikasjon'
+          ]}
+        ]
+      },
+      {
+        tittel: 'Dydene og etisk lederskap',
+        blokker: [
+          { t: 'tabell', kolonner: ['Klassisk dyd', 'Hva den består i'], rader: [
+            ['<strong>Klokskap</strong>', 'Situasjonsbevissthet og bevisst tilstedeværelse. Kompetanse til å utøve godt skjønn i konkrete og komplekse situasjoner'],
+            ['<strong>Rettferdighet</strong>', 'Relasjonsbevissthet. Framstår troverdig og pålitelig'],
+            ['<strong>Måtehold</strong> (selvbesinnelse)', 'Årvåkenhet og selvbevissthet — blikket rettes mot en selv'],
+            ['<strong>Mot</strong>', 'Besluttsomhet, kraft og vilje til å handle. Hva hjelper all verdens innsikt om lederen ikke våger å beslutte? (Brunstad 2009)']
+          ]},
+          { t: 'p', tekst: 'Dyder omtales gjerne som <strong>kjerneverdier</strong> i en organisasjon, og kjerneverdier kan igjen forstås som normer for atferd og samhandling. Motstykket er de syv lastene — stolthet, grådighet, lyst, misunnelse, fråtseri, sinne og latskap — som ifølge tradisjonen medfører tiltakende mental og moralsk isolering.' },
+          { t: 'liste', tittel: 'Fem prinsipper for etisk lederskap (Northouse)', punkter: [
+            '<strong>Respekt for andre:</strong> Kants plikt til å behandle andre med respekt, aldri bare som middel. Krever aktiv lytting, empati og toleranse',
+            '<strong>Tjeneste:</strong> altruisme synlig som mentoring, utrustning og teambygging. Å gi næring til organisasjonens visjon (Senge) og bry seg om dem som ikke har noe (Greenleaf)',
+            '<strong>Rettferdighet:</strong> ingen bør motta spesiell behandling med mindre situasjonen krever det. Å fremme gruppens felles interesser (Rawls). Krevende, fordi ressurser er begrensede',
+            '<strong>Ærlighet:</strong> når vi lyver, sier vi i praksis at vi er villige til å manipulere relasjonen på egne premisser. Handler også om transparens',
+            '<strong>Bygger fellesskap:</strong> lederen må skape en overenskomst mellom sin egen og følgernes hensikt, og arbeide for det felles gode framfor å presse egne mål på medarbeiderne'
+          ]},
+          { t: 'liste', tittel: 'Psykologiske forutsetninger for etisk atferd', punkter: [
+            'Desentrering og evne til refleksjon',
+            'Empati og emosjonell intelligens',
+            'Sårbarhet og tillit',
+            'Overordnet fleksibilitet',
+            'Personlig integritet, og å unngå dobbeltbudskap',
+            'Evne til å skape tillit',
+            'Evne og vilje til å ta ansvar'
+          ]},
+          { t: 'p', tekst: 'Yrkesetisk ansvar er personlig: moralsk integritet er knyttet til fritt å kunne handle i tråd med sine overbevisninger. En person som er bevisst den etiske dimensjonen i egen yrkesutøvelse, kan derfor aldri gjemme seg bak andre og unndra seg sin del av ansvaret for det virksomheten gjør.' }
+        ]
+      },
+      {
+        tittel: 'Samfunnsansvar og destruktiv ledelse',
+        blokker: [
+          { t: 'liste', tittel: 'Samfunnsansvarets fire nivåer', punkter: [
+            '<strong>Økonomisk</strong> — å levere det folk har behov for',
+            '<strong>Legalt</strong> — innenfor lover og regler',
+            '<strong>Etisk</strong> — innenfor uformelle rammer, regler og normer',
+            '<strong>Filantropisk</strong> — utover det man selv har nytte av'
+          ]},
+          { t: 'p', tekst: 'Virksomhetsstyring (corporate governance) skal sikre eierinnflytelse; samfunnsansvar (CSR) understreker at organisasjoner har et ansvar utover det å tjene penger. ESG samler det miljømessige, sosiale og etiske ansvaret.' },
+          { t: 'boks', tittel: 'Den giftige triangelen', tekst: 'Destruktiv ledelse oppstår sjelden av lederen alene. Padilla, Hogan og Kaiser (2007) beskriver tre elementer som må være til stede samtidig: en <strong>destruktiv leder</strong>, <strong>mottakelige følgere</strong>, og et <strong>gunstig miljø</strong>. Modellen flytter analysen fra person til system — og er derfor den mest brukbare inngangen til spørsmålet om hvordan dårlig ledelse får bestå.' }
+        ]
+      }
+    ]
   }
 ];
