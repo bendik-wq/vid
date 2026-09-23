@@ -8,7 +8,9 @@
     quiz: {},       // modulId -> { beste: n, antall: n, siste: n, kjort: n }
     kort: {},       // begrep -> 'kan' | 'repeter'
     caseSvar: {},   // caseId::idx -> tekst
-    caseFerdig: {}  // caseId -> true
+    caseFerdig: {}, // caseId -> true
+    eksamenSvar: {},   // eksamenId -> tekst
+    eksamenFerdig: {}  // eksamenId -> true
   };
 
   function les() {
@@ -83,6 +85,22 @@
       lagre();
     },
 
+    lagreEksamenSvar: function (eksamenId, tekst) {
+      if (tekst) state.eksamenSvar[eksamenId] = tekst;
+      else delete state.eksamenSvar[eksamenId];
+      lagre();
+    },
+
+    hentEksamenSvar: function (eksamenId) {
+      return state.eksamenSvar[eksamenId] || '';
+    },
+
+    settEksamenFerdig: function (eksamenId, ferdig) {
+      if (ferdig) state.eksamenFerdig[eksamenId] = true;
+      else delete state.eksamenFerdig[eksamenId];
+      lagre();
+    },
+
     /* Feilbesvarte spørsmål, til repetisjonsmodus. */
     feilSporsmal: function () {
       return window.OT.questions.filter(function (q) {
@@ -101,11 +119,14 @@
       var kanKort = kort.filter(function (g) { return state.kort[g.term] === 'kan'; }).length;
       var caser = window.OT.cases.filter(function (c) { return c.modul === modulId; });
       var ferdigCase = caser.filter(function (c) { return state.caseFerdig[c.id]; }).length;
+      var eks = (window.OT.exams || []).filter(function (e) { return e.modul === modulId; });
+      var ferdigEks = eks.filter(function (e) { return state.eksamenFerdig[e.id]; }).length;
 
       var deler = [];
       if (sp.length) deler.push(riktige / sp.length);
       if (kort.length) deler.push(kanKort / kort.length);
       if (caser.length) deler.push(ferdigCase / caser.length);
+      if (eks.length) deler.push(ferdigEks / eks.length);
       var snitt = deler.length
         ? deler.reduce(function (a, b) { return a + b; }, 0) / deler.length
         : 0;
@@ -114,6 +135,7 @@
         sporsmal: sp.length, riktigeSporsmal: riktige,
         kort: kort.length, kanKort: kanKort,
         caser: caser.length, ferdigCase: ferdigCase,
+        eksamen: eks.length, ferdigEksamen: ferdigEks,
         prosent: Math.round(snitt * 100)
       };
     },

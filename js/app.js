@@ -50,9 +50,13 @@
   }
 
   function markerAktiv(rute) {
+    /* Detaljsider merker av på sin oversiktsside. */
+    var normalisert = rute.indexOf('/eksamensoppgave/') === 0 ? '/eksamensoppgaver' : rute;
     document.querySelectorAll('.nav-item').forEach(function (a) {
       var href = a.getAttribute('href').replace('#', '');
-      a.classList.toggle('is-active', href === rute || (href !== '/oversikt' && rute.indexOf(href) === 0));
+      var treff = href === normalisert ||
+        (href !== '/oversikt' && normalisert.indexOf(href + '/') === 0);
+      a.classList.toggle('is-active', treff);
     });
   }
 
@@ -74,6 +78,10 @@
     });
     window.OT.cases.forEach(function (c) {
       poster.push({ kind: 'Case', title: c.tittel, sub: ui.modulNavn(c.modul), href: '#/case/' + c.id, tekst: c.tittel + ' ' + c.scenario });
+    });
+    window.OT.exams.forEach(function (e) {
+      poster.push({ kind: 'Eksamensoppgave', title: e.tittel, sub: window.OT.examview.modulEtikett(e.modul),
+        href: '#/eksamensoppgave/' + e.id, tekst: e.tittel + ' ' + e.oppgave });
     });
     return poster;
   }
@@ -155,6 +163,7 @@
     html += tile('#/flashcards', 'Puggekort', 'Snu kort med begrep og definisjon, og marker hva du kan.');
     html += tile('#/kobling', 'Koblingsoppgaver', 'Par teori med opphavsperson, eller begrep med definisjon.');
     html += tile('#/case', 'Caseoppgaver', 'Realistiske situasjoner å analysere, med veiledende svar.');
+    html += tile('#/eksamensoppgaver', 'Eksamensoppgaver', 'Skriftlige oppgaver med sensorveiledning, to per kapittel.');
     html += tile('#/eksamen', 'Eksamensmodus', 'Førti spørsmål på tvers av alle kapitler.');
     html += '</div>';
 
@@ -228,6 +237,7 @@
     var begreper = window.OT.glossary.filter(function (g) { return g.modul === id; });
     var caser = window.OT.cases.filter(function (c) { return c.modul === id; });
     var sporsmal = window.OT.questions.filter(function (q) { return q.modul === id; });
+    var eksamener = window.OT.exams.filter(function (e) { return e.modul === id; });
     var f = store.modulFremgang(id);
 
     var html = ui.sideHode('Kapittel ' + m.nr, m.tittel, m.ingress);
@@ -273,6 +283,10 @@
     if (teorier.length > 1) html += tile('#/kobling/teoretiker/' + id, 'Koble teori og opphav', 'Par teoriene med opphavspersonene.');
     caser.forEach(function (c) {
       html += tile('#/case/' + c.id, 'Case: ' + c.tittel, c.tid + ' &middot; analyseoppgave med veiledende svar');
+    });
+    eksamener.forEach(function (e) {
+      html += tile('#/eksamensoppgave/' + e.id, 'Eksamensoppgave: ' + e.tittel,
+        e.type + ' &middot; ' + e.tid + ' &middot; med sensorveiledning');
     });
     html += '</div>';
 
@@ -560,6 +574,55 @@
     main.innerHTML = html;
   }
 
+  function sideEksamensoppgaver(filter) {
+    var s = store.get();
+    var alle = window.OT.exams;
+    var valgt = filter || 'alle';
+    var liste = valgt === 'alle' ? alle : alle.filter(function (e) { return e.modul === valgt; });
+
+    var html = ui.sideHode('Oppgaver', 'Eksamensoppgaver',
+      'Skriftlige oppgaver i eksamensformat, to per kapittel og fire på tvers. Hver oppgave har krav til besvarelsen, ' +
+      'plass til å skrive, og en sensorveiledning som sier hva som må med og hva som trekker ned. ' +
+      'Skriv ferdig før du åpner veiledningen.');
+
+    var ferdige = alle.filter(function (e) { return s.eksamenFerdig[e.id]; }).length;
+    html += '<div class="card"><h3 style="margin-top:0">Besvart: ' + ferdige + ' av ' + alle.length + '</h3>' +
+      ui.bar(Math.round((ferdige / alle.length) * 100), ferdige === alle.length) + '</div>';
+
+    html += '<div class="toolbar"><button class="filter-btn' + (valgt === 'alle' ? ' is-active' : '') +
+      '" data-filter="alle">Alle (' + alle.length + ')</button>';
+    window.OT.modules.forEach(function (m) {
+      var n = alle.filter(function (e) { return e.modul === m.id; }).length;
+      if (!n) return;
+      html += '<button class="filter-btn' + (valgt === m.id ? ' is-active' : '') +
+        '" data-filter="' + m.id + '">' + ui.esc(m.nr + '. ' + m.tittel) + '</button>';
+    });
+    html += '<button class="filter-btn' + (valgt === 'tvers' ? ' is-active' : '') +
+      '" data-filter="tvers">På tvers</button></div>';
+
+    html += '<div class="grid">';
+    liste.forEach(function (e) {
+      html += '<a class="tile" href="#/eksamensoppgave/' + e.id + '">' +
+        '<span class="chip ' + (s.eksamenFerdig[e.id] ? 'chip-ok' : 'chip-accent') + '">' +
+        (s.eksamenFerdig[e.id] ? 'Besvart' : ui.esc(window.OT.examview.modulEtikett(e.modul))) + '</span>' +
+        '<h3>' + ui.esc(e.tittel) + '</h3>' +
+        '<p>' + ui.esc(e.type) + ' &middot; ' + ui.esc(e.tid) + ' &middot; ' +
+        ui.esc(window.OT.examview.nivaTekst(e.niva)) + '</p></a>';
+    });
+    html += '</div>';
+
+    html += '<div class="callout"><strong>Slik bruker du dem</strong>' +
+      'Sett tiden oppgaven oppgir, skriv uten hjelpemidler, og les sensorveiledningen først etterpå. ' +
+      'Besvarelsene lagres lokalt i denne nettleseren, så du kan komme tilbake til dem.</div>';
+
+    main.innerHTML = html;
+    main.querySelectorAll('[data-filter]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        sideEksamensoppgaver(b.getAttribute('data-filter'));
+      });
+    });
+  }
+
   function sideEksamen() {
     var html = ui.sideHode('Oppgaver', 'Eksamensmodus',
       'Førti tilfeldige spørsmål fra hele pensum, uten fasit underveis før du har svart. Resultatet lagres ikke som kapittelresultat, men feilsvarene havner i repetisjonslisten.');
@@ -576,6 +639,7 @@
       '<li>Pugg definisjonene med flashcards til du kan dem uten hjelp</li>' +
       '<li>Koble teori til opphavsperson – det etterspørres ofte</li>' +
       '<li>Skriv minst tre caseoppgaver ordentlig før du ser veiledende svar</li>' +
+      '<li>Skriv to skriftlige <a href="#/eksamensoppgaver">eksamensoppgaver</a> per kapittel og sammenlign med sensorveiledningen</li>' +
       '<li>Avslutt med eksamensmodus og gå gjennom feilsvarene</li>' +
       '</ul>';
 
@@ -595,7 +659,7 @@
     html += '<div class="card"><h3 style="margin-top:0">Samlet: ' + total + ' %</h3>' + ui.bar(total, total >= 80) + '</div>';
 
     html += '<div class="table-wrap"><table><thead><tr>' +
-      '<th>Kapittel</th><th>Spørsmål</th><th>Begreper</th><th>Case</th><th>Fullført</th>' +
+      '<th>Kapittel</th><th>Spørsmål</th><th>Begreper</th><th>Case</th><th>Eksamen</th><th>Fullført</th>' +
       '</tr></thead><tbody>';
     window.OT.modules.forEach(function (m) {
       var f = store.modulFremgang(m.id);
@@ -603,6 +667,7 @@
         '<td>' + f.riktigeSporsmal + ' / ' + f.sporsmal + '</td>' +
         '<td>' + f.kanKort + ' / ' + f.kort + '</td>' +
         '<td>' + (f.caser ? f.ferdigCase + ' / ' + f.caser : '–') + '</td>' +
+        '<td>' + (f.eksamen ? f.ferdigEksamen + ' / ' + f.eksamen : '–') + '</td>' +
         '<td>' + f.prosent + ' %</td></tr>';
     });
     html += '</tbody></table></div>';
@@ -696,6 +761,8 @@
         else sideKoblingOversikt();
         break;
       case 'case': d[1] ? window.OT.caseview.vis(main, d[1]) : sideCaseOversikt(); break;
+      case 'eksamensoppgaver': sideEksamensoppgaver(d[1] || null); break;
+      case 'eksamensoppgave': d[1] ? window.OT.examview.vis(main, d[1]) : sideEksamensoppgaver(null); break;
       case 'eksamen': sideEksamen(); break;
       case 'fremgang': sideFremgang(); break;
       default: sideIkkeFunnet();

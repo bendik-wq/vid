@@ -16,7 +16,7 @@
     var store = window.OT.store;
     var ferdig = !!store.get().caseFerdig[c.id];
 
-    var html = ui.sideHode('Caseoppgave &middot; ' + ui.modulNavn(c.modul), c.tittel, null);
+    var html = ui.sideHode('Caseoppgave \u00b7 ' + ui.modulNavn(c.modul), c.tittel, null);
 
     html += '<div class="chip-row">';
     html += '<span class="chip">Beregnet tid: ' + ui.esc(c.tid) + '</span>';
