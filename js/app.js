@@ -54,6 +54,7 @@
     var normalisert = rute;
     if (rute.indexOf('/eksamensoppgave/') === 0) normalisert = '/eksamensoppgaver';
     else if (rute.indexOf('/forelesning/') === 0) normalisert = '/forelesninger';
+    else if (rute.indexOf('/kilde/') === 0) normalisert = '/kilder';
     document.querySelectorAll('.nav-item').forEach(function (a) {
       var href = a.getAttribute('href').replace('#', '');
       var treff = href === normalisert ||
@@ -84,6 +85,10 @@
     window.OT.lectures.forEach(function (l) {
       poster.push({ kind: 'Forelesning', title: l.tittel, sub: l.kilde,
         href: '#/forelesning/' + l.id, tekst: l.tittel + ' ' + l.hovedpunkter.join(' ') });
+    });
+    window.OT.sources.forEach(function (k) {
+      poster.push({ kind: 'Kilde', title: k.kortnavn + ': ' + k.tittel, sub: k.publikasjon,
+        href: '#/kilde/' + k.id, tekst: k.tittel + ' ' + k.forfattere + ' ' + k.hva });
     });
     window.OT.exams.forEach(function (e) {
       poster.push({ kind: 'Eksamensoppgave', title: e.tittel, sub: window.OT.examview.modulEtikett(e.modul),
@@ -166,6 +171,7 @@
     html += '<h2>Start her</h2><div class="grid">';
     html += tile('#/modul/grunnlag', 'Les kapitlene', 'Tolv moduler med læringsmål, teoritabeller og definisjoner.');
     html += tile('#/forelesninger', 'Forelesningsnotater', 'Sammenfattet innhold fra forelesningene, koblet til kapitlene.');
+    html += tile('#/kilder', 'Kildebank', 'Fagartiklene i pensum, med APA-referanse og hva de kan brukes til.');
     html += tile('#/quiz', 'Ta en quiz', 'Flervalgsspørsmål med forklaring på hvert svar, per kapittel eller på tvers.');
     html += tile('#/flashcards', 'Puggekort', 'Snu kort med begrep og definisjon, og marker hva du kan.');
     html += tile('#/kobling', 'Koblingsoppgaver', 'Par teori med opphavsperson, eller begrep med definisjon.');
@@ -596,6 +602,81 @@
     main.innerHTML = html;
   }
 
+  function sideKilder() {
+    var html = ui.sideHode('Pensum', 'Kildebank',
+      'Fagartiklene og primærkildene i pensum, med ferdig APA-referanse, hva kilden faktisk inneholder, ' +
+      'og hva den egner seg som belegg for. Bruk disse framfor forelesningsnotatene når du skriver.');
+
+    html += '<div class="grid">';
+    window.OT.sources.forEach(function (k) {
+      html += '<a class="tile" href="#/kilde/' + k.id + '">' +
+        '<span class="chip chip-accent">' + ui.esc(k.type) + '</span>' +
+        '<h3>' + ui.esc(k.kortnavn) + '</h3>' +
+        '<p>' + ui.esc(k.tittel) + '</p></a>';
+    });
+    html += '</div>';
+
+    html += '<div class="callout"><strong>Om kildebruk</strong>' +
+      'Sammendragene her er studienotater, ikke gjengivelse av artiklene. Les originalen før du siterer, ' +
+      'og oppgi alltid sidetall ved direkte sitat. Forelesningsnotatene er ikke en siterbar kilde — ' +
+      'bruk artikkelen eller boka de bygger på.</div>';
+
+    main.innerHTML = html;
+  }
+
+  function sideKilde(id) {
+    var k = window.OT.sources.filter(function (x) { return x.id === id; })[0];
+    if (!k) return sideIkkeFunnet();
+
+    var html = ui.sideHode(k.type, k.tittel, null);
+
+    html += '<div class="chip-row">' +
+      '<span class="chip">' + ui.esc(k.forfattere) + '</span>' +
+      '<span class="chip">' + k.aar + '</span>' +
+      '<span class="chip chip-accent">' + ui.esc(k.publikasjon) + '</span>' +
+      '</div>';
+
+    html += '<div class="card"><h3 style="margin-top:0">APA-referanse</h3>' +
+      '<p class="prose" id="apa-tekst">' + ui.rik(k.apa) + '</p>' +
+      '<div class="btn-row"><button class="btn" data-kopier>Kopier referansen</button></div></div>';
+
+    html += '<h2>Hva kilden er</h2><p class="lede">' + ui.rik(k.hva) + '</p>';
+
+    html += '<h2>Hovedpunkter</h2><ul class="bullets">' +
+      k.hovedfunn.map(function (f) { return '<li>' + ui.rik(f) + '</li>'; }).join('') + '</ul>';
+
+    html += '<h2>Nærmere om innholdet</h2>';
+    k.funn.forEach(function (f) {
+      html += '<h3>' + ui.esc(f.t) + '</h3><p>' + ui.rik(f.b) + '</p>';
+    });
+
+    html += '<div class="callout callout-warn"><strong>Kritisk lesning</strong>' + ui.rik(k.kritisk) + '</div>';
+
+    html += '<h2>Hva du kan bruke den til</h2><ul class="bullets">' +
+      k.brukTil.map(function (b) { return '<li>' + ui.rik(b) + '</li>'; }).join('') + '</ul>';
+
+    var lenker = (k.forelesninger || []).map(function (fid) {
+      var f2 = window.OT.lectures.filter(function (l) { return l.id === fid; })[0];
+      return f2 ? '<a class="btn btn-ghost" href="#/forelesning/' + f2.id + '">' + ui.esc(f2.tittel) + '</a>' : '';
+    }).join('');
+
+    html += '<div class="btn-row">' + lenker +
+      '<a class="btn btn-ghost" href="#/kilder">Alle kilder</a></div>';
+
+    main.innerHTML = html;
+
+    main.querySelector('[data-kopier]').addEventListener('click', function () {
+      var btn = this;
+      var tekst = main.querySelector('#apa-tekst').textContent;
+      function bekreft() { btn.textContent = 'Kopiert'; setTimeout(function () { btn.textContent = 'Kopier referansen'; }, 1600); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(tekst).then(bekreft, function () { btn.textContent = 'Kunne ikke kopiere'; });
+      } else {
+        btn.textContent = 'Merk teksten og kopier selv';
+      }
+    });
+  }
+
   function sideForelesninger() {
     var html = ui.sideHode('Pensum', 'Forelesningsnotater',
       'Innholdet fra forelesningene, sammenfattet og koblet til kapitlene. Notatene viser hva foreleser vektlegger — ' +
@@ -652,6 +733,19 @@
       s.blokker.forEach(function (b) { html += blokkHtml(b); });
     });
     html += '</div>';
+
+    var kilder = window.OT.sources.filter(function (k) {
+      return (k.forelesninger || []).indexOf(id) !== -1;
+    });
+    if (kilder.length) {
+      html += '<h2>Primærkilder til denne forelesningen</h2><div class="grid">';
+      kilder.forEach(function (k) {
+        html += '<a class="tile" href="#/kilde/' + k.id + '">' +
+          '<span class="chip chip-accent">' + ui.esc(k.type) + '</span>' +
+          '<h3>' + ui.esc(k.kortnavn) + '</h3><p>' + ui.esc(k.tittel) + '</p></a>';
+      });
+      html += '</div>';
+    }
 
     html += '<div class="btn-row">' +
       (m ? '<a class="btn btn-primary" href="#/modul/' + m.id + '">Til kapittel ' + m.nr + '</a>' : '') +
@@ -901,6 +995,8 @@
         else sideKoblingOversikt();
         break;
       case 'case': d[1] ? window.OT.caseview.vis(main, d[1]) : sideCaseOversikt(); break;
+      case 'kilder': sideKilder(); break;
+      case 'kilde': d[1] ? sideKilde(d[1]) : sideKilder(); break;
       case 'forelesninger': sideForelesninger(); break;
       case 'forelesning': d[1] ? sideForelesning(d[1]) : sideForelesninger(); break;
       case 'emnet': sideEmnet(); break;
