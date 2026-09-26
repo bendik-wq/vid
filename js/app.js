@@ -55,6 +55,7 @@
     if (rute.indexOf('/eksamensoppgave/') === 0) normalisert = '/eksamensoppgaver';
     else if (rute.indexOf('/forelesning/') === 0) normalisert = '/forelesninger';
     else if (rute.indexOf('/kilde/') === 0) normalisert = '/kilder';
+    else if (rute.indexOf('/besvarelse/') === 0) normalisert = '/besvarelser';
     document.querySelectorAll('.nav-item').forEach(function (a) {
       var href = a.getAttribute('href').replace('#', '');
       var treff = href === normalisert ||
@@ -85,6 +86,10 @@
     window.OT.lectures.forEach(function (l) {
       poster.push({ kind: 'Forelesning', title: l.tittel, sub: l.kilde,
         href: '#/forelesning/' + l.id, tekst: l.tittel + ' ' + l.hovedpunkter.join(' ') });
+    });
+    window.OT.answers.forEach(function (a) {
+      poster.push({ kind: 'Eksempelbesvarelse', title: a.tittel, sub: a.undertittel + ' · ' + a.ord + ' ord',
+        href: '#/besvarelse/' + a.id, tekst: a.tittel + ' ' + a.undertittel + ' ' + a.oppgavetekst });
     });
     window.OT.sources.forEach(function (k) {
       poster.push({ kind: 'Kilde', title: k.kortnavn + ': ' + k.tittel, sub: k.publikasjon,
@@ -177,6 +182,7 @@
     html += tile('#/kobling', 'Koblingsoppgaver', 'Par teori med opphavsperson, eller begrep med definisjon.');
     html += tile('#/case', 'Caseoppgaver', 'Realistiske situasjoner å analysere, med veiledende svar.');
     html += tile('#/eksamensoppgaver', 'Eksamensoppgaver', 'Skriftlige oppgaver med sensorveiledning, to per kapittel.');
+    html += tile('#/besvarelser', 'Eksempelbesvarelser', 'Tre fullengdes besvarelser med sensormerknader om hvert grep.');
     html += tile('#/eksamen', 'Eksamensmodus', 'Førti spørsmål på tvers av alle kapitler.');
     html += '</div>';
 
@@ -602,6 +608,72 @@
     main.innerHTML = html;
   }
 
+  function sideBesvarelser() {
+    var html = ui.sideHode('Oppgaver', 'Eksempelbesvarelser',
+      'Tre besvarelser i fullformat, skrevet ut slik en god eksamensbesvarelse ser ut. Hver seksjon har en ' +
+      'merknad i margen som forklarer hva grepet gjør. Les dem som mønster, ikke som fasit — og skriv alltid ditt eget først.');
+
+    html += '<div class="grid">';
+    window.OT.answers.forEach(function (a) {
+      html += '<a class="tile" href="#/besvarelse/' + a.id + '">' +
+        '<span class="chip chip-accent">' + ui.esc(ui.modulNavn(a.modul)) + '</span>' +
+        '<h3>' + ui.esc(a.tittel) + '</h3>' +
+        '<p>' + ui.esc(a.undertittel) + ' &middot; ' + a.ord + ' ord</p></a>';
+    });
+    html += '</div>';
+
+    html += '<div class="callout callout-warn"><strong>Om bruk</strong>' +
+      'Dette er mine besvarelser, ikke fasitsvar, og de er skrevet for å vise struktur og drøftingsteknikk. ' +
+      'Å levere dem eller deler av dem som ditt eget arbeid er fusk. Bruk dem til å se hvordan teori kobles til case, ' +
+      'hvordan et standpunkt begrunnes, og hvordan en innvending behandles — og skriv så din egen.</div>';
+
+    main.innerHTML = html;
+  }
+
+  function sideBesvarelse(id) {
+    var a = window.OT.answers.filter(function (x) { return x.id === id; })[0];
+    if (!a) return sideIkkeFunnet();
+
+    var html = ui.sideHode('Eksempelbesvarelse &middot; ' + ui.modulNavn(a.modul), a.tittel, a.undertittel);
+
+    html += '<div class="chip-row">' +
+      '<span class="chip">' + a.ord + ' ord</span>' +
+      '<span class="chip">' + ui.esc(a.tid) + '</span>' +
+      '<span class="chip">' + a.litteratur.length + ' kilder</span>' +
+      '</div>';
+
+    html += '<div class="card"><h3 style="margin-top:0">Oppgaveteksten</h3><p>' + ui.rik(a.oppgavetekst) + '</p></div>';
+
+    html += '<div class="module-toc"><strong>Besvarelsens deler</strong><ol>' +
+      a.seksjoner.map(function (s, i) {
+        return '<li><a href="#/besvarelse/' + id + '#bs' + i + '">' + ui.esc(s.tittel) + '</a></li>';
+      }).join('') + '</ol></div>';
+
+    a.seksjoner.forEach(function (s, i) {
+      html += '<h2 id="bs' + i + '">' + ui.esc(s.tittel) + '</h2>';
+      html += '<div class="callout"><strong>Grepet</strong>' + ui.rik(s.grep) + '</div>';
+      html += '<div class="prose">' +
+        s.avsnitt.map(function (t) { return '<p>' + ui.rik(t) + '</p>'; }).join('') +
+        '</div>';
+    });
+
+    html += '<h2>Litteraturliste</h2><ul class="bullets">' +
+      a.litteratur.map(function (k) { return '<li>' + ui.rik(k) + '</li>'; }).join('') + '</ul>';
+
+    html += '<h2>Hva som gjør denne besvarelsen sterk</h2>' +
+      '<div class="callout callout-warn"><strong>Sensors blikk</strong>' + ui.rik(a.sensor) + '</div>';
+
+    var kl = (a.kilder || []).map(function (kid) {
+      var k = window.OT.sources.filter(function (x) { return x.id === kid; })[0];
+      return k ? '<a class="btn btn-ghost" href="#/kilde/' + k.id + '">' + ui.esc(k.kortnavn) + '</a>' : '';
+    }).join('');
+
+    html += '<div class="btn-row">' + kl +
+      '<a class="btn btn-ghost" href="#/besvarelser">Alle besvarelser</a></div>';
+
+    main.innerHTML = html;
+  }
+
   function sideKilder() {
     var html = ui.sideHode('Pensum', 'Kildebank',
       'Fagartiklene og primærkildene i pensum, med ferdig APA-referanse, hva kilden faktisk inneholder, ' +
@@ -995,6 +1067,8 @@
         else sideKoblingOversikt();
         break;
       case 'case': d[1] ? window.OT.caseview.vis(main, d[1]) : sideCaseOversikt(); break;
+      case 'besvarelser': sideBesvarelser(); break;
+      case 'besvarelse': d[1] ? sideBesvarelse(d[1]) : sideBesvarelser(); break;
       case 'kilder': sideKilder(); break;
       case 'kilde': d[1] ? sideKilde(d[1]) : sideKilder(); break;
       case 'forelesninger': sideForelesninger(); break;
