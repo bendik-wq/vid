@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brann Lower Tiers</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%227%22 fill=%22%23c8102e%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+<header class="page-head">
+  <div class="lede">
+    <span class="eyebrow">Down the pyramid</span>
+    <h1>Lower tiers</h1>
+    <p>Gems from second to fifth divisions: the Championship to the National League in England, 2. Bundesliga and 3. Liga in Germany, Ligue 2 and National in France, Serie B and C in Italy, LaLiga 2 and Primera Federación in Spain, and Série B and C in Brazil, plus second tiers in Argentina, Colombia, Uruguay and Ecuador.</p>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b class="mono" id="k-t2">–</b><span>players in tier 2</span></div>
+    <div class="kpi"><b class="mono" id="k-t3">–</b><span>players in tiers 3 to 5</span></div>
+    <div class="kpi"><b class="mono" id="k-deep">–</b><span>Regionalliga and Série D scorers</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Best fits below the top flight</span>
+    <h2>Top five per role</h2>
+    <p class="sub">Age 26 or under and still at the club the data comes from. Many third-tier leagues (Serie C, Primera Federación, National, 3. Liga, Série C) publish no tackles or interceptions. Their players have about 50–60% data coverage and their scores are pulled toward average. Lower the coverage filter to see them; at 70% the third tier is almost all League One.</p>
+  </div>
+  <div class="controls">
+    <label class="ctl" for="f-tier"><span>Tier</span><select id="f-tier"><option value="2">2nd tier</option><option value="3">3rd tier and below</option></select></label>
+    <label class="ctl" for="f-mv"><span>Max value <output id="o-mv"></output></span><input type="range" id="f-mv" min="0.25" max="6" step="0.25"></label>
+    <label class="ctl" for="f-cov"><span>Min data coverage <output id="o-cov"></output></span><input type="range" id="f-cov" min="0" max="1" step="0.05"></label>
+    <label class="ctl" for="f-ctry"><span>Country</span><select id="f-ctry"><option value="">All countries</option></select></label>
+  </div>
+  <div class="picks" id="picks"><div class="loading">Loading players…</div></div>
+  <p class="note">Open the <a href="board.html">board</a> and set "League tiers" to see the full ranked list for any tier.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Goals-only watchlist</span>
+    <h2>Regionalliga and Série D scorers</h2>
+    <p>Germany's five Regionalliga groups and Brazil's Série D publish goals but not minutes or defensive data, so they can't be style-scored. These are the top 40 scorers in each, as leads for video scouting. Several have already moved up. A 22-goal Regionalliga striker who is 21 is a very different lead from one who is 31.</p>
+  </div>
+  <div class="controls">
+    <label class="ctl" for="f-dl"><span>League</span><select id="f-dl"><option value="">All six</option></select></label>
+    <label class="ctl" for="f-dage"><span>Max age <output id="o-dage"></output></span><input type="range" id="f-dage" min="18" max="35" step="1"></label>
+    <span class="count" id="dcount"></span>
+  </div>
+  <div class="tbl-wrap" id="deep"></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Coverage</span>
+    <h2>Every league in the model</h2>
+  </div>
+  <div class="tbl-wrap" id="cov"></div>
+</section>
+</div>
+<script src="assets/core.js"></script>
+<script>
+B.nav();
+const S = B.state("lower", {tier:"3", mv:3, cov:0.5, ctry:"", dl:"", dage:24});
+B.load().then(({players, meta}) => {
+  const {$, esc, mv, ct, ROLES, ORDER} = B;
+  const lg = meta.leagues;
+  $("#k-t2").textContent = lg.filter(l=>l[3]===2).reduce((s,l)=>s+l[5],0).toLocaleString();
+  $("#k-t3").textContent = lg.filter(l=>l[3]>=3).reduce((s,l)=>s+l[5],0).toLocaleString();
+  $("#k-deep").textContent = meta.deep.length;
+  const countries = [...new Set(lg.filter(l=>l[3]>=2).map(l=>l[4]))].sort();
+  $("#f-ctry").innerHTML += countries.map(c=>`<option>${esc(c)}</option>`).join("");
+  const dls = [...new Set(meta.deep.map(d=>d[10]))];
+  $("#f-dl").innerHTML += dls.map(c=>`<option>${esc(c)}</option>`).join("");
+  function picks(){
+    const ok = p => !p.brann && p.age<=26 && p.stay && p.cov>=S.cov && (S.tier==="2"?p.tier===2:p.tier>=3) && (p.mv??0)<=S.mv*1e6 && (!S.ctry||p.country===S.ctry);
+    $("#picks").innerHTML = ORDER.map(r => { const top = players.filter(p=>p.role===r && ok(p)).sort((a,b)=>b.adj-a.adj).slice(0,5);
+      return `<div class="pick"><div class="ph"><h3>${ROLES[r].label}</h3><span class="num">${ROLES[r].n}</span></div><ol>${top.length?top.map(p=>`<li><span class="pn">${esc(p.name)}</span><span class="pc">${p.age.toFixed(0)} · ${esc(p.teamNow)} · ${esc(p.league)}</span><span class="ps"><span>${mv(p.mv)} · ${ct(p.ct)}</span><b>${p.adj.toFixed(1)}</b></span></li>`).join(""):`<li><span class="pc">No player matches.</span></li>`}</ol></div>`; }).join("");
+  }
+  function deep(){
+    const list = meta.deep.filter(d => (!S.dl||d[10]===S.dl) && (d[2]??99)<=S.dage).sort((a,b)=>b[11]-a[11]);
+    $("#dcount").textContent = `${list.length} players`;
+    $("#deep").innerHTML = `<table><thead><tr><th>Player</th><th>Club now</th><th>League (season)</th><th class="r">Goals</th><th class="r">Age</th><th class="r">Value</th><th>Contract</th></tr></thead><tbody>${list.map(d=>{ const moved = d[9] && d[9]!==d[8];
+      return `<tr><td><a class="pname" href="https://www.sofascore.com/player/x/${d[12]}" target="_blank" rel="noopener">${esc(d[0])}</a><div class="sub">${esc(d[1])} · ${esc(d[3])}${d[5]?" · "+B.foot(d[5])+" foot":""}${d[4]?" · "+d[4]+" cm":""}</div></td>
+      <td>${esc(d[9]||d[8])}${moved?'<span class="badge m">moved</span>':""}${moved?`<div class="sub">scored for ${esc(d[8])}</div>`:""}</td><td class="sub">${esc(d[10])}</td><td class="r mono"><b>${d[11]}</b></td><td class="r mono">${d[2]??"n/a"}</td><td class="r mono">${mv(d[7])}</td><td class="mono">${ct(d[6])}</td></tr>`; }).join("") || `<tr><td colspan="7" class="sub">No players match.</td></tr>`}</tbody></table>`;
+  }
+  function cov(){
+    const rows = lg.slice().sort((a,b)=>a[4].localeCompare(b[4])||a[3]-b[3]);
+    $("#cov").innerHTML = `<table><thead><tr><th>Country</th><th>League (season)</th><th class="r">Tier</th><th class="r">Players (900+ min)</th><th class="r">League factor</th><th>Region</th></tr></thead><tbody>${rows.map(l=>`<tr><td>${esc(l[4])}</td><td>${esc(l[0])}</td><td class="r mono">${l[3]}</td><td class="r mono">${l[5]}</td><td class="r mono">${l[2].toFixed(2)}</td><td class="sub">${esc(l[1])}</td></tr>`).join("")}
+      <tr><td>Germany</td><td>Regionalliga (5 groups) 25/26</td><td class="r mono">4</td><td class="r mono">goals only</td><td class="r mono">–</td><td class="sub">Watchlist above</td></tr>
+      <tr><td>Brazil</td><td>Brasileirão Série D 2026</td><td class="r mono">4</td><td class="r mono">goals only</td><td class="r mono">–</td><td class="sub">Watchlist above</td></tr></tbody></table>`;
+  }
+  const all = () => { picks(); deep(); S.save(); };
+  B.bind("f-tier", S, "tier", String, null, all);
+  B.bind("f-mv", S, "mv", parseFloat, B.eur, all);
+  B.bind("f-cov", S, "cov", parseFloat, v=>Math.round(v*100)+"%", all);
+  B.bind("f-ctry", S, "ctry", String, null, all);
+  B.bind("f-dl", S, "dl", String, null, all);
+  B.bind("f-dage", S, "dage", parseFloat, v=>v, all);
+  all(); cov(); B.footer(meta);
+}).catch(e => { document.querySelector("#picks").innerHTML = `<div class="loading">Couldn't load the player data (${B.esc(e.message)}). Reload the page to try again.</div>`; });
+</script>
+</body>
+</html>

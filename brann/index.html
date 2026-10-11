@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brann Scouting</title>
+<meta name="description" content="SK Brann recruitment: players across 69 leagues scored against Eirik Horneland's game model.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%227%22 fill=%22%23c8102e%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+<header class="page-head">
+  <div class="lede">
+    <span class="eyebrow">SK Brann · Recruitment · Data to 11 Oct 2026</span>
+    <h1>Brann Scouting</h1>
+    <p>Every outfield player with 900+ league minutes in 69 leagues, from the Premier League down to England's National League, Serie C, Primera Federación and Brazil's Série C, plus most of South America. Each one is scored against what Eirik Horneland's 4-3-3 asks of his position.</p>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b class="mono" id="k-players">–</b><span>outfield players scored</span></div>
+    <div class="kpi"><b class="mono" id="k-leagues">–</b><span>leagues, tiers 1 to 5</span></div>
+    <div class="kpi"><b class="mono" id="k-fa">–</b><span>free or pre-contract targets</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">Where to go</span>
+    <h2>Four ways into the market</h2>
+  </div>
+  <div class="cards" id="cards"><div class="loading">Loading players…</div></div>
+</section>
+
+<section id="system">
+  <div class="sec-head">
+    <span class="eyebrow">The game model</span>
+    <h2>What Horneland's Brann asks for</h2>
+    <p>A 4-3-3 with the most aggressive press in the league (PPDA 6.57 in 2024; 421 counter-press recoveries, a league high). In possession the right-back goes high and the left-back steps inside beside the 6, which builds a 2-2 base behind five attackers. In 2026 Brann were 2nd for box touches but 13th for big chances missed and 9th for xG against. Each role's weights below come from those demands.</p>
+  </div>
+  <div class="system">
+    <div class="pitch-box">
+      <svg viewBox="0 0 300 420" role="img" aria-label="Brann 4-3-3 shape in possession with the five priority roles numbered">
+        <rect x="0" y="0" width="300" height="420" fill="var(--pitch)"/>
+        <g fill="none" stroke="var(--pitch-line)" stroke-width="2">
+          <rect x="10" y="10" width="280" height="400"/><line x1="10" y1="210" x2="290" y2="210"/><circle cx="150" cy="210" r="36"/>
+          <rect x="75" y="10" width="150" height="58"/><rect x="75" y="352" width="150" height="58"/>
+          <rect x="115" y="10" width="70" height="20"/><rect x="115" y="390" width="70" height="20"/>
+        </g>
+        <text x="262" y="236" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle" fill="var(--muted)">attack ↑</text>
+        <g id="dots"></g>
+      </svg>
+      <div class="legend"><span><i style="background:var(--brann)"></i>Priority role (numbered)</span><span><i style="background:var(--ink)"></i>Covered in the squad</span></div>
+    </div>
+    <div class="specs" id="specs"></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">How the scores work</span>
+    <h2>Method and limits</h2>
+  </div>
+  <div class="method">
+    <div>
+      <h3>Scoring</h3>
+      <ul>
+        <li><b>Pool:</b> player-seasons with 900+ league minutes from Sofascore, pulled 11 Oct 2026. Calendar-year leagues use 2026; Aug–May leagues use 2025/26. Goalkeepers and attacking midfielders are excluded.</li>
+        <li><b>Style fit (0–100):</b> each metric becomes a percentile against every player in the same role across all leagues. The fit is the weighted average using the role weights above.</li>
+        <li><b>Coverage:</b> lower leagues often publish fewer stats. Missing weight is dropped and the score is pulled toward 50 in proportion, so thin data can't produce an extreme score.</li>
+        <li><b>Brann score</b> = style fit × league factor. The Eliteserien is 1.00; the factors run from 0.72 (National League) to 1.60 (Premier League).</li>
+        <li><b>Value gap</b> = Brann score minus the score a player at that price usually has. The Moneyball page explains it.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Read it with care</h3>
+      <ul>
+        <li>This is event data, with no tracking. Pace and repeat sprints are not measured. Watch video before shortlisting anyone.</li>
+        <li>Stats reflect each player's team and league. A tier-3 percentile is not a top-tier percentile; the league factor only partly corrects for that.</li>
+        <li>Regionalliga and Brazil's Série D publish goals only, so they are on the Lower tiers page as a scorer watchlist, not in the model.</li>
+        <li>Values and contract dates are Sofascore's. Check them against Transfermarkt and agents.</li>
+      </ul>
+    </div>
+  </div>
+  <details><summary>League factors and pool size (all leagues)</summary><div class="lf" id="lf"></div></details>
+</section>
+</div>
+<script src="assets/core.js"></script>
+<script>
+B.nav();
+B.load().then(({players, meta}) => {
+  const {$, esc, mv, ROLES, ORDER} = B;
+  $("#k-players").textContent = meta.players_scored.toLocaleString();
+  $("#k-leagues").textContent = meta.leagues.length;
+  const fa = players.filter(p => !p.brann && p.tags.has("fa") && (p.noclub || (p.ct && p.ct<="2027-06")) && (p.mv??0)<=3e6 && p.age<=31);
+  $("#k-fa").textContent = fa.length.toLocaleString();
+  B.pitch($("#dots")); B.specs($("#specs"), players);
+  const ok = p => !p.brann && p.cov>=0.7 && p.stay;
+  const top = (fn, sort, n=5) => players.filter(fn).sort(sort).slice(0,n);
+  const li = (p, v) => `<li><span>${esc(p.name)} · ${esc(ROLES[p.role].name)}</span><span class="mono">${v}</span></li>`;
+  const cards = [
+    ["board.html","The board","Every role ranked by Brann score, with filters for age, value, region and league tier.",
+      top(p => ok(p) && p.tags.has("board") && p.age<=26 && (p.mv??0)<=3e6, (a,b)=>b.adj-a.adj).map(p=>li(p,p.adj.toFixed(1)))],
+    ["free-agents.html","Free agents","Out of contract in December 2026 (free in January) or June 2027 (pre-contract now), or without a club.",
+      top(p => !p.brann && p.tags.has("fa") && p.cov>=0.7 && (p.mv??0)<=3e6, (a,b)=>b.adj-a.adj).map(p=>li(p,p.adj.toFixed(1)))],
+    ["prospects.html","Moneyball prospects","Players aged 21 or under who score well above what their market value predicts.",
+      top(p => ok(p) && p.tags.has("pro") && p.age<=21.5, (a,b)=>b.resid-a.resid).map(p=>li(p,"+"+p.resid.toFixed(1)))],
+    ["lower-tiers.html","Lower tiers","Best fits from second to fifth tiers, plus a scorer watchlist for the Regionalliga and Série D.",
+      top(p => ok(p) && p.tier>=3 && p.age<27, (a,b)=>b.adj-a.adj).map(p=>li(p,p.adj.toFixed(1)))] ];
+  $("#cards").innerHTML = cards.map(([h,t,d,l]) => `<a class="card" href="${h}"><h3>${t}</h3><p class="sub">${d}</p><ul>${l.join("")}</ul><span class="go">Open ${t.toLowerCase()} →</span></a>`).join("");
+  $("#lf").innerHTML = meta.leagues.slice().sort((a,b)=>b[2]-a[2]||a[0].localeCompare(b[0])).map(l => `<span><span>${esc(l[0])} <span class="sub">· tier ${l[3]} · ${l[5]} players</span></span><span class="mono">${l[2].toFixed(2)}</span></span>`).join("");
+  B.footer(meta);
+}).catch(e => { document.querySelector("#cards").innerHTML = `<div class="loading">Couldn't load the player data (${B.esc(e.message)}). Reload the page to try again.</div>`; });
+</script>
+</body>
+</html>
