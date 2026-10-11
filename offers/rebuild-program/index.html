@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Rebuild Program</title>
+<meta name="description" content="A 12-week, physio-led strength rehab program at Melton Physio and Paramount Physiotherapy, Williamstown.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --ink: #14181f;
+    --muted: #5b6372;
+    --line: #e3e1da;
+    --accent: #0f5c4d;
+    --accent-ink: #ffffff;
+    --accent-soft: #e3efe9;
+    --gold: #b0862f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1114;
+      --surface: #161a1f;
+      --ink: #eef0f2;
+      --muted: #9aa3ae;
+      --line: #262c33;
+      --accent: #3fb394;
+      --accent-ink: #06130f;
+      --accent-soft: #15302a;
+      --gold: #d9b05a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1114;
+    --surface: #161a1f;
+    --ink: #eef0f2;
+    --muted: #9aa3ae;
+    --line: #262c33;
+    --accent: #3fb394;
+    --accent-ink: #06130f;
+    --accent-soft: #15302a;
+    --gold: #d9b05a;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 17px/1.6 Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+  section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 16px; }
+  h1 { font-size: clamp(2rem, 5.5vw, 3.4rem); font-weight: 800; }
+  h2 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 800; }
+  h3 { font-size: 1.15rem; font-weight: 700; }
+  p { margin: 0 0 16px; }
+  .muted { color: var(--muted); }
+  .eyebrow {
+    display: inline-block; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  }
+  .btn {
+    display: inline-block; background: var(--accent); color: var(--accent-ink);
+    font-weight: 700; padding: 16px 28px; border-radius: 10px; text-decoration: none;
+    border: 0; font-size: 1rem; cursor: pointer; font-family: inherit;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn-sub { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
+
+  /* Top bar */
+  .topbar { border-bottom: 1px solid var(--line); background: var(--surface); }
+  .topbar .wrap { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 14px; padding-bottom: 14px; }
+  .brand { font-weight: 800; letter-spacing: -0.01em; }
+  .brand small { display: block; font-weight: 500; color: var(--muted); font-size: 0.75rem; }
+  .topbar .btn { padding: 10px 16px; font-size: 0.9rem; white-space: nowrap; }
+
+  /* Hero */
+  .hero { padding-top: 64px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; }
+  .hero p.lead { font-size: 1.15rem; color: var(--muted); }
+  .vsl {
+    aspect-ratio: 16 / 9; background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    display: grid; place-items: center; text-align: center; color: var(--muted); padding: 24px;
+  }
+  .vsl .play {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--accent); margin: 0 auto 12px;
+    display: grid; place-items: center;
+  }
+  .vsl .play::after {
+    content: ""; border-left: 18px solid var(--accent-ink); border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent; margin-left: 5px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; padding: 0; list-style: none; }
+  .chips li { background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 0.85rem; padding: 6px 12px; border-radius: 999px; }
+
+  /* Cards */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+  .card p:last-child { margin-bottom: 0; }
+  .num { font-size: 0.8rem; font-weight: 800; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
+
+  .check { list-style: none; padding: 0; margin: 0; }
+  .check li { padding-left: 30px; position: relative; margin-bottom: 10px; }
+  .check li::before {
+    content: ""; position: absolute; left: 0; top: 6px; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent-soft);
+  }
+  .check li::after {
+    content: ""; position: absolute; left: 6px; top: 9px; width: 5px; height: 9px;
+    border: solid var(--accent); border-width: 0 2px 2px 0; transform: rotate(45deg);
+  }
+  .cross li::before { background: var(--line); }
+  .cross li::after { border: 0; content: "\00d7"; color: var(--muted); left: 5px; top: 1px; transform: none; font-weight: 700; }
+
+  /* Value stack */
+  .stack { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .stack td { padding: 16px 20px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .stack td:last-child { text-align: right; white-space: nowrap; font-weight: 600; color: var(--muted); }
+  .stack .label { font-weight: 600; }
+  .stack .desc { display: block; color: var(--muted); font-size: 0.92rem; margin-top: 2px; }
+  .stack .bonus .label::before { content: "BONUS  "; color: var(--gold); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; }
+  .stack tfoot td { border-bottom: 0; font-weight: 800; font-size: 1.05rem; color: var(--ink); }
+  .stack tfoot .strike { text-decoration: line-through; color: var(--muted); }
+
+  .price-box { text-align: center; margin-top: 32px; }
+  .price-box .price { font-size: clamp(2.4rem, 6vw, 3.2rem); font-weight: 800; letter-spacing: -0.03em; }
+  .price-box .alt { color: var(--muted); }
+
+  /* Clinics */
+  .clinic h3 { margin-bottom: 4px; }
+  .clinic address { font-style: normal; color: var(--muted); margin-bottom: 14px; }
+
+  /* Guarantee */
+  .guarantee { border: 2px solid var(--accent); }
+
+  /* FAQ */
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; }
+  summary { font-weight: 700; cursor: pointer; }
+  details p { margin: 12px 0 0; color: var(--muted); }
+
+  /* Application */
+  .apply { background: var(--surface); }
+  form { display: grid; gap: 18px; max-width: 680px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  label { font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 6px; }
+  input, select, textarea {
+    width: 100%; font: inherit; font-size: 1rem; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  fieldset { border: 0; padding: 0; margin: 0; }
+  legend { font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; }
+  .radio { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; margin-bottom: 8px; }
+  .radio input { width: auto; margin-top: 5px; }
+  .form-msg { padding: 16px 18px; border-radius: 10px; display: none; }
+  .form-msg.ok { display: block; background: var(--accent-soft); color: var(--ink); }
+  .form-msg.err { display: block; background: #fbe9e7; color: #7a1f12; }
+
+  footer { padding: 40px 0 60px; color: var(--muted); font-size: 0.85rem; }
+
+  @media (max-width: 820px) {
+    section { padding: 52px 0; }
+    .hero-grid, .grid-2, .grid-3, .row { grid-template-columns: 1fr; }
+    .hero-grid { gap: 28px; }
+    .stack td { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">The Rebuild Program<small>Melton Physio &middot; Paramount Physiotherapy</small></div>
+    <a class="btn" href="#apply">Apply now</a>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Western Melbourne &middot; Melton &amp; Williamstown</span>
+      <h1>Stop managing the pain. Rebuild the strength.</h1>
+      <p class="lead">A 12-week, physio-led strength program for adults with persistent back, knee, hip or shoulder problems, or who are recovering from surgery. We measure your strength on day one and re-test at weeks 6 and 12, so you see the change in numbers.</p>
+      <ul class="chips">
+        <li>12 weeks, fixed end date</li>
+        <li>Physio + coached gym</li>
+        <li>Measured progress</li>
+        <li>Limited intake each month</li>
+      </ul>
+      <a class="btn" href="#apply">See if you qualify</a>
+      <span class="btn-sub">Takes 2 minutes. Programs from $2,997.</span>
+    </div>
+    <div class="vsl" role="img" aria-label="Program overview video placeholder">
+      <div>
+        <div class="play"></div>
+        <strong>Watch: How the Rebuild Program works (4 min)</strong><br>
+        <span>Replace this block with the VSL embed.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Sound familiar?</span>
+    <h2>You've done physio before. It helped, until it didn't.</h2>
+    <div class="grid-2" style="margin-top:28px">
+      <div class="card">
+        <h3>The usual cycle</h3>
+        <ul class="check cross">
+          <li>A few sessions of hands-on treatment, then you're "good to go"</li>
+          <li>A sheet of exercises you stop doing in week two</li>
+          <li>No idea whether you're actually getting stronger</li>
+          <li>The same problem flares up again six months later</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The Rebuild approach</h3>
+        <ul class="check">
+          <li>A 12-week plan with every session booked in up front</li>
+          <li>Coached strength sessions in a dedicated rehab gym</li>
+          <li>Strength and function tested at weeks 0, 6 and 12</li>
+          <li>A plan to keep you strong after you graduate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">How it works</span>
+    <h2>Three phases. One measured outcome plan.</h2>
+    <div class="grid-3" style="margin-top:28px">
+      <div class="card">
+        <span class="num">WEEKS 1&ndash;4</span>
+        <h3>Settle &amp; restore</h3>
+        <p class="muted">Calm things down with hands-on treatment, then rebuild movement you can trust. You start within 72 hours of your assessment.</p>
+      </div>
+      <div class="card">
+        <span class="num">WEEKS 5&ndash;8</span>
+        <h3>Load &amp; strengthen</h3>
+        <p class="muted">Progressive, coached strength work twice a week. Your week-6 re-test shows where you've gained and what to target next.</p>
+      </div>
+      <div class="card">
+        <span class="num">WEEKS 9&ndash;12</span>
+        <h3>Return &amp; perform</h3>
+        <p class="muted">Get back to the specific things you've been avoiding, whether that's running, lifting, sport or work. Then graduate with a 90-day plan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <span class="eyebrow">Everything included</span>
+    <h2>What you get in the Rebuild Program</h2>
+    <table class="stack" style="margin-top:28px">
+      <tbody>
+        <tr><td><span class="label">60-min Rebuild Assessment</span><span class="desc">Full physio examination plus baseline strength and function testing</span></td><td>$250</td></tr>
+        <tr><td><span class="label">12 &times; one-on-one physiotherapy sessions</span><span class="desc">Weekly, with the same physio throughout</span></td><td>$1,260</td></tr>
+        <tr><td><span class="label">24 &times; coached strength / Clinical Pilates sessions</span><span class="desc">Twice weekly in the rehab gym, small groups</span></td><td>$1,680</td></tr>
+        <tr><td><span class="label">12 weeks of rehab-gym access + app program</span><span class="desc">Your physio-written program on your phone</span></td><td>$480</td></tr>
+        <tr><td><span class="label">3 &times; remedial or sports massage</span><span class="desc">60 minutes each</span></td><td>$330</td></tr>
+        <tr><td><span class="label">Week 6 and week 12 re-tests</span><span class="desc">Written progress report comparing your numbers to baseline</span></td><td>$300</td></tr>
+        <tr><td><span class="label">Direct message line to your physio</span><span class="desc">Questions answered during business hours</span></td><td>$400</td></tr>
+        <tr class="bonus"><td><span class="label">Flare-Up Protocol</span><span class="desc">What to do in the first 48 hours if symptoms spike</span></td><td>$97</td></tr>
+        <tr class="bonus"><td><span class="label">90-day "Stay Strong" plan</span><span class="desc">Your program after graduation</span></td><td>$197</td></tr>
+        <tr class="bonus"><td><span class="label">12 months of priority booking</span><span class="desc">At both clinics</span></td><td>$150</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td>Total value</td><td class="strike">$5,144</td></tr>
+      </tfoot>
+    </table>
+
+    <div class="price-box">
+      <div class="muted">Your investment</div>
+      <div class="price">$2,997</div>
+      <div class="alt">or 3 payments of $1,097</div>
+      <p class="muted" style="max-width:560px;margin:14px auto 22px">If you have extras cover, you may be able to claim eligible physiotherapy items on the spot through HICAPS. Check with your fund.</p>
+      <a class="btn" href="#apply">Apply for the next intake</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Two clinics, one program</span>
+    <h2>Train where it suits you</h2>
+    <div class="grid-2" style="margin-top:28px">
+      <div class="card clinic">
+        <h3>Melton Physio</h3>
+        <address>Unit 1, 93&ndash;95 High Street, Melton VIC 3337</address>
+        <ul class="check">
+          <li>300m&sup2; purpose-built rehab and strength gym</li>
+          <li>7-day gym access for program members</li>
+          <li>Post-surgery and strength-based rehabilitation</li>
+        </ul>
+      </div>
+      <div class="card clinic">
+        <h3>Paramount Physiotherapy</h3>
+        <address>37 Douglas Parade, Williamstown VIC 3016</address>
+        <ul class="check">
+          <li>Physio, exercise physiology and Clinical Physio (Pilates)</li>
+          <li>Boutique gym and rehab classes</li>
+          <li>Evening appointments until 8pm on weekdays</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid-2">
+    <div>
+      <span class="eyebrow">Is this for you?</span>
+      <h2>Built for people who are ready to commit</h2>
+      <p class="muted">This is a 12-week program with real time commitments, so it isn't for everyone. We'd rather tell you that up front.</p>
+    </div>
+    <div class="card">
+      <h3>A good fit if you&hellip;</h3>
+      <ul class="check">
+        <li>Have had a back, neck, hip, knee or shoulder problem for more than 6 weeks</li>
+        <li>Are recovering from surgery and have been cleared to start rehab</li>
+        <li>Can attend about 3 sessions a week for 12 weeks</li>
+        <li>Want a measurable result, not just short-term relief</li>
+      </ul>
+      <p class="muted" style="margin-top:14px">If you have a WorkCover, TAC, NDIS or DVA claim, apply anyway. We'll route you to the right funded pathway instead.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid-2">
+    <div class="card guarantee">
+      <span class="eyebrow">Assessment guarantee</span>
+      <h3>Not the right fit? Full refund.</h3>
+      <p class="muted">If, after your Rebuild Assessment, you or your physio decide the program isn't right for you, we'll refund your program fee in full.</p>
+    </div>
+    <div class="card guarantee">
+      <span class="eyebrow">Session guarantee</span>
+      <h3>We cancel, you gain.</h3>
+      <p class="muted">If we ever cancel or reschedule one of your sessions, you get an extra session added to your program free of charge.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Questions</span>
+    <h2>Frequently asked</h2>
+    <div style="margin-top:24px;max-width:780px">
+      <details><summary>Do I need a GP referral?</summary><p>No. You can apply directly. If you're on a GP Chronic Disease Management plan, let us know on your application.</p></details>
+      <details><summary>Can I claim this on private health insurance?</summary><p>Eligible individual physiotherapy items may be claimable through HICAPS, depending on your fund and level of extras cover. We'll itemise what we can.</p></details>
+      <details><summary>What happens after I apply?</summary><p>A member of our team will call you, usually within one business day, for a short chat about your situation. If it sounds like a fit, we'll book your Rebuild Assessment at the clinic that suits you.</p></details>
+      <details><summary>Why is there a limit on places?</summary><p>Each client has a dedicated physio and coached gym sessions, so we can only take on a limited number of new clients each month without compromising care.</p></details>
+      <details><summary>I've just had surgery. Is it too early?</summary><p>We'll work with your surgeon's protocol. Mention your surgery and date on the application and we'll advise on the right start point.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="apply" class="apply">
+  <div class="wrap">
+    <span class="eyebrow">Apply</span>
+    <h2>Apply for the Rebuild Program</h2>
+    <p class="muted" style="max-width:640px">Places are limited each month at each clinic. Tell us about your situation and we'll be in touch to see if the program is the right fit.</p>
+
+    <form id="apply-form" novalidate>
+      <div class="row">
+        <div><label for="name">Full name</label><input id="name" name="name" autocomplete="name" required></div>
+        <div><label for="phone">Mobile</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+      </div>
+      <div class="row">
+        <div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <div>
+          <label for="clinic">Preferred clinic</label>
+          <select id="clinic" name="clinic" required>
+            <option value="">Select&hellip;</option>
+            <option>Melton</option>
+            <option>Williamstown</option>
+            <option>Either</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="area">Main problem area</label>
+          <select id="area" name="area" required>
+            <option value="">Select&hellip;</option>
+            <option>Lower back</option>
+            <option>Neck</option>
+            <option>Shoulder</option>
+            <option>Hip</option>
+            <option>Knee</option>
+            <option>Ankle / foot</option>
+            <option>Post-surgery rehab</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="duration">How long has it been an issue?</label>
+          <select id="duration" name="duration" required>
+            <option value="">Select&hellip;</option>
+            <option>Less than 6 weeks</option>
+            <option>6 weeks to 6 months</option>
+            <option>6 to 12 months</option>
+            <option>More than a year</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="goal">What would you be doing in 12 weeks if this problem was handled?</label>
+        <textarea id="goal" name="goal" rows="3" required></textarea>
+      </div>
+      <div>
+        <label for="tried">What have you already tried?</label>
+        <textarea id="tried" name="tried" rows="2"></textarea>
+      </div>
+      <div>
+        <label for="funding">Is this related to a WorkCover, TAC, NDIS or DVA claim?</label>
+        <select id="funding" name="funding" required>
+          <option value="">Select&hellip;</option>
+          <option>No</option>
+          <option>WorkCover</option>
+          <option>TAC</option>
+          <option>NDIS</option>
+          <option>DVA</option>
+        </select>
+      </div>
+      <fieldset>
+        <legend>When would you like to start?</legend>
+        <label class="radio"><input type="radio" name="start" value="Within 2 weeks" required> Within 2 weeks</label>
+        <label class="radio"><input type="radio" name="start" value="Within a month"> Within a month</label>
+        <label class="radio"><input type="radio" name="start" value="Just researching"> Just researching for now</label>
+      </fieldset>
+      <fieldset>
+        <legend>The Rebuild Program starts from $2,997, with a 3-payment option. Is that within reach if it's the right fit?</legend>
+        <label class="radio"><input type="radio" name="investment" value="Yes" required> Yes, if it's the right fit for me</label>
+        <label class="radio"><input type="radio" name="investment" value="Payment plan"> Yes, with the payment plan</label>
+        <label class="radio"><input type="radio" name="investment" value="No"> Not right now</label>
+      </fieldset>
+
+      <div id="form-msg" class="form-msg" role="status" aria-live="polite"></div>
+      <div>
+        <button class="btn" type="submit">Submit application</button>
+        <span class="btn-sub">We'll call you, usually within one business day.</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>The Rebuild Program is delivered by registered physiotherapists at Melton Physio (Unit 1, 93&ndash;95 High Street, Melton VIC 3337) and Paramount Physiotherapy (37 Douglas Parade, Williamstown VIC 3016).</p>
+    <p>Individual results vary. Your physiotherapist will assess whether the program is suitable for you. Values shown are based on the clinics' standard fees for each component purchased separately. Health fund rebates depend on your fund and level of cover.</p>
+  </div>
+</footer>
+
+<script>
+  // Point this at the CRM / Zapier / GoHighLevel inbound webhook. Applications are POSTed as JSON.
+  const LEAD_WEBHOOK_URL = "";
+
+  const form = document.getElementById("apply-form");
+  const msg = document.getElementById("form-msg");
+
+  function showMsg(kind, text) {
+    msg.className = "form-msg " + kind;
+    msg.textContent = text;
+  }
+
+  function qualify(data) {
+    if (data.funding !== "No") return "funded";
+    if (data.investment === "No" || data.start === "Just researching" || data.duration === "Less than 6 weeks") return "nurture";
+    return "qualified";
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    const params = new URLSearchParams(location.search);
+    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"].forEach((k) => {
+      if (params.has(k)) data[k] = params.get(k);
+    });
+    data.offer = "Rebuild Program";
+    data.lead_status = qualify(data);
+    data.page = location.href;
+    data.submitted_at = new Date().toISOString();
+
+    if (!LEAD_WEBHOOK_URL) {
+      showMsg("err", "This form isn't connected yet. Set LEAD_WEBHOOK_URL in the page script.");
+      return;
+    }
+
+    const button = form.querySelector("button[type=submit]");
+    button.disabled = true;
+    try {
+      const res = await fetch(LEAD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error(res.status);
+      form.reset();
+      showMsg("ok", data.lead_status === "funded"
+        ? "Thanks, we've got your details. Our team will call you about the right funded pathway for your claim."
+        : "Thanks, your application is in. A member of our team will call you, usually within one business day.");
+    } catch (err) {
+      showMsg("err", "Something went wrong sending your application. Please try again, or call the clinic directly.");
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
