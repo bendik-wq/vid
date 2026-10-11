@@ -175,7 +175,8 @@ Delivery cost for each client is roughly 12 physio hours and 24 coached gym slot
 
 ## 5. How it plugs into the lead-gen business
 
-- The landing page posts each application as JSON to a webhook (`LEAD_WEBHOOK_URL` in `index.html`). Point it at the CRM (GoHighLevel, HubSpot, a Zapier catch hook, etc.).
+- The landing page posts each application (form-encoded) to a webhook. Point it at the CRM (GoHighLevel, HubSpot, a Zapier catch hook, etc.). All go-live settings are in `config.js`: webhook, per-clinic booking calendars, sales video, pre-call videos, Meta Pixel and GA4.
+- Flow: 4-step application → `thank-you.html`. **Qualified** leads see their clinic's booking calendar and the pre-call videos. **Nurture** leads get a "we'll be in touch" message, and the setter offers the Foundations downsell or standard physio. **Funded** (WorkCover/TAC/NDIS/DVA) leads are told they'll be booked through the funded pathway. A `Lead` event fires to Meta (and `generate_lead` to GA4) on submit.
 - Each lead includes `clinic` (Melton / Williamstown / Either) for routing to the right front desk, plus UTM parameters for ad attribution.
 - To reuse the page for other clinics, swap the clinic block, address and prices. The offer structure carries over to any physio, chiro or allied-health clinic with a gym.
 

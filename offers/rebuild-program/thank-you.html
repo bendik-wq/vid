@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Application Received</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="tracking.js"></script>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --ink: #14181f;
+    --muted: #5b6372;
+    --line: #e3e1da;
+    --accent: #0f5c4d;
+    --accent-ink: #ffffff;
+    --accent-soft: #e3efe9;
+    --gold: #b0862f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1114;
+      --surface: #161a1f;
+      --ink: #eef0f2;
+      --muted: #9aa3ae;
+      --line: #262c33;
+      --accent: #3fb394;
+      --accent-ink: #06130f;
+      --accent-soft: #15302a;
+      --gold: #d9b05a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1114;
+    --surface: #161a1f;
+    --ink: #eef0f2;
+    --muted: #9aa3ae;
+    --line: #262c33;
+    --accent: #3fb394;
+    --accent-ink: #06130f;
+    --accent-soft: #15302a;
+    --gold: #d9b05a;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 17px/1.6 Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+  section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 16px; }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; }
+  h2 { font-size: clamp(1.4rem, 3.4vw, 1.9rem); font-weight: 800; }
+  h3 { font-size: 1.05rem; font-weight: 700; }
+  p { margin: 0 0 16px; }
+  .muted { color: var(--muted); }
+  .eyebrow {
+    display: inline-block; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  }
+  .topbar { border-bottom: 1px solid var(--line); background: var(--surface); }
+  .topbar .wrap { padding-top: 14px; padding-bottom: 14px; }
+  .brand { font-weight: 800; }
+  .brand small { display: block; font-weight: 500; color: var(--muted); font-size: 0.75rem; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+  .calendar { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .calendar iframe { width: 100%; height: 720px; border: 0; display: block; }
+  .calendar .empty { padding: 32px 24px; text-align: center; color: var(--muted); }
+  .videos { display: grid; gap: 20px; }
+  .video { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .video .frame { aspect-ratio: 16 / 9; display: grid; place-items: center; color: var(--muted); background: var(--accent-soft); }
+  .video iframe { width: 100%; height: 100%; border: 0; }
+  .video h3 { padding: 16px 20px; margin: 0; }
+  .video .num { color: var(--gold); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; margin-right: 8px; }
+  ol.steps { padding-left: 20px; margin: 0; }
+  ol.steps li { margin-bottom: 10px; }
+  .btn {
+    display: inline-block; background: var(--accent); color: var(--accent-ink);
+    font-weight: 700; padding: 14px 24px; border-radius: 10px; text-decoration: none;
+  }
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">The Rebuild Program<small>Melton Physio &middot; Paramount Physiotherapy</small></div>
+  </div>
+</header>
+
+<main>
+
+<!-- Qualified: book the call, then watch the pre-call videos -->
+<div id="view-qualified" hidden>
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Step 2 of 2 &middot; Application received</span>
+      <h1>Thanks<span class="first-name"></span>. Now pick a time for your call.</h1>
+      <p class="muted">Your application looks like a good fit. Book a 15-minute phone call with our team below. We'll talk through your situation and, if it makes sense, book your in-clinic Rebuild Assessment.</p>
+      <div class="calendar" id="calendar">
+        <div class="empty">
+          Online booking isn't set up yet. We'll call you within one business day.<br>
+          Prefer to call? <strong class="clinic-phone"></strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Before your call</span>
+      <h2>Watch these before we speak</h2>
+      <p class="muted">These short videos answer the most common questions, so we can spend the call on you.</p>
+      <div class="videos" id="videos"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">What happens next</span>
+      <h2>From call to your first session</h2>
+      <div class="card">
+        <ol class="steps">
+          <li><strong>15-minute phone call.</strong> We learn about your problem, your goal and your schedule.</li>
+          <li><strong>60-minute Rebuild Assessment</strong> at your chosen clinic. A full physio exam plus baseline strength and function testing.</li>
+          <li><strong>Your 12-week plan.</strong> Your physio walks you through the plan and your numbers. If the program isn't the right fit, you'll get a full refund under our Assessment Guarantee.</li>
+          <li><strong>Week 1 starts within 72 hours.</strong> Every session is booked in up front.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Nurture: not ready yet -->
+<div id="view-nurture" hidden>
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Application received</span>
+      <h1>Thanks<span class="first-name"></span>. We've got your details.</h1>
+      <p class="muted">From your answers, the full 12-week program may not be the right next step just yet. A member of our team will be in touch to talk through your options, which may include a standard physio appointment or our 6-week Foundations program.</p>
+      <p>Want to talk sooner? Call <strong class="clinic-phone"></strong>.</p>
+    </div>
+  </section>
+</div>
+
+<!-- Funded: WorkCover / TAC / NDIS / DVA -->
+<div id="view-funded" hidden>
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Application received</span>
+      <h1>Thanks<span class="first-name"></span>. We'll help you with your claim.</h1>
+      <p class="muted">Because your treatment is related to a WorkCover, TAC, NDIS or DVA claim, we'll book you in through the funded pathway instead. Our team will call you to arrange this, usually within one business day.</p>
+      <p>Want to talk sooner? Call <strong class="clinic-phone"></strong>.</p>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Melton Physio &middot; Unit 1, 93&ndash;95 High Street, Melton VIC 3337 &middot; (03) 9743 4848</p>
+    <p>Paramount Physiotherapy &middot; 37 Douglas Parade, Williamstown VIC 3016 &middot; (03) 9989 0106</p>
+    <p><a href="index.html" style="color:inherit">Back to the Rebuild Program</a></p>
+  </div>
+</footer>
+
+<script>
+  const cfg = window.REBUILD_CONFIG || {};
+  const params = new URLSearchParams(location.search);
+  const status = ["qualified", "nurture", "funded"].includes(params.get("status")) ? params.get("status") : "nurture";
+  const clinic = ["Melton", "Williamstown", "Either"].includes(params.get("clinic")) ? params.get("clinic") : "Either";
+  const firstName = (params.get("name") || "").trim().slice(0, 40);
+
+  document.getElementById("view-" + status).hidden = false;
+
+  document.querySelectorAll(".first-name").forEach((el) => {
+    el.textContent = firstName ? ", " + firstName : "";
+  });
+
+  const phones = cfg.clinicPhones || {};
+  const phone = clinic === "Williamstown"
+    ? phones.Williamstown
+    : clinic === "Melton"
+      ? phones.Melton
+      : [phones.Melton, phones.Williamstown].filter(Boolean).join(" (Melton) or ") + " (Williamstown)";
+  document.querySelectorAll(".clinic-phone").forEach((el) => { el.textContent = phone; });
+
+  if (status === "qualified") {
+    const urls = cfg.bookingUrls || {};
+    const bookingUrl = urls[clinic] || urls.Melton || urls.Williamstown;
+    if (bookingUrl) {
+      const frame = document.createElement("iframe");
+      frame.src = bookingUrl;
+      frame.title = "Book your call";
+      document.getElementById("calendar").replaceChildren(frame);
+    }
+
+    const videos = document.getElementById("videos");
+    (cfg.preCallVideos || []).forEach((v, i) => {
+      const card = document.createElement("div");
+      card.className = "video";
+      const frameWrap = document.createElement("div");
+      frameWrap.className = "frame";
+      if (v.embedUrl) {
+        const frame = document.createElement("iframe");
+        frame.src = v.embedUrl;
+        frame.title = v.title;
+        frame.allow = "fullscreen; picture-in-picture";
+        frame.allowFullscreen = true;
+        frameWrap.appendChild(frame);
+      } else {
+        frameWrap.textContent = "Video coming soon";
+      }
+      const h = document.createElement("h3");
+      const num = document.createElement("span");
+      num.className = "num";
+      num.textContent = "VIDEO " + (i + 1);
+      h.append(num, v.title);
+      card.append(frameWrap, h);
+      videos.appendChild(card);
+    });
+  }
+</script>
+</body>
+</html>

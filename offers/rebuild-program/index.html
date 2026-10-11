@@ -7,6 +7,8 @@
 <meta name="description" content="A 12-week, physio-led strength rehab program at Melton Physio and Paramount Physiotherapy, Williamstown.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="tracking.js"></script>
 <style>
   :root {
     --bg: #f7f6f2;
@@ -45,6 +47,7 @@
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
@@ -163,6 +166,31 @@
   .form-msg.ok { display: block; background: var(--accent-soft); color: var(--ink); }
   .form-msg.err { display: block; background: #fbe9e7; color: #7a1f12; }
 
+  .vsl iframe { width: 100%; height: 100%; border: 0; border-radius: 14px; }
+  .vsl.has-video { padding: 0; overflow: hidden; }
+
+  /* Multi-step application */
+  .progress { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; max-width: 680px; margin-bottom: 8px; }
+  .progress span { display: block; height: 100%; width: 25%; background: var(--accent); transition: width 0.25s ease; }
+  .step-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; }
+  .step { display: none; gap: 18px; }
+  .step.active { display: grid; }
+  .step-nav { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .consent { font-size: 0.85rem; color: var(--muted); }
+
+  /* Sticky mobile CTA */
+  .sticky-cta { display: none; }
+  @media (max-width: 820px) {
+    .sticky-cta {
+      display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 10px 16px;
+      background: var(--surface); border-top: 1px solid var(--line); transition: transform 0.2s ease;
+    }
+    .sticky-cta .btn { display: block; text-align: center; }
+    .sticky-cta.hidden { transform: translateY(110%); }
+    footer { padding-bottom: 110px; }
+  }
+
   footer { padding: 40px 0 60px; color: var(--muted); font-size: 0.85rem; }
 
   @media (max-width: 820px) {
@@ -199,11 +227,11 @@
       <a class="btn" href="#apply">See if you qualify</a>
       <span class="btn-sub">Takes 2 minutes. Programs from $2,997.</span>
     </div>
-    <div class="vsl" role="img" aria-label="Program overview video placeholder">
+    <div class="vsl" id="vsl">
       <div>
         <div class="play"></div>
         <strong>Watch: How the Rebuild Program works (4 min)</strong><br>
-        <span>Replace this block with the VSL embed.</span>
+        <span>Set vslEmbedUrl in config.js to show the video here.</span>
       </div>
     </div>
   </div>
@@ -374,26 +402,13 @@
     <h2>Apply for the Rebuild Program</h2>
     <p class="muted" style="max-width:640px">Places are limited each month at each clinic. Tell us about your situation and we'll be in touch to see if the program is the right fit.</p>
 
+    <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+    <div class="step-label" id="step-label">Step 1 of 4</div>
+
     <form id="apply-form" novalidate>
-      <div class="row">
-        <div><label for="name">Full name</label><input id="name" name="name" autocomplete="name" required></div>
-        <div><label for="phone">Mobile</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
-      </div>
-      <div class="row">
-        <div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+      <div class="step active" data-step="1">
         <div>
-          <label for="clinic">Preferred clinic</label>
-          <select id="clinic" name="clinic" required>
-            <option value="">Select&hellip;</option>
-            <option>Melton</option>
-            <option>Williamstown</option>
-            <option>Either</option>
-          </select>
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label for="area">Main problem area</label>
+          <label for="area">What's the main problem area?</label>
           <select id="area" name="area" required>
             <option value="">Select&hellip;</option>
             <option>Lower back</option>
@@ -416,43 +431,67 @@
             <option>More than a year</option>
           </select>
         </div>
+        <div>
+          <label for="clinic">Which clinic suits you?</label>
+          <select id="clinic" name="clinic" required>
+            <option value="">Select&hellip;</option>
+            <option>Melton</option>
+            <option>Williamstown</option>
+            <option>Either</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label for="goal">What would you be doing in 12 weeks if this problem was handled?</label>
-        <textarea id="goal" name="goal" rows="3" required></textarea>
+
+      <div class="step" data-step="2">
+        <div>
+          <label for="goal">What would you be doing in 12 weeks if this problem was handled?</label>
+          <textarea id="goal" name="goal" rows="3" required></textarea>
+        </div>
+        <div>
+          <label for="tried">What have you already tried?</label>
+          <textarea id="tried" name="tried" rows="2"></textarea>
+        </div>
+        <div>
+          <label for="funding">Is this related to a WorkCover, TAC, NDIS or DVA claim?</label>
+          <select id="funding" name="funding" required>
+            <option value="">Select&hellip;</option>
+            <option>No</option>
+            <option>WorkCover</option>
+            <option>TAC</option>
+            <option>NDIS</option>
+            <option>DVA</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label for="tried">What have you already tried?</label>
-        <textarea id="tried" name="tried" rows="2"></textarea>
+
+      <div class="step" data-step="3">
+        <fieldset>
+          <legend>When would you like to start?</legend>
+          <label class="radio"><input type="radio" name="start" value="Within 2 weeks" required> Within 2 weeks</label>
+          <label class="radio"><input type="radio" name="start" value="Within a month"> Within a month</label>
+          <label class="radio"><input type="radio" name="start" value="Just researching"> Just researching for now</label>
+        </fieldset>
+        <fieldset>
+          <legend>The Rebuild Program starts from $2,997, with a 3-payment option. Is that within reach if it's the right fit?</legend>
+          <label class="radio"><input type="radio" name="investment" value="Yes" required> Yes, if it's the right fit for me</label>
+          <label class="radio"><input type="radio" name="investment" value="Payment plan"> Yes, with the payment plan</label>
+          <label class="radio"><input type="radio" name="investment" value="No"> Not right now</label>
+        </fieldset>
       </div>
-      <div>
-        <label for="funding">Is this related to a WorkCover, TAC, NDIS or DVA claim?</label>
-        <select id="funding" name="funding" required>
-          <option value="">Select&hellip;</option>
-          <option>No</option>
-          <option>WorkCover</option>
-          <option>TAC</option>
-          <option>NDIS</option>
-          <option>DVA</option>
-        </select>
+
+      <div class="step" data-step="4">
+        <div class="row">
+          <div><label for="name">Full name</label><input id="name" name="name" autocomplete="name" required></div>
+          <div><label for="phone">Mobile</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+        </div>
+        <div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <p class="consent">By submitting, you agree to be contacted by phone, SMS and email about your application. Your details are only used to assess and respond to your enquiry.</p>
       </div>
-      <fieldset>
-        <legend>When would you like to start?</legend>
-        <label class="radio"><input type="radio" name="start" value="Within 2 weeks" required> Within 2 weeks</label>
-        <label class="radio"><input type="radio" name="start" value="Within a month"> Within a month</label>
-        <label class="radio"><input type="radio" name="start" value="Just researching"> Just researching for now</label>
-      </fieldset>
-      <fieldset>
-        <legend>The Rebuild Program starts from $2,997, with a 3-payment option. Is that within reach if it's the right fit?</legend>
-        <label class="radio"><input type="radio" name="investment" value="Yes" required> Yes, if it's the right fit for me</label>
-        <label class="radio"><input type="radio" name="investment" value="Payment plan"> Yes, with the payment plan</label>
-        <label class="radio"><input type="radio" name="investment" value="No"> Not right now</label>
-      </fieldset>
 
       <div id="form-msg" class="form-msg" role="status" aria-live="polite"></div>
-      <div>
-        <button class="btn" type="submit">Submit application</button>
-        <span class="btn-sub">We'll call you, usually within one business day.</span>
+      <div class="step-nav">
+        <button class="btn btn-ghost" type="button" id="back-btn" hidden>Back</button>
+        <button class="btn" type="submit" id="next-btn">Continue</button>
       </div>
     </form>
   </div>
@@ -467,16 +506,60 @@
   </div>
 </footer>
 
+<div class="sticky-cta" id="sticky-cta"><a class="btn" href="#apply">See if you qualify</a></div>
+
 <script>
-  // Point this at the CRM / Zapier / GoHighLevel inbound webhook. Applications are POSTed as JSON.
-  const LEAD_WEBHOOK_URL = "";
+  const cfg = window.REBUILD_CONFIG || {};
+
+  if (cfg.vslEmbedUrl) {
+    const vsl = document.getElementById("vsl");
+    const frame = document.createElement("iframe");
+    frame.src = cfg.vslEmbedUrl;
+    frame.title = "How the Rebuild Program works";
+    frame.allow = "autoplay; fullscreen; picture-in-picture";
+    frame.allowFullscreen = true;
+    vsl.replaceChildren(frame);
+    vsl.classList.add("has-video");
+  }
+
+  const sticky = document.getElementById("sticky-cta");
+  const applySection = document.getElementById("apply");
+  new IntersectionObserver(([entry]) => sticky.classList.toggle("hidden", entry.isIntersecting))
+    .observe(applySection);
 
   const form = document.getElementById("apply-form");
+  const steps = [...form.querySelectorAll(".step")];
   const msg = document.getElementById("form-msg");
+  const nextBtn = document.getElementById("next-btn");
+  const backBtn = document.getElementById("back-btn");
+  const bar = document.getElementById("progress-bar");
+  const stepLabel = document.getElementById("step-label");
+  let current = 0;
 
   function showMsg(kind, text) {
     msg.className = "form-msg " + kind;
     msg.textContent = text;
+  }
+
+  function goTo(i) {
+    steps[current].classList.remove("active");
+    current = i;
+    steps[current].classList.add("active");
+    bar.style.width = ((current + 1) / steps.length) * 100 + "%";
+    stepLabel.textContent = "Step " + (current + 1) + " of " + steps.length;
+    backBtn.hidden = current === 0;
+    nextBtn.textContent = current === steps.length - 1 ? "Submit application" : "Continue";
+    msg.className = "form-msg";
+  }
+
+  function stepValid() {
+    for (const field of steps[current].querySelectorAll("input, select, textarea")) {
+      if (!field.checkValidity()) {
+        field.reportValidity();
+        return false;
+      }
+    }
+    return true;
   }
 
   function qualify(data) {
@@ -485,10 +568,13 @@
     return "qualified";
   }
 
+  backBtn.addEventListener("click", () => goTo(current - 1));
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!form.checkValidity()) {
-      form.reportValidity();
+    if (!stepValid()) return;
+    if (current < steps.length - 1) {
+      goTo(current + 1);
       return;
     }
 
@@ -499,31 +585,24 @@
     });
     data.offer = "Rebuild Program";
     data.lead_status = qualify(data);
-    data.page = location.href;
+    data.page = location.origin + location.pathname;
     data.submitted_at = new Date().toISOString();
 
-    if (!LEAD_WEBHOOK_URL) {
-      showMsg("err", "This form isn't connected yet. Set LEAD_WEBHOOK_URL in the page script.");
+    if (!cfg.leadWebhookUrl) {
+      showMsg("err", "This form isn't connected yet. Set leadWebhookUrl in config.js.");
       return;
     }
 
-    const button = form.querySelector("button[type=submit]");
-    button.disabled = true;
+    nextBtn.disabled = true;
     try {
-      const res = await fetch(LEAD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error(res.status);
-      form.reset();
-      showMsg("ok", data.lead_status === "funded"
-        ? "Thanks, we've got your details. Our team will call you about the right funded pathway for your claim."
-        : "Thanks, your application is in. A member of our team will call you, usually within one business day.");
+      // Form-encoded "simple" request: no CORS preflight, so it works with Zapier, GoHighLevel and Make hooks.
+      await fetch(cfg.leadWebhookUrl, { method: "POST", mode: "no-cors", body: new URLSearchParams(data) });
+      if (window.track) window.track("Lead", { content_name: data.offer, status: data.lead_status });
+      const next = new URLSearchParams({ status: data.lead_status, clinic: data.clinic, name: data.name.split(" ")[0] });
+      location.href = "thank-you.html?" + next.toString();
     } catch (err) {
       showMsg("err", "Something went wrong sending your application. Please try again, or call the clinic directly.");
-    } finally {
-      button.disabled = false;
+      nextBtn.disabled = false;
     }
   });
 </script>
