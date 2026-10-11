@@ -85,7 +85,7 @@ Do **not** promise outcomes ("pain-free in 12 weeks" or "or your money back"). S
 ## 3. The funnel (Jeremy Haynes-style application funnel)
 
 ```
-Paid ads (Meta / YouTube / Google)
+Paid ads (Meta / YouTube / Google)  +  Organic short-form (Reels / TikTok / Shorts)
   → Landing page (VSL + value stack + "Programs from $2,997" pre-qualifier)
     → Application form (qualifies & disqualifies)
       → Booking (calendar) — only for qualified applicants
@@ -120,6 +120,38 @@ Use no before/after claims or patient testimonials in ads (AHPRA).
 - Not a current WorkCover / TAC / NDIS / DVA claim (route those to the standard pathway)
 - Wants to start within 30 days
 - Has acknowledged the "from $2,997" investment
+
+### Organic content engine (Daniel Iles / Viral Coach-style)
+
+Iles's model is that going viral once is luck, but doing it every month is a system. That system runs on consistent, high-volume short-form video with conversion-focused ideas, scripted hooks, a fixed production cadence, and cross-platform repurposing. Here it serves as the low-cost top of the funnel, feeding the same application page as the paid ads.
+
+**Production cadence**
+- One 3-hour filming block per clinic per week, producing 15–20 vertical videos (Reels, TikTok, YouTube Shorts). The physios are on camera and an editor or VA cuts and schedules.
+- Post 1–2 videos a day per clinic account, and cross-post every video to all three platforms.
+- Each week, review the top performers by views, saves and profile clicks. Re-film winning ideas with new hooks, and hand the best 2–3 to paid as ad creative (a Haynes-style whitelisting approach).
+
+**Content pillars** (each one ends with a soft call to action: "Link in bio to apply for the Rebuild Program")
+
+| Pillar | Example |
+|---|---|
+| Myth-busting | "Rest isn't fixing your back. Here's what the research says" |
+| Do this, not that | "3 knee exercises you're doing wrong after an ACL" |
+| Measured proof (de-identified) | Real dynamometer readings from weeks 0 → 6 → 12, with no name or face and no outcome claims |
+| Behind the scenes | Tour of the 300m² Melton gym, a Paramount Pilates session |
+| Local | "Physio in Melton answers your questions", "Williamstown runners: watch this" |
+| Physio point of view | "What I tell every tradie with a bad back" |
+
+**Hook formulas to script against**
+- Call-out: "If you're over 40 and your knee clicks on stairs…"
+- Contrarian: "Stop stretching your tight hamstrings."
+- Curiosity: "The test I do on every new back-pain patient."
+- Mistake: "The #1 mistake people make after shoulder surgery."
+
+**Tracking:** the link-in-bio URL carries `?utm_source=instagram&utm_medium=organic` (and the equivalent for TikTok and YouTube). Organic and paid applications land in the CRM tagged separately, so cost per acquisition can be compared directly.
+
+**AHPRA still applies to organic content:** no patient testimonials, no "pain-free in X weeks" claims, and general education only (not individual advice). Patient footage needs written consent and must not imply outcomes.
+
+**Remotion opportunity:** this repo is set up for Remotion. Templated video formats (a branded hook intro, captions, a data-reveal animation for the strength numbers, an end card with the call to action) can be built once as compositions and re-rendered with new footage and text each week. That cuts editing time on high-volume output.
 
 ---
 
@@ -160,4 +192,4 @@ Physiotherapists are regulated by AHPRA. Section 133 of the National Law and AHP
 
 That's why this offer guarantees *process* (assessment refund, session guarantee), not *outcomes*, and why the page uses de-identified measurement and method instead of testimonials. Have the clinic owners sign off on the final copy, and get a compliance review if possible.
 
-The source "Daniela Isles" from the brief couldn't be identified, so the framework draws on Hormozi (offer and value equation) and Haynes (premium positioning, application funnel, pre-call nurture).
+Framework sources: Alex Hormozi (offer and value equation), Jeremy Haynes (premium positioning, application funnel, pre-call nurture) and Daniel Iles / Viral Coach (high-volume short-form organic content engine).
