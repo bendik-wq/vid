@@ -24,6 +24,42 @@ The combined Transfermarkt value of these five is about **€5.2m (~NOK 60m)**. 
 
 ---
 
+## 1b. Style-fit model results (interactive board)
+
+The shortlist above came from rating-based screens of each region. To test it, every outfield player with 900+ league minutes in 46 leagues (9,686 players) was scored the same way against role profiles built from Horneland's game model. The details are in section 5b. The interactive board is `brann-board.html`; the code and data are in `model/`.
+
+**Top fits by role**
+
+Filters applied: age 26 or under, Sofascore value €3m or less, still at the club the data comes from. "Brann score" is style fit × league factor, with the Eliteserien at 1.00.
+
+| Role | 1st | 2nd | 3rd | Brann incumbent (style fit) |
+|---|---|---|---|---|
+| RCB | Kevin Jappert (23, Barracas Central, ARG): 76.9 | Neil Pierre (19, Philadelphia Union, MLS): 76.0 | Rasmus Holten (22, Sandefjord): 75.5 | Knudsen 57 |
+| No. 8 | Édouard Michut (24, Fortuna Sittard, NED): 83.5 | Konstantinos Roukounakis (25, AE Kifisia, GRE): 81.9 | Justin Janssen (20, Nordsjælland, DEN): 80.7 | Sørensen 72 |
+| LB (left-footed) | Deveron Fonville (23, NEC, NED): 77.0 | John Tolkin (24, Holstein Kiel, GER2): 76.5 | Frans Krätzig (24, RB Salzburg, AUT): 75.5 | Soltvedt 59 |
+| No. 9 | Heine Åsen Larsen (24, Tromsø): 76.9 | Pierre Landry Kaboré (25, Hearts, SCO): 76.3 | Max Dean (23, Gent, BEL): 75.8 | Ingason 69, Holm 56 |
+| Winger | Charly Nouck (23, Viborg, DEN): 84.3 | Oscar Kabwit (21, Luzern, SUI): 83.1 | Elies Mahmoud (26, Randers, DEN): 79.3 | Mathisen 61 |
+
+**Key data points**
+- **Michut:** possession won in the final third p97, pass accuracy 89.5% (p93), tackles + interceptions 4.3/90 (p91). He is out of contract in June 2027.
+- **Roukounakis:** duel win rate 63% (p99), tackles + interceptions 4.9/90 (p97). Sofascore values him at about €0.2m.
+- **Nouck:** shots 3.4/90 and big chances created 0.61/90 (both p96). Plays both wings and uses both feet.
+- **Kabwit:** xG 0.44/90, shots 3.8/90 and non-penalty goals 0.63/90, all p99.
+- **Åsen Larsen:** xG 0.69/90 (p97), possession won in the final third p94. This matches the earlier report's view that he is the best pressing No. 9. His contract with Tromsø ends in Dec 2027, per Sofascore.
+- **Holten:** Brann sold him to Sandefjord in 2026. The model rates him the 3rd-best young centre-back fit in the whole pool: dribbled past p96, aerial win rate p95.
+- **Kevin Coronel** (22, Argentinos Juniors) has the highest score of any full-back (86.8), but he plays on the right.
+
+**How the earlier picks compare.** The uniform model ranks several of the section 1 picks lower once style weights and league strength are applied:
+- Soumah ranks 146th of 956 centre-backs within budget.
+- Kilo ranks 138th of 1,154 midfielders.
+- Zandén ranks 59th and Tolf 19th of 836 full-backs.
+- Haen ranks 77th of 567 strikers.
+- Borgthórsson ranks 95th of 821 wingers. The Iceland factor of 0.75 pulls his score down.
+
+They remain sensible targets on contract and price grounds. However, the board's top names should get first video review. The model measures event data only, so pace and running need checking before anyone is short-listed.
+
+---
+
 ## 2. How Brann play under Horneland, and what each position needs
 
 ### 2.1 Tactical identity (evidence)
@@ -272,6 +308,25 @@ The combined Transfermarkt value of these five is about **€5.2m (~NOK 60m)**. 
 - **Fees:** "estimated fee" ranges are judgement calls based on Transfermarkt value, contract length and Brann's own transfer history. They are not quotes.
 - **Unconfirmed Brann details:** Horneland's exact 2026 formation since his return, the Pedersen and Soltvedt contract extensions, and Tronstad's injury timeline.
 - **Before any bid:** video analysis, medicals, character references and an agent or wage check.
+
+## 5b. Style-fit model method
+
+- **Pool:** Sofascore league statistics pulled on 11 Oct 2026. That gives 11,153 player-seasons with 900+ minutes across 46 leagues; 9,742 remain after removing goalkeepers and attacking midfielders. Calendar-year leagues use 2026; Aug–May leagues use 2025/26.
+- **Role:** taken from the primary Sofascore position.
+  - DC → CB
+  - DL/DR → FB
+  - DM/MC → CM
+  - LW/RW/ML/MR → W
+  - ST → ST
+- **Weights** (percentiles within role, across all leagues):
+  - **CB:** dribbled past (reversed) 15, tackles + interceptions 15, ground duel % 15, pass % 15, recoveries 10, aerial % 10, errors leading to a shot (reversed) 10, aerials won 5, long balls 5.
+  - **FB:** pass % 20, interceptions 15, duel % 15, tackles 10, xA 10, key passes 10, dribbled past (reversed) 10, crosses 5, recoveries 5.
+  - **CM:** tackles + interceptions 20, possession won in final third 15, recoveries 10, key passes 10, xA 10, pass % 10, final-third passes 10, duel % 10, xG 5.
+  - **W:** xG 15, possession won in final third 15, shots 10, dribbles 10, key passes 10, xA 10, big chances created 10, tackles 10, non-penalty goals 10.
+  - **ST:** xG 25, non-penalty goals 15, aerials won 15, possession won in final third 15, goals minus xG 10, xA 10, tackles 5, key passes 5.
+- **Missing data:** where a league does not publish a metric, its weight is dropped and the score is shrunk toward 50 in proportion to the missing weight.
+- **League factors:** judgement-based, with the Eliteserien at 1.00. The range runs from 0.75 (Iceland) to 1.15 (Eredivisie, Belgian Pro League, Liga Portugal, Brasileirão Série A). The full table is on the board.
+- **Market values** in the model are Sofascore estimates. They are generally lower than Transfermarkt's.
 
 ## 6. Key sources
 
