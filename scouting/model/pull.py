@@ -41,6 +41,21 @@ LEAGUES=[
  (136,82603,"A-League 25/26","Outside Europe",0.88),(358,79701,"South Africa Premiership 25/26","Outside Europe",0.85),
  (937,78750,"Botola Pro 25/26","Outside Europe",0.85),
 ]
+LEAGUES+=[
+ (17,76986,"Premier League 25/26","Western/Central Europe",1.60),(18,77347,"Championship 25/26","Western/Central Europe",1.20),
+ (24,77352,"League One 25/26","Western/Central Europe",0.98),(25,77351,"League Two 25/26","Western/Central Europe",0.85),
+ (173,78229,"National League 25/26","Western/Central Europe",0.72),
+ (35,77333,"Bundesliga 25/26","Western/Central Europe",1.45),(34,77356,"Ligue 1 25/26","Western/Central Europe",1.35),
+ (183,78599,"National (FRA) 25/26","Western/Central Europe",0.78),
+ (23,76457,"Serie A 25/26","Eastern/Southern Europe",1.45),(11445,79377,"Serie C Girone A 25/26","Eastern/Southern Europe",0.82),
+ (11447,79378,"Serie C Girone B 25/26","Eastern/Southern Europe",0.82),(11446,79379,"Serie C Girone C 25/26","Eastern/Southern Europe",0.82),
+ (8,77559,"LaLiga 25/26","Eastern/Southern Europe",1.50),(17073,77727,"Primera Federación 25/26","Eastern/Southern Europe",0.85),
+ (1281,90642,"Brasileirão Série C 2026","Outside Europe",0.85),(703,87940,"Argentina Primera Nacional 2026","Outside Europe",0.85),
+ (240,89674,"Ecuador LigaPro 2026","Outside Europe",0.92),(10240,90244,"Ecuador Serie B 2026","Outside Europe",0.72),
+ (406,88529,"Peru Liga 1 2026","Outside Europe",0.85),(11653,88493,"Chile Primera 2026","Outside Europe",0.90),
+ (11540,87238,"Paraguay Apertura 2026","Outside Europe",0.88),(1238,89001,"Colombia Primera B 2026","Outside Europe",0.75),
+ (1908,91195,"Uruguay Segunda 2026","Outside Europe",0.72),
+]
 FIELDSETS=[
  "minutesPlayed,appearances,goals,assists,expectedGoals,expectedAssists,rating,totalShots",
  "tackles,interceptions,ballRecovery,possessionWonAttThird,dribbledPast,clearances,errorLeadToShot,errorLeadToGoal",

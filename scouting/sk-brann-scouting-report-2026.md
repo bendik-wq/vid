@@ -24,39 +24,58 @@ The combined Transfermarkt value of these five is about **€5.2m (~NOK 60m)**. 
 
 ---
 
-## 1b. Style-fit model results (interactive board)
+## 1b. Style-fit model results (69 leagues, tiers 1–5)
 
-The shortlist above came from rating-based screens of each region. To test it, every outfield player with 900+ league minutes in 46 leagues (9,686 players) was scored the same way against role profiles built from Horneland's game model. The details are in section 5b. The interactive board is `brann-board.html`; the code and data are in `model/`.
+The shortlist above came from rating-based screens of each region. To test it, every outfield player with 900+ league minutes in 69 leagues was scored the same way against role profiles built from Horneland's game model. That is 16,234 players, from the Premier League down to the National League, plus Serie C, Primera Federación, National, Série C and second tiers across South America. Section 5b has the method. The interactive site is in `docs/brann/`, with pages for the board, free agents, Moneyball prospects and lower tiers.
 
 **Top fits by role**
 
-Filters applied: age 26 or under, Sofascore value €3m or less, still at the club the data comes from. "Brann score" is style fit × league factor, with the Eliteserien at 1.00.
+Filters applied: age 26 or under, Sofascore value €3m or less, still at the club the data comes from, data coverage 70%+. "Brann score" is style fit × league factor, with the Eliteserien at 1.00.
 
 | Role | 1st | 2nd | 3rd | Brann incumbent (style fit) |
 |---|---|---|---|---|
-| RCB | Kevin Jappert (23, Barracas Central, ARG): 76.9 | Neil Pierre (19, Philadelphia Union, MLS): 76.0 | Rasmus Holten (22, Sandefjord): 75.5 | Knudsen 57 |
-| No. 8 | Édouard Michut (24, Fortuna Sittard, NED): 83.5 | Konstantinos Roukounakis (25, AE Kifisia, GRE): 81.9 | Justin Janssen (20, Nordsjælland, DEN): 80.7 | Sørensen 72 |
-| LB (left-footed) | Deveron Fonville (23, NEC, NED): 77.0 | John Tolkin (24, Holstein Kiel, GER2): 76.5 | Frans Krätzig (24, RB Salzburg, AUT): 75.5 | Soltvedt 59 |
-| No. 9 | Heine Åsen Larsen (24, Tromsø): 76.9 | Pierre Landry Kaboré (25, Hearts, SCO): 76.3 | Max Dean (23, Gent, BEL): 75.8 | Ingason 69, Holm 56 |
-| Winger | Charly Nouck (23, Viborg, DEN): 84.3 | Oscar Kabwit (21, Luzern, SUI): 83.1 | Elies Mahmoud (26, Randers, DEN): 79.3 | Mathisen 61 |
+| RCB | Alejandro Francés (24, Girona, ESP): 90.8 | Kevin Jappert (23, Barracas Central, ARG): 77.3 | Neil Pierre (19, Philadelphia Union, MLS): 76.3 | Knudsen 58 |
+| No. 8 | Édouard Michut (24, Fortuna Sittard, NED): 84.0 | Konstantinos Roukounakis (25, AE Kifisia, GRE): 82.5 | Justin Janssen (20, Nordsjælland, DEN): 80.9 | Sørensen 72 |
+| Full-back | Kevin Coronel (22, Argentinos Juniors, ARG, right): 87.6 | Zak Swanson (26, Portsmouth, ENG2): 81.3 | Lamine Sy (24, Auxerre, FRA): 79.4 | Soltvedt 60 |
+| No. 9 | Heine Åsen Larsen (24, Tromsø): 77.7 | Pierre Landry Kaboré (25, Hearts, SCO): 77.5 | Max Dean (23, Gent, BEL): 77.2 | Ingason 70, Holm 57 |
+| Winger | Charly Nouck (23, Viborg, DEN): 84.6 | Oscar Kabwit (21, Luzern, SUI): 83.3 | Elies Mahmoud (26, Randers, DEN): 80.5 | Mathisen 63 |
 
-**Key data points**
-- **Michut:** possession won in the final third p97, pass accuracy 89.5% (p93), tackles + interceptions 4.3/90 (p91). He is out of contract in June 2027.
-- **Roukounakis:** duel win rate 63% (p99), tackles + interceptions 4.9/90 (p97). Sofascore values him at about €0.2m.
-- **Nouck:** shots 3.4/90 and big chances created 0.61/90 (both p96). Plays both wings and uses both feet.
-- **Kabwit:** xG 0.44/90, shots 3.8/90 and non-penalty goals 0.63/90, all p99.
-- **Åsen Larsen:** xG 0.69/90 (p97), possession won in the final third p94. This matches the earlier report's view that he is the best pressing No. 9. His contract with Tromsø ends in Dec 2027, per Sofascore.
-- **Holten:** Brann sold him to Sandefjord in 2026. The model rates him the 3rd-best young centre-back fit in the whole pool: dribbled past p96, aerial win rate p95.
-- **Kevin Coronel** (22, Argentinos Juniors) has the highest score of any full-back (86.8), but he plays on the right.
+**Free agents (no transfer fee)**
 
-**How the earlier picks compare.** The uniform model ranks several of the section 1 picks lower once style weights and league strength are applied:
-- Soumah ranks 146th of 956 centre-backs within budget.
-- Kilo ranks 138th of 1,154 midfielders.
-- Zandén ranks 59th and Tolf 19th of 836 full-backs.
-- Haen ranks 77th of 567 strikers.
-- Borgthórsson ranks 95th of 821 wingers. The Iceland factor of 0.75 pulls his score down.
+Contract ending Dec 2026 or by Jun 2027, or no club; value €3m or less.
 
-They remain sensible targets on contract and price grounds. However, the board's top names should get first video review. The model measures event data only, so pace and running need checking before anyone is short-listed.
+| Role | Top fits |
+|---|---|
+| CB | Sahmkou Camara (23, Slovan Bratislava, Jun 2027): 80.5 · Kevin Jappert (23, Barracas Central, **Dec 2026**): 77.3 |
+| No. 8 | Mohamed Kaba (25, Lecce, Jun 2027): 89.0 · Édouard Michut (24, Fortuna Sittard, Jun 2027): 84.0 |
+| Full-back | Adrià Pedrosa (28, Rayo Vallecano): 94.4 · Neto Borges (30, Middlesbrough): 94.0. Both Jun 2027, both likely above Brann's wage level |
+| No. 9 | Brynjólfur Darri Willumsson (26, Groningen, Jun 2027): 77.2 · Jan Luca Schuler (28, Hertha BSC): 78.6 |
+| Winger | Vasil Kušej (26, Slovan Liberec, Jun 2027): 78.3 · Valentín Depietri (25, Talleres, **Dec 2026**): 76.9 |
+
+Michut and Jappert top both the board and the free-agent list. Jappert would cost nothing in January, and Michut could be had on a pre-contract or for a small fee.
+
+**Moneyball prospects (aged 21 or under)**
+
+These players have the biggest gap between their score and the score their market value predicts. Filters: value €2m or less, coverage 70%+.
+
+| Role | Top value gaps |
+|---|---|
+| CB | Gabriel Justino (20, Botafogo, €310k): score 66.5, +23.8 · Ho-jin Kim (21, Pohang, €210k): +23.0 · Santiago Daniele (21, Banfield, €53k): +29.6 |
+| No. 8 | Jeevan Badwal (21, Vancouver Whitecaps, €775k): score 72.9, +23.5 · Aapo Boström (21, SJK, €145k): +24.3 · Adam Jouhi (20, Gnistan, €95k): +24.3 |
+| Full-back | Frej Elkjær Andersen (19, Jong AZ, €280k): +19.2 · Sabil Hansen (21, Randers, €680k): score 64.7, +14.7 · Harley Mills (21, Peterborough, €155k): +21.0 |
+| No. 9 | Jesse Bal (20, ADO Den Haag, €370k): score 63.3, +19.6 |
+| Winger | Tarik Essakkati (21, Helmond Sport, €310k): score 69.4, +26.8 · Nino Zonneveld (21, Vitesse, €295k): +26.7 · Melk (20, Ceará, €360k): +21.6 |
+
+**Lower tiers**
+- At 70% coverage, the best third-tier fits are almost all from League One. Examples: Aribim Pepple (24, Plymouth, ST, 71.2), Shayden Morris (24, Luton, W, 69.7), Joel Bagan (25, Cardiff, FB, 68.4).
+- Serie C, Primera Federación, National, 3. Liga and Série C publish no defensive stats. Use the coverage filter on the Lower tiers page to see them.
+- The Regionalliga and Série D publish goals only. They are covered by a top-scorer watchlist of 240 players.
+
+**How the earlier picks compare.** Several of the section 1 picks rank lower in the uniform model:
+- Soumah ranks about 150th of roughly 950 centre-backs within budget.
+- Kilo ranks about 140th of about 1,150 midfielders.
+
+They remain sensible on contract and price, but the model's top names should get first video review. The model uses event data only, so pace and running need checking before anyone is short-listed.
 
 ---
 
@@ -311,7 +330,7 @@ They remain sensible targets on contract and price grounds. However, the board's
 
 ## 5b. Style-fit model method
 
-- **Pool:** Sofascore league statistics pulled on 11 Oct 2026. That gives 11,153 player-seasons with 900+ minutes across 46 leagues; 9,742 remain after removing goalkeepers and attacking midfielders. Calendar-year leagues use 2026; Aug–May leagues use 2025/26.
+- **Pool:** Sofascore league statistics pulled on 11 Oct 2026. That gives 18,692 player-seasons with 900+ minutes across 69 leagues; 16,234 players remain after removing goalkeepers and attacking midfielders (16,349 player-seasons). Calendar-year leagues use 2026; Aug–May leagues use 2025/26.
 - **Role:** taken from the primary Sofascore position.
   - DC → CB
   - DL/DR → FB
@@ -325,7 +344,8 @@ They remain sensible targets on contract and price grounds. However, the board's
   - **W:** xG 15, possession won in final third 15, shots 10, dribbles 10, key passes 10, xA 10, big chances created 10, tackles 10, non-penalty goals 10.
   - **ST:** xG 25, non-penalty goals 15, aerials won 15, possession won in final third 15, goals minus xG 10, xA 10, tackles 5, key passes 5.
 - **Missing data:** where a league does not publish a metric, its weight is dropped and the score is shrunk toward 50 in proportion to the missing weight.
-- **League factors:** judgement-based, with the Eliteserien at 1.00. The range runs from 0.75 (Iceland) to 1.15 (Eredivisie, Belgian Pro League, Liga Portugal, Brasileirão Série A). The full table is on the board.
+- **League factors:** judgement-based, with the Eliteserien at 1.00. The range runs from 0.72 (National League, Uruguay Segunda, Ecuador Serie B) to 1.60 (Premier League). The full table is on the site's overview page.
+- **Value gap (Moneyball):** for each role, a linear fit of Brann score on log10(market value) for players aged 27 or under. The gap is the actual score minus the fitted score.
 - **Market values** in the model are Sofascore estimates. They are generally lower than Transfermarkt's.
 
 ## 6. Key sources
