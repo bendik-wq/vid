@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="160 casebaserte øvingsoppgaver i HSM122 (kap. 1–6) med automatisk retting, minuspoeng og 41 %-krav.">
+<meta name="description" content="160 casebaserte øvingsoppgaver i HSM122 (kap. 1–6) med blandede prøver, formelsammendrag, XP, nivåer og merker.">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <title>Øvingsprøve HSM122</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -109,45 +109,419 @@ td:first-child,th:first-child{text-align:left}
 .legend{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
 @media (prefers-reduced-motion:no-preference){.q,.opt{transition:background .15s,border-color .15s}}
+
+:root{--gold:#a8740f;--gold-soft:#f7ecd2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--gold:#f0c35a;--gold-soft:#3a2f14}}
+:root[data-theme="dark"]{--gold:#f0c35a;--gold-soft:#3a2f14}
+
+.navwrap{padding-block:18px 0}
+.stats{display:flex;flex-wrap:wrap;gap:4px 14px}
+#timer.over{color:var(--bad)}
+.lvl{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600}
+.lvl:hover{border-color:var(--accent)}
+.lvl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.xpbar{display:inline-block;width:70px;height:6px;background:var(--line);border-radius:3px;overflow:hidden;vertical-align:middle}
+.xpbar > span,.xpbar > div{display:block;height:100%;background:var(--gold);border-radius:3px}
+.xpbar.big{width:100%;height:10px}
+.mono{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.streak{font-family:var(--f-mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.streak b{font-variant-numeric:tabular-nums;color:var(--fg)}
+.streak.hot{border-color:var(--gold);background:var(--gold-soft);color:var(--gold)}
+.streak.hot b{color:var(--gold)}
+@media (max-width:560px){.lvl #lvlXp{display:none}.xpbar{width:44px}}
+
+.tab{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0;line-height:1.25;text-align:left}
+.tab .best{font-family:var(--f-mono);font-size:11px;font-weight:400;opacity:.85}
+.tab.passed{border-color:var(--ok)}
+.tab.passed > span:first-child::after{content:" ✓";color:var(--ok)}
+.tab.passed[aria-selected="true"] > span:first-child::after{color:var(--paper)}
+
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.switch .track{width:38px;height:22px;border-radius:11px;background:var(--line);position:relative;flex:none;transition:background .15s}
+.switch .track::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--paper);transition:transform .15s}
+.switch input:checked + .track{background:var(--accent)}
+.switch input:checked + .track::after{transform:translateX(16px)}
+.switch input:focus-visible + .track{outline:2px solid var(--accent);outline-offset:2px}
+.switch input:disabled + .track{opacity:.6}
+.modehint{font-size:13px;color:var(--muted);margin:0}
+
+.qsrc{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.qactions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.btn.sm{padding:5px 12px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.q.st-ok{border-color:var(--ok)}
+.q.st-bad{border-color:var(--bad)}
+.q.st-part{border-color:var(--warn)}
+.rowbtns{display:flex;gap:10px;flex-wrap:wrap}
+
+.toasts{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:grid;justify-items:center;gap:8px;z-index:20;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.toast{background:var(--fg);color:var(--bg);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.18);max-width:100%}
+.toast.badge,.toast.lvl{background:var(--gold);color:var(--paper)}
+.toast.streak{background:var(--accent);color:var(--paper)}
+.toast.out{opacity:0;transform:translateY(8px)}
+@media (prefers-reduced-motion:no-preference){.toast{transition:opacity .4s,transform .4s;animation:pop .3s ease-out}@keyframes pop{from{opacity:0;transform:translateY(10px)}}}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+
+/* summary */
+.sum-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.field input{font:inherit;font-size:15px;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--fg);width:320px;max-width:100%}
+.field input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sum-nav{display:flex;flex-wrap:wrap;gap:6px}
+.sum-nav a{font-family:var(--f-mono);font-size:12px;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:3px 10px;text-decoration:none;background:var(--paper)}
+.sum-nav a:hover{border-color:var(--accent)}
+.sum{display:grid;gap:12px}
+.sum-h{font-family:var(--f-display);font-size:24px;margin:22px 0 2px;scroll-margin-top:80px}
+.concept{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:8px;min-width:0}
+.concept h3{margin:0;font-family:var(--f-display);font-size:18px}
+.concept p{margin:0;max-width:72ch}
+.formula{font-family:var(--f-mono);font-size:14px;line-height:1.7;background:var(--accent-soft);border-radius:6px;padding:10px 14px;white-space:normal;overflow-x:auto}
+.drill .formula{cursor:pointer;position:relative}
+.drill .formula:not(.shown){color:transparent;text-shadow:0 0 9px var(--fg);user-select:none}
+.drill .formula:not(.shown)::after{content:"Trykk for å vise";position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-body);font-weight:600;color:var(--accent);text-shadow:none}
+.formula:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sum-empty{color:var(--muted)}
+
+/* profile */
+.prof{display:grid;gap:16px;padding-block:20px 0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px;min-width:0}
+.card h2{font-family:var(--f-display);margin:0;font-size:20px}
+.plvl{display:flex;align-items:center;gap:14px}
+.plvl-n{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--gold-soft);color:var(--gold);border:2px solid var(--gold);font-family:var(--f-display);font-size:24px;font-weight:700;flex:none}
+.plvl-name{font-family:var(--f-display);font-size:22px;font-weight:700}
+.kvs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kv{display:grid;gap:2px;background:var(--bg);border-radius:6px;padding:10px 12px}
+.kv span{font-size:13px;color:var(--muted)}
+.kv b{font-size:20px;font-variant-numeric:tabular-nums}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.badge{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;min-width:0}
+.badge div{display:grid;gap:1px;min-width:0}
+.badge b{font-size:15px}
+.badge span:not(.medal){font-size:13px;color:var(--muted)}
+.badge em{font-size:12px;color:var(--muted);font-style:normal;font-family:var(--f-mono)}
+.medal{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;flex:none;background:var(--gold-soft);color:var(--gold);border:2px solid var(--gold);font-family:var(--f-mono);font-weight:600;font-size:12px}
+.badge.locked{opacity:.5}
+.badge.locked .medal{background:var(--bg);color:var(--muted);border-color:var(--line);border-style:dashed}
+.confirm{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--bad-soft);border-radius:6px;padding:10px 12px}
+.btn.danger{background:var(--bad);border-color:var(--bad)}
+@media (max-width:560px){.tabrow{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}.tab{flex:none}.tabrow-label{min-width:auto;flex:none}}
 </style>
 </head>
 <body>
-
-
 <div class="bar" id="bar"><div class="inner">
-  <span class="stat">Besvart <b id="sAns">0</b>/<span id="sN">30</span></span>
-  <span class="stat" id="sScoreWrap" hidden>Poeng <b id="sScore">0</b>/<span id="sMax">90</span></span>
+  <span class="stats" id="quizStats">
+    <span class="stat">Besvart <b id="sAns">0</b>/<span id="sN">30</span></span>
+    <span class="stat" id="sScoreWrap" hidden>Poeng <b id="sScore">0</b>/<span id="sMax">90</span></span>
+    <span class="stat">Tid <b id="timer">0:00</b></span>
+  </span>
+  <button class="lvl" id="lvlChip" type="button" title="Åpne profil og merker"><span id="lvlName">Nivå 1</span><span class="xpbar" aria-hidden="true"><span id="lvlFill"></span></span><span id="lvlXp" class="mono">0 XP</span></button>
+  <span class="streak" id="streakChip" title="Helt riktige svar på rad">Rekke <b id="streakN">0</b></span>
   <span class="spacer"></span>
   <button class="btn ghost" id="btnReset" type="button">Start på nytt</button>
   <button class="btn" id="btnSubmit" type="button">Lever og rett</button>
 </div></div>
 
 <div class="wrap">
-  <header class="intro">
-    <div class="tabgroups" id="tabs"></div>
-    <span class="eyebrow" id="eyebrow"></span>
-    <h1>Øvingsprøve til arbeidskravet</h1>
-    <p><span id="introN">30</span> casebaserte oppgaver: flervalg, flere svar, numeriske oppgaver, matching og kategorisering. Hver oppgave gir maks 3 poeng. Feil svar kan gi minuspoeng, så la svaret stå tomt hvis du er usikker. Krav for godkjent: <span id="introPass">37 av 90</span> poeng (41 %). Prøvene 5 og 6 har 20 oppgaver og er litt vanskeligere.</p>
-    <div class="rules">
-      <span class="chip">Flervalg: +3 / −1</span>
-      <span class="chip">Numerisk: +3 / −1</span>
-      <span class="chip">Flere svar: delpoeng, feil kryss trekker</span>
-      <span class="chip">Matching/kategorisering: delpoeng, feil trekker</span>
-      <span class="chip">Tomt svar: 0</span>
+  <div class="navwrap"><nav class="tabgroups" id="tabs" aria-label="Velg prøve eller side"></nav></div>
+
+  <section id="viewQuiz" class="view">
+    <header class="intro">
+      <span class="eyebrow" id="eyebrow"></span>
+      <h1>Øvingsprøve til arbeidskravet</h1>
+      <p><span id="introN">30</span> casebaserte oppgaver: flervalg, flere svar, numeriske oppgaver, matching og kategorisering. Hver oppgave gir maks 3 poeng. Feil svar kan gi minuspoeng, så la svaret stå tomt hvis du er usikker. Krav for godkjent: <span id="introPass">37 av 90</span> poeng (41 %).</p>
+      <div class="rules">
+        <span class="chip">Flervalg: +3 / −1</span>
+        <span class="chip">Numerisk: +3 / −1</span>
+        <span class="chip">Flere svar: delpoeng, feil kryss trekker</span>
+        <span class="chip">Matching/kategorisering: delpoeng, feil trekker</span>
+        <span class="chip">Tomt svar: 0</span>
+      </div>
+      <label class="switch" for="practiceToggle"><input type="checkbox" id="practiceToggle"><span class="track" aria-hidden="true"></span><span>Øvingsmodus: sjekk svaret etter hver oppgave</span></label>
+      <p class="modehint">Du får 10 XP for hvert helt riktige svar, 4 XP for delvis riktig og bonus når du består (30 XP), får over 80 % (30 XP) eller full pott (50 XP).</p>
+    </header>
+    <div class="result" id="result" hidden></div>
+    <nav class="map" id="map" aria-label="Oppgavekart"></nav>
+    <main id="quiz"></main>
+    <div class="foot">
+      <button class="btn" id="btnSubmit2" type="button">Lever og rett</button>
     </div>
+  </section>
+
+<section id="viewSummary" class="view" hidden>
+  <header class="intro">
+    <span class="eyebrow">HSM122 · Kap. 1–6</span>
+    <h1>Formler og begreper</h1>
+    <p>Alt du trenger til prøvene, samlet per kapittel. Slå på puggmodus for å skjule formlene og teste deg selv: trykk på en formel for å avsløre den.</p>
+    <div class="sum-tools">
+      <label class="field" for="sumSearch"><span class="sr">Søk</span><input type="search" id="sumSearch" placeholder="Søk etter begrep, f.eks. DEK eller avanse" autocomplete="off"></label>
+      <label class="switch" for="drillToggle"><input type="checkbox" id="drillToggle"><span class="track" aria-hidden="true"></span><span>Puggmodus</span></label>
+      <span class="stat" id="drillStat"></span>
+    </div>
+    <nav class="sum-nav" aria-label="Kapitler">
+      <a href="#k1">1 Introduksjon</a><a href="#k2">2 Inntekter og kostnader</a><a href="#k3">3 Kostnadsforløpet</a><a href="#k4">4 Etterspørsel</a><a href="#k5">5 Markedstilpasning</a><a href="#k6">6 Kalkulasjon</a><a href="#kfork">Forkortelser</a>
+    </nav>
   </header>
 
-  <div class="result" id="result" hidden></div>
-  <nav class="map" id="map" aria-label="Oppgavekart"></nav>
-  <main id="quiz"></main>
-  <div class="foot">
-    <button class="btn" id="btnSubmit2" type="button">Lever og rett</button>
+  <div class="sum" id="sumBody">
+
+  <h2 class="sum-h" id="k1">1 Introduksjon til bedriftsøkonomi</h2>
+
+  <article class="concept"><h3>Bedriftsøkonomi</h3>
+    <p>Handler om forvaltning av ressurser for å omforme produksjonsfaktorer til varer og tjenester. Bedriftsøkonomi har fire delområder: <b>regnskap</b>, <b>bedriftsøkonomisk analyse</b>, <b>prosjektanalyse og finansiering</b> og <b>budsjettering</b>. Samfunnsøkonomi (makro og mikro) er den andre grenen av økonomifaget.</p>
+    <p>Typer bedrifter: industribedrift, engrosbedrift og detaljistbedrift (handelsbedrifter), håndverksbedrift og tjenesteytende bedrift.</p></article>
+
+  <article class="concept"><h3>Regnskapstyper</h3>
+    <div class="tblwrap"><table><tr><th>Type</th><th>Kjennetegn</th></tr>
+      <tr><td>Finansregnskap</td><td>Eksternt årsregnskap etter god regnskapsskikk. Informerer omverdenen om lønnsomhet, likviditet og soliditet. Fundamentet for de andre.</td></tr>
+      <tr><td>Driftsregnskap</td><td>Internt, beslutnings- og kontrollorientert, hovedinstrument for økonomistyring. Kan rapportere annet enn kroner (kunde- og medarbeidertilfredshet). Frivillig.</td></tr>
+      <tr><td>Skatteregnskap</td><td>Viser overgangen fra regnskapsmessig overskudd til skattemessig inntekt.</td></tr>
+      <tr><td>Miljøregnskap</td><td>Vanlig blant større og børsnoterte selskaper.</td></tr></table></div></article>
+
+  <article class="concept"><h3>Interessegrupper</h3>
+    <div class="tblwrap"><table><tr><th>Gruppe</th><th>Gir</th><th>Får</th></tr>
+      <tr><td>Eiere</td><td>kapital</td><td>utbytte</td></tr><tr><td>Långivere</td><td>lån</td><td>renter</td></tr>
+      <tr><td>Ansatte</td><td>arbeid</td><td>lønn/trygghet</td></tr><tr><td>Ledelse</td><td>arbeid</td><td>lønn/heder/makt</td></tr>
+      <tr><td>Leverandører</td><td>varer/tjenester</td><td>penger</td></tr><tr><td>Kunder</td><td>penger</td><td>varer/tjenester</td></tr>
+      <tr><td>Stat/kommune</td><td>veier/skoler</td><td>skatter/avgifter</td></tr><tr><td>Miljøorganisasjoner</td><td>omtale</td><td>informasjon</td></tr></table></div></article>
+
+  <article class="concept"><h3>Samfunnsansvar</h3>
+    <p><b>Klassisk syn:</b> bedriftens eneste ansvar er å maksimere profitt for aksjonærene. <b>Sosioøkonomisk syn:</b> bedrifter har også ansvar for samfunnet og miljøet de opererer i (økonomiske, sosiale og miljømessige hensyn).</p></article>
+
+  <article class="concept"><h3>Økonomistyring og avvik</h3>
+    <p>Styringssløyfen: sette mål → innarbeide planer i budsjetter → gjennomføre planer → registrere og rapportere → analysere avvik, og så tilbake til start.</p>
+    <div class="formula">Avvik = regnskap (faktisk) − budsjett</div>
+    <p>Inntektsavvik, kostnadsavvik og resultatavvik. Eksempel: budsjett 500 stk × 200 kr, kostnad 120 kr/stk gir resultat 40 000. Faktisk 450 × 190 og 125 kr/stk gir 29 250. Resultatavvik = −10 750 kr.</p></article>
+
+  <article class="concept"><h3>Modeller</h3>
+    <p>En modell er et forenklet bilde av virkeligheten: verbale modeller, tabeller, grafiske modeller og matematiske modeller. Monopol og fullkommen konkurranse er modeller som sjelden beskriver virkelige markeder fullt ut.</p></article>
+
+  <article class="concept"><h3>Selskapsformer</h3>
+    <div class="tblwrap"><table><tr><th></th><th>ENK</th><th>AS</th><th>ANS / DA</th><th>SA</th></tr>
+      <tr><td>Eiere</td><td>1</td><td>1 eller flere</td><td>2 eller flere</td><td>2 eller flere</td></tr>
+      <tr><td>Kapitalkrav</td><td>Ingen</td><td>Minst 30 000 kr</td><td>Ingen</td><td>Ingen</td></tr>
+      <tr><td>Ansvar</td><td>Ubegrenset</td><td>Begrenset til innskutt kapital</td><td>Ubegrenset. ANS: solidarisk for all gjeld. DA: avtalt andel</td><td>Begrenset til andelsinnskudd</td></tr>
+      <tr><td>Formelle krav</td><td>Få</td><td>Flere</td><td>Flere</td><td>Flere</td></tr></table></div></article>
+
+  <article class="concept"><h3>KI i faget</h3>
+    <p>Ja: forklare begreper, forenkle oppgaver du allerede mestrer. Nei: få løsningen så snart oppgaven er vanskelig, finne idéer for deg, oppsummere i stedet for å lese. Anbefalt: Sikt KI og Microsoft Copilot via NLA (godkjent for gule data). Ikke anbefalt: Grok, DeepSeek. Du er selv ansvarlig for alt du leverer, og KI kan ta feil.</p></article>
+
+  <h2 class="sum-h" id="k2">2 Inntekts- og kostnadsbegreper</h2>
+
+  <article class="concept"><h3>Seks grunnbegreper</h3>
+    <div class="tblwrap"><table><tr><th>Begrep</th><th>Betyr</th><th>Eksempel</th></tr>
+      <tr><td>Kostnad</td><td>Forbruk av ressurser i verdiskapingen</td><td>Råvarer brukes i produksjonen</td></tr>
+      <tr><td>Utgift</td><td>Reduksjon av aktivum eller økning av gjeld (anskaffelsen)</td><td>Kjøp av maskin på faktura</td></tr>
+      <tr><td>Utbetaling</td><td>Utgang av kontanter</td><td>Nedbetaling av lån</td></tr>
+      <tr><td>Inntekt</td><td>Økonomisk verdi opptjent fra salg av varer eller tjenester</td><td>Levert tjeneste</td></tr>
+      <tr><td>Innbetaling</td><td>Inngang av kontanter</td><td>Kunden betaler fakturaen</td></tr>
+      <tr><td>Kreditt</td><td>Utsatt betaling</td><td>30 dagers betalingsfrist</td></tr></table></div>
+    <p>Kostnad, utgift og utbetaling er tre ulike perspektiver på samme pengestrøm: forbruk, anskaffelse og betaling.</p></article>
+
+  <article class="concept"><h3>Kostnadsart og kostnadssted</h3>
+    <p><b>Kostnadsart:</b> hvilke produksjonsfaktorer bedriften forbruker (varekostnad, lønnskostnad, avskrivningskostnad). <b>Kostnadssted:</b> avdeling, maskin eller annen enhet der kostnaden oppstår (resepsjon, bar, vedlikehold).</p></article>
+
+  <article class="concept"><h3>Direkte og indirekte kostnader</h3>
+    <p>Spørsmål: kan kostnaden henføres direkte til kostnadsobjektet? <b>Ja → direkte</b> (direkte material, direkte lønn). <b>Nei → indirekte</b> (husleie, strøm, avskrivning på felles maskiner, lim og festemidler, lønn til ryddehjelp, vakt og truckførere). En avskrivning blir direkte hvis maskinen bare brukes til ett produkt.</p></article>
+
+  <article class="concept"><h3>Faste og variable kostnader</h3>
+    <p>Spørsmål: reagerer kostnaden på aktivitetsnivået? <b>Ja → variabel</b> (materialer, direkte lønn). Kostnad per enhet er den samme. <b>Nei → fast</b> (husleie, forsikring, lederlønninger, avskrivninger). Kostnad per enhet synker jo større aktiviteten er.</p></article>
+
+  <article class="concept"><h3>Bruttofortjeneste</h3>
+    <p>Det bedriften tjener på salget før indirekte kostnader er dekket. Brukes til driftsvurdering.</p>
+    <div class="formula">Bruttofortjeneste = salgsinntekt − varekostnad<br>Bruttofortjenesteprosent = (salgspris − kostpris) / salgspris × 100</div>
+    <p>Eksempel: 500 000 − 350 000 = 150 000. BF % = 150 000 / 500 000 = 30 %.</p></article>
+
+  <article class="concept"><h3>Avanse</h3>
+    <p>Påslaget på varekostnaden som skal dekke indirekte kostnader og gi fortjeneste. Brukes til prissetting. Merk at nevneren er <b>kostprisen</b>, ikke salgsprisen.</p>
+    <div class="formula">Avanseprosent = (salgspris − kostpris) / kostpris × 100<br>Salgspris = kostpris × (1 + avanse %)</div>
+    <p>Eksempel: 150 000 / 350 000 = 42,9 %. Samme kronebeløp gir alltid høyere avanseprosent enn bruttofortjenesteprosent.</p></article>
+
+  <article class="concept"><h3>Lønnskostnader</h3>
+    <p>Består av brutto lønn, feriepenger, arbeidsgiveravgift, pensjonssparing og forsikring. Arbeidsgiveravgiften (8,2–14,1 %) beregnes av utbetalt lønn inkludert feriepenger.</p>
+    <div class="formula">Feriepenger = lønn × 12 %<br>AGA = (lønn + feriepenger) × AGA-sats<br>Lønnskostnad = lønn + feriepenger + AGA (+ pensjon + forsikring)</div>
+    <p>Eksempel: 500 000 + 60 000 = 560 000. AGA 14,1 % = 78 960. Sum 638 960 kr.</p></article>
+
+  <article class="concept"><h3>Avskrivning</h3>
+    <p>Systematisk verdiforringelse av varige eiendeler (brukes mer enn ett år) på grunn av alder eller slitasje. Ekstraordinært verditap kalles <b>nedskrivning</b>. Fastsett anskaffelseskost, utrangeringsverdi (restverdi) og levetid.</p>
+    <div class="formula">Lineær: (anskaffelseskost − restverdi) / levetid<br>Saldo: avskrivningssats × bokført verdi ved årets start<br>Bruksavskrivning: etter faktisk bruk eller produksjon, ikke tid</div>
+    <p>Eksempel: 500 000, restverdi 50 000, 5 år gir 90 000 per år. Med 20 % saldo: år 1 = 100 000, år 2 = 80 000.</p></article>
+
+  <article class="concept"><h3>Merverdiavgift (mva.)</h3>
+    <p>Indirekte skatt på forbruk som bedriftene administrerer. Vanlig sats 25 %, reduserte satser 15 % og 12 %.</p>
+    <div class="formula">Brutto pris = netto pris × 1,25<br>Netto pris = brutto pris / 1,25<br>Mva. i en brutto pris = brutto × 0,20<br>Netto mva. til staten = utgående mva. (salg) − inngående mva. (innkjøp)</div>
+    <p>Eksempel: netto 800 gir brutto 1 000 og 200 i mva. Med 150 i mva. på innkjøp er netto mva. 50 kr.</p></article>
+
+  <h2 class="sum-h" id="k3">3 Kostnadsforløpet</h2>
+
+  <article class="concept"><h3>Faste kostnader (FTK og FEK)</h3>
+    <p>FTK er de samme uansett aktivitetsnivå. FEK synker når mengden øker.</p>
+    <div class="formula">FEK = FTK / mengde</div></article>
+
+  <article class="concept"><h3>Sprangvise, reversible og irreversible kostnader</h3>
+    <p><b>Sprangvise faste kostnader</b> øker i sprang når kapasiteten må utvides (flere maskiner, større bygg). <b>Irreversible kostnader</b> kan ikke reverseres når aktiviteten går ned (spesialutstyr, spesialtilpassede bygninger, allerede betalt reklame). <b>Reversible kostnader</b> kan elimineres eller reduseres (leie med kort oppsigelse). Standardisert utstyr gjør kostnader lettere å reversere.</p></article>
+
+  <article class="concept"><h3>Variable kostnader og proporsjonalitet</h3>
+    <div class="formula">VEK = VTK / mengde</div>
+    <div class="tblwrap"><table><tr><th>Type</th><th>Sammenheng</th><th>VEK</th></tr>
+      <tr><td>Proporsjonal</td><td>endring i mengde = endring i VTK</td><td>konstant</td></tr>
+      <tr><td>Overproporsjonal</td><td>endring i mengde &lt; endring i VTK</td><td>stiger</td></tr>
+      <tr><td>Underproporsjonal</td><td>endring i mengde &gt; endring i VTK</td><td>synker</td></tr></table></div>
+    <p>Et vanlig kostnadsforløp er først underproporsjonalt, så proporsjonalt og til slutt overproporsjonalt.</p></article>
+
+  <article class="concept"><h3>Totale kostnader og enhetskostnader</h3>
+    <div class="formula">STK = FTK + VTK<br>SEK = STK / mengde = FEK + VEK</div></article>
+
+  <article class="concept"><h3>Grensekostnad, DK og DEK</h3>
+    <p><b>Grensekostnad</b> (marginalkostnad): kostnadsøkningen ved å produsere én ekstra enhet. <b>DEK</b> er en tilnærmet grensekostnad over et større mengdeintervall. Faste kostnader faller bort i differansen.</p>
+    <div class="formula">DK = STK<sub>2</sub> − STK<sub>1</sub><br>DEK = DK / (mengde<sub>2</sub> − mengde<sub>1</sub>)</div>
+    <p>Eksempel: STK øker med 20 000 fra 300 til 400 enheter, så DEK = 20 000 / 100 = 200 kr. Synkende DEK betyr underproporsjonale kostnader, stigende DEK overproporsjonale. Lavest DEK markerer overgangen.</p></article>
+
+  <article class="concept"><h3>Kostnadsoptimum</h3>
+    <p>Mengden der kostnaden per enhet er lavest.</p>
+    <div class="formula">SEK er lavest der DEK = SEK (kostnadsoptimum)<br>VEK er lavest der DEK = VEK</div>
+    <p>Så lenge DEK er lavere enn snittet (SEK eller VEK), trekker neste enhet snittet ned. VEK når bunnen ved lavere mengde enn SEK, fordi faste kostnader fortsatt fordeles på flere enheter.</p></article>
+
+  <article class="concept"><h3>Matematisk kostnadsmodell</h3>
+    <div class="formula">K(x) = a·x² + b·x + c<br>FTK = c,  VTK = a·x² + b·x<br>SEK(x) = K(x) / x</div>
+    <p>Eksempel: K(x) = 0,125x² + 22x + 1 800 ved x = 4 000 gir K = 2 089 800 og SEK = 522,45 kr.</p></article>
+
+  <h2 class="sum-h" id="k4">4 Etterspørsel</h2>
+
+  <article class="concept"><h3>Etterspørsel og faktorer</h3>
+    <p>Markedets vilje og evne til å kjøpe varer eller tjenester til en bestemt pris. Påvirkes av (1) prisen, (2) prisen på andre produkter, (3) kvaliteten, (4) salgsinnsatsen og (5) individuelle forhold hos etterspørreren (kjøpekraft, smak). Etterspørselskurven heller nedover: høy pris gir lav etterspørsel.</p></article>
+
+  <article class="concept"><h3>Substitutter og komplementer</h3>
+    <p><b>Substitutter</b> konkurrerer: prisøkning på iPad kan øke salget av Android-nettbrett. <b>Komplementære produkter</b> brukes sammen: ski og bindinger, printere og blekkpatroner.</p></article>
+
+  <article class="concept"><h3>Bevegelse langs kurven og skift i kurven</h3>
+    <p><b>Bevegelse langs kurven</b> skyldes bare endring i egen pris. <b>Skift</b> skyldes andre faktorer. Mot høyre (mer ved samme pris): høyere kvalitet, mer reklame, høyere pris på en substitutt. Mot venstre: lavere kjøpekraft, lavere pris på en substitutt.</p></article>
+
+  <article class="concept"><h3>Inntektsbegreper</h3>
+    <div class="formula">STI = pris × mengde<br>DI = STI<sub>2</sub> − STI<sub>1</sub><br>DEI = DI / (mengde<sub>2</sub> − mengde<sub>1</sub>)</div>
+    <p><b>Grenseinntekt</b> er inntektsendringen ved én ekstra solgt enhet. DEI tilnærmer grenseinntekten. Ved fallende etterspørselskurve er DEI lavere enn prisen, fordi prisen må ned på alle enhetene. Eksempel: 800 → 850 enheter, inntekt +40 500 gir DEI = 810 kr.</p></article>
+
+  <article class="concept"><h3>Priselastisitet</h3>
+    <p>Måler hvordan salgsmengden reagerer på prisendring. Kurset bruker laveste verdi som grunnlag og positive tall.</p>
+    <div class="formula">e<sub>p</sub> = (mengdeendring / laveste mengde) / (prisendring / laveste pris)</div>
+    <div class="tblwrap"><table><tr><th>e<sub>p</sub></th><th>Etterspørsel</th><th>DEI</th><th>Prisreduksjon gir</th></tr>
+      <tr><td>&gt; 1</td><td>Elastisk</td><td>Positiv</td><td>Høyere salgsinntekt</td></tr>
+      <tr><td>= 1</td><td>Nøytralelastisk</td><td>Null</td><td>Uendret salgsinntekt</td></tr>
+      <tr><td>&lt; 1</td><td>Uelastisk</td><td>Negativ</td><td>Lavere salgsinntekt</td></tr></table></div>
+    <p>Eksempel: 6 000 → 7 800 pakker når prisen går fra 30 til 25 kr: (1 800 / 6 000) / (5 / 25) = 1,5, altså elastisk. Nødvendighetsvarer (matvarer, klær, bensin) er uelastiske. Luksusvarer (flybillett, kino, bil) er elastiske. Prisreduksjon er bare lønnsom når etterspørselen er elastisk, og bare hvis merinntekten er større enn merkostnaden.</p></article>
+
+  <h2 class="sum-h" id="k5">5 Markedstilpasning</h2>
+
+  <article class="concept"><h3>Markedsformer</h3>
+    <div class="tblwrap"><table><tr><th>Form</th><th>Kjennetegn</th><th>Eksempel</th></tr>
+      <tr><td>Monopol</td><td>Én tilbyder, fastsetter selv prisen</td><td>Enerett på «Dovretrollet»</td></tr>
+      <tr><td>Oligopol</td><td>Få store tilbydere, gjensidig avhengige, høye etableringsbarrierer</td><td>Dagligvare, bensin, forsikring</td></tr>
+      <tr><td>Monopolistisk konkurranse</td><td>Mange tilbydere, varer dekker samme behov men er ikke like</td><td>Moteklær, tannleger</td></tr>
+      <tr><td>Fullkommen konkurranse</td><td>Mange små tilbydere og etterspørrere, homogene varer, full informasjon</td><td>Korn, råvarer</td></tr></table></div>
+    <p>Monopol, oligopol og monopolistisk konkurranse gir <b>prisvariabel tilpasning</b> (prissetter, fallende etterspørselskurve). Fullkommen konkurranse gir <b>prisfast tilpasning</b> (pristilpasser). Årsaker til monopol: offentlige monopol, naturlige monopol, oppkjøp av konkurrenter.</p></article>
+
+  <article class="concept"><h3>Vinningsoptimal tilpasning</h3>
+    <p>Lønnsom beslutning: grenseinntekt &gt; grensekostnad. Ulønnsom: grenseinntekt &lt; grensekostnad.</p>
+    <div class="formula">VOM: DEI = DEK (grenseinntekt = grensekostnad)<br>VOP = prisen som gir VOM på etterspørselskurven</div>
+    <p>Selg en enhet til så lenge DEI &gt; DEK.</p></article>
+
+  <article class="concept"><h3>Overskudd og dekningsbidrag</h3>
+    <div class="formula">Overskudd = STI − STK = (pris − SEK) × mengde<br>Dekningsbidrag = STI − VTK = (pris − VEK) × mengde<br>Maks dekningsbidrag = FTK + maks overskudd</div>
+    <p>Dekningsbidraget dekker først de faste kostnadene, resten er overskudd. Både maks DB og maks overskudd oppnås ved VOM.</p></article>
+
+  <article class="concept"><h3>Dekningspunkter og overskuddsområde</h3>
+    <p>Dekningspunkt: der pris = SEK. Overskuddsområdet er mengdeintervallet mellom nedre og øvre dekningspunkt, der pris &gt; SEK.</p></article>
+
+  <article class="concept"><h3>Prisfast tilpasning</h3>
+    <div class="formula">Pris = DEI (prisen er gitt av markedet)<br>Produser så lenge DEK &lt; pris, stopp der DEK = pris</div></article>
+
+  <article class="concept"><h3>Laveste akseptable pris</h3>
+    <div class="formula">Kort sikt (midlertidig nedgang): pris ≥ laveste VEK (+ driftsavhengige faste per enhet)<br>Lang sikt (varig nedgang): pris ≥ laveste SEK (kostnadsoptimum)</div>
+    <p>På kort sikt kan driftsuavhengige faste kostnader (stillstandskostnader som husleie) ses på som «sunk cost». På lang sikt må alle kostnader dekkes.</p></article>
+
+  <article class="concept"><h3>Prisdifferensiering</h3>
+    <p>Samme produkt til ulike priser i ulike markeder. Typer: geografisk, kjøpergrupper, brukstid og varens status. Forutsetninger: noen må være villige til å betale mer, og ingen lekkasje mellom markedene.</p>
+    <div class="formula">Totaltilbud: der DEK = DEI (ofte eksportprisen)<br>Hver enhet selges i markedet med høyest DEI</div>
+    <p>Eksempel MiniMax: eksportpris 90. Produser til DEK passerer 90 (400 enheter). Selg hjemme så lenge DEI hjemme &gt; 90 (200 enheter), resten eksporteres.</p></article>
+
+  <article class="concept"><h3>Kostnadsendringer</h3>
+    <p>Økte variable kostnader forskyver VEK, SEK og DEK oppover, og VOM går ned. Økte faste kostnader påvirker bare SEK, og VOM er uendret.</p></article>
+
+  <h2 class="sum-h" id="k6">6 Kalkulasjon</h2>
+
+  <article class="concept"><h3>Tradisjonell kalkulasjon</h3>
+    <div class="formula">Direkte kostnader + indirekte kostnader = selvkost<br>Selvkost + fortjeneste (% av selvkost) = salgspris</div>
+    <p>Produktkalkyler brukes til prisfastsettelse, produktvalg, budsjettering, lønnsomhetsanalyse og lagerverdi. <b>Forkalkyle</b> lages før produksjonen (erfaringstall, prissetting). <b>Etterkalkyle</b> bygger på realiserte tall og sammenlignes med forkalkylen.</p></article>
+
+  <article class="concept"><h3>Handelsbedrift</h3>
+    <p>Eneste direkte kostnad er varens inntakskost.</p>
+    <div class="formula">Inntakskost = innkjøpspris + frakt og forsikring + spedisjon<br>Selvkost = inntakskost + indirekte (% av inntakskost)<br>Salgspris = selvkost + fortjeneste (% av selvkost)<br>Med avansetillegg: salgspris = inntakskost × (1 + avanse %)</div>
+    <p>Eksempel: 10 sykler à 2 400 + frakt 1 900 gir 2 590 per sykkel. + 60 % = 4 144. + 15 % = 4 765,60 kr eks. mva.</p></article>
+
+  <article class="concept"><h3>Håndverksbedrift: timepris og faktura</h3>
+    <div class="formula">Timepris = (lønn + sosiale + indirekte) × (1 + fortjeneste %) / fakturerbare timer<br>Faktura = timer × timepris + materialer + kjøring, + 25 % mva.</div>
+    <p>Timeprisen avrundes ofte til nærmeste 10 kr. Eksempel Laksev: (2 250 000 + 940 000) × 1,10 / 7 000 = 501,29 ≈ 500 kr.</p></article>
+
+  <article class="concept"><h3>Tilleggssats</h3>
+    <div class="formula">Tilleggssats = budsjetterte indirekte kostnader / budsjettert årsaktivitet × 100</div>
+    <p>Aktivitetsmål: direkte materialer i kroner (%) eller kvantum (kr), produserte enheter (kr), direkte arbeidstimer (kr), direkte lønn (%), maskintimer (kr). Typisk: materialavdeling i % av DM, tilvirkning i % av DL, salg og administrasjon i % av tilvirkningskost.</p></article>
+
+  <article class="concept"><h3>Selvkostkalkyle</h3>
+    <div class="formula">  Direkte materialer<br>+ Direkte lønn<br>+ Indirekte kostnader i tilvirkningen<br>= Tilvirkningskost<br>+ Indirekte salg og administrasjon<br>= Selvkost (fullkost)<br>+ Fortjeneste<br>= Salgspris</div>
+    <p>Inkluderer faste og variable kostnader. Brukes til ordinær prising og langsiktige beslutninger.</p></article>
+
+  <article class="concept"><h3>Bidragskalkyle</h3>
+    <div class="formula">  Direkte materialer + direkte lønn + variable indirekte i tilvirkningen<br>= Variable tilvirkningskostnader (tilvirkningsmerkost)<br>+ Variable indirekte salg og administrasjon<br>= Minimumskost (salgsmerkost)<br>+ Dekningsbidrag<br>= Salgspris</div>
+    <p>Inkluderer bare variable kostnader. Brukes til tilbud, lavsesong, tilleggsordrer og andre kortsiktige beslutninger.</p></article>
+
+  <article class="concept"><h3>Tilleggsordre</h3>
+    <p>Med <b>ledig kapasitet</b> er bidragsmetoden riktig grunnlag: godta ordren hvis dekningsbidraget er positivt, fordi faste kostnader påløper uansett. <b>Uten ledig kapasitet</b> må ordren dekke selvkost.</p></article>
+
+  <article class="concept"><h3>For- og etterkalkyle, avvik</h3>
+    <div class="formula">Avvik = etterkalkyle − forkalkyle</div>
+    <p>Økt aktivitet gir økte variable indirekte kostnader (riktig), men selvkostmetoden fordeler også mer faste kostnader på ordren selv om de totalt sett er uendret. Etterkalkyle etter bidragsmetoden gir et mer korrekt bilde.</p></article>
+
+  <article class="concept"><h3>Resultatmåling og normal aktivitet</h3>
+    <p>Resultatet avhenger av hvordan kostnadene beregnes. Tilleggssatser bygget på unormalt høy aktivitet gir feil, så bruk <b>normal aktivitet</b> som grunnlag.</p></article>
+
+  <article class="concept"><h3>Kalkulatoriske kostnader</h3>
+    <p>Erstatter finansregnskapets tall for å vise faktisk ressursbruk: kalkulatoriske avskrivninger (basert på <b>gjenanskaffelseskost</b>, som tar hensyn til prisstigning), renter, eierlønn, tap på fordringer og kalkulatorisk husleie for egne lokaler (tapt leieinntekt). Kostnader uten utbetaling bør tas med.</p></article>
+
+  <h2 class="sum-h" id="kfork">Forkortelser</h2>
+  <article class="concept"><h3>Forkortelser</h3>
+    <div class="tblwrap"><table><tr><th>Kort</th><th>Betyr</th><th>Kort</th><th>Betyr</th></tr>
+      <tr><td>FTK</td><td>Faste totale kostnader</td><td>FEK</td><td>Faste enhetskostnader</td></tr>
+      <tr><td>VTK</td><td>Variable totale kostnader</td><td>VEK</td><td>Variable enhetskostnader</td></tr>
+      <tr><td>STK</td><td>Sum totale kostnader</td><td>SEK</td><td>Sum enhetskostnader</td></tr>
+      <tr><td>DK</td><td>Differansekostnad</td><td>DEK</td><td>Differanseenhetskostnad</td></tr>
+      <tr><td>STI</td><td>Sum totale inntekter</td><td>DI</td><td>Differanseinntekt</td></tr>
+      <tr><td>DEI</td><td>Differanseenhetsinntekt</td><td>DB</td><td>Dekningsbidrag</td></tr>
+      <tr><td>VOM</td><td>Vinningsoptimal mengde</td><td>VOP</td><td>Vinningsoptimal pris</td></tr>
+      <tr><td>DM / DL</td><td>Direkte material / lønn</td><td>AGA</td><td>Arbeidsgiveravgift</td></tr>
+      <tr><td>e<sub>p</sub></td><td>Priselastisitet</td><td>BF %</td><td>Bruttofortjenesteprosent</td></tr></table></div></article>
+  <p class="sum-empty" id="sumEmpty" hidden>Ingen treff. Prøv et annet ord.</p>
   </div>
+</section>
+
+
+  <section id="viewProfile" class="view" hidden>
+    <div class="prof">
+      <div class="card"><h2>Nivå</h2><div id="profLevel"></div></div>
+      <div class="card"><h2>Statistikk</h2><div class="kvs" id="profStats"></div></div>
+      <div class="card"><h2>Merker</h2><div class="badges" id="profBadges"></div></div>
+      <div class="card"><h2>Prøver</h2><div class="tblwrap"><table id="profTests"></table></div></div>
+      <div class="card"><h2>Nullstill</h2>
+        <p class="modehint">Fremgangen lagres bare i denne nettleseren.</p>
+        <div><button class="btn ghost" type="button" id="resetProfile">Nullstill all fremgang</button></div>
+        <div class="confirm" id="confirmReset" hidden><span>Slette XP, merker og alle svar?</span><button class="btn danger" type="button" id="doReset">Ja, slett</button><button class="btn ghost" type="button" id="cancelReset">Avbryt</button></div>
+      </div>
+    </div>
+  </section>
 </div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<canvas id="confetti" hidden aria-hidden="true"></canvas>
 
 <script>
-const TYPE_LABEL = {mc:"Flervalg", multi:"Flere svar", num:"Numerisk", match:"Matching", cat:"Kategorisering"};
-
 const Q56 = [
 /* ---------- 5.1 Markedstilpasning ---------- */
 {topic:"5.1 Markedsformer", type:"cat",
@@ -1349,41 +1723,111 @@ const Q_P6 = [
  explain:"Selvkost: 2 000 + 200 + 1 500 + 1 050 = <b>4 750</b> (tilvirkningskost); + 12 % (570) = <b>5 320</b>; fortjeneste 6 000 − 5 320 = <b>680</b>. Bidrag: 2 000 + 80 + 1 500 + 450 = <b>4 030</b> (variable tilvirkningskostnader); + 5 % (201,50) = <b>4 231,50</b> (minimumskost); DB = 6 000 − 4 231,50 = <b>1 768,50</b>. 3 500 kr er bare sum direkte kostnader."}
 ];
 
+
+/* ---------- sets ---------- */
 const EB14="HSM122 · Kap. 1 Introduksjon · 2 Inntekts- og kostnadsbegreper · 3 Kostnadsforløpet · 4 Etterspørsel";
 const EB56="HSM122 · Markedstilpasning 5.1–5.2 · Kalkulasjon 6.1–6.3";
+const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6};
+const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6"};
+const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"];
+const LINK_RE=/forrige oppgave|Fortsett med|Samme (tall|maskin|ordre)|Bruk tabellen for/;
+function getQ(id){ const [k,i]=id.split(":"); return BASE[k][+i]; }
+function groupsOf(keys){
+  const gs=[];
+  keys.forEach(k=>BASE[k].forEach((q,i)=>{
+    const id=k+":"+i, t=(q.case||"")+" "+q.prompt;
+    if(i>0 && LINK_RE.test(t) && gs.length) gs[gs.length-1].push(id); else gs.push([id]);
+  }));
+  return gs;
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function draw(keys,n){
+  const gs=shuffle(groupsOf(keys)); const out=[];
+  for(const g of gs){ if(out.length>=n) break; if(out.length+g.length<=n) out.push(...g); }
+  return out;
+}
 const SETS = {
-  ak1:{q:Q14, key:"hsm122-ovingsprove-ak1", group:"Kap. 1–4", label:"Prøve 1", eyebrow:EB14},
-  p3:{q:Q_P3, key:"hsm122-ovingsprove-p3", group:"Kap. 1–4", label:"Prøve 3", eyebrow:EB14},
-  p5:{q:Q_P5, key:"hsm122-ovingsprove-p5", group:"Kap. 1–4", label:"Prøve 5", eyebrow:EB14+" · vanskeligere"},
-  kap56:{q:Q56, key:"hsm122-ovingsprove-v1", group:"Kap. 5–6", label:"Prøve 2", eyebrow:EB56},
-  p4:{q:Q_P4, key:"hsm122-ovingsprove-p4", group:"Kap. 5–6", label:"Prøve 4", eyebrow:EB56},
-  p6:{q:Q_P6, key:"hsm122-ovingsprove-p6", group:"Kap. 5–6", label:"Prøve 6", eyebrow:EB56+" · vanskeligere"}
+  ak1:{base:"ak1", key:"hsm122-ovingsprove-ak1", group:"Kap. 1–4", label:"Prøve 1", eyebrow:EB14},
+  p3:{base:"p3", key:"hsm122-ovingsprove-p3", group:"Kap. 1–4", label:"Prøve 3", eyebrow:EB14},
+  p5:{base:"p5", key:"hsm122-ovingsprove-p5", group:"Kap. 1–4", label:"Prøve 5", eyebrow:EB14+" · vanskeligere"},
+  kap56:{base:"kap56", key:"hsm122-ovingsprove-v1", group:"Kap. 5–6", label:"Prøve 2", eyebrow:EB56},
+  p4:{base:"p4", key:"hsm122-ovingsprove-p4", group:"Kap. 5–6", label:"Prøve 4", eyebrow:EB56},
+  p6:{base:"p6", key:"hsm122-ovingsprove-p6", group:"Kap. 5–6", label:"Prøve 6", eyebrow:EB56+" · vanskeligere"},
+  mix14:{random:CH14, n:30, key:"hsm122-mix14", group:"Blandet", label:"Kap. 1–4 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 1, 3 og 5"},
+  mix56:{random:CH56, n:30, key:"hsm122-mix56", group:"Blandet", label:"Kap. 5–6 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 2, 4 og 6"},
+  mixall:{random:CH14.concat(CH56), n:1e9, key:"hsm122-mixall", group:"Blandet", label:"Alle 160 · tilfeldig rekkefølge", eyebrow:"Alle oppgavene fra prøve 1–6 i tilfeldig rekkefølge"},
+  lyn:{random:CH14.concat(CH56), n:10, practice:true, key:"hsm122-lyn", group:"Blandet", label:"Lynrunde · 10", eyebrow:"10 tilfeldige oppgaver fra hele pensum, med svar etter hver oppgave"}
 };
-function maxPts(){ return Q.length*3; }
-function passPts(){ return Math.ceil(maxPts()*37/90 - 1e-9); }
-(function buildTabs(){
-  const box=document.getElementById("tabs"); const groups={};
-  Object.entries(SETS).forEach(([k,v])=>{
-    if(!groups[v.group]){ const row=document.createElement("div"); row.className="tabrow"; row.setAttribute("role","tablist"); row.setAttribute("aria-label",v.group);
-      const l=document.createElement("span"); l.className="tabrow-label"; l.textContent=v.group; row.append(l); box.append(row); groups[v.group]=row; }
-    const b=document.createElement("button"); b.type="button"; b.className="tab"; b.dataset.set=k; b.id="tab-"+k; b.setAttribute("role","tab");
-    b.textContent=v.label+" · "+v.q.length+" oppg."; groups[v.group].append(b);
-  });
-})();
-let setKey = SETS[(location.hash||"").slice(1)] ? location.hash.slice(1) : "ak1";
-let Q = SETS[setKey].q;
+const TOTAL_Q=Object.values(BASE).reduce((s,a)=>s+a.length,0);
+
+/* ---------- storage ---------- */
+function rd(k,d){ try{ const v=JSON.parse(localStorage.getItem(k)||"null"); return v==null?d:v; }catch(e){ return d; } }
+function wr(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 
 /* ---------- state ---------- */
-let ans = {};
-let graded = false;
-function load(){ ans = {}; try { const s = JSON.parse(localStorage.getItem(SETS[setKey].key) || "null"); if (s) { ans = s.ans || {}; } } catch(e) {} }
-function save(){ try { localStorage.setItem(SETS[setKey].key, JSON.stringify({ans})); } catch(e) {} }
-load();
+let setKey="ak1", ids=[], Q=[], ans={}, checked={}, graded=false, startedAt=null, elapsed=null, gained={}, bonusXp=0;
+let practice=!!rd("hsm122-practice",false);
+function load(){
+  const S=SETS[setKey], s=rd(S.key,null)||{};
+  ans=s.ans||{}; checked=s.checked||{}; graded=!!s.graded; startedAt=s.startedAt||null; elapsed=s.elapsed??null; gained=s.gained||{}; bonusXp=s.bonusXp||0;
+  if(S.random){ ids=(Array.isArray(s.ids)&&s.ids.length&&s.ids.every(id=>{try{return !!getQ(id);}catch(e){return false;}}))?s.ids:draw(S.random,S.n); }
+  else ids=BASE[S.base].map((_,i)=>S.base+":"+i);
+  Q=ids.map(getQ);
+  save();
+}
+function save(){ wr(SETS[setKey].key,{ans,checked,graded,startedAt,elapsed,gained,bonusXp,ids:SETS[setKey].random?ids:undefined}); }
+function isPractice(){ return !!SETS[setKey].practice || practice; }
+
+/* ---------- profile / gamification ---------- */
+const LEVELS=[[0,"Nybegynner"],[100,"Regnskapslærling"],[250,"Kalkulatør"],[500,"Budsjettansvarlig"],[900,"Controller"],[1400,"Økonomisjef"],[2000,"Finansdirektør"],[3000,"Styreleder"],[4500,"Bedriftsøkonom-legende"]];
+const BADGES=[
+  ["first","1","Første levering","Lever en prøve."],
+  ["pass","41","Bestått","Nå kravet på 41 % på en prøve."],
+  ["p80","80","Skarp","Få minst 80 % på en prøve."],
+  ["p100","100","Full pott","Få alle poengene på en prøve."],
+  ["m14","1–4","Mester kap. 1–4","Bestå prøve 1, 3 og 5."],
+  ["m56","5–6","Mester kap. 5–6","Bestå prøve 2, 4 og 6."],
+  ["mix","MIX","Blandet bestått","Bestå en blandet prøve med 30 oppgaver."],
+  ["marathon","160","Maraton","Lever alle 160 oppgavene i én prøve."],
+  ["lyn","10","Lynmester","Få 10 av 10 riktige i en lynrunde."],
+  ["s5","×5","Fem på rad","Svar helt riktig på 5 oppgaver på rad."],
+  ["s10","×10","Ti på rad","Svar helt riktig på 10 oppgaver på rad."],
+  ["s20","×20","Tjue på rad","Svar helt riktig på 20 oppgaver på rad."],
+  ["clock","60","Under klokka","Bestå en prøve med 30 oppgaver på under 60 minutter."],
+  ["reader","Σ","Formelleser","Åpne sammendraget med formler og begreper."],
+  ["drill","?","Puggemester","Avslør 20 formler i puggmodus."],
+  ["lvl5","CFO","Finansdirektør","Nå nivå 7 (2 000 XP)."]
+];
+let P=Object.assign({xp:0,streak:0,bestStreak:0,answered:0,correct:0,deliveries:0,badges:{},best:{},passed:{},revealed:0},rd("hsm122-profile",{}));
+function saveP(){ wr("hsm122-profile",P); }
+function levelOf(xp){ let i=0; LEVELS.forEach((l,j)=>{ if(xp>=l[0]) i=j; }); return i; }
+function award(xp){
+  if(xp<=0) return;
+  const before=levelOf(P.xp); P.xp+=xp; const after=levelOf(P.xp);
+  if(after>before){ toast("Nytt nivå: "+(after+1)+" · "+LEVELS[after][1],"lvl"); confetti(); }
+  if(P.xp>=2000) unlock("lvl5");
+}
+function unlock(id){
+  if(P.badges[id]) return; P.badges[id]=Date.now();
+  const b=BADGES.find(x=>x[0]===id); if(b) toast("Nytt merke: "+b[2],"badge");
+}
+function bumpStreak(state){
+  P.answered++;
+  if(state==="ok"){ P.correct++; P.streak++; if(P.streak>P.bestStreak) P.bestStreak=P.streak; }
+  else P.streak=0;
+  if(P.streak>=5) unlock("s5"); if(P.streak>=10) unlock("s10"); if(P.streak>=20) unlock("s20");
+}
+function xpFor(r){ return r.state==="ok"?10:(r.pts>0?4:0); }
+function scoreOne(i){
+  const r=scoreQ(Q[i],ans[i]);
+  if(gained[i]==null){ const x=xpFor(r); gained[i]=x; if(r.state!=="blank"){ award(x); bumpStreak(r.state); } }
+  return r;
+}
 
 /* ---------- scoring (pure) ---------- */
 function parseNum(s){
   if (s == null) return null;
-  const t = String(s).replace(/\s|kr|%/gi,"").replace(/ /g,"").replace(",",".");
+  const t = String(s).replace(/\s|kr|%/gi,"").replace(/−/g,"-").replace(",",".");
   if (t === "" ) return null;
   const v = Number(t);
   return Number.isFinite(v) ? v : NaN;
@@ -1397,7 +1841,6 @@ function scoreQ(q,a){
     const k=q.correct.length; let r=0,w=0; sel.forEach(i=>q.correct.includes(i)?r++:w++);
     const pts=clamp(3*(r-w)/k,-1,3); return {pts, state: pts===3?"ok":(pts<=0?"bad":"part")};
   }
-  /* match & cat: a = {itemIndex: chosenIndex} */
   const m = a||{}; const keys=Object.keys(m).filter(k=>m[k]!==""&&m[k]!=null);
   if (!keys.length) return {pts:0,state:"blank"};
   const n=q.items.length; let r=0,w=0; keys.forEach(k=>Number(m[k])===q.items[k][1]?r++:w++);
@@ -1405,21 +1848,48 @@ function scoreQ(q,a){
 }
 function isAnswered(q,a){ return scoreQ(q,a).state!=="blank"; }
 function fmt(x){ return (Math.round(x*100)/100).toLocaleString("nb-NO",{maximumFractionDigits:2}); }
+function maxPts(){ return Q.length*3; }
+function passPts(){ return Math.ceil(maxPts()*37/90 - 1e-9); }
+function mmss(ms){ const s=Math.max(0,Math.floor(ms/1000)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+":"+String(m).padStart(2,"0"):m)+":"+String(x).padStart(2,"0"); }
 
-/* ---------- render ---------- */
-const quiz=document.getElementById("quiz"), map=document.getElementById("map");
+/* ---------- dom helpers ---------- */
+const $=id=>document.getElementById(id);
 function el(tag,attrs,html){const e=document.createElement(tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e;}
+const reduceMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- toasts & confetti ---------- */
+function toast(msg,kind){
+  const t=el("div",{class:"toast "+(kind||""),role:"status"}); t.textContent=msg; $("toasts").append(t);
+  setTimeout(()=>t.classList.add("out"),3200); setTimeout(()=>t.remove(),3700);
+}
+function confetti(){
+  if(reduceMotion) return;
+  const c=$("confetti"), ctx=c.getContext("2d"); const W=c.width=innerWidth, H=c.height=innerHeight; c.hidden=false;
+  const cs=getComputedStyle(document.documentElement); const cols=["--accent","--ok","--warn","--gold","--fg"].map(v=>cs.getPropertyValue(v).trim()||"#2f7d48");
+  const ps=Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.35,vx:(Math.random()-.5)*12,vy:Math.random()*-12-4,s:4+Math.random()*5,r:Math.random()*6,c:cols[Math.floor(Math.random()*cols.length)]}));
+  let f=0; (function step(){ ctx.clearRect(0,0,W,H); ps.forEach(p=>{ p.vy+=.35; p.x+=p.vx; p.y+=p.vy; p.r+=.2; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); ctx.restore(); });
+    if(++f<110) requestAnimationFrame(step); else { ctx.clearRect(0,0,W,H); c.hidden=true; } })();
+}
+
+/* ---------- render quiz ---------- */
+const TYPE_LABEL = {mc:"Flervalg", multi:"Flere svar", num:"Numerisk", match:"Matching", cat:"Kategorisering"};
+const quiz=$("quiz"), map=$("map");
+function touch(){ if(!startedAt && !graded){ startedAt=Date.now(); } }
+function onChange(){ touch(); save(); updateBar(); }
 
 function render(){
   quiz.innerHTML=""; map.innerHTML="";
+  const showSrc=!!SETS[setKey].random;
   Q.forEach((q,i)=>{
-    const a=ans[i];
-    const res = graded ? scoreQ(q,a) : null;
-    const card=el("section",{class:"q",id:"q"+(i+1)});
+    const a=ans[i], locked=graded||!!checked[i];
+    const res = locked ? scoreQ(q,a) : null;
+    const card=el("section",{class:"q"+(res?" st-"+res.state:""),id:"q"+(i+1)});
     const head=el("div",{class:"qhead"});
     head.append(el("span",{class:"qnum"},"Oppgave "+(i+1)), el("span",{class:"qtype"},TYPE_LABEL[q.type]), el("span",{class:"qtopic"},q.topic));
+    if(showSrc){ const [k,ix]=ids[i].split(":"); head.append(el("span",{class:"qsrc"},BASE_LABEL[k]+", oppg. "+(+ix+1))); }
     if (res){ const c = res.state==="ok"?"var(--ok)":res.state==="part"?"var(--warn)":res.state==="bad"?"var(--bad)":"var(--muted)";
-      head.append(el("span",{class:"qscore",style:"color:"+c},(res.pts>0?"+":"")+fmt(res.pts)+" / 3")); }
+      const xp=gained[i]?` · +${gained[i]} XP`:"";
+      head.append(el("span",{class:"qscore",style:"color:"+c},(res.pts>0?"+":"")+fmt(res.pts)+" / 3"+xp)); }
     else head.append(el("span",{class:"qscore",style:"color:var(--muted)"},"maks 3 p"));
     card.append(head);
     if (q.case) card.append(el("div",{class:"case"},q.case));
@@ -1432,13 +1902,13 @@ function render(){
         const lab=el("label",{class:"opt",for:id});
         const inp=el("input",{type:q.type==="mc"?"radio":"checkbox",name:"q"+i,id});
         if (q.type==="mc") inp.checked = a===j; else inp.checked = Array.isArray(a)&&a.includes(j);
-        inp.disabled=graded;
+        inp.disabled=locked;
         inp.addEventListener("change",()=>{
           if(q.type==="mc") ans[i]=j; else { const s=new Set(Array.isArray(ans[i])?ans[i]:[]); inp.checked?s.add(j):s.delete(j); ans[i]=[...s].sort(); }
-          save(); updateBar();
+          onChange(); syncCheck(i);
         });
         lab.append(inp, el("span",null,o));
-        if (graded){
+        if (locked){
           const isC = q.type==="mc"? j===q.correct : q.correct.includes(j);
           if (isC) lab.classList.add("is-correct"); else if (inp.checked) lab.classList.add("is-wrong");
         }
@@ -1450,10 +1920,11 @@ function render(){
       const row=el("div",{class:"numrow"});
       const id=`q${i}n`;
       const inp=el("input",{type:"text",inputmode:"decimal",id,autocomplete:"off","aria-label":"Svar oppgave "+(i+1)});
-      inp.value=a??""; inp.disabled=graded;
-      inp.addEventListener("input",()=>{ ans[i]=inp.value; save(); updateBar(); });
+      inp.value=a??""; inp.disabled=locked;
+      inp.addEventListener("input",()=>{ ans[i]=inp.value; onChange(); syncCheck(i); });
+      inp.addEventListener("keydown",e=>{ if(e.key==="Enter" && isPractice() && !locked && isAnswered(q,ans[i])) check(i); });
       row.append(inp, el("span",{class:"unit"},q.unit));
-      if (graded) row.append(el("span",{class:"fix"},"Fasit: "+fmt(q.answer)+" "+q.unit));
+      if (locked) row.append(el("span",{class:"fix"},"Fasit: "+fmt(q.answer)+" "+q.unit));
       card.append(row);
     }
     if (q.type==="match"||q.type==="cat"){
@@ -1467,9 +1938,9 @@ function render(){
         sel.append(el("option",{value:""},"— velg —"));
         choices.forEach((c,k)=>sel.append(el("option",{value:String(k)},c)));
         const cur=(a||{})[j]; sel.value = cur==null?"":String(cur);
-        sel.disabled=graded;
-        sel.addEventListener("change",()=>{ ans[i]=Object.assign({},ans[i]||{}); ans[i][j]=sel.value===""?null:Number(sel.value); save(); updateBar(); });
-        if (graded){
+        sel.disabled=locked;
+        sel.addEventListener("change",()=>{ ans[i]=Object.assign({},ans[i]||{}); ans[i][j]=sel.value===""?null:Number(sel.value); onChange(); syncCheck(i); });
+        if (locked){
           const ok = cur!=null && Number(cur)===it[1];
           if (cur!=null) p.classList.add(ok?"is-correct":"is-wrong");
           if (!ok) { const wrapper=el("div"); wrapper.append(sel, el("div",{class:"fix"},"Riktig: "+choices[it[1]])); p.append(wrapper); }
@@ -1479,10 +1950,18 @@ function render(){
       });
       card.append(list);
     }
-    if (!graded){
+    if (!locked){
+      const row=el("div",{class:"qactions"});
+      if(isPractice()){
+        const cb=el("button",{class:"btn sm",type:"button",id:"chk"+i},"Sjekk svar");
+        cb.disabled=!isAnswered(q,a);
+        cb.addEventListener("click",()=>check(i));
+        row.append(cb);
+      }
       const clr=el("button",{class:"clear",type:"button"},"Fjern svar");
       clr.addEventListener("click",()=>{ delete ans[i]; save(); render(); });
-      card.append(clr);
+      row.append(clr);
+      card.append(row);
     } else {
       card.append(el("div",{class:"explain"},q.explain));
     }
@@ -1491,64 +1970,179 @@ function render(){
     const b=el("button",{type:"button","aria-label":"Gå til oppgave "+(i+1)},String(i+1));
     if (res) b.classList.add(res.state==="ok"?"r-ok":res.state==="part"?"r-part":res.state==="bad"?"r-bad":"x");
     else if (isAnswered(q,a)) b.classList.add("answered");
-    b.addEventListener("click",()=>document.getElementById("q"+(i+1)).scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}));
+    b.addEventListener("click",()=>$("q"+(i+1)).scrollIntoView({behavior:reduceMotion?"auto":"smooth"}));
     map.append(b);
   });
   updateBar();
 }
+function syncCheck(i){ const b=$("chk"+i); if(b) b.disabled=!isAnswered(Q[i],ans[i]); }
+
+function check(i){
+  checked[i]=true;
+  const r=scoreOne(i);
+  saveP(); save(); render(); renderLevel();
+  const card=$("q"+(i+1)); if(card) card.scrollIntoView({block:"nearest",behavior:reduceMotion?"auto":"smooth"});
+  if(r.state==="ok" && P.streak>=3 && P.streak%3===0) toast(P.streak+" riktige på rad","streak");
+  if(Q.every((q,j)=>checked[j])) grade();
+}
 
 function updateBar(){
   const n = Q.filter((q,i)=>isAnswered(q,ans[i])).length;
-  document.getElementById("sAns").textContent=n;
-  if (!graded){
-    [...map.children].forEach((b,i)=>b.classList.toggle("answered",isAnswered(Q[i],ans[i])));
-  }
+  $("sAns").textContent=n; $("sN").textContent=Q.length;
+  if(!graded) [...map.children].forEach((b,i)=>{ if(!checked[i]) b.classList.toggle("answered",isAnswered(Q[i],ans[i])); });
+  const live=Q.reduce((s,q,i)=>s+((graded||checked[i])?scoreQ(q,ans[i]).pts:0),0);
+  const anyLocked=graded||Object.keys(checked).length>0;
+  $("sScoreWrap").hidden=!anyLocked; $("sScore").textContent=fmt(live); $("sMax").textContent=maxPts();
 }
+function renderLevel(){
+  const L=levelOf(P.xp), next=LEVELS[L+1];
+  $("lvlName").textContent="Nivå "+(L+1)+" · "+LEVELS[L][1];
+  $("lvlXp").textContent=P.xp+" XP";
+  const pct=next?((P.xp-LEVELS[L][0])/(next[0]-LEVELS[L][0])*100):100;
+  $("lvlFill").style.width=pct.toFixed(1)+"%";
+  $("streakN").textContent=P.streak;
+  $("streakChip").classList.toggle("hot",P.streak>=3);
+}
+function tick(){
+  const t=$("timer");
+  if(!startedAt){ t.textContent="0:00"; return; }
+  const ms=graded&&elapsed!=null?elapsed:Date.now()-startedAt;
+  t.textContent=mmss(ms)+(Q.length===30?" / 60:00":"");
+  t.classList.toggle("over",Q.length===30 && ms>3600000);
+}
+setInterval(tick,1000);
 
 function grade(){
-  graded=true;
+  if(graded) return;
+  graded=true; elapsed=startedAt?Date.now()-startedAt:null;
+  let total=0, ok=0, part=0, bad=0, blank=0;
+  Q.forEach((q,i)=>{ const r=scoreOne(i); total+=r.pts; ({ok:()=>ok++,part:()=>part++,bad:()=>bad++,blank:()=>blank++})[r.state](); });
+  const M=maxPts(), Pp=passPts(), pass=total>=Pp, pct=Math.max(0,total)/M*100;
+  let bonus=0; if(pass) bonus+=30; if(pct>=80) bonus+=30; if(pct>=100) bonus+=50;
+  award(bonus);
+  P.deliveries++; unlock("first");
+  P.best[setKey]=Math.max(P.best[setKey]||0, Math.round(pct));
+  if(pass){ P.passed[setKey]=true; unlock("pass"); if(SETS[setKey].random && SETS[setKey].n===30) unlock("mix"); if(Q.length===30 && elapsed!=null && elapsed<3600000) unlock("clock"); }
+  if(pct>=80) unlock("p80"); if(pct>=100) unlock("p100");
+  if(setKey==="mixall" && Q.length===TOTAL_Q) unlock("marathon");
+  if(setKey==="lyn" && ok===Q.length) unlock("lyn");
+  if(CH14.every(k=>P.passed[k])) unlock("m14"); if(CH56.every(k=>P.passed[k])) unlock("m56");
+  bonusXp=bonus;
+  saveP(); save();
+  showResult();
+  if(pass) confetti();
+  $("result").scrollIntoView({behavior:"auto"});
+}
+function showResult(){
   let total=0, ok=0, part=0, bad=0, blank=0;
   Q.forEach((q,i)=>{ const r=scoreQ(q,ans[i]); total+=r.pts; ({ok:()=>ok++,part:()=>part++,bad:()=>bad++,blank:()=>blank++})[r.state](); });
+  const M=maxPts(), Pp=passPts(), pass=total>=Pp, bonus=bonusXp;
   const shown=Math.max(0,total);
-  document.getElementById("sScore").textContent=fmt(total);
-  document.getElementById("sScoreWrap").hidden=false;
-  const M=maxPts(), P=passPts();
-  const pass = total>=P;
-  const r=document.getElementById("result");
+  const r=$("result");
   r.innerHTML = `<h2>${fmt(total)} av ${M} poeng</h2>
-    <div class="meter" role="img" aria-label="${fmt(total)} av ${M} poeng, kravet er ${P}"><div class="fill" style="width:${(shown/M*100).toFixed(1)}%"></div><div class="mark" style="left:${(P/M*100).toFixed(1)}%"></div></div>
-    <div class="legend">Streken markerer kravet: ${P} poeng (41 %)</div>
-    <div class="verdict ${pass?"pass":"fail"}">${pass?"Godkjent nivå":"Ikke godkjent nivå ennå"}: du mangler ${pass?"ingenting":fmt(P-total)+" poeng"}.</div>
-    <div class="legend">Riktig: ${ok} · Delvis: ${part} · Feil/minus: ${bad} · Tomme: ${blank}</div>`;
+    <div class="meter" role="img" aria-label="${fmt(total)} av ${M} poeng, kravet er ${Pp}"><div class="fill" style="width:${(shown/M*100).toFixed(1)}%"></div><div class="mark" style="left:${(Pp/M*100).toFixed(1)}%"></div></div>
+    <div class="legend">Streken markerer kravet: ${Pp} poeng (41 %)</div>
+    <div class="verdict ${pass?"pass":"fail"}">${pass?"Godkjent nivå":"Ikke godkjent nivå ennå"}: du mangler ${pass?"ingenting":fmt(Pp-total)+" poeng"}.</div>
+    <div class="legend">Riktig: ${ok} · Delvis: ${part} · Feil/minus: ${bad} · Tomme: ${blank}${elapsed!=null?" · Tid: "+mmss(elapsed):""}</div>
+    <div class="legend">XP fra denne prøven: ${Object.values(gained).reduce((s,x)=>s+(x||0),0)+bonus}${bonus?" (inkl. bonus "+bonus+")":""}</div>
+    <div class="rowbtns"><button class="btn ghost" type="button" id="againBtn">${SETS[setKey].random?"Ny trekning":"Ta prøven på nytt"}</button></div>`;
   r.hidden=false;
-  render();
-  r.scrollIntoView({behavior:"auto"});
+  $("againBtn").addEventListener("click",reset);
+  render(); renderLevel(); buildTabs(); tick();
 }
 function reset(){
-  graded=false; ans={}; save();
-  document.getElementById("result").hidden=true;
-  document.getElementById("sScoreWrap").hidden=true;
-  render(); window.scrollTo(0,0);
+  const S=SETS[setKey];
+  ans={}; checked={}; graded=false; startedAt=null; elapsed=null; gained={}; bonusXp=0;
+  if(S.random) ids=draw(S.random,S.n), Q=ids.map(getQ);
+  save();
+  $("result").hidden=true;
+  render(); tick(); applySetText(); window.scrollTo(0,0);
 }
-document.getElementById("btnSubmit").addEventListener("click",grade);
-document.getElementById("btnSubmit2").addEventListener("click",grade);
-document.getElementById("btnReset").addEventListener("click",reset);
-function selectSet(k){
-  setKey=k; Q=SETS[k].q; graded=false; load();
-  document.getElementById("result").hidden=true;
-  document.getElementById("sScoreWrap").hidden=true;
-  document.getElementById("eyebrow").textContent=SETS[k].eyebrow;
-  document.getElementById("sN").textContent=Q.length;
-  document.getElementById("sMax").textContent=maxPts();
-  document.getElementById("introN").textContent=Q.length;
-  document.getElementById("introPass").textContent=passPts()+" av "+maxPts();
-  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.set===k)));
-  try { history.replaceState(null,"","#"+k); } catch(e) {}
-  render();
-}
-document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{ selectSet(t.dataset.set); window.scrollTo(0,0); }));
-selectSet(setKey);
-</script>
 
+/* ---------- views & tabs ---------- */
+function buildTabs(){
+  const box=$("tabs"); box.innerHTML=""; const groups={};
+  const addRow=(name)=>{ const row=el("div",{class:"tabrow",role:"tablist","aria-label":name}); row.append(el("span",{class:"tabrow-label"},name)); box.append(row); groups[name]=row; return row; };
+  Object.entries(SETS).forEach(([k,v])=>{
+    const row=groups[v.group]||addRow(v.group);
+    const n=v.random?(v.n>=1e9?TOTAL_Q:v.n):BASE[v.base].length;
+    const label=v.random?v.label:(v.label+" · "+n+" oppg.");
+    const b=el("button",{type:"button",class:"tab"+(P.passed[k]?" passed":""),"data-view":k,id:"tab-"+k,role:"tab"});
+    b.append(el("span",null,label));
+    if(P.best[k]!=null) b.append(el("span",{class:"best"},"beste "+P.best[k]+" %"));
+    row.append(b);
+  });
+  const row=addRow("Lær");
+  [["formler","Formler og begreper"],["profil","Profil og merker"]].forEach(([k,l])=>{ const b=el("button",{type:"button",class:"tab","data-view":k,id:"tab-"+k,role:"tab"}); b.append(el("span",null,l)); row.append(b); });
+  box.querySelectorAll(".tab").forEach(t=>{ t.setAttribute("aria-selected",String(t.dataset.view===view)); t.addEventListener("click",()=>{ go(t.dataset.view); window.scrollTo(0,0); }); });
+}
+function applySetText(){
+  $("eyebrow").textContent=SETS[setKey].eyebrow;
+  $("introN").textContent=Q.length;
+  $("introPass").textContent=passPts()+" av "+maxPts();
+  $("btnReset").textContent=SETS[setKey].random?"Ny trekning":"Start på nytt";
+  const pr=$("practiceToggle"); pr.checked=isPractice(); pr.disabled=!!SETS[setKey].practice;
+}
+let view="ak1";
+function go(v){
+  if(!SETS[v] && v!=="formler" && v!=="profil") v="ak1";
+  view=v;
+  const isQuiz=!!SETS[v];
+  $("viewQuiz").hidden=!isQuiz; $("viewSummary").hidden=v!=="formler"; $("viewProfile").hidden=v!=="profil";
+  $("quizStats").hidden=!isQuiz; $("btnReset").hidden=!isQuiz; $("btnSubmit").hidden=!isQuiz;
+  if(isQuiz){
+    setKey=v; load();
+    $("result").hidden=true;
+    applySetText(); render(); tick();
+    if(graded) showResult();
+  }
+  if(v==="formler"){ unlock("reader"); saveP(); }
+  if(v==="profil") renderProfile();
+  try{ history.replaceState(null,"","#"+v); }catch(e){}
+  buildTabs(); renderLevel();
+}
+
+/* ---------- profile ---------- */
+function renderProfile(){
+  const L=levelOf(P.xp), next=LEVELS[L+1];
+  const acc=P.answered?Math.round(P.correct/P.answered*100):0;
+  $("profLevel").innerHTML=`<div class="plvl"><span class="plvl-n">${L+1}</span><div><div class="plvl-name">${LEVELS[L][1]}</div><div class="legend">${P.xp} XP${next?" · "+(next[0]-P.xp)+" XP til "+next[1]:" · høyeste nivå"}</div></div></div>
+    <div class="xpbar big"><div style="width:${next?((P.xp-LEVELS[L][0])/(next[0]-LEVELS[L][0])*100).toFixed(1):100}%"></div></div>`;
+  $("profStats").innerHTML=[["Besvarte oppgaver",P.answered],["Helt riktige",P.correct+" ("+acc+" %)"],["Beste rekke",P.bestStreak],["Leverte prøver",P.deliveries],["Merker",Object.keys(P.badges).length+" av "+BADGES.length]]
+    .map(([k,v])=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`).join("");
+  $("profBadges").innerHTML=BADGES.map(([id,sym,name,desc])=>`<div class="badge${P.badges[id]?"":" locked"}"><span class="medal" aria-hidden="true">${sym}</span><div><b>${name}</b><span>${desc}</span>${P.badges[id]?"":'<em>Ikke låst opp</em>'}</div></div>`).join("");
+  $("profTests").innerHTML=`<tr><th>Prøve</th><th>Beste</th><th>Bestått</th></tr>`+Object.entries(SETS).map(([k,v])=>`<tr><td>${v.random?v.label:v.label+" ("+v.group+")"}</td><td>${P.best[k]!=null?P.best[k]+" %":"–"}</td><td>${P.passed[k]?"Ja":"–"}</td></tr>`).join("");
+}
+$("resetProfile").addEventListener("click",()=>{ $("confirmReset").hidden=false; });
+$("cancelReset").addEventListener("click",()=>{ $("confirmReset").hidden=true; });
+$("doReset").addEventListener("click",()=>{
+  P={xp:0,streak:0,bestStreak:0,answered:0,correct:0,deliveries:0,badges:{},best:{},passed:{},revealed:0}; saveP();
+  Object.values(SETS).forEach(s=>{ try{ localStorage.removeItem(s.key); }catch(e){} });
+  $("confirmReset").hidden=true; renderProfile(); renderLevel(); buildTabs(); toast("Fremgangen er nullstilt");
+});
+
+/* ---------- summary: search & drill ---------- */
+const sumBody=$("sumBody");
+$("sumSearch").addEventListener("input",e=>{
+  const q=e.target.value.trim().toLowerCase(); let hits=0;
+  sumBody.querySelectorAll(".concept").forEach(c=>{ const m=!q||c.textContent.toLowerCase().includes(q); c.hidden=!m; if(m) hits++; });
+  sumBody.querySelectorAll(".sum-h").forEach(h=>{ let n=h.nextElementSibling, any=false; while(n&&!n.classList.contains("sum-h")){ if(n.classList.contains("concept")&&!n.hidden) any=true; n=n.nextElementSibling; } h.hidden=!any; });
+  $("sumEmpty").hidden=hits>0;
+});
+const formulas=[...sumBody.querySelectorAll(".formula")];
+formulas.forEach(f=>{ f.tabIndex=0; const rev=()=>{ if(sumBody.classList.contains("drill") && !f.classList.contains("shown")){ f.classList.add("shown"); P.revealed=(P.revealed||0)+1; if(P.revealed>=20) unlock("drill"); saveP(); drillStat(); } };
+  f.addEventListener("click",rev); f.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); rev(); } }); });
+function drillStat(){ const on=sumBody.classList.contains("drill"); $("drillStat").textContent=on?("Avslørt "+formulas.filter(f=>f.classList.contains("shown")).length+" av "+formulas.length):""; }
+$("drillToggle").addEventListener("change",e=>{ sumBody.classList.toggle("drill",e.target.checked); formulas.forEach(f=>f.classList.remove("shown")); drillStat(); });
+
+/* ---------- wiring ---------- */
+$("btnSubmit").addEventListener("click",grade);
+$("btnSubmit2").addEventListener("click",grade);
+$("btnReset").addEventListener("click",reset);
+$("practiceToggle").addEventListener("change",e=>{ practice=e.target.checked; wr("hsm122-practice",practice); render(); });
+$("lvlChip").addEventListener("click",()=>{ go("profil"); window.scrollTo(0,0); });
+go((location.hash||"").slice(1)||"ak1");
+
+</script>
 </body>
 </html>
