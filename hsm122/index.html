@@ -1,0 +1,1554 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="160 casebaserte øvingsoppgaver i HSM122 (kap. 1–6) med automatisk retting, minuspoeng og 41 %-krav.">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Øvingsprøve HSM122</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: eksamensark — sticky poengstripe øverst, én kolonne med oppgavekort, oppgavekart som rutenett */
+:root{
+  --bg:#f3f5f1; --paper:#ffffff; --fg:#1b2a20; --muted:#5d6b62; --line:#d6ddd5;
+  --accent:#2f7d48; --accent-soft:#e1efe4; --ok:#1f7a3d; --ok-soft:#dcf1e2;
+  --bad:#b23a2b; --bad-soft:#f8e1dd; --warn:#9a6a00; --warn-soft:#fbefd2;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121814; --paper:#1a221d; --fg:#e4ebe5; --muted:#9aa89f; --line:#2f3a33;
+  --accent:#6cc488; --accent-soft:#203a29; --ok:#7bd795; --ok-soft:#1d3626;
+  --bad:#f08a7a; --bad-soft:#3d221e; --warn:#e8bd5a; --warn-soft:#3a2f14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121814; --paper:#1a221d; --fg:#e4ebe5; --muted:#9aa89f; --line:#2f3a33;
+  --accent:#6cc488; --accent-soft:#203a29; --ok:#7bd795; --ok-soft:#1d3626;
+  --bad:#f08a7a; --bad-soft:#3d221e; --warn:#e8bd5a; --warn-soft:#3a2f14; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+header.intro{padding-block:36px 20px;display:grid;gap:10px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-size:clamp(28px,5vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+.intro p{margin:0;max-width:65ch;color:var(--muted)}
+.tabgroups{display:grid;gap:8px}
+.tabrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tabrow-label{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:76px}
+.tab{border:1px solid var(--line);background:var(--paper);color:var(--fg);border-radius:6px;padding:7px 14px;font-weight:600}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:3px 10px;color:var(--fg)}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.bar .inner{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.stat{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.stat b{color:var(--fg);font-variant-numeric:tabular-nums}
+.bar .spacer{flex:1}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--paper);border-radius:6px;padding:7px 14px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:focus-visible,.opt:focus-within,input:focus-visible,select:focus-visible,.map button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.map{display:grid;grid-template-columns:repeat(15,1fr);gap:5px;margin-block:4px 20px}
+@media (max-width:560px){.map{grid-template-columns:repeat(10,1fr)}}
+.map button{border:1px solid var(--line);background:var(--paper);color:var(--fg);border-radius:5px;padding:5px 0;font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.map button.answered{background:var(--accent-soft);border-color:var(--accent)}
+.map button.r-ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.map button.r-bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.map button.r-part{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+
+.q{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:12px;margin-bottom:16px;scroll-margin-top:80px}
+.qhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.qnum{font-family:var(--f-display);font-weight:700;font-size:20px}
+.qtype{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.qtopic{font-size:13px;color:var(--muted)}
+.qscore{margin-left:auto;font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
+.case{background:var(--bg);border-radius:6px;padding:12px 14px;min-width:0}
+.case p{margin:0 0 8px}.case p:last-child{margin:0}
+.prompt{font-weight:600;margin:0}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;margin-top:6px}
+th,td{border:1px solid var(--line);padding:4px 10px;text-align:right}
+th{background:var(--accent-soft);font-weight:600}
+td:first-child,th:first-child{text-align:left}
+
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:6px;padding:9px 12px;cursor:pointer}
+.opt input{margin-top:4px;accent-color:var(--accent)}
+.opt.is-correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.is-wrong{border-color:var(--bad);background:var(--bad-soft)}
+.numrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.numrow input{font-family:var(--f-mono);font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--fg);width:180px;max-width:100%}
+.unit{font-family:var(--f-mono);color:var(--muted);font-size:14px}
+.pairs{display:grid;gap:8px}
+.pair{display:grid;grid-template-columns:1fr minmax(0,240px);gap:10px;align-items:center;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.pair:last-child{border-bottom:0}
+@media (max-width:560px){.pair{grid-template-columns:1fr}}
+.pair select{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--fg);width:100%}
+.pair.is-correct select{border-color:var(--ok);background:var(--ok-soft)}
+.pair.is-wrong select{border-color:var(--bad);background:var(--bad-soft)}
+.fix{font-size:13px;color:var(--ok);font-weight:600}
+.clear{justify-self:start;background:none;border:0;color:var(--muted);font-size:13px;text-decoration:underline;padding:0}
+.explain{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 6px 6px 0;font-size:15px}
+.explain b{font-family:var(--f-mono);font-weight:600}
+
+.result{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:10px;margin-bottom:20px}
+.result h2{font-family:var(--f-display);margin:0;font-size:24px}
+.meter{height:12px;background:var(--bg);border-radius:6px;position:relative;overflow:hidden;border:1px solid var(--line)}
+.meter .fill{position:absolute;inset:0 auto 0 0;background:var(--accent)}
+.meter .mark{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--fg)}
+.verdict{font-weight:700}
+.verdict.pass{color:var(--ok)}.verdict.fail{color:var(--bad)}
+.legend{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
+@media (prefers-reduced-motion:no-preference){.q,.opt{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+
+
+<div class="bar" id="bar"><div class="inner">
+  <span class="stat">Besvart <b id="sAns">0</b>/<span id="sN">30</span></span>
+  <span class="stat" id="sScoreWrap" hidden>Poeng <b id="sScore">0</b>/<span id="sMax">90</span></span>
+  <span class="spacer"></span>
+  <button class="btn ghost" id="btnReset" type="button">Start på nytt</button>
+  <button class="btn" id="btnSubmit" type="button">Lever og rett</button>
+</div></div>
+
+<div class="wrap">
+  <header class="intro">
+    <div class="tabgroups" id="tabs"></div>
+    <span class="eyebrow" id="eyebrow"></span>
+    <h1>Øvingsprøve til arbeidskravet</h1>
+    <p><span id="introN">30</span> casebaserte oppgaver: flervalg, flere svar, numeriske oppgaver, matching og kategorisering. Hver oppgave gir maks 3 poeng. Feil svar kan gi minuspoeng, så la svaret stå tomt hvis du er usikker. Krav for godkjent: <span id="introPass">37 av 90</span> poeng (41 %). Prøvene 5 og 6 har 20 oppgaver og er litt vanskeligere.</p>
+    <div class="rules">
+      <span class="chip">Flervalg: +3 / −1</span>
+      <span class="chip">Numerisk: +3 / −1</span>
+      <span class="chip">Flere svar: delpoeng, feil kryss trekker</span>
+      <span class="chip">Matching/kategorisering: delpoeng, feil trekker</span>
+      <span class="chip">Tomt svar: 0</span>
+    </div>
+  </header>
+
+  <div class="result" id="result" hidden></div>
+  <nav class="map" id="map" aria-label="Oppgavekart"></nav>
+  <main id="quiz"></main>
+  <div class="foot">
+    <button class="btn" id="btnSubmit2" type="button">Lever og rett</button>
+  </div>
+</div>
+
+<script>
+const TYPE_LABEL = {mc:"Flervalg", multi:"Flere svar", num:"Numerisk", match:"Matching", cat:"Kategorisering"};
+
+const Q56 = [
+/* ---------- 5.1 Markedstilpasning ---------- */
+{topic:"5.1 Markedsformer", type:"cat",
+ prompt:"Plasser hver situasjon i riktig markedsform.",
+ cats:["Monopol","Oligopol","Monopolistisk konkurranse","Fullkommen konkurranse"],
+ items:[
+  ["AS Trollprodukter har fått enerett til å produsere og selge suvenirartikkelen «Dovretrollet».",0],
+  ["Tre store kjeder dominerer dagligvarehandelen i Norge. Senker én kjede prisen, følger de andre etter.",1],
+  ["Mange tannleger i samme by tilbyr tjenester som dekker samme behov, men som ikke er helt like.",2],
+  ["Mange små korndyrkere selger identisk hvete. Ingen av dem kan påvirke prisen, og alle har full informasjon.",3],
+  ["Noen få store selskaper dominerer salget av bensin.",1],
+  ["Mange butikker selger moteklær med ulikt design og ulike merker.",2]],
+ explain:"Monopol: én tilbyder som fastsetter prisen. Oligopol: få store aktører, gjensidig avhengige (dagligvare, bensin, forsikring). Monopolistisk konkurranse: mange tilbydere med varer som dekker samme behov uten å være homogene (bilder, moteklær, tannlegetjenester). Fullkommen konkurranse: mange små tilbydere og etterspørrere, homogene varer, full informasjon."},
+
+{topic:"5.1 Fullkommen konkurranse", type:"multi",
+ prompt:"Hvilke av disse er kjennetegn ved fullkommen (fri) konkurranse? Velg alle som passer.",
+ options:["Mange små tilbydere, ingen har makt til å påvirke prisen","Mange små etterspørrere","Homogene (standardiserte) varer","Full informasjon om tilbud og etterspørsel","Bedriften velger selv prisen som maksimerer overskuddet","Høye etableringsbarrierer"],
+ correct:[0,1,2,3],
+ explain:"De fire kjennetegnene er mange små tilbydere, mange små etterspørrere, homogene varer og full informasjon. En bedrift som selv velger prisen er en prissetter (monopol/oligopol). Høye etableringsbarrierer hører til oligopol."},
+
+{topic:"5.1 Grenseinntekt og grensekostnad", type:"mc",
+ case:"<p>Kari lager kniver. Ved å gå fra 8 til 9 kniver er grensekostnaden 400 kr og grenseinntekten 500 kr. Ved å gå fra 17 til 18 kniver er grensekostnaden 500 kr og grenseinntekten 450 kr. Begge kurvene er lineære mellom disse punktene.</p>",
+ prompt:"Hvilket utsagn er riktig?",
+ options:["Hun bør utvide fra 8 til 9, men ikke fra 17 til 18. Vinningsoptimal mengde ligger rundt 14–15 kniver.","Hun bør utvide både fra 8 til 9 og fra 17 til 18, fordi grenseinntekten er positiv i begge tilfeller.","Hun bør ikke utvide fra 8 til 9, fordi grensekostnaden er over 0.","Vinningsoptimal mengde er 18 kniver, der grensekostnaden er høyest."],
+ correct:0,
+ explain:"Lønnsomt når grenseinntekt > grensekostnad (500 > 400). Ulønnsomt når grenseinntekt < grensekostnad (450 < 500). Vinningsoptimum er der de er like; kurvene krysser ved ca. 14,5 kniver."},
+
+{topic:"5.1 Monopol: Dovretrollet", type:"num",
+ case:"<p>AS Trollprodukter har enerett på «Dovretrollet». Tall for en periode:</p><div class='tblwrap'><table><tr><th>Mengde</th><th>Pris</th><th>Sum inntekter</th><th>Sum kostnader</th></tr><tr><td>0</td><td>–</td><td>0</td><td>8 000</td></tr><tr><td>100</td><td>110</td><td>11 000</td><td>12 400</td></tr><tr><td>200</td><td>100</td><td>20 000</td><td>14 400</td></tr><tr><td>300</td><td>90</td><td>27 000</td><td>17 400</td></tr><tr><td>400</td><td>80</td><td>32 000</td><td>23 000</td></tr><tr><td>500</td><td>70</td><td>35 000</td><td>33 000</td></tr><tr><td>600</td><td>60</td><td>36 000</td><td>48 000</td></tr></table></div>",
+ prompt:"Hva er differanseenhetsinntekten (DEI) når mengden økes fra 200 til 300 enheter?",
+ answer:70, tol:0.01, unit:"kr per enhet",
+ explain:"Differanseinntekt = 27 000 − 20 000 = 7 000. DEI = 7 000 / 100 enheter = <b>70 kr</b>. Merk at DEI (70) er lavere enn prisen (90), fordi monopolisten må sette ned prisen på alle enhetene for å selge flere."},
+
+{topic:"5.1 Dekningsbidrag", type:"num",
+ case:"<p>Bruk tabellen for AS Trollprodukter i forrige oppgave. Sum kostnader ved 0 enheter (8 000 kr) er de faste kostnadene.</p>",
+ prompt:"Hva er dekningsbidraget ved 300 enheter?",
+ answer:17600, tol:0.5, unit:"kr",
+ explain:"Overskudd ved 300 = 27 000 − 17 400 = 9 600. Dekningsbidrag = FTK + overskudd = 8 000 + 9 600 = <b>17 600 kr</b>. (Alternativt: variable kostnader = 17 400 − 8 000 = 9 400; DB = 27 000 − 9 400.)"},
+
+{topic:"5.1 Dekningspunkter", type:"mc",
+ case:"<p>I enhetsdiagrammet for Trollprodukter krysser priskurven kurven for sum enhetskostnader (SEK) ved ca. 115 og ca. 526 enheter. Vinningsoptimal mengde er ca. 340 enheter.</p>",
+ prompt:"Hva er overskuddsområdet?",
+ options:["Mengdeintervallet mellom 115 og 526 enheter, der pris > SEK","Mengdeintervallet mellom 0 og 340 enheter, der DEI > DEK","Alle mengder der prisen er høyere enn variable enhetskostnader","Kun punktet 340 enheter, der DEI = DEK"],
+ correct:0,
+ explain:"Overskuddsområdet er mengdeintervallet mellom nedre og øvre dekningspunkt, der pris > SEK. VOM (340) ligger inne i området og gir størst overskudd, men hele intervallet 115–526 gir overskudd."},
+
+/* ---------- 5.2 Markedstilpasning ---------- */
+{topic:"5.2 Prisfast tilpasning", type:"num",
+ case:"<p>MiniMax er i fullkommen konkurranse. Markedsprisen er 70 kr per enhet.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>VTK</th><th>STK</th><th>DEK (intervallet opp til mengden)</th></tr><tr><td>0</td><td>0</td><td>8 000</td><td>–</td></tr><tr><td>100</td><td>4 400</td><td>12 400</td><td>44</td></tr><tr><td>200</td><td>6 400</td><td>14 400</td><td>20</td></tr><tr><td>300</td><td>9 400</td><td>17 400</td><td>30</td></tr><tr><td>400</td><td>15 000</td><td>23 000</td><td>56</td></tr><tr><td>500</td><td>25 000</td><td>33 000</td><td>100</td></tr><tr><td>600</td><td>40 000</td><td>48 000</td><td>150</td></tr></table></div>",
+ prompt:"Hva er vinningsoptimal mengde (VOM)?",
+ answer:400, tol:0.5, unit:"enheter",
+ explain:"Ved fast pris er DEI = pris = 70. Selg en ekstra enhet så lenge DEI > DEK. DEK er 56 fra 300 til 400 (lønnsomt), men 100 fra 400 til 500 (ulønnsomt). VOM = <b>400</b>. Overskudd: 28 000 − 23 000 = 5 000 kr."},
+
+{topic:"5.2 Laveste akseptable pris", type:"num",
+ case:"<p>AS Gummiprodukter lager gummimatter til en kjent bilmodell. Faste kostnader er 20 000 kr per måned og er driftsuavhengige. De driftsavhengige kostnadene er de variable kostnadene. Dagens pris er 160 kr per matte.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>Totalkostnad</th></tr><tr><td>100</td><td>38 000</td></tr><tr><td>200</td><td>50 000</td></tr><tr><td>300</td><td>58 000</td></tr><tr><td>400</td><td>64 000</td></tr><tr><td>500</td><td>69 500</td></tr><tr><td>600</td><td>78 000</td></tr><tr><td>700</td><td>97 000</td></tr><tr><td>800</td><td>132 000</td></tr></table></div>",
+ prompt:"Hva er laveste akseptable pris på lang sikt (ut fra tabellverdiene)?",
+ answer:130, tol:1, unit:"kr per matte",
+ explain:"På lang sikt må prisen dekke alle kostnader: pris ≥ laveste SEK. SEK = totalkostnad / mengde: 380, 250, 193,3, 160, 139, <b>130</b> (600 enheter), 138,6, 165. Laveste er 130 kr, ved kostnadsoptimum."},
+
+{topic:"5.2 Laveste akseptable pris", type:"mc",
+ case:"<p>Samme tall for AS Gummiprodukter som i forrige oppgave. Importøren ønsker lavere pris, og nedgangen antas å være midlertidig.</p>",
+ prompt:"Hvilket tall er nærmest laveste akseptable pris på kort sikt?",
+ options:["Ca. 97 kr (laveste VEK, ved ca. 600 enheter)","130 kr (laveste SEK)","Ca. 55 kr (laveste DEK)","160 kr (dagens pris)"],
+ correct:0,
+ explain:"På kort sikt må prisen bare dekke de driftsavhengige kostnadene, her VEK. VTK = totalkostnad − 20 000. VEK: 180, 150, 126,7, 110, 99, <b>96,7</b> (600), 110, 140. Laveste VEK ≈ 97 kr. Faste driftsuavhengige kostnader er «sunk cost» på kort sikt."},
+
+{topic:"5.2 Kort eller lang sikt", type:"cat",
+ case:"<p>Golfbutikken AS opplever at salget faller midlertidig og vurderer hvor langt ned prisen kan settes på kort sikt.</p>",
+ prompt:"Kategoriser kostnadene.",
+ cats:["Må dekkes også på kort sikt","Kan ses bort fra på kort sikt"],
+ items:[
+  ["Innkjøpskost per solgte golfsett",0],
+  ["Frakt som betales per solgte enhet",0],
+  ["Ekstra butikkvakt som bare trengs når butikken holder åpent (driftsavhengig fast kostnad)",0],
+  ["Husleie som må betales selv om butikken stenger",1],
+  ["Avskrivning på inventar butikken allerede eier",1],
+  ["Forsikring av lokalet som løper uansett",1]],
+ explain:"På kort sikt må prisen dekke driftsavhengige kostnader: variable kostnader og eventuelle driftsavhengige faste kostnader. Driftsuavhengige faste kostnader (stillstandskostnader som husleie, avskrivning, forsikring) påløper uansett og kan ses bort fra midlertidig. På lang sikt må alt dekkes (pris ≥ SEK)."},
+
+{topic:"5.2 Prisdifferensiering", type:"num",
+ case:"<p>MiniMax er monopolist på hjemmemarkedet og får tilbud om å selge så mange enheter de vil til en meksikansk grossist for 90 kr per enhet.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>Pris hjemme</th><th>Pris eksport</th><th>DEK (intervallet opp til mengden)</th><th>SEK</th></tr><tr><td>100</td><td>160</td><td>90</td><td>44</td><td>124</td></tr><tr><td>200</td><td>140</td><td>90</td><td>20</td><td>72</td></tr><tr><td>300</td><td>120</td><td>90</td><td>30</td><td>58</td></tr><tr><td>400</td><td>100</td><td>90</td><td>56</td><td>57,5</td></tr><tr><td>500</td><td>80</td><td>90</td><td>100</td><td>66</td></tr><tr><td>600</td><td>60</td><td>90</td><td>150</td><td>80</td></tr></table></div>",
+ prompt:"Hvor mange enheter bør MiniMax selge på hjemmemarkedet?",
+ answer:200, tol:0.5, unit:"enheter",
+ explain:"Totaltilbud: produser så lenge DEK < 90 → 400 enheter (DEK 56 opp til 400, 100 over). Hjemme selges en enhet bare hvis DEI hjemme > 90. Sum inntekt hjemme: 16 000, 28 000, 36 000. DEI: 160, 120, 80. Fra 200 til 300 er DEI 80 < 90, så stopp på <b>200</b> hjemme. Resten, 200 enheter, eksporteres."},
+
+{topic:"5.2 Prisdifferensiering", type:"num",
+ case:"<p>Fortsett med MiniMax fra forrige oppgave: 200 enheter selges hjemme og 200 eksporteres, totalt 400.</p>",
+ prompt:"Hva blir totalt overskudd?",
+ answer:23000, tol:0.5, unit:"kr",
+ explain:"Inntekt: 200 × 140 + 200 × 90 = 28 000 + 18 000 = 46 000. Kostnader ved 400: SEK 57,5 × 400 = 23 000. Overskudd = <b>23 000 kr</b>. (DB = 46 000 − VTK 15 000 = 31 000; minus FTK 8 000 gir samme svar.)"},
+
+{topic:"5.2 Prisdifferensiering", type:"multi",
+ prompt:"Hvilke utsagn om prisdifferensiering er riktige?",
+ options:["Noen kunder må være villige til å betale mer enn andre","Det må ikke være «lekkasje» mellom markedene","Studentrabatt på kino er et eksempel på differensiering mellom kjøpergrupper","Totaltilbudet bestemmes der DEK skjærer DEI","Produktet må være forskjellig i hvert marked","Prisdifferensiering krever fullkommen konkurranse i alle markeder"],
+ correct:[0,1,2,3],
+ explain:"Forutsetninger: noen må være villige til å betale mer, og ingen lekkasje mellom markedene. Typer: geografisk, kjøpergrupper, brukstid og varens status. Det er <i>samme</i> produkt til ulike priser. Totaltilbudet ligger der DEK = DEI, og hver enhet selges i markedet med størst inntektsvekst."},
+
+{topic:"5.2 Endring i kostnader", type:"mc",
+ case:"<p>En bedrift får 5 000 kr høyere husleie per måned. Produksjonen og alle andre kostnader er uendret.</p>",
+ prompt:"Hvilke kurver i enhetsdiagrammet påvirkes?",
+ options:["Kun SEK forskyves oppover","VEK, SEK og DEK forskyves oppover","Kun DEK forskyves oppover, så VOM blir lavere","Ingen kurver påvirkes"],
+ correct:0,
+ explain:"Økte faste kostnader påvirker kun SEK. DEK og VEK endres ikke, så vinningsoptimal mengde er den samme. Økte variable kostnader ville derimot forskjøvet VEK, SEK og DEK."},
+
+/* ---------- 6.1 Kalkulasjon ---------- */
+{topic:"6.1 Direkte eller indirekte", type:"cat",
+ case:"<p>Nordic Stol AS lager spisestoler. Er kostnaden direkte eller indirekte for én stol?</p>",
+ prompt:"Kategoriser kostnadene.",
+ cats:["Direkte","Indirekte"],
+ items:[
+  ["Bøketre til stolen",0],
+  ["Lønn til snekkeren som bygger stolen",0],
+  ["Husleie for verkstedet",1],
+  ["Strøm til belysning i verkstedet",1],
+  ["Avskrivning på sagen som brukes til alle produkter",1],
+  ["Lønn til regnskapsføreren",1]],
+ explain:"Direkte kostnader kan knyttes konkret til produktet (materialer og direkte lønn). Husleie, strøm, avskrivning på felles maskiner og administrasjon kan ikke knyttes til én stol. Avskrivningen på sagen kan bli direkte hvis sagen bare brukes til denne stolmodellen."},
+
+{topic:"6.1 Produktkalkyler", type:"match",
+ prompt:"Koble hvert bruksområde for produktkalkyler til riktig beskrivelse.",
+ items:[
+  ["Prisfastsettelse",0],["Produktvalg",1],["Budsjettering",2],["Lønnsomhetsanalyse",3],["Lagerverdi",4]],
+ choices:["Gir informasjon om hvilken pris som bør settes på produktet","Hjelpemiddel for å vurdere hvilke produkter bedriften bør satse på","Grunnlag for å utarbeide budsjetter og økonomiske planer","Vurderer lønnsomheten til investeringer","Nødvendig for å beregne verdien av bedriftens varelager"],
+ explain:"Fem bruksområder fra 6.1: prisfastsettelse, produktvalg, budsjettering, lønnsomhetsanalyse og lagerverdi."},
+
+{topic:"6.1 Handelsbedrift", type:"num",
+ case:"<p>En sportsbutikk kjøper inn 20 par ski. Innkjøpsprisen ifølge faktura er 3 100 kr per par. I tillegg kommer frakt og forsikring på 2 400 kr for hele partiet. Butikken kalkulerer med 60 % tillegg for indirekte kostnader (av inntakskost) og 15 % fortjeneste (av selvkost).</p>",
+ prompt:"Hva blir salgsprisen eksklusiv mva. for ett par ski?",
+ answer:5924.80, tol:0.6, unit:"kr",
+ explain:"Inntakskost: (20 × 3 100 + 2 400) / 20 = 3 220. Indirekte: 3 220 × 60 % = 1 932. Selvkost: 5 152. Fortjeneste: 5 152 × 15 % = 772,80. Salgspris: <b>5 924,80 kr</b>."},
+
+{topic:"6.1 Bruttofortjeneste og avanse", type:"mc",
+ case:"<p>Resultatregnskapet til Balder Hi-Fi viser salgsinntekter 1 920 000 kr, varekostnad 1 000 000 kr, indirekte kostnader 600 000 kr og resultat 320 000 kr.</p>",
+ prompt:"Hva er bruttofortjenesteprosenten?",
+ options:["47,9 %","92,0 %","16,7 %","52,1 %"],
+ correct:0,
+ explain:"Bruttofortjeneste = salgsinntekt − varekostnad = 920 000. Bruttofortjenesteprosent = 920 000 × 100 / 1 920 000 = <b>47,9 %</b>. 92 % er avansen (920 000 / varekostnad 1 000 000). 16,7 % er resultat i prosent av salgsinntekt."},
+
+{topic:"6.1 Håndverksbedrift", type:"num",
+ case:"<p>Fjord Elektro AS har fire elektrikere med gjennomsnittlig årslønn på 480 000 kr. Indirekte kostnader er 760 000 kr per år. Hver elektriker fakturerer 1 450 timer per år. Timeprisen skal gi 12 % fortjeneste.</p>",
+ prompt:"Hva blir nødvendig timepris, avrundet til nærmeste 10 kr?",
+ answer:520, tol:0.5, unit:"kr per time",
+ explain:"Lønn: 4 × 480 000 = 1 920 000. Selvkost: 1 920 000 + 760 000 = 2 680 000. Med 12 % fortjeneste: 3 001 600. Timer: 4 × 1 450 = 5 800. Timepris: 3 001 600 / 5 800 = 517,52 → <b>520 kr</b>."},
+
+{topic:"6.1 Fakturaberegning", type:"num",
+ case:"<p>Lier Auto AS har timepris 570 kr for verkstedarbeid. En kunde har hatt bilen på verkstedet i 2 timer. Det er tatt ut deler for 900 kr og ført opp 60 kr i verkstedmateriell. Alle beløp er eksklusiv mva. (25 %).</p>",
+ prompt:"Hva lyder fakturaen på inklusiv mva.?",
+ answer:2625, tol:0.5, unit:"kr",
+ explain:"2 × 570 = 1 140. Sum eks. mva.: 1 140 + 900 + 60 = 2 100. Mva.: 525. Faktura: <b>2 625 kr</b>."},
+
+/* ---------- 6.2 Kalkulasjon ---------- */
+{topic:"6.2 Enkel tilleggskalkyle", type:"mc",
+ case:"<p>Kulepennfabrikken AS bruker et tillegg for indirekte kostnader på 60 % av sum direkte kostnader. For hver kulepenn i Lightning-serien er direkte materialer 250 kr og direkte lønn 120 kr.</p>",
+ prompt:"Hva blir selvkost per kulepenn?",
+ options:["592 kr","370 kr","520 kr","400 kr"],
+ correct:0,
+ explain:"Sum direkte: 250 + 120 = 370. Tillegg: 370 × 60 % = 222. Selvkost: <b>592 kr</b>. 520 kr er det du får hvis du bare legger 60 % på materialene."},
+
+{topic:"6.2 Selvkostkalkyle", type:"num",
+ case:"<p>Åfjord Mekk Verksted bruker tilleggskalkyler etter selvkostmetoden. Budsjett:</p><div class='tblwrap'><table><tr><th>Post</th><th>Beløp</th></tr><tr><td>Direkte materialer</td><td>800 000</td></tr><tr><td>Direkte lønn</td><td>900 000</td></tr><tr><td>Innkjøpsavdelingen</td><td>90 000</td></tr><tr><td>Tilvirkningsavdelingen</td><td>720 000</td></tr><tr><td>Salgsavdelingen</td><td>125 500</td></tr></table></div><p>Tilleggssatser: innkjøp i % av direkte materialer, tilvirkning i % av direkte lønn, salg i % av tilvirkningskost.</p>",
+ prompt:"Hva blir selvkost for en benk med 600 kr i materialer og 1 000 kr i direkte lønn? (Oppgi med to desimaler.)",
+ answer:2590.875, tol:0.6, unit:"kr",
+ explain:"Satser: innkjøp 90 000 / 800 000 = 11,25 %; tilvirkning 720 000 / 900 000 = 80 %; tilvirkningskost i budsjett = 800 000 + 90 000 + 900 000 + 720 000 = 2 510 000, så salg = 125 500 / 2 510 000 = 5 %. Benk: 600 + 67,50 + 1 000 + 800 = 2 467,50 i tilvirkningskost; + 5 % = <b>2 590,88 kr</b>."},
+
+{topic:"6.2 Selvkostkalkyle", type:"num",
+ case:"<p>Seim Stål AS bruker tilleggskalkyle etter selvkostmetoden med disse satsene: materialavdelingen 20 % av direkte materialer, tilvirkningsavdelingen 50 % av direkte lønn, salgs- og administrasjonsavdelingen 10 % av tilvirkningskost. Bedriften regner med 10 % fortjeneste.</p>",
+ prompt:"Hva blir prisen uten mva. for et produkt med 2 000 kr i direkte materialer og 3 000 kr i direkte lønn?",
+ answer:8349, tol:0.5, unit:"kr",
+ explain:"2 000 + 400 + 3 000 + 1 500 = 6 900 (tilvirkningskost). Salg/adm.: 690. Selvkost: 7 590. Fortjeneste 10 %: 759. Pris: <b>8 349 kr</b>."},
+
+{topic:"6.2 Bidragskalkyle", type:"num",
+ case:"<p>Vegsund Fabrikker AS bruker tilleggskalkulasjon etter bidragsmetoden. Variable indirekte satser: materialavdelingen 5 % av direkte materialer, tilvirkningsavdelingen 20 % av direkte lønn, salgs- og administrasjonsavdelingen 2 % av variable tilvirkningskostnader. Et sykkelstativ bruker 700 kr i direkte materialer og 1 100 kr i direkte lønn.</p>",
+ prompt:"Hva blir dekningsbidraget når salgsprisen er 3 900 kr uten mva.? (Oppgi med to desimaler.)",
+ answer:1803.90, tol:0.06, unit:"kr",
+ explain:"700 + 35 + 1 100 + 220 = 2 055 (variable tilvirkningskostnader). Salg/adm.: 2 % = 41,10. Sum variable kostnader: 2 096,10. DB = 3 900 − 2 096,10 = <b>1 803,90 kr</b>."},
+
+{topic:"6.2 Bidragskalkyle", type:"num",
+ case:"<p>Zams AS setter opp en tilleggskalkyle etter bidragsmetoden. Direkte lønn er 1 000 000 kr og direkte materialer 500 000 kr. Variable indirekte satser: materialavdelingen 4 % av direkte materialer, tilvirkningsavdelingen 30 % av direkte lønn, administrasjonsavdelingen 10 % av variable tilvirkningskostnader. En kunde vil kjøpe hele månedens produksjon for 2 750 000 kr. De faste kostnadene er 241 000 kr.</p>",
+ prompt:"Hva blir fortjenesten?",
+ answer:507000, tol:0.5, unit:"kr",
+ explain:"500 000 + 20 000 + 1 000 000 + 300 000 = 1 820 000. Adm.: 182 000. Sum variable: 2 002 000. DB = 2 750 000 − 2 002 000 = 748 000. Fortjeneste = 748 000 − 241 000 = <b>507 000 kr</b>."},
+
+{topic:"6.2 Kalkylebegreper", type:"match",
+ prompt:"Koble begrepet til riktig definisjon.",
+ items:[["Tilvirkningskost",0],["Selvkost (fullkost)",1],["Minimumskost (salgsmerkost)",2],["Dekningsbidrag",3],["Tilleggssats",4]],
+ choices:["Direkte materialer + direkte lønn + indirekte kostnader i tilvirkningen","Alle kostnader forbundet med å produsere og selge produktet","Totale variable kostnader","Salgspris minus variable kostnader","Budsjetterte indirekte kostnader / budsjettert aktivitet"],
+ explain:"Selvkostkalkylen: DM + DL + indirekte tilvirkning = tilvirkningskost; + indirekte salg/adm. = selvkost. Bidragskalkylen: variable kostnader summeres til minimumskost (salgsmerkost); salgspris − variable kostnader = dekningsbidrag. Tilleggssats = budsjetterte indirekte kostnader × 100 / budsjettert årsaktivitet."},
+
+{topic:"6.2 Selvkost eller bidrag", type:"cat",
+ prompt:"Hvilken metode passer utsagnet best til?",
+ cats:["Selvkostmetoden","Bidragsmetoden"],
+ items:[
+  ["Inkluderer både faste og variable kostnader",0],
+  ["Inkluderer kun variable kostnader",1],
+  ["Langsiktig prissetting der alle kostnader skal dekkes",0],
+  ["Tilbud, lavsesong og kortsiktige beslutninger",1],
+  ["Gir riktig grunnlag for å vurdere en tilleggsordre ved ledig kapasitet",1],
+  ["Ordinær prising og langsiktige beslutninger",0]],
+ explain:"Selvkostmetoden tar med alle kostnader og brukes til ordinær prising og langsiktige beslutninger. Bidragsmetoden tar bare med variable kostnader (merkostnader) og brukes til tilbud, lavsesong, tilleggsordrer og andre kortsiktige beslutninger."},
+
+/* ---------- 6.3 Kalkulasjon ---------- */
+{topic:"6.3 For- og etterkalkyle", type:"multi",
+ case:"<p>AS Familiespill skal levere 1 000 enheter av spillet «Max» for 200 000 kr. Tilleggssatser: materialavd. 10 %, tilvirkningsavd. 1 24 %, tilvirkningsavd. 2 40 kr per maskintime, salg/adm. 20 %.</p><div class='tblwrap'><table><tr><th>Direkte kostnader</th><th>Forkalkyle</th><th>Etterkalkyle</th></tr><tr><td>Direkte material</td><td>50 000</td><td>60 000</td></tr><tr><td>Direkte lønn avd. 1</td><td>30 000</td><td>35 000</td></tr><tr><td>Direkte lønn avd. 2</td><td>40 000</td><td>50 000</td></tr><tr><td>Maskintimer avd. 2</td><td>315</td><td>325</td></tr></table></div>",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["Selvkost i forkalkylen er 173 760 kr","Etterkalkylen etter selvkostmetoden viser et tap på 6 880 kr","De faste indirekte kostnadene som fordeles øker fordi de faste kostnadene totalt sett har økt","En etterkalkyle etter bidragsmetoden ville gitt et mer korrekt bilde av endringene","En etterkalkyle utarbeides før produksjonen settes i gang"],
+ correct:[0,1,3],
+ explain:"Forkalkyle: 50 000 + 5 000 + 30 000 + 7 200 + 40 000 + 12 600 = 144 800; + 20 % = <b>173 760</b> (overskudd 26 240). Etterkalkyle: 60 000 + 6 000 + 35 000 + 8 400 + 50 000 + 13 000 = 172 400; + 20 % = 206 880 → tap <b>6 880</b>. Faste kostnader endrer seg ikke totalt, men beløpet som fordeles på ordren øker med aktiviteten. Det problemet fjernes med bidragsmetoden. Etterkalkyler lages <i>etter</i> produksjonen."},
+
+{topic:"6.3 Resultatmåling og kalkulatoriske kostnader", type:"multi",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["Kalkulatorisk avskrivning bør ta utgangspunkt i gjenanskaffelseskost","Kalkulatorisk husleie for egne lokaler er relevant fordi bedriften går glipp av leieinntekt","Tilleggssatser bør baseres på normal aktivitet","Kalkulatorisk avskrivning bør ta utgangspunkt i opprinnelig anskaffelseskost","Tilleggssatser bør baseres på perioder med unormalt høy aktivitet","Kostnader uten utbetaling skal holdes utenfor kalkylene"],
+ correct:[0,1,2],
+ explain:"Kalkulatoriske kostnader (avskrivninger, renter, eierlønn, tap på fordringer, husleie) erstatter finansregnskapets tall for å vise faktisk ressursbruk. Avskrivning bør reflektere gjenanskaffelseskost, som tar hensyn til prisstigning. Kostnader uten utbetaling, som kalkulatorisk husleie, bør tas med. Tilleggssatser bygget på unormalt høy aktivitet gir feil, så bruk normal aktivitet."},
+
+{topic:"6.3 Tilleggsordre", type:"mc",
+ case:"<p>Snåle Industri AS har ledig kapasitet og får forespørsel om en ordre på 1 700 000 kr. Kalkylene viser:</p><div class='tblwrap'><table><tr><th>Post</th><th>Selvkost</th><th>Bidrag</th></tr><tr><td>Direkte kostnader</td><td>830 000</td><td>830 000</td></tr><tr><td>Variable indirekte kostnader</td><td>254 500</td><td>254 500</td></tr><tr><td>Faste indirekte (material og tilvirkning)</td><td>332 700</td><td>0</td></tr><tr><td>Faste salgs- og adm.kostnader</td><td>283 440</td><td>0</td></tr><tr><td>Sum</td><td>1 700 640</td><td>1 084 500</td></tr></table></div>",
+ prompt:"Hva bør bedriften gjøre?",
+ options:["Godta ordren. De faste kostnadene påløper uansett, og resultatet øker med 615 500 kr.","Avslå ordren, fordi selvkostkalkylen viser et tap på 640 kr.","Godta ordren, fordi fortjenesten blir 1 700 000 kr.","Avslå ordren, fordi merkostnaden er høyere enn salgsinntekten."],
+ correct:0,
+ explain:"Med ledig kapasitet er bidragsmetoden riktig grunnlag: DB = 1 700 000 − 1 084 500 = <b>615 500 kr</b>, og de faste kostnadene påløper uansett. Uten ledig kapasitet måtte ordren dekket selvkost (tap 640 kr), og da burde bedriften avslått eller forhandlet prisen."}
+];
+
+const Q14 = [
+/* ---------- Kap. 1 Introduksjon ---------- */
+{topic:"1 Regnskapstyper", type:"mc",
+ prompt:"Hvilket regnskap er beslutnings- og kontrollorientert, er hovedinstrumentet for intern økonomistyring, kan rapportere ting som kunde- og medarbeidertilfredshet, og er frivillig?",
+ options:["Driftsregnskapet (internregnskapet)","Finansregnskapet (årsregnskapet)","Skatteregnskapet","Miljøregnskapet"],
+ correct:0,
+ explain:"Driftsregnskapet er internt, beslutnings- og kontrollorientert og frivillig. Finansregnskapet informerer omverdenen om lønnsomhet, likviditet og soliditet og er fundamentet for drifts- og skatteregnskapet. Skatteregnskapet viser overgangen fra regnskapsmessig overskudd til skattemessig inntekt. Miljøregnskap er vanlig blant større og børsnoterte selskaper."},
+
+{topic:"1 Bedriftens interessegrupper", type:"match",
+ prompt:"Hva FÅR hver interessegruppe fra bedriften?",
+ items:[["Eiere",0],["Långivere",1],["Ansatte",2],["Ledelse",3],["Stat/kommune",4],["Miljøorganisasjoner",5]],
+ choices:["Utbytte","Renter","Lønn/trygghet","Lønn/heder/makt","Skatter/avgifter","Informasjon"],
+ explain:"Eiere gir kapital og får utbytte. Långivere gir lån og får renter. Ansatte gir arbeid og får lønn/trygghet. Ledelsen gir arbeid og får lønn/heder/makt. Stat/kommune gir veier/skoler og får skatter/avgifter. Miljøorganisasjoner gir omtale og får informasjon. (Leverandører gir varer og får penger; kunder gir penger og får varer.)"},
+
+{topic:"1 Selskapsformer", type:"match",
+ prompt:"Koble beskrivelsen til riktig selskapsform.",
+ items:[
+  ["Én eier, ubegrenset ansvar for all gjeld, få formelle krav",0],
+  ["Kapitalkrav på minst 30 000 kr, ansvaret er begrenset til innskutt kapital",1],
+  ["To eller flere eiere som er solidarisk ansvarlige for all gjeld",2],
+  ["To eller flere eiere som hver er ansvarlig for en avtalt andel av gjelden",3],
+  ["Ansvaret er begrenset til eventuelt andelsinnskudd",4]],
+ choices:["Enkeltpersonforetak (ENK)","Aksjeselskap (AS)","Ansvarlig selskap (ANS)","Ansvarlig selskap med delt ansvar (DA)","Samvirkeforetak (SA)"],
+ explain:"ENK: 1 eier, ingen kapitalkrav, ubegrenset ansvar. AS: minst 30 000 kr, begrenset ansvar. ANS: solidarisk ansvar for all gjeld. DA: ansvar for avtalt andel. SA: ansvar begrenset til andelsinnskudd."},
+
+{topic:"1 Bedriftens ansvar", type:"mc",
+ case:"<p>Daglig leder i et børsnotert selskap sier i et intervju: «Vårt eneste ansvar er å maksimere profitten for aksjonærene. Samfunnet og miljøet er politikernes oppgave.»</p>",
+ prompt:"Hvilket syn på samfunnsansvar uttrykker lederen?",
+ options:["Klassisk syn","Sosioøkonomisk syn","Driftsregnskapsperspektivet","Makroøkonomisk syn"],
+ correct:0,
+ explain:"Klassisk syn: bedriftens eneste ansvar er å maksimere profitt for aksjonærene. Sosioøkonomisk syn: bedrifter har også ansvar for samfunnet og miljøet de opererer i."},
+
+{topic:"1 Økonomistyring og avvik", type:"num",
+ case:"<p>En liten bedrift budsjetterte med å selge 500 produkter i juni til 200 kr per stk., med kostnader på 120 kr per produkt. Faktisk solgte bedriften 450 produkter til gjennomsnittlig 190 kr, og kostnadene ble 125 kr per produkt.</p>",
+ prompt:"Hvor mange kroner lavere ble faktisk resultat enn budsjettert resultat (resultatavviket)?",
+ answer:10750, tol:0.5, abs:true, unit:"kr",
+ explain:"Budsjett: omsetning 100 000 − kostnader 60 000 = 40 000. Regnskap: 85 500 − 56 250 = 29 250. Resultatavvik: 29 250 − 40 000 = <b>−10 750 kr</b>. (Inntektsavvik −14 500, kostnadsavvik +3 750 lavere kostnader.)"},
+
+{topic:"1 KI i bedriftsøkonomi", type:"multi",
+ prompt:"Hvilke utsagn er i tråd med forelesningens råd om KI-bruk i HSM122? Velg alle som passer.",
+ options:["Bruk KI til å forklare begreper","Bruk KI til å forenkle oppgaver du allerede forstår og mestrer","Sikt KI (via NLA) er anbefalt, blant annet fordi data ikke forlater EU","Be KI om løsningen så snart en oppgave blir vanskelig","La KI oppsummere pensum i stedet for å lese selv","DeepSeek er anbefalt fordi den er gratis"],
+ correct:[0,1,2],
+ explain:"Ja: forklare begreper, forenkle oppgaver du mestrer. Sikt KI og Microsoft Copilot via NLA er anbefalt. Nei: hjelp til løsning så snart oppgaven er vanskelig, finne idéer for deg, eller oppsummere tekst i stedet for å lese. DeepSeek er ikke anbefalt (data lagres/prosesseres i Kina)."},
+
+/* ---------- Kap. 2 Inntekts- og kostnadsbegreper ---------- */
+{topic:"2 Kostnadsbegreper", type:"match",
+ prompt:"Koble hendelsen til det begrepet som passer best.",
+ items:[
+  ["Råvarer forbrukes i produksjonen",0],
+  ["Bedriften kjøper en maskin på faktura, og leverandørgjelden øker",1],
+  ["Bedriften betaler ned 50 000 kr på et banklån",2],
+  ["Bedriften leverer en tjeneste og opptjener 20 000 kr",3],
+  ["En kunde betaler en utestående faktura inn på bankkontoen",4],
+  ["Kunden får 30 dagers utsatt betaling",5]],
+ choices:["Kostnad","Utgift","Utbetaling","Inntekt","Innbetaling","Kreditt"],
+ explain:"Kostnad = forbruk av ressurser. Utgift = reduksjon av aktivum eller økning av gjeld (anskaffelsen). Utbetaling = utgang av kontanter. Inntekt = økonomisk verdi opptjent fra salg. Innbetaling = inngang av kontanter. Kreditt = utsatt betaling."},
+
+{topic:"2 Bruttofortjeneste", type:"num",
+ case:"<p>Produkt C har kostpris 100 kr og salgspris 160 kr.</p>",
+ prompt:"Hva er bruttofortjenesteprosenten for produkt C?",
+ answer:37.5, tol:0.1, unit:"%",
+ explain:"Bruttofortjenesteprosent = (salgspris − kostpris) / <i>salgspris</i> × 100 = 60 / 160 × 100 = <b>37,5 %</b>. (Avansen er 60 / 100 = 60 %.)"},
+
+{topic:"2 Avanse", type:"num",
+ case:"<p>Salgsinntekt 500 000 kr, varekostnad 350 000 kr.</p>",
+ prompt:"Hva er avanseprosenten? (Én desimal holder.)",
+ answer:42.857, tol:0.5, unit:"%",
+ explain:"Avanseprosent = (salgspris − kostpris) / <i>kostpris</i> × 100 = 150 000 / 350 000 = <b>42,9 %</b> (ca. 43 %). Bruttofortjenesteprosenten er 150 000 / 500 000 = 30 %."},
+
+{topic:"2 Avskrivning", type:"num",
+ case:"<p>En bedrift kjøper maskineri for 500 000 kr med levetid 5 år og restverdi 50 000 kr.</p>",
+ prompt:"Hva er årlig lineær avskrivning?",
+ answer:90000, tol:0.5, unit:"kr per år",
+ explain:"(Innkjøpspris − restverdi) / levetid = (500 000 − 50 000) / 5 = <b>90 000 kr</b>."},
+
+{topic:"2 Avskrivning", type:"num",
+ case:"<p>Samme maskineri (500 000 kr) avskrives med 20 % saldoavskrivning.</p>",
+ prompt:"Hva er avskrivningen i år 2?",
+ answer:80000, tol:0.5, unit:"kr",
+ explain:"År 1: 500 000 × 20 % = 100 000, bokført verdi 400 000. År 2: 400 000 × 20 % = <b>80 000 kr</b>. Saldoavskrivningen blir mindre hvert år."},
+
+{topic:"2 MVA", type:"num",
+ case:"<p>En bedrift selger et produkt med nettopris 800 kr (25 % mva.). Bedriften betaler 150 kr i mva. på innkjøp av råvarer.</p>",
+ prompt:"Hva er netto mva. til staten?",
+ answer:50, tol:0.5, unit:"kr",
+ explain:"Pris med mva.: 800 × 1,25 = 1 000, altså 200 kr i utgående mva. Netto mva. = innbetalt mva. − betalt mva. på innkjøp = 200 − 150 = <b>50 kr</b>."},
+
+{topic:"2 Lønnskostnader", type:"num",
+ case:"<p>En ansatt har brutto årslønn på 500 000 kr. Feriepenger er 12 % av lønnen. Arbeidsgiveravgiften er 14,1 % og beregnes av lønn inklusive feriepenger. Se bort fra pensjon og forsikring.</p>",
+ prompt:"Hva er bedriftens samlede lønnskostnad for denne ansatte?",
+ answer:638960, tol:1, unit:"kr",
+ explain:"Feriepenger: 60 000. Lønn + feriepenger: 560 000. Arbeidsgiveravgift: 560 000 × 14,1 % = 78 960. Sum: <b>638 960 kr</b>."},
+
+{topic:"2 Faste og variable kostnader", type:"cat",
+ prompt:"Kan kostnaden reagere på aktivitetsnivået? Kategoriser.",
+ cats:["Variabel kostnad","Fast kostnad"],
+ items:[["Trematerialer til stoler",0],["Direkte lønnskostnader (personalkostnader)",0],["Husleie",1],["Forsikring",1],["Lederlønninger",1],["Avskrivninger",1]],
+ explain:"Variable kostnader reagerer på aktivitetsnivået; kostnad per enhet er den samme. Faste kostnader (husleie, forsikring, lederlønninger, avskrivninger) gjør ikke det; kostnad per enhet blir lavere jo større aktiviteten er."},
+
+/* ---------- Kap. 3 Kostnadsforløpet ---------- */
+{topic:"3.1 Sprangvise faste kostnader", type:"cat",
+ prompt:"Kategoriser kostnadene.",
+ cats:["Fast sprangvis","Fast ikke-sprangvis"],
+ items:[
+  ["Leie av stor lagerplass som må utvides med flere enheter når lageret fylles opp",0],
+  ["Lønn til administrative ansatte som ikke varierer med produksjonsvolumet",1],
+  ["Leie av produksjonslokaler som må utvides når produksjonen øker betraktelig",0],
+  ["Forsikring på eiendom som er konstant, uavhengig av aktivitetsnivået",1],
+  ["Maskinvedlikehold som krever tilleggsutstyr ved høyere kapasitetsutnyttelse",0],
+  ["Årlige lisensavgifter for produksjonsutstyr som ikke endres med volumet",1]],
+ explain:"Sprangvise faste kostnader øker i sprang når produksjonen passerer et terskelnivå og kapasiteten må økes (flere maskiner, større bygg). Ikke-sprangvise faste kostnader er konstante innenfor en bestemt kapasitet."},
+
+{topic:"3.1 Reversible og irreversible kostnader", type:"cat",
+ prompt:"Kategoriser kostnadene.",
+ cats:["Reversibel","Irreversibel"],
+ items:[
+  ["Kjøp av spesialutstyr som ikke kan selges for full verdi etter kjøp",1],
+  ["Lønn til fast ansatte som ikke kan reduseres umiddelbart når produksjonen synker",1],
+  ["Reklame for en kampanje som allerede er betalt",1],
+  ["Leie av kontorlokaler som kan sies opp med én måneds varsel",0],
+  ["Forsikring på eiendom som kan kanselleres med én måneds varsel",0],
+  ["Vedlikeholdsavtale for maskiner som kan avsluttes ved produksjonsstans",0]],
+ explain:"Reversible kostnader kan elimineres eller reduseres når aktiviteten går ned. Irreversible kostnader kan ikke reverseres selv om aktiviteten reduseres, typisk spesialutstyr og spesialtilpassede bygninger. Standardisert utstyr gjør kostnader lettere å reversere."},
+
+{topic:"3.1 Proporsjonalitet", type:"mc",
+ case:"<div class='tblwrap'><table><tr><th>Mengde</th><th>0</th><th>100</th><th>200</th><th>300</th><th>400</th><th>500</th></tr><tr><td>VTK (kr)</td><td>0</td><td>5 000</td><td>7 200</td><td>8 800</td><td>10 000</td><td>11 000</td></tr></table></div>",
+ prompt:"Hva slags variable kostnader viser tabellen?",
+ options:["Underproporsjonale","Proporsjonale","Overproporsjonale","Sprangvis faste"],
+ correct:0,
+ explain:"Fra 100 til 200 enheter øker mengden 100 %, men VTK øker bare 44 % (5 000 → 7 200). Endring i mengde > endring i VTK gir <b>underproporsjonale</b> kostnader. VEK faller: 50, 36, 29,3, 25, 22."},
+
+{topic:"3.2 Grensekostnad", type:"num",
+ case:"<p>Startbil AS produserer elektriske småbiler. Faste kostnader er 13 mill. kr.</p><div class='tblwrap'><table><tr><th>Antall biler</th><th>Sum kostnader</th></tr><tr><td>0</td><td>13 000 000</td></tr><tr><td>1</td><td>13 500 000</td></tr><tr><td>2</td><td>13 950 000</td></tr><tr><td>3</td><td>14 350 000</td></tr><tr><td>4</td><td>14 700 000</td></tr><tr><td>5</td><td>15 000 000</td></tr><tr><td>6</td><td>15 250 000</td></tr></table></div>",
+ prompt:"Hva er grensekostnaden for å produsere den fjerde bilen?",
+ answer:350000, tol:0.5, unit:"kr",
+ explain:"Grensekostnad = kostnadsøkningen ved én ekstra enhet: 14 700 000 − 14 350 000 = <b>350 000 kr</b>. Grensekostnadene (500 000, 450 000, 400 000, 350 000, 300 000, 250 000) faller fordi fabrikken har god kapasitet i starten."},
+
+{topic:"3.2 Differanseenhetskostnad", type:"num",
+ case:"<div class='tblwrap'><table><tr><th>Antall surfebrett</th><th>Sum kostnader</th></tr><tr><td>0</td><td>100 000</td></tr><tr><td>1 000</td><td>135 000</td></tr><tr><td>2 000</td><td>155 000</td></tr><tr><td>3 000</td><td>170 000</td></tr><tr><td>4 000</td><td>182 000</td></tr></table></div>",
+ prompt:"Hva er differanseenhetskostnaden (DEK) når produksjonen økes fra 2 000 til 3 000 surfebrett?",
+ answer:15, tol:0.01, unit:"kr per brett",
+ explain:"DK = 170 000 − 155 000 = 15 000. DEK = Δ totalkostnad / Δ mengde = 15 000 / 1 000 = <b>15 kr</b>. DEK er en tilnærmet grensekostnad."},
+
+{topic:"3.2 Kostnadsoptimal mengde", type:"num",
+ case:"<p>Lia Møbelmontasje AS har faste kostnader på 25 000 kr per uke (driftsuavhengige).</p><div class='tblwrap'><table><tr><th>Mengde (stk/uke)</th><th>10</th><th>20</th><th>30</th><th>40</th><th>50</th><th>60</th><th>70</th><th>80</th></tr><tr><td>Variable kostnader</td><td>4 400</td><td>7 400</td><td>9 900</td><td>12 400</td><td>15 500</td><td>22 800</td><td>42 200</td><td>69 000</td></tr></table></div>",
+ prompt:"Ved hvilken av tabellmengdene er sum enhetskostnad (SEK) lavest?",
+ answer:60, tol:0.5, unit:"stk/uke",
+ explain:"SEK = (VK + 25 000) / mengde: 2 940, 1 620, 1 163, 935, 810, <b>796,67</b> (60 stk), 960, 1 175. Kostnadsoptimum ligger ved 60 stk/uke."},
+
+{topic:"3.2 Kostnadsoptimal mengde", type:"mc",
+ case:"<p>Andersen AS har faste kostnader på 8 000 kr.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>0</th><th>100</th><th>200</th><th>300</th><th>400</th><th>500</th><th>600</th></tr><tr><td>STK</td><td>8 000</td><td>12 400</td><td>14 400</td><td>17 400</td><td>23 000</td><td>33 000</td><td>48 000</td></tr></table></div>",
+ prompt:"Hva er optimal mengde med tanke på sum kostnader (SEK) og med tanke på variable kostnader (VEK)?",
+ options:["SEK lavest ved 400, VEK lavest ved 300","SEK lavest ved 300, VEK lavest ved 400","Begge er lavest ved 300","Begge er lavest ved 400"],
+ correct:0,
+ explain:"SEK = STK / mengde: 124, 72, 58, 57,50 (400), 66, 80. VEK = (STK − 8 000) / mengde: 44, 32, 31,33 (300), 37,50, 50, 66,67. VEK når bunnen før SEK, fordi de faste kostnadene fortsatt fordeles på flere enheter."},
+
+{topic:"3.2 Matematisk modell", type:"num",
+ case:"<p>Kostnadsfunksjonen til en bedrift er K(x) = 0,125x² + 22x + 1 800. Bedriften produserer i dag 4 000 enheter.</p>",
+ prompt:"Hva er sum enhetskostnad SEK(x) ved denne mengden? (To desimaler.)",
+ answer:522.45, tol:0.06, unit:"kr per enhet",
+ explain:"K(4 000) = 0,125 × 16 000 000 + 22 × 4 000 + 1 800 = 2 000 000 + 88 000 + 1 800 = 2 089 800. SEK = K(x) / x = 2 089 800 / 4 000 = <b>522,45 kr</b>."},
+
+{topic:"3.2 DEK, SEK og VEK", type:"multi",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["SEK er lavest der DEK = SEK (kostnadsoptimum)","VEK er lavest der DEK-kurven møter VEK-kurven","Når DEK synker, øker kostnadene saktere (underproporsjonale kostnader)","Faste enhetskostnader (FEK) synker når aktiviteten øker","Faste totale kostnader (FTK) øker når aktiviteten øker","Ved proporsjonale variable kostnader øker VEK når mengden øker"],
+ correct:[0,1,2,3],
+ explain:"Kostnadsoptimum: DEK = SEK. VEK-minimum: DEK = VEK. Synkende DEK betyr underproporsjonale kostnader, stigende DEK overproporsjonale. FTK er de samme uansett aktivitet, men FEK faller. Ved proporsjonale kostnader er VEK konstant."},
+
+/* ---------- Kap. 4 Etterspørsel ---------- */
+{topic:"4 Etterspørsel", type:"mc",
+ prompt:"Hvilken av disse er IKKE en av faktorene som påvirker etterspørselen, slik de ble presentert i forelesningen?",
+ options:["Bedriftens faste kostnader","Prisen på andre produkter og tjenester","Kvaliteten","Salgsinnsatsen"],
+ correct:0,
+ explain:"Faktorene er prisen, prisen på andre produkter, kvaliteten, salgsinnsatsen og individuelle forhold hos etterspørreren (kjøpekraft, personlig smak). Bedriftens kostnader påvirker tilbudet, ikke kundenes etterspørsel."},
+
+{topic:"4 Differanseenhetsinntekt", type:"num",
+ case:"<p>Foldo AS produserer en populær plastkrakk.</p><div class='tblwrap'><table><tr><th>Pris (kr)</th><th>90</th><th>80</th><th>70</th><th>60</th><th>50</th><th>40</th></tr><tr><td>Mengde</td><td>500</td><td>1 000</td><td>2 000</td><td>3 000</td><td>4 000</td><td>5 000</td></tr></table></div>",
+ prompt:"Hva er differanseenhetsinntekten (DEI) når mengden øker fra 2 000 til 3 000?",
+ answer:40, tol:0.01, unit:"kr per enhet",
+ explain:"STI ved 2 000: 2 000 × 70 = 140 000. STI ved 3 000: 3 000 × 60 = 180 000. DI = 40 000. DEI = 40 000 / 1 000 = <b>40 kr</b>. (Fra 3 000 til 4 000 blir DEI 20, og fra 4 000 til 5 000 blir den 0.)"},
+
+{topic:"4 Prisreduksjon", type:"mc",
+ case:"<p>Et bakeri selger 200 brød per dag til 50 kr. Bakermesteren setter ned prisen til 40 kr, og salget øker til 300 brød per dag.</p>",
+ prompt:"Hvilket utsagn er riktig?",
+ options:["Inntekten øker med 2 000 kr per dag. Om det er lønnsomt, avhenger av kostnadene ved å bake 100 brød ekstra.","Inntekten faller med 2 000 kr per dag fordi prisen går ned.","Inntekten øker med 2 000 kr per dag, så prisreduksjonen er alltid lønnsom.","Inntekten er uendret fordi etterspørselen er nøytralelastisk."],
+ correct:0,
+ explain:"Før: 50 × 200 = 10 000. Etter: 40 × 300 = 12 000. Inntekten øker med 2 000 kr. Etterspørselen er elastisk (ep = (100/200) / (10/40) = 2). Prisreduksjonen er lønnsom bare hvis merinntekten er større enn merkostnaden."},
+
+{topic:"4 Priselastisitet", type:"num",
+ case:"<p>AS Elastikk selger 6 000 pakker buksestrikk for 30 kr per pakke. Ved pris 25 kr regner bedriften med å selge 7 800 pakker.</p>",
+ prompt:"Hva er priselastisiteten? Bruk forelesningens formel (endring / laveste verdi) og oppgi tallverdien.",
+ answer:1.5, tol:0.02, abs:true, unit:"",
+ explain:"Relativ mengdeendring: 1 800 / 6 000 = 0,30. Relativ prisendring: 5 / 25 = 0,20. ep = 0,30 / 0,20 = <b>1,5</b> (eller −1,5 med fortegn). Over 1 i tallverdi betyr elastisk etterspørsel."},
+
+{topic:"4 Priselastisitet og inntekt", type:"mc",
+ case:"<p>Fortsett med AS Elastikk: prisen settes ned fra 30 kr til 25 kr, og salget øker fra 6 000 til 7 800 pakker.</p>",
+ prompt:"Hva skjer med salgsinntekten?",
+ options:["Den øker med 15 000 kr, fordi etterspørselen er elastisk","Den faller, fordi etterspørselen er uelastisk","Den er uendret, fordi ep = 1","Den øker med 54 000 kr"],
+ correct:0,
+ explain:"Før: 6 000 × 30 = 180 000. Etter: 7 800 × 25 = 195 000. Økning: <b>15 000 kr</b>. Ved elastisk etterspørsel er DEI positiv, og en prisreduksjon øker inntekten. Om det er lønnsomt, avhenger av kostnadene ved 1 800 ekstra pakker."},
+
+{topic:"4 Elastisk eller uelastisk", type:"cat",
+ prompt:"Kategoriser varene slik forelesningen gjorde.",
+ cats:["Elastisk (luksusvare)","Uelastisk (nødvendighetsvare)"],
+ items:[["Bensin",1],["Matvarer",1],["Klær",1],["Kino",0],["Flybillett",0],["Bil",0]],
+ explain:"Nødvendighetsvarer har uelastisk etterspørsel (liten mengdeøkning ved prisreduksjon): matvarer, klær, bensin. Luksusvarer har elastisk etterspørsel (stor mengdeøkning ved prisreduksjon): flybillett, kino, bil."},
+
+{topic:"4 Kurveskift og andre produkter", type:"multi",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["En prisøkning på iPad kan øke salget av Android-nettbrett (substitutter)","Ski og bindinger er komplementære produkter","Høyere kvalitet eller mer reklame gir et skift mot høyre i etterspørselskurven","En endring i varens egen pris gir en bevegelse langs kurven","Lavere pris på en substitutt gir et skift mot høyre","Lavere kjøpekraft gir et skift mot høyre"],
+ correct:[0,1,2,3],
+ explain:"Bevegelse langs kurven skyldes bare en endring i egen pris. Skift i kurven skyldes andre faktorer. Mot høyre: høyere kvalitet, mer reklame eller høyere pris på en substitutt. Mot venstre: lavere kjøpekraft eller lavere pris på en substitutt."}
+];
+
+const Q_P3 = [
+/* ---------- Kap. 1 Introduksjon ---------- */
+{topic:"1 Regnskapstyper", type:"mc",
+ case:"<p>Sparebanken Vest vurderer å gi Fjordlys AS et lån på 4 mill. kr. Banken vil vite om selskapet er lønnsomt, har god likviditet og er solid.</p>",
+ prompt:"Hvilket regnskap er laget for å informere omverdenen om nettopp dette?",
+ options:["Driftsregnskapet","Skatteregnskapet","Finansregnskapet","Miljøregnskapet"],
+ correct:2,
+ explain:"<b>Finansregnskapet</b> (eksternregnskapet/årsregnskapet) informerer omverdenen om lønnsomhet, likviditet og soliditet, og følger god regnskapsskikk. Driftsregnskapet er internt og frivillig. Skatteregnskapet forklarer overgangen fra regnskapsmessig overskudd til skattemessig inntekt. Miljøregnskap er vanlig blant større og børsnoterte selskaper."},
+
+{topic:"1 Bedriftens interessegrupper", type:"match",
+ prompt:"Hva GIR hver interessegruppe til bedriften?",
+ items:[["Eiere",1],["Långivere",3],["Ansatte",5],["Leverandører",6],["Kunder",0],["Stat/kommune",4],["Miljøorganisasjoner",2]],
+ choices:["Penger","Kapital","Omtale","Lån","Veier/skoler","Arbeid","Varer/tjenester"],
+ explain:"Eiere gir kapital (får utbytte). Långivere gir lån (får renter). Ansatte gir arbeid (får lønn/trygghet). Leverandører gir varer/tjenester (får penger). Kunder gir penger (får varer/tjenester). Stat/kommune gir veier/skoler (får skatter/avgifter). Miljøorganisasjoner gir omtale (får informasjon)."},
+
+{topic:"1 Økonomistyring og avvik", type:"num",
+ case:"<p>Kafé Bønna budsjetterte for mars med å selge 2 000 kopper kaffe til 45 kr, med kostnader på 18 kr per kopp. Faktisk solgte kafeen 2 300 kopper til gjennomsnittlig 42 kr, og kostnadene ble 19 kr per kopp.</p>",
+ prompt:"Hvor mange kroner høyere ble de faktiske kostnadene enn de budsjetterte (kostnadsavviket)?",
+ answer:7700, tol:0.5, abs:true, unit:"kr",
+ explain:"Budsjetterte kostnader: 2 000 × 18 = 36 000. Faktiske kostnader: 2 300 × 19 = 43 700. Kostnadsavvik: 43 700 − 36 000 = <b>7 700 kr</b> høyere enn budsjett. Til sammenligning: omsetningen ble 96 600 mot budsjett 90 000 (+6 600), så resultatet ble 52 900 mot 54 000 (−1 100)."},
+
+{topic:"1 Bedriftens ansvar", type:"cat",
+ prompt:"Hvilket syn på samfunnsansvar uttrykker hvert utsagn?",
+ cats:["Klassisk syn","Sosioøkonomisk syn"],
+ items:[
+  ["«Vår eneste oppgave er å skape størst mulig avkastning til aksjonærene.»",0],
+  ["«Vi kutter utslipp utover lovkravene fordi vi har et ansvar for miljøet vi opererer i.»",1],
+  ["«Lokalsamfunnet og miljøet er politikernes ansvar, ikke bedriftens.»",0],
+  ["«Vi bidrar i lokalsamfunnet der vi har virksomhet, fordi vi mener vi har et samfunnsansvar.»",1],
+  ["«Penger brukt på formål som ikke øker profitten, tilhører egentlig aksjonærene.»",0],
+  ["«Vi krever gode arbeidsforhold hos leverandørene våre, selv om det gir litt lavere fortjeneste.»",1]],
+ explain:"Klassisk syn: bedriftens eneste ansvar er å maksimere profitt for aksjonærene. Sosioøkonomisk syn: bedrifter har også et ansvar for samfunnet og miljøet de opererer i."},
+
+{topic:"1 Type bedrifter", type:"match",
+ prompt:"Koble virksomheten til riktig type bedrift.",
+ items:[
+  ["Et smelteverk som produserer aluminium",3],
+  ["Et grossistlager som selger dagligvarer videre til butikker",1],
+  ["En snekker som bygger kjøkken på bestilling",4],
+  ["En blomsterbutikk som selger til forbrukere",0],
+  ["Et treningssenter",2]],
+ choices:["Detaljistbedrift (handelsbedrift)","Engrosbedrift (handelsbedrift)","Tjenesteytende bedrift","Industribedrift","Håndverksbedrift"],
+ explain:"Forelesningen deler inn i fem typer: industribedrift (smelteverk), engrosbedrift (grossist som selger videre til butikker), håndverksbedrift (snekker), detaljistbedrift (butikk som selger til forbrukere) og tjenesteytende bedrift (treningssenter)."},
+
+{topic:"1 Økonomistyring", type:"mc",
+ case:"<p>Ledelsen i Nordlys Bakeri har satt mål for året, innarbeidet planene i budsjetter og gjennomført planene for første kvartal.</p>",
+ prompt:"Hva er neste steg i økonomistyringsprosessen?",
+ options:["Analysere avvik","Registrere og rapportere","Sette nye mål","Innarbeide planer i budsjetter"],
+ correct:1,
+ explain:"Rekkefølgen er: sette mål → innarbeide planer i budsjetter → gjennomføre planer → <b>registrere og rapportere</b> → analysere avvik. Avviksanalysen gir tilbakemelding til alle de tidligere stegene."},
+
+/* ---------- Kap. 2 Inntekts- og kostnadsbegreper ---------- */
+{topic:"2 Kostnadsbegreper", type:"mc",
+ case:"<p>Snøfjell Transport AS kjøper en ny varebil og betaler 400 000 kr kontant fra bankkontoen. Bilen skal brukes i driften i fem år.</p>",
+ prompt:"Hvilken beskrivelse er riktig på kjøpstidspunktet?",
+ options:["Både kostnad, utgift og utbetaling på hele beløpet i kjøpsåret","Bare kostnad, siden bilen skal brukes i driften","Utgift nå, men utbetaling og kostnad først når bilen er ferdig avskrevet","Utgift og utbetaling nå. Kostnaden kommer gradvis gjennom avskrivninger over levetiden"],
+ correct:3,
+ explain:"Utgift = reduksjon av aktivum eller økning av gjeld (anskaffelsen). Utbetaling = utgang av kontanter (betalt kontant nå). Kostnad = forbruk av ressurser i verdiskapingen. Bilen forbrukes over fem år, så kostnaden periodiseres gjennom <b>avskrivninger</b>."},
+
+{topic:"2 Avanse", type:"num",
+ case:"<p>Fjellsport AS kjøper inn en sovepose for 640 kr og selger den for 896 kr (begge beløp uten mva.).</p>",
+ prompt:"Hva er avanseprosenten?",
+ answer:40, tol:0.1, unit:"%",
+ explain:"Avanseprosent = (salgspris − kostpris) / <i>kostpris</i> × 100 = 256 / 640 × 100 = <b>40 %</b>. Bruttofortjenesteprosenten er 256 / 896 = 28,6 %. Avanse brukes for prissetting, bruttofortjeneste for driftsvurdering."},
+
+{topic:"2 Lønnskostnader", type:"num",
+ case:"<p>En lagermedarbeider har timelønn 260 kr og jobber 1 650 timer i året. Feriepenger er 12 % av lønnen. Arbeidsgiveravgiften er 14,1 % og beregnes av lønn inklusive feriepenger. Se bort fra pensjon og forsikring.</p>",
+ prompt:"Hva er bedriftens samlede årlige lønnskostnad for medarbeideren? Rund av til hele kroner.",
+ answer:548228, tol:1, unit:"kr",
+ explain:"Lønn: 260 × 1 650 = 429 000. Feriepenger: 429 000 × 12 % = 51 480. Lønn + feriepenger: 480 480. Arbeidsgiveravgift: 480 480 × 14,1 % = 67 747,68. Sum: <b>548 228 kr</b>."},
+
+{topic:"2 Avskrivning", type:"num",
+ case:"<p>Snøfjell Transport AS kjøper en varebil for 620 000 kr. Forventet levetid er 6 år, og restverdien anslås til 50 000 kr. Bilen avskrives lineært.</p>",
+ prompt:"Hva er bokført verdi av bilen etter 3 år?",
+ answer:335000, tol:0.5, unit:"kr",
+ explain:"Årlig avskrivning: (620 000 − 50 000) / 6 = 95 000. Etter 3 år er det avskrevet 3 × 95 000 = 285 000. Bokført verdi: 620 000 − 285 000 = <b>335 000 kr</b>."},
+
+{topic:"2 Avskrivning", type:"num",
+ case:"<p>Trykkeriet AS kjøper en trykkpresse for 300 000 kr. Pressen avskrives med 25 % saldoavskrivning.</p>",
+ prompt:"Hva er avskrivningen i år 3? (Hele kroner holder.)",
+ answer:42187.5, tol:1, unit:"kr",
+ explain:"År 1: 300 000 × 25 % = 75 000, bokført verdi 225 000. År 2: 225 000 × 25 % = 56 250, bokført verdi 168 750. År 3: 168 750 × 25 % = <b>42 187,50 kr</b>. Saldoavskrivningen blir mindre hvert år."},
+
+{topic:"2 Avskrivning", type:"num",
+ case:"<p>Pakkeriet AS kjøper en pakkemaskin for 1 200 000 kr. Restverdien anslås til 200 000 kr, og maskinen forventes å pakke 500 000 esker i løpet av levetiden. I år 1 pakker maskinen 80 000 esker. Bedriften bruker bruksavskrivning.</p>",
+ prompt:"Hva blir avskrivningen i år 1?",
+ answer:160000, tol:0.5, unit:"kr",
+ explain:"Bruksavskrivning baseres på faktisk bruk eller produksjon, ikke tid. Avskrivning per eske: (1 200 000 − 200 000) / 500 000 = 2 kr. År 1: 80 000 × 2 = <b>160 000 kr</b>."},
+
+{topic:"2 MVA", type:"num",
+ case:"<p>Hagestua AS selger i en måned varer for 50 000 kr <i>inklusive</i> 25 % mva. I samme måned kjøper bedriften varer for 24 000 kr <i>inklusive</i> 25 % mva.</p>",
+ prompt:"Hvor mye netto mva. skal bedriften betale til staten for måneden?",
+ answer:5200, tol:0.5, unit:"kr",
+ explain:"Netto pris = brutto pris / 1,25. Salg: 50 000 / 1,25 = 40 000, innbetalt mva. = 10 000. Innkjøp: 24 000 / 1,25 = 19 200, betalt mva. = 4 800. Netto mva. til staten = 10 000 − 4 800 = <b>5 200 kr</b>."},
+
+{topic:"2 Direkte og indirekte kostnader", type:"cat",
+ case:"<p>Kostnadsobjektet er stolene som produseres i en møbelfabrikk.</p>",
+ prompt:"Kan kostnaden henføres direkte til kostnadsobjektet? Kategoriser.",
+ cats:["Direkte kostnad","Indirekte kostnad"],
+ items:[
+  ["Trematerialer til stolene",0],
+  ["Lønn til snekkerne som setter sammen stolene",0],
+  ["Stoff til setetrekket på stolene",0],
+  ["Lim og andre festemidler",1],
+  ["Lønn til ryddehjelp",1],
+  ["Lønn til vakttjeneste",1],
+  ["Avskrivninger på fabrikkbygget",1]],
+ explain:"Direkte kostnader kan henføres direkte til kostnadsobjektet: direkte materialer (trematerialer, setetrekk) og direkte lønn (personalkostnader). Indirekte kostnader kan ikke det: indirekte materialer som lim og festemidler, indirekte lønn (ryddehjelp, vakttjeneste, truckførere) og avskrivninger."},
+
+{topic:"2 Kostnadsart og kostnadssted", type:"multi",
+ case:"<p>Strandhotellet fører driftsregnskap og fordeler kostnadene fra kostnadsart til kostnadssted.</p>",
+ prompt:"Hvilke av disse er kostnadssteder? Velg alle som passer.",
+ options:["Resepsjonen","Lønnskostnad","Konferanseavdelingen","Varekostnad","Vedlikeholdsavdelingen","Avskrivningskostnad"],
+ correct:[0,2,4],
+ explain:"Kostnadssted = en avdeling, maskin, maskinpark eller annen enhet i virksomheten (matservering, romutleie, bar, konferanseavdeling, resepsjon, vedlikehold). Kostnadsart = hvilke produksjonsfaktorer bedriften forbruker (varekostnad, lønnskostnad, avskrivningskostnad)."},
+
+/* ---------- Kap. 3 Kostnadsforløpet ---------- */
+{topic:"3.1 Sprangvise faste kostnader", type:"num",
+ case:"<p>Kajakkverkstedet AS har faste kostnader som øker i sprang:</p><div class='tblwrap'><table><tr><th>Produksjon (stk/år)</th><th>FTK (kr)</th></tr><tr><td>0–5 000</td><td>1 800 000</td></tr><tr><td>5 001–10 000</td><td>2 700 000</td></tr><tr><td>10 001–15 000</td><td>3 600 000</td></tr></table></div>",
+ prompt:"Hva blir faste enhetskostnader (FEK) hvis bedriften produserer 6 000 stk?",
+ answer:450, tol:0.5, unit:"kr per stk",
+ explain:"Ved 6 000 stk ligger bedriften i andre sprang, så FTK = 2 700 000. FEK = FTK / mengde = 2 700 000 / 6 000 = <b>450 kr</b>. Til sammenligning er FEK 360 kr ved 5 000 stk. Når kapasiteten må utvides, hopper FEK opp før den igjen faller med økt produksjon."},
+
+{topic:"3.1 Proporsjonalitet", type:"mc",
+ case:"<div class='tblwrap'><table><tr><th>Mengde</th><th>0</th><th>100</th><th>200</th><th>300</th><th>400</th></tr><tr><td>VTK (kr)</td><td>0</td><td>4 000</td><td>8 600</td><td>13 800</td><td>19 600</td></tr></table></div>",
+ prompt:"Hva slags variable kostnader viser tabellen?",
+ options:["Underproporsjonale","Proporsjonale","Overproporsjonale","Sprangvis faste"],
+ correct:2,
+ explain:"Fra 100 til 200 enheter øker mengden 100 %, mens VTK øker 115 % (4 000 → 8 600). Endring i mengde < endring i VTK gir <b>overproporsjonale</b> kostnader. VEK stiger: 40, 43, 46, 49."},
+
+{topic:"3.1 Proporsjonalitet", type:"cat",
+ prompt:"Kategoriser de variable totale kostnadene (VTK) ut fra endringen i mengde og VTK.",
+ cats:["Proporsjonale","Overproporsjonale","Underproporsjonale"],
+ items:[
+  ["Mengden øker 50 %, VTK øker 50 %",0],
+  ["Mengden øker 20 %, VTK øker 31 %",1],
+  ["Mengden øker 40 %, VTK øker 18 %",2],
+  ["Mengden dobles, VTK dobles",0],
+  ["Mengden øker 25 %, VTK øker 9 %",2],
+  ["Mengden øker 10 %, VTK øker 16 %",1]],
+ explain:"Proporsjonale: endring i mengde = endring i VTK (VEK konstant). Overproporsjonale: endring i mengde < endring i VTK (VEK stiger, f.eks. overtid). Underproporsjonale: endring i mengde > endring i VTK (VEK synker)."},
+
+{topic:"3.1 Reversible og irreversible kostnader", type:"mc",
+ prompt:"En bedrift skal øke kapasiteten, men er usikker på om etterspørselen holder seg. Hvilket valg gjør det lettest å reversere de faste kostnadene hvis produksjonen senere faller?",
+ options:["Å investere i spesialtilpasset prosessutstyr","Å velge standardisert utstyr som kan selges eller brukes til andre formål","Å bygge en spesialtilpasset produksjonshall","Å binde seg til en lang leieavtale uten oppsigelsesrett"],
+ correct:1,
+ explain:"Irreversible kostnader er typisk knyttet til spesialutstyr og spesialtilpassede bygninger og prosessutstyr. <b>Reversible kostnader er lettere med standardisert utstyr.</b> Irreversible kostnader binder opp kapital og gjør det vanskeligere å justere kapasiteten når produksjonsbehovet faller."},
+
+{topic:"3.2 Differanseenhetskostnad", type:"num",
+ case:"<p>Havbris Bryggeri har disse totale kostnadene per uke:</p><div class='tblwrap'><table><tr><th>Liter</th><th>0</th><th>200</th><th>400</th><th>600</th><th>800</th><th>1 000</th></tr><tr><td>STK (kr)</td><td>12 000</td><td>15 400</td><td>18 000</td><td>20 200</td><td>23 400</td><td>28 000</td></tr></table></div>",
+ prompt:"Hva er differanseenhetskostnaden (DEK) når produksjonen økes fra 600 til 800 liter?",
+ answer:16, tol:0.01, unit:"kr per liter",
+ explain:"DK = 23 400 − 20 200 = 3 200. DEK = Δ totalkostnad / Δ mengde = 3 200 / 200 = <b>16 kr</b>. DEK i alle intervallene: 17, 13, 11, 16, 23. Lavest DEK (11 kr, 400–600) markerer overgangen fra under- til overproporsjonale kostnader."},
+
+{topic:"3.2 Kostnadsoptimal mengde", type:"num",
+ case:"<p>Vikasaga AS har faste kostnader på 40 000 kr per måned.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>100</th><th>200</th><th>300</th><th>400</th><th>500</th><th>600</th><th>700</th></tr><tr><td>VTK (kr)</td><td>9 000</td><td>16 000</td><td>22 500</td><td>30 000</td><td>40 000</td><td>54 000</td><td>73 500</td></tr></table></div>",
+ prompt:"Hva er den laveste sum enhetskostnaden (SEK) i tabellen? Oppgi svaret med to desimaler.",
+ answer:156.67, tol:0.06, unit:"kr per enhet",
+ explain:"SEK = (VTK + 40 000) / mengde: 490, 280, 208,33, 175, 160, <b>156,67</b> (600 enheter), 162,14. Kostnadsoptimal mengde er 600. DEK fra 500 til 600 er 140 (under SEK, så SEK synker), fra 600 til 700 er den 195 (over SEK, så SEK stiger)."},
+
+{topic:"3.2 Matematisk modell", type:"num",
+ case:"<p>Kostnadsfunksjonen til Lyngen Lys AS er K(x) = 0,002x² + 15x + 32 000. Bedriften produserer 2 500 enheter.</p>",
+ prompt:"Hva er sum enhetskostnad SEK(x) ved denne mengden? (To desimaler.)",
+ answer:32.8, tol:0.06, unit:"kr per enhet",
+ explain:"K(2 500) = 0,002 × 6 250 000 + 15 × 2 500 + 32 000 = 12 500 + 37 500 + 32 000 = 82 000. SEK = K(x) / x = 82 000 / 2 500 = <b>32,80 kr</b>."},
+
+{topic:"3.2 DEK, SEK og VEK", type:"multi",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["Lavest DEK markerer overgangen fra underproporsjonale til overproporsjonale kostnader","Så lenge DEK er lavere enn SEK, synker SEK når mengden øker","VEK når sitt minimum ved en høyere mengde enn SEK","Størrelsen på de faste kostnadene påvirker DEK","DEK er en tilnærmet grensekostnad, funnet ved å dele DK på endringen i mengde","Kostnadsoptimum er der DEK er lavest"],
+ correct:[0,1,4],
+ explain:"Riktig: lavest DEK markerer overgangen fra under- til overproporsjonale kostnader; DEK under SEK trekker gjennomsnittet ned; DEK = DK / Δ mengde er en tilnærmet grensekostnad. Galt: VEK når bunnen <i>før</i> SEK (lavere mengde), fordi faste kostnader fortsatt fordeles på flere enheter. Faste kostnader endrer seg ikke og faller derfor ut av DK og DEK. Kostnadsoptimum er der DEK = SEK, ikke der DEK er lavest."},
+
+{topic:"3.2 Grensekostnad", type:"mc",
+ case:"<p>Kaffebrenneriet AS selger kaffeposer for 80 kr per stk. Fabrikken nærmer seg fullt trykk, og det koster nå 85 kr ekstra å produsere neste pose.</p>",
+ prompt:"Hva sier forelesningens regel om grensekostnad?",
+ options:["Produksjonen bør ikke økes videre, fordi grensekostnaden overstiger prisen","Produksjonen bør økes, fordi hver ekstra pose gir 80 kr i inntekt","Grensekostnaden er uten betydning, bare de faste kostnadene teller","Produksjonen bør økes til grensekostnaden er lik de faste enhetskostnadene"],
+ correct:0,
+ explain:"Grensekostnad = kostnaden ved å produsere én ekstra enhet. Når grensekostnaden overstiger prisen på produktet, <b>bør produksjonen stoppes</b>. Her taper bedriften 85 − 80 = 5 kr på neste pose. Er prisen høyere enn grensekostnaden, kan det være lønnsomt å øke."},
+
+/* ---------- Kap. 4 Etterspørsel ---------- */
+{topic:"4 Priselastisitet", type:"num",
+ case:"<p>Puls Treningssenter har 1 200 medlemmer som betaler 600 kr i måneden. Senteret senker prisen til 540 kr og regner med å få 1 380 medlemmer.</p>",
+ prompt:"Hva er priselastisiteten? Bruk forelesningens formel (endring / laveste verdi) og oppgi tallverdien med to desimaler.",
+ answer:1.35, tol:0.02, abs:true, unit:"",
+ explain:"Relativ mengdeendring: 180 / 1 200 = 0,15. Relativ prisendring: 60 / 540 = 0,1111. ep = 0,15 / 0,1111 = <b>1,35</b>. Over 1 betyr elastisk etterspørsel, og inntekten øker: fra 720 000 til 745 200 kr i måneden."},
+
+{topic:"4 Differanseenhetsinntekt", type:"num",
+ case:"<p>Fjordbåten AS selger turistbilletter og har anslått denne etterspørselen per sesong:</p><div class='tblwrap'><table><tr><th>Pris (kr)</th><th>160</th><th>140</th><th>120</th><th>100</th><th>80</th></tr><tr><td>Mengde</td><td>2 000</td><td>2 600</td><td>3 200</td><td>4 000</td><td>5 000</td></tr></table></div>",
+ prompt:"Hva er differanseenhetsinntekten (DEI) når mengden øker fra 3 200 til 4 000 billetter?",
+ answer:20, tol:0.01, unit:"kr per billett",
+ explain:"STI ved 3 200: 3 200 × 120 = 384 000. STI ved 4 000: 4 000 × 100 = 400 000. DI = 16 000. DEI = 16 000 / 800 = <b>20 kr</b>. Fra 4 000 til 5 000 er STI uendret (400 000), så DEI = 0 og etterspørselen er nøytralelastisk i det intervallet."},
+
+{topic:"4 Priselastisitet og DEI", type:"mc",
+ prompt:"En bedrift beregner priselastisiteten til ep = 0,6 (positivt tall, slik kurset bruker). Hvilket utsagn er riktig?",
+ options:["Etterspørselen er elastisk, og en prisreduksjon øker salgsinntekten","Etterspørselen er uelastisk, DEI er negativ, og en prisreduksjon gir lavere salgsinntekt","Etterspørselen er nøytralelastisk, og DEI er null","Etterspørselen er uelastisk, DEI er positiv, og en prisreduksjon øker salgsinntekten"],
+ correct:1,
+ explain:"ep &lt; 1 betyr <b>uelastisk</b> etterspørsel og negativ DEI. Prisfallet veier tyngre enn den økte mengden, så en prisreduksjon gir lavere inntekt. ep &gt; 1: elastisk, DEI positiv. ep = 1: nøytralelastisk, DEI = 0."},
+
+{topic:"4 Bevegelse og skift", type:"cat",
+ prompt:"Hva skjer med etterspørselen etter bedriftens vare? Kategoriser.",
+ cats:["Bevegelse langs kurven","Skift mot høyre","Skift mot venstre"],
+ items:[
+  ["Bedriften setter ned prisen på sin egen vare",0],
+  ["En konkurrent med et substituttprodukt øker prisen",1],
+  ["Renten øker og husholdningene får lavere kjøpekraft",2],
+  ["Bedriften lanserer en stor reklamekampanje",1],
+  ["En konkurrent med et substituttprodukt setter ned prisen",2],
+  ["Bedriften øker prisen på sin egen vare",0],
+  ["Varen får bedre kvalitet (holdbarhet og smak)",1]],
+ explain:"Bevegelse langs kurven skyldes bare en endring i egen pris. Skift mot høyre (mer etterspørsel ved samme pris): høyere kvalitet, mer reklame, høyere pris på en substitutt. Skift mot venstre: lavere kjøpekraft eller lavere pris på en substitutt."},
+
+{topic:"4 Substitutter og komplementer", type:"multi",
+ prompt:"Hvilke par er komplementære produkter? Velg alle som passer.",
+ options:["Printer og blekkpatroner","Kaffemaskin og kaffekapsler","Smør og margarin","Spillkonsoll og spill","Tog og fly mellom Oslo og Bergen","Coca-Cola og Pepsi"],
+ correct:[0,1,3],
+ explain:"Komplementære produkter brukes sammen og påvirker hverandres etterspørsel (printer og blekkpatroner, kaffemaskin og kapsler, konsoll og spill). Substitutter er konkurrerende produkter som kan erstatte hverandre (smør og margarin, tog og fly, Coca-Cola og Pepsi)."},
+
+{topic:"4 Faktorer som påvirker etterspørselen", type:"match",
+ prompt:"Hvilken faktor påvirker etterspørselen i hvert tilfelle?",
+ items:[
+  ["Renten øker, og husholdningene har mindre å rutte med",4],
+  ["Produsenten forbedrer holdbarheten og smaken",2],
+  ["Produktet får redaksjonell omtale etter et stort lanseringsarrangement",3],
+  ["Konkurrentens tilsvarende produkt blir dyrere",1],
+  ["Bedriften setter ned prisen på produktet",0],
+  ["Produktet går av moten blant unge kunder",4]],
+ choices:["Prisen","Prisen på andre produkter","Kvaliteten","Salgsinnsatsen","Individuelle forhold hos etterspørreren"],
+ explain:"Faktorene er prisen, prisen på andre produkter (substitutter og komplementer), kvaliteten (holdbarhet, smak, utseende), salgsinnsatsen (emballasje, reklame, redaksjonell omtale, PR, service) og individuelle forhold (kjøpekraft som varierer med inntekt, skatt og rente, samt personlig smak og sosial påvirkning)."}
+];
+
+const Q_P5 = [
+/* ---------- Kap. 1 Introduksjon ---------- */
+{topic:"1 Budsjett og avvik", type:"num",
+ case:"<p>Vestkyst Sykkel AS budsjetterte for april:</p><div class='tblwrap'><table><tr><th></th><th>Budsjett</th><th>Faktisk</th></tr><tr><td>Solgte enheter</td><td>1 200</td><td>1 100</td></tr><tr><td>Pris per enhet</td><td>350</td><td>370</td></tr><tr><td>Variable kostnader per enhet</td><td>140</td><td>150</td></tr><tr><td>Faste kostnader</td><td>90 000</td><td>95 000</td></tr></table></div>",
+ prompt:"Hvor mange kroner lavere ble faktisk resultat enn budsjettert resultat (resultatavviket)?",
+ answer:15000, tol:0.5, abs:true, unit:"kr",
+ explain:"Budsjett: 420 000 − 168 000 − 90 000 = 162 000. Faktisk: 407 000 − 165 000 − 95 000 = 147 000. Resultatavvik: 147 000 − 162 000 = <b>−15 000 kr</b>. Inntektsavviket er −13 000. De variable kostnadene ble 3 000 lavere (lavere volum veier tyngre enn høyere kostnad per enhet), mens de faste ble 5 000 høyere."},
+
+{topic:"1 KI i bedriftsøkonomi", type:"mc",
+ prompt:"Ifølge forslaget til KI-veiledning (personalisering) i forelesningen: hva bør KI gjøre når du ber om fasit på en oppgave?",
+ options:["Gi fasiten med en gang, så du sparer tid","Nekte å svare på oppgaver fra pensum","Løse oppgaven direkte, men uten mellomregninger","Først spørre hva du har prøvd og hvor du står fast"],
+ correct:3,
+ explain:"Forslaget sier: «Ber jeg om fasit, <b>spør meg først hva jeg har prøvd og hvor jeg står fast</b>.» KI skal ikke gi ferdige svar med en gang, men hjelpe deg å tenke selv med spørsmål, hint og forklaring steg for steg, og den skal regne nøyaktig og vise mellomregninger."},
+
+{topic:"1 Regnskapstyper", type:"match",
+ prompt:"Koble beskrivelsen til riktig regnskapstype.",
+ items:[
+  ["Informerer omverdenen om lønnsomhet, likviditet og soliditet",0],
+  ["Er fundamentet for drifts- og skatteregnskapet og følger god regnskapsskikk",0],
+  ["Er frivillig og kan også rapportere medarbeidertilfredshet",1],
+  ["Bruker egne vurderinger av inntekter og kostnader og er beslutnings- og kontrollorientert",1],
+  ["Forklarer overgangen mellom regnskapsmessig overskudd og skattemessig inntekt",2],
+  ["Avlegges i tillegg av flere virksomheter, særlig større og børsnoterte selskaper",3]],
+ choices:["Finansregnskap","Driftsregnskap","Skatteregnskap","Miljøregnskap"],
+ explain:"Finansregnskapet (eksternregnskapet) informerer omverdenen og er fundamentet for de to andre. Driftsregnskapet er internt, frivillig, beslutnings- og kontrollorientert og kan rapportere mer enn kroner og øre. Skatteregnskapet tar utgangspunkt i finansregnskapet og forklarer overgangen til skattemessig inntekt. Miljøregnskap er vanlig blant større og børsnoterte selskaper."},
+
+{topic:"1 Modeller", type:"cat",
+ prompt:"Hvilken type bedriftsøkonomisk modell er dette?",
+ cats:["Verbal modell","Tabell","Grafisk modell","Matematisk modell"],
+ items:[
+  ["K(x) = 0,001x² + 12x + 20 000",3],
+  ["En etterspørselskurve tegnet i et diagram med pris og mengde på aksene",2],
+  ["En oversikt med kolonnene mengde, STK, DK og DEK",1],
+  ["Daglig leder forklarer med ord at kostnadene øker raskere når fabrikken nærmer seg full kapasitet",0],
+  ["SEK(x) = K(x) / x",3],
+  ["Et linjediagram som viser VEK, SEK og DEK",2]],
+ explain:"Forelesningen nevner verbale modeller, tabeller, grafiske modeller og matematiske modeller. En modell er et forenklet bilde av virkeligheten."},
+
+/* ---------- Kap. 2 Inntekts- og kostnadsbegreper ---------- */
+{topic:"2 Avanse og bruttofortjeneste", type:"mc",
+ case:"<p>Kystbutikken AS kjøper inn en regnjakke for 360 kr og priser den med 45 % avanse (beløp uten mva.).</p>",
+ prompt:"Hva blir salgsprisen og bruttofortjenesteprosenten?",
+ options:["522 kr og 45,0 %","654,55 kr og 45,0 %","522 kr og 31,0 %","504 kr og 28,6 %"],
+ correct:2,
+ explain:"Avansen regnes av kostprisen: salgspris = 360 × 1,45 = 522 kr. Bruttofortjenesten er 522 − 360 = 162 kr, og bruttofortjenesteprosenten regnes av salgsprisen: 162 / 522 × 100 = <b>31,0 %</b>. 654,55 kr ville gitt 45 % bruttofortjeneste, og 504 kr tilsvarer 40 % avanse."},
+
+{topic:"2 Lønnskostnader", type:"num",
+ case:"<p>En ingeniør har månedslønn 52 000 kr (12 måneder). Feriepenger er 12 % av årslønnen. Arbeidsgiveravgiften er 14,1 % og beregnes av lønn inklusive feriepenger. Bedriften betaler i tillegg 2 % av årslønnen (uten feriepenger) i pensjonssparing og 6 500 kr i forsikring. Anta at det ikke beregnes arbeidsgiveravgift av pensjon og forsikring.</p>",
+ prompt:"Hva er bedriftens samlede årlige lønnskostnad? Rund av til hele kroner.",
+ answer:816402, tol:1, unit:"kr",
+ explain:"Årslønn: 52 000 × 12 = 624 000. Feriepenger: 74 880. Lønn + feriepenger: 698 880. Arbeidsgiveravgift: 698 880 × 14,1 % = 98 542,08. Pensjon: 624 000 × 2 % = 12 480. Forsikring: 6 500. Sum: <b>816 402 kr</b>."},
+
+{topic:"2 Avskrivning", type:"num",
+ case:"<p>Bryggen Bakeri AS kjøper en ovn for 800 000 kr. Levetiden er 5 år og restverdien 100 000 kr. Ledelsen sammenligner lineær avskrivning med 30 % saldoavskrivning.</p>",
+ prompt:"Hvor mye lavere er bokført verdi etter 2 år med saldoavskrivning enn med lineær avskrivning?",
+ answer:128000, tol:0.5, abs:true, unit:"kr",
+ explain:"Lineær: (800 000 − 100 000) / 5 = 140 000 per år, bokført verdi etter 2 år = 800 000 − 280 000 = 520 000. Saldo: år 1 avskrives 240 000 (verdi 560 000), år 2 avskrives 168 000 (verdi 392 000). Differanse: 520 000 − 392 000 = <b>128 000 kr</b>. Valg av avskrivningsmetode påvirker resultatet."},
+
+{topic:"2 MVA", type:"num",
+ case:"<p>Sjøbua Design AS selger i en termin 400 lamper til 1 250 kr per stk. <i>inklusive</i> 25 % mva. I samme termin kjøper bedriften råvarer for 180 000 kr og tjenester for 40 000 kr, begge beløp <i>eksklusive</i> 25 % mva.</p>",
+ prompt:"Hvor mye netto mva. skal bedriften betale til staten for terminen?",
+ answer:45000, tol:0.5, unit:"kr",
+ explain:"Salg inkl. mva.: 400 × 1 250 = 500 000. Netto: 500 000 / 1,25 = 400 000, så innbetalt mva. = 100 000. Innkjøp eksl. mva.: 180 000 + 40 000 = 220 000, betalt mva. = 220 000 × 25 % = 55 000. Netto mva. til staten = 100 000 − 55 000 = <b>45 000 kr</b>."},
+
+{topic:"2 Avskrivningsmetoder", type:"mc",
+ case:"<p>Nordtrans AS kjøper en lastebil. Verdifallet skyldes i hovedsak antall kilometer kjørt, og kjørelengden varierer mye fra år til år. To år senere skader en brann bilen, og verdien faller brått med 300 000 kr.</p>",
+ prompt:"Hvilken avskrivningsmetode passer best for bilen, og hva kalles verditapet etter brannen?",
+ options:["Saldoavskrivning, og verditapet etter brannen er en vanlig avskrivning","Bruksavskrivning, og verditapet etter brannen er en nedskrivning","Lineær avskrivning, og verditapet etter brannen er en nedskrivning","Bruksavskrivning, og verditapet etter brannen er en saldoavskrivning"],
+ correct:1,
+ explain:"Bruksavskrivning baseres på faktisk bruk eller produksjon, ikke tid, og passer når slitasjen følger kjørelengden. Systematisk verdiforringelse kalles avskrivning, mens et ekstraordinært verditap kalles <b>nedskrivning</b>."},
+
+{topic:"2 Lønnskostnader", type:"multi",
+ prompt:"Arbeidsgiveravgiften betales av bedriften på basis av en rekke ytelser. Hvilke inngår i grunnlaget ifølge forelesningen? Velg alle som passer.",
+ options:["Utbetalt bruttolønn","Feriepenger","Lønn under sykdom","Verdien av firmabil","Inngående mva. på innkjøp","Avskrivninger på maskiner"],
+ correct:[0,1,2,3],
+ explain:"Arbeidsgiveravgift (8,2–14,1 %) betales på basis av utbetalt lønn, inklusive feriepenger (12 %), lønn under sykdom, verdi av firmabil osv. Mva. og avskrivninger har ingenting med lønnsgrunnlaget å gjøre."},
+
+/* ---------- Kap. 3 Kostnadsforløpet ---------- */
+{topic:"3.2 VEK-optimal mengde", type:"num",
+ case:"<p>Polar Is AS har faste kostnader på 60 000 kr per uke.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>0</th><th>100</th><th>200</th><th>300</th><th>400</th><th>500</th><th>600</th><th>700</th></tr><tr><td>STK (kr)</td><td>60 000</td><td>75 000</td><td>86 000</td><td>95 400</td><td>105 600</td><td>118 000</td><td>135 000</td><td>159 600</td></tr></table></div>",
+ prompt:"Ved hvilken av tabellmengdene er variable enhetskostnader (VEK) lavest?",
+ answer:400, tol:0.5, unit:"enheter",
+ explain:"VTK = STK − 60 000. VEK = VTK / mengde: 150, 130, 118, <b>114</b> (400), 116, 125, 142,29. SEK = STK / mengde: 750, 430, 318, 264, 236, 225 (600), 228. VEK når bunnen ved 400, før SEK (600), fordi faste kostnader fortsatt fordeles på flere enheter. DEK: 150, 110, 94, 102, 124, 170, 246."},
+
+{topic:"3.2 Matematisk modell og DEK", type:"num",
+ case:"<p>Kostnadsfunksjonen til Bergtind Maskin AS er K(x) = 0,004x² + 18x + 45 000.</p>",
+ prompt:"Hva er differanseenhetskostnaden (DEK) når produksjonen økes fra 1 000 til 1 200 enheter? (Én desimal.)",
+ answer:26.8, tol:0.06, unit:"kr per enhet",
+ explain:"K(1 000) = 4 000 + 18 000 + 45 000 = 67 000. K(1 200) = 0,004 × 1 440 000 + 21 600 + 45 000 = 5 760 + 21 600 + 45 000 = 72 360. DK = 5 360. DEK = 5 360 / 200 = <b>26,80 kr</b>. De faste kostnadene (45 000) faller bort i differansen."},
+
+{topic:"3.1 Irreversible faste kostnader", type:"mc",
+ case:"<p>Breivik Plast AS hadde FTK på 3 mill. kr med kapasitet til 10 000 enheter. For å møte økt etterspørsel kjøpte bedriften en ekstra spesialmaskin, og FTK økte til 5 mill. kr. Etter et år faller produksjonen tilbake til 8 000 enheter. Utvidelsen er irreversibel.</p>",
+ prompt:"Hva blir de faste enhetskostnadene (FEK) ved 8 000 enheter?",
+ options:["625 kr, mot 375 kr hvis utvidelsen kunne vært reversert","375 kr, fordi FTK går tilbake til 3 mill. kr","357 kr, fordi FTK fordeles på kapasiteten på 14 000 enheter","250 kr, som er økningen i FEK"],
+ correct:0,
+ explain:"Irreversible kostnader kan ikke reverseres når aktiviteten faller, så FTK forblir 5 mill. kr. FEK = 5 000 000 / 8 000 = <b>625 kr</b>. Hadde kostnaden vært reversibel, ville FEK vært 3 000 000 / 8 000 = 375 kr. Irreversible faste enhetskostnader får konsekvenser selv om produksjonen synker igjen."},
+
+{topic:"3.2 DEK og enhetskostnader", type:"cat",
+ prompt:"Tallene gjelder rundt en gitt produksjonsmengde. Hva skjer med gjennomsnittskostnaden (SEK eller VEK) når mengden økes litt?",
+ cats:["Gjennomsnittet synker","Gjennomsnittet stiger","Gjennomsnittet er på sitt laveste (optimum)"],
+ items:[
+  ["DEK = 38 kr og SEK = 52 kr",0],
+  ["DEK = 61 kr og SEK = 47 kr",1],
+  ["DEK = SEK = 45 kr",2],
+  ["DEK = 12 kr og VEK = 20 kr",0],
+  ["DEK = 30 kr og VEK = 22 kr",1],
+  ["DEK = VEK = 18 kr",2]],
+ explain:"Når de neste enhetene koster mindre enn gjennomsnittet (DEK under SEK/VEK), trekkes gjennomsnittet ned. Når de koster mer, trekkes det opp. Minimum for SEK er der DEK = SEK (kostnadsoptimum), og minimum for VEK er der DEK-kurven møter VEK-kurven."},
+
+{topic:"3.1 Faste og variable kostnader", type:"multi",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["FTK er de samme «uansett» aktivitetsnivå, mens FEK synker når aktiviteten øker","Sprangvise faste kostnader oppstår når kapasiteten må økes, for eksempel med flere maskiner eller større bygninger","Irreversible kostnader gjør det lettere å tilpasse kapasiteten når produksjonsbehovet faller","Spesialtilpasset prosessutstyr gir typisk irreversible kostnader","Ved proporsjonale variable kostnader synker VEK når mengden øker","En kostnadskurve kan være underproporsjonal ved lav produksjon og overproporsjonal ved høy produksjon"],
+ correct:[0,1,3,5],
+ explain:"Riktig: FTK konstant og FEK synkende; sprang ved kapasitetsutvidelse; spesialutstyr gir irreversible kostnader; sammensatte kostnadskurver kan gå fra under- via proporsjonal til overproporsjonal. Galt: irreversible kostnader binder opp kapital og gjør det <i>vanskeligere</i> å justere kapasiteten. Ved proporsjonale variable kostnader er VEK konstant."},
+
+/* ---------- Kap. 4 Etterspørsel ---------- */
+{topic:"4 Priselastisitet", type:"num",
+ case:"<p>Gladmat AS selger 5 000 matpakker i måneden til 80 kr. Bedriften vurderer å øke prisen til 100 kr og venter da å selge 4 200 matpakker.</p>",
+ prompt:"Hva er priselastisiteten? Bruk forelesningens formel (endring / laveste verdi) og oppgi tallverdien med to desimaler.",
+ answer:0.76, tol:0.02, abs:true, unit:"",
+ explain:"Laveste mengde er 4 200 og laveste pris er 80. Relativ mengdeendring: 800 / 4 200 = 0,1905. Relativ prisendring: 20 / 80 = 0,25. ep = 0,1905 / 0,25 = <b>0,76</b>. Under 1 betyr uelastisk etterspørsel."},
+
+{topic:"4 Priselastisitet og inntekt", type:"mc",
+ case:"<p>Fortsett med Gladmat AS: prisen økes fra 80 til 100 kr, og salget faller fra 5 000 til 4 200 matpakker.</p>",
+ prompt:"Hva skjer med salgsinntekten?",
+ options:["Den faller med 20 000 kr, fordi etterspørselen er elastisk","Den er uendret, fordi etterspørselen er nøytralelastisk","Den øker med 20 000 kr, fordi etterspørselen er uelastisk","Den øker med 100 000 kr, fordi prisen øker med 25 %"],
+ correct:2,
+ explain:"Før: 5 000 × 80 = 400 000. Etter: 4 200 × 100 = 420 000. Økning: <b>20 000 kr</b>. Ved uelastisk etterspørsel er DEI negativ: en prisreduksjon gir lavere inntekt, og motsatt gir en prisøkning høyere inntekt."},
+
+{topic:"4 Prisreduksjon og lønnsomhet", type:"num",
+ case:"<p>Solsikke Hagesenter selger 3 000 blomsterkasser i måneden til 250 kr. Variable kostnader er 120 kr per kasse, og faste kostnader endres ikke. Ved å sette ned prisen til 220 kr regner senteret med å selge 3 600 kasser.</p>",
+ prompt:"Hvor mange kroner endres månedsresultatet hvis prisen settes ned? (Oppgi beløpet.)",
+ answer:30000, tol:0.5, abs:true, unit:"kr",
+ explain:"Salgsinntekt: 750 000 → 792 000 (+42 000). Variable kostnader: 360 000 → 432 000 (+72 000). Resultatet endres med 42 000 − 72 000 = <b>−30 000 kr</b>. Etterspørselen er elastisk (ep = (600/3 000) / (30/220) = 1,47), så inntekten øker, men merkostnaden er større enn merinntekten. Prisreduksjonen er derfor ikke lønnsom."},
+
+{topic:"4 Elastisitet og DEI", type:"match",
+ prompt:"Koble opplysningen til riktig fase for etterspørselen (ep i positive tall).",
+ items:[
+  ["ep = 2,4",0],
+  ["ep = 0,35",2],
+  ["ep = 1",1],
+  ["En prisreduksjon gir uendret salgsinntekt",1],
+  ["En prisreduksjon på 10 % gir 4 % høyere salg",2],
+  ["En prisreduksjon på 5 % gir 12 % høyere salg",0]],
+ choices:["Elastisk, DEI positiv","Nøytralelastisk, DEI = 0","Uelastisk, DEI negativ"],
+ explain:"ep &gt; 1: elastisk, DEI positiv, prisreduksjon øker inntekten. ep = 1: nøytralelastisk, DEI = 0, inntekten uendret. ep &lt; 1: uelastisk, DEI negativ, prisreduksjon gir lavere inntekt. 4 % / 10 % gir ep ca. 0,4, og 12 % / 5 % gir ep ca. 2,4."},
+
+{topic:"4 Nødvendighetsvarer og luksusvarer", type:"cat",
+ prompt:"Kategoriser varene slik forelesningen skiller mellom nødvendighetsvarer og luksusvarer.",
+ cats:["Elastisk (luksusvare)","Uelastisk (nødvendighetsvare)"],
+ items:[["Fritidsreiser med fly",0],["Restaurantbesøk",0],["Weekendopphold på hotell",0],["Drivstoff",1],["Sigaretter",1],["Ris i Vietnam (basismat)",1]],
+ explain:"Luksusvarer har elastisk etterspørsel: stor mengdeøkning ved prisreduksjon (fritidsreiser, restaurant, hotell). Nødvendighetsvarer og vanevarer har uelastisk etterspørsel: liten mengdeendring ved prisendring (drivstoff, sigaretter, basismat som ris)."}
+];
+const Q_P4 = [
+/* ---------- 5.1 Markedstilpasning ---------- */
+{topic:"5.1 Markedsformer", type:"cat",
+ prompt:"Plasser hver situasjon i riktig markedsform.",
+ cats:["Monopol","Oligopol","Monopolistisk konkurranse","Fullkommen konkurranse"],
+ items:[
+  ["Vinmonopolet er eneste lovlige utsalg av sterk vin til forbrukere i Norge.",0],
+  ["Ett selskap eier hele strømnettet i et område, fordi det ikke lønner seg å bygge parallelle nett.",0],
+  ["Tre mobiloperatører dominerer markedet. Når én senker prisen, følger de andre etter.",1],
+  ["Noen få store forsikringsselskaper dominerer markedet for bilforsikring.",1],
+  ["Mange frisørsalonger i byen tilbyr hårklipp, men stil og service varierer fra salong til salong.",2],
+  ["Mange restauranter i sentrum dekker samme behov, men har ulik meny og ulikt konsept.",2],
+  ["Mange små produsenter selger helt standardisert vare på en børs. Ingen av dem kan påvirke prisen, og alle har full informasjon.",3]],
+ explain:"Monopol: én tilbyder som bestemmer prisen selv (offentlig monopol som Vinmonopolet, eller naturlig monopol som strømnett). Oligopol: få store, gjensidig avhengige aktører (mobil, forsikring, dagligvare, bensin). Monopolistisk konkurranse: mange tilbydere med varer som dekker samme behov uten å være homogene (frisør, restaurant, moteklær). Fullkommen konkurranse: mange små tilbydere og kjøpere, homogene varer og full informasjon."},
+
+{topic:"5.1 Monopol", type:"mc",
+ prompt:"Hvilket av disse er IKKE en av årsakene til monopoldannelse som nevnes i pensum?",
+ options:["Offentlige monopol, der staten gir én aktør enerett","«Naturlige» monopol","Oppkjøp av konkurrenter","Mange små tilbydere av homogene varer"],
+ correct:3,
+ explain:"De tre årsakene til monopoldannelse er offentlige monopol, «naturlige» monopol og oppkjøp av konkurrenter. <b>Mange små tilbydere av homogene varer</b> kjennetegner fullkommen konkurranse, som er det motsatte av monopol."},
+
+{topic:"5.1 Vinningsoptimal mengde", type:"num",
+ case:"<p>Snekker Ola lager fuglekasser. Når han går fra 10 til 11 fuglekasser, er grensekostnaden 200 kr og grenseinntekten 320 kr. Når han går fra 30 til 31 fuglekasser, er grensekostnaden 360 kr og grenseinntekten 240 kr. Begge kurvene er lineære mellom disse punktene.</p>",
+ prompt:"Hvor mange fuglekasser er vinningsoptimal mengde?",
+ answer:20, tol:0.5, unit:"fuglekasser",
+ explain:"Over 20 enheter (fra 10 til 30) stiger grensekostnaden med 160 kr, altså 8 kr per enhet, og grenseinntekten faller med 80 kr, altså 4 kr per enhet. Avstanden ved 10 er 320 − 200 = 120 kr, og den krymper med 8 + 4 = 12 kr per enhet. 120 / 12 = 10 enheter etter 10, altså VOM = <b>20 fuglekasser</b>. Der er grensekostnad = grenseinntekt = 280 kr."},
+
+{topic:"5.1 Monopol: differanseenhetskostnad", type:"num",
+ case:"<p>AS Fjellglass har enerett til å produsere og selge glassfiguren «Fjellreven». Tall for en periode:</p><div class='tblwrap'><table><tr><th>Mengde</th><th>Pris</th><th>Sum inntekter</th><th>Sum kostnader</th></tr><tr><td>0</td><td>–</td><td>0</td><td>12 000</td></tr><tr><td>100</td><td>150</td><td>15 000</td><td>17 000</td></tr><tr><td>200</td><td>135</td><td>27 000</td><td>20 000</td></tr><tr><td>300</td><td>120</td><td>36 000</td><td>23 500</td></tr><tr><td>400</td><td>105</td><td>42 000</td><td>29 000</td></tr><tr><td>500</td><td>90</td><td>45 000</td><td>38 000</td></tr><tr><td>600</td><td>75</td><td>45 000</td><td>51 000</td></tr><tr><td>700</td><td>60</td><td>42 000</td><td>69 000</td></tr></table></div>",
+ prompt:"Hva er differanseenhetskostnaden (DEK) når mengden økes fra 300 til 400 enheter?",
+ answer:55, tol:0.01, unit:"kr per enhet",
+ explain:"Differansekostnad = 29 000 − 23 500 = 5 500 kr. DEK = 5 500 / 100 enheter = <b>55 kr</b>."},
+
+{topic:"5.1 Monopol: VOM", type:"num",
+ case:"<p>Bruk tabellen for AS Fjellglass i forrige oppgave.</p>",
+ prompt:"Hva er vinningsoptimal mengde (VOM)?",
+ answer:400, tol:0.5, unit:"enheter",
+ explain:"DEI = endring i sum inntekter / 100: 150, 120, 90, 60, 30, 0, −30. DEK = endring i sum kostnader / 100: 50, 30, 35, 55, 90, 130, 180. Fra 300 til 400 er DEI 60 > DEK 55 (lønnsomt). Fra 400 til 500 er DEI 30 < DEK 90 (ulønnsomt). VOM = <b>400 enheter</b>. Kontroll: overskudd ved 300 = 12 500, ved 400 = 13 000, ved 500 = 7 000."},
+
+{topic:"5.1 Monopol: VOP og dekningsbidrag", type:"multi",
+ case:"<p>Bruk tabellen for AS Fjellglass. Sum kostnader ved 0 enheter (12 000 kr) er de faste kostnadene.</p>",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["Vinningsoptimal pris (VOP) er 105 kr","Maksimalt overskudd er 13 000 kr","Dekningsbidraget ved VOM er 25 000 kr","DEI fra 400 til 500 enheter er 90 kr","Bedriften bør stoppe ved 300 enheter, fordi DEI faller fra 90 til 60 kr","Ved 500 enheter går bedriften med underskudd"],
+ correct:[0,1,2],
+ explain:"VOM er 400, og prisen ved 400 er <b>105 kr</b> (VOP). Overskudd = 42 000 − 29 000 = <b>13 000 kr</b>. DB = FTK + overskudd = 12 000 + 13 000 = <b>25 000 kr</b> (eller 42 000 − VTK 17 000). DEI fra 400 til 500 er (45 000 − 42 000) / 100 = 30 kr; 90 kr er prisen ved 500. At DEI faller betyr ikke at man skal stoppe; det avgjørende er om DEI > DEK, og 60 > 55. Ved 500 er overskuddet 45 000 − 38 000 = 7 000 kr, altså fortsatt positivt."},
+
+{topic:"5.1 Dekningsbidrag", type:"multi",
+ prompt:"Hvilke utsagn om dekningsbidrag og overskudd er riktige? Velg alle som passer.",
+ options:["Dekningsbidrag = salgsinntekt − variable kostnader","Størst mulig dekningsbidrag oppnås ved vinningsoptimal mengde","Maksimalt dekningsbidrag = faste kostnader + maksimalt overskudd","Dekningsbidraget dekker først de faste kostnadene, og det som er igjen er overskudd","Dekningsbidrag = salgsinntekt − faste kostnader","Maksimalt overskudd oppnås alltid der SEK er lavest"],
+ correct:[0,1,2,3],
+ explain:"DB = salgsinntekt − variable kostnader. DB dekker først de faste kostnadene, resten er overskudd. Både maksimalt DB og maksimalt overskudd oppnås ved VOM, og maks DB = FTK + maks overskudd. Laveste SEK er kostnadsoptimum, som bare tilfeldigvis kan falle sammen med VOM. Overskuddet maksimeres der DEI = DEK."},
+
+{topic:"5.1 Begreper", type:"match",
+ prompt:"Koble hvert begrep til riktig beskrivelse.",
+ items:[["DEI (differanseenhetsinntekt)",2],["DEK (differanseenhetskostnad)",4],["VEK (variable enhetskostnader)",5],["SEK (sum enhetskostnader)",0],["VOM (vinningsoptimal mengde)",1],["Dekningspunkt",3]],
+ choices:["Totale kostnader delt på mengden","Mengden der DEI = DEK","Endringen i salgsinntekt per ekstra enhet","Mengden der pris = SEK, slik at overskuddet er null","Endringen i totale kostnader per ekstra enhet","Variable kostnader delt på mengden"],
+ explain:"DEI og DEK er endring per ekstra enhet i henholdsvis inntekt og kostnad. VEK = VTK / mengde, SEK = STK / mengde. VOM finnes der DEI = DEK. Dekningspunktene (nedre og øvre) er der pris = SEK; mellom dem ligger overskuddsområdet."},
+
+/* ---------- 5.2 Markedstilpasning ---------- */
+{topic:"5.2 Oligopol", type:"mc",
+ prompt:"Hvilket utsagn beskriver oligopol best?",
+ options:["Mange små tilbydere selger homogene varer, og ingen kan påvirke prisen","Én tilbyder bestemmer prisen alene","Få store aktører er gjensidig avhengige, og konkurransen handler ofte mer om utvalg, lokasjon og kampanjer enn om pris","Lave etableringsbarrierer gjør det lett for nye aktører å komme inn"],
+ correct:2,
+ explain:"I oligopol dominerer <b>få store aktører</b> markedet (for eksempel dagligvarehandelen). De er gjensidig avhengige: senker én prisen, følger de andre etter. Høye (ikke lave) etableringsbarrierer holder nye aktører ute, og konkurransen handler ofte om utvalg, lokasjon og kampanjer."},
+
+{topic:"5.2 Prisfast tilpasning", type:"num",
+ case:"<p>Kornmo Mølle AS selger mel i et marked med fullkommen konkurranse. Markedsprisen er 55 kr per sekk. Faste kostnader er 6 000 kr.</p><div class='tblwrap'><table><tr><th>Mengde (sekker)</th><th>VTK</th><th>STK</th></tr><tr><td>0</td><td>0</td><td>6 000</td></tr><tr><td>100</td><td>3 000</td><td>9 000</td></tr><tr><td>200</td><td>5 000</td><td>11 000</td></tr><tr><td>300</td><td>7 500</td><td>13 500</td></tr><tr><td>400</td><td>11 000</td><td>17 000</td></tr><tr><td>500</td><td>16 000</td><td>22 000</td></tr><tr><td>600</td><td>24 000</td><td>30 000</td></tr><tr><td>700</td><td>36 000</td><td>42 000</td></tr></table></div>",
+ prompt:"Hva er vinningsoptimal mengde (VOM)?",
+ answer:500, tol:0.5, unit:"sekker",
+ explain:"Ved fast pris er DEI = pris = 55. DEK = endring i STK / 100: 30, 20, 25, 35, 50, 80, 120. Fra 400 til 500 er DEK 50 < 55 (lønnsomt). Fra 500 til 600 er DEK 80 > 55 (ulønnsomt). VOM = <b>500 sekker</b>."},
+
+{topic:"5.2 Prisfast tilpasning", type:"mc",
+ case:"<p>Bruk tallene for Kornmo Mølle AS i forrige oppgave (pris 55 kr per sekk).</p>",
+ prompt:"Hvor stort er overskuddet ved vinningsoptimal mengde?",
+ options:["5 000 kr","5 500 kr","11 500 kr","27 500 kr"],
+ correct:1,
+ explain:"Ved 500 sekker: inntekt 500 × 55 = 27 500, STK = 22 000. Overskudd = <b>5 500 kr</b>. 5 000 kr er overskuddet ved 400 sekker, 11 500 kr er dekningsbidraget (27 500 − 16 000), og 27 500 kr er salgsinntekten."},
+
+{topic:"5.2 Laveste akseptable pris", type:"num",
+ case:"<p>Bremnes Trevare AS lager hagebenker. De faste kostnadene er 24 000 kr per måned og er driftsuavhengige. Etterspørselen faller, og ledelsen tror nedgangen er <b>varig</b>.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>Totalkostnad</th></tr><tr><td>100</td><td>54 000</td></tr><tr><td>200</td><td>70 000</td></tr><tr><td>300</td><td>82 000</td></tr><tr><td>400</td><td>92 000</td></tr><tr><td>500</td><td>101 000</td></tr><tr><td>600</td><td>114 000</td></tr><tr><td>700</td><td>136 500</td></tr><tr><td>800</td><td>160 000</td></tr></table></div>",
+ prompt:"Hva er laveste akseptable pris per benk (ut fra tabellverdiene)?",
+ answer:190, tol:0.5, unit:"kr per benk",
+ explain:"Ved varig prisnedgang må prisen dekke alle kostnader: pris ≥ laveste SEK. SEK = totalkostnad / mengde: 540, 350, 273,33, 230, 202, <b>190</b> (600 benker), 195, 200. Laveste SEK er 190 kr, ved kostnadsoptimum. (Laveste VEK, som gjelder ved midlertidig nedgang, er 150 kr ved 600 benker.)"},
+
+{topic:"5.2 Laveste akseptable pris", type:"num",
+ case:"<p>Sauda Plast AS har faste kostnader på 40 000 kr per måned. Av dette er 10 000 kr driftsavhengige (oppvarming og vakthold som bare trengs når fabrikken går), mens 30 000 kr er driftsuavhengige. Prisen faller <b>midlertidig</b>.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>VTK</th></tr><tr><td>200</td><td>30 000</td></tr><tr><td>400</td><td>50 000</td></tr><tr><td>600</td><td>66 000</td></tr><tr><td>800</td><td>84 000</td></tr><tr><td>1 000</td><td>106 000</td></tr><tr><td>1 200</td><td>136 000</td></tr></table></div>",
+ prompt:"Hva er laveste akseptable pris på kort sikt (ut fra tabellverdiene)? Oppgi i hele kroner.",
+ answer:116, tol:0.5, unit:"kr per enhet",
+ explain:"På kort sikt må prisen dekke de driftsavhengige kostnadene: VEK + driftsavhengige faste enhetskostnader = (VTK + 10 000) / mengde: 200, 150, 126,67, 117,50, <b>116</b> (1 000 enheter), 121,67. Laveste er 116 kr. Ser man bare på VEK, får man 105 kr (ved 800), men det er for lavt fordi de driftsavhengige faste kostnadene også må dekkes. De 30 000 kr driftsuavhengige er stillstandskostnader som påløper uansett."},
+
+{topic:"5.2 Endring i kostnader", type:"cat",
+ prompt:"Hvordan påvirkes kurvene i enhetsdiagrammet? Kategoriser endringene.",
+ cats:["VEK, SEK og DEK endres","Bare SEK endres"],
+ items:[
+  ["Prisen på råvarene øker med 4 kr per enhet",0],
+  ["Husleien øker med 8 000 kr per måned",1],
+  ["Akkordlønnen per produsert enhet økes",0],
+  ["Bedriften inngår en reklameavtale med fast årlig beløp",1],
+  ["Fraktkostnaden per solgte enhet går ned",0],
+  ["Forsikringspremien for lokalet går ned",1]],
+ explain:"Endrede variable kostnader (råvarer, akkordlønn, frakt per enhet) forskyver VEK, SEK og DEK, og kan derfor endre VOM. Endrede faste kostnader (husleie, fast reklameavtale, forsikring) påvirker bare SEK. DEK er uendret, så VOM blir den samme."},
+
+{topic:"5.2 Prisdifferensiering", type:"match",
+ prompt:"Koble hvert eksempel til riktig type prisdifferensiering.",
+ items:[
+  ["Et norsk forlag selger samme bok billigere i Sverige enn i Norge",0],
+  ["Honnørrabatt på bussbilletter",1],
+  ["Studentrabatt på treningssenteret",1],
+  ["Strøm er billigere om natten enn på dagtid",2],
+  ["Samme kaffetrakter selges både under et kjent merkenavn og som kjedens eget lavprismerke, til ulik pris",3]],
+ choices:["Geografiske områder","Kjøpergrupper","Etter bruk (brukstid)","Varens «status»"],
+ explain:"Fire typer: geografisk (ulik pris i ulike land eller regioner), kjøpergrupper (honnør, student), etter bruk eller brukstid (natt/dag, lavsesong) og varens «status» (samme vare solgt som merkevare og som billigvare). Forutsetningene er at noen er villige til å betale mer, og at det ikke er lekkasje mellom markedene."},
+
+/* ---------- 6.1 Kalkulasjon ---------- */
+{topic:"6.1 Direkte eller indirekte", type:"cat",
+ case:"<p>Fjordbåt AS bygger flere båtmodeller, blant annet småbåten «Sjøsprøyt». Er kostnaden direkte eller indirekte for én «Sjøsprøyt»?</p>",
+ prompt:"Kategoriser kostnadene.",
+ cats:["Direkte","Indirekte"],
+ items:[
+  ["Glassfiber og harpiks til båten",0],
+  ["Motoren som monteres i båten",0],
+  ["Lønn til båtbyggeren, ført på timeliste for hver båt",0],
+  ["Avskrivning på en støpeform som bare brukes til «Sjøsprøyt»",0],
+  ["Husleie for båthallen",1],
+  ["Lønn til daglig leder",1],
+  ["Strøm til oppvarming av hallen",1]],
+ explain:"Direkte kostnader kan knyttes konkret til produktet: materialer, komponenter og lønn som føres per båt. Avskrivning på en form som <i>bare</i> brukes til denne modellen kan også knyttes direkte til den. Husleie, administrasjon og strøm til felles lokaler er indirekte."},
+
+{topic:"6.1 Handelsbedrift", type:"num",
+ case:"<p>Sportsbua kjøper inn 40 hodelykter. Innkjøpsprisen ifølge faktura er 380 kr per stk. I tillegg kommer frakt og forsikring på 1 100 kr og spedisjon på 500 kr for hele partiet. Butikken kalkulerer med 50 % tillegg for indirekte kostnader (av inntakskost) og 20 % fortjeneste (av selvkost).</p>",
+ prompt:"Hva må kunden betale for én hodelykt inklusiv 25 % mva.?",
+ answer:945, tol:0.5, unit:"kr",
+ explain:"Inntakskost: (40 × 380 + 1 100 + 500) / 40 = 16 800 / 40 = 420. Indirekte: 420 × 50 % = 210. Selvkost: 630. Fortjeneste: 630 × 20 % = 126. Pris eks. mva.: 756. Inkl. mva.: 756 × 1,25 = <b>945 kr</b>."},
+
+{topic:"6.1 Avanse", type:"num",
+ case:"<p>En sykkelbutikk kjøper inn 12 sykkelhjelmer. Innkjøpsprisen ifølge faktura er 650 kr per hjelm, og frakt for hele partiet er 600 kr. Butikken kalkulerer med et avansetillegg på 85 %.</p>",
+ prompt:"Hva blir salgsprisen eksklusiv mva. for én hjelm?",
+ answer:1295, tol:0.5, unit:"kr",
+ explain:"Inntakskost: (12 × 650 + 600) / 12 = 8 400 / 12 = 700. Avansetillegg: 700 × 85 % = 595. Salgspris eks. mva.: 700 + 595 = <b>1 295 kr</b>. Avansen skal dekke både indirekte kostnader og fortjeneste."},
+
+{topic:"6.1 Avanse og bruttofortjeneste", type:"mc",
+ case:"<p>Resultatregnskapet til Bryne Interiør viser salgsinntekter 2 400 000 kr, varekostnad 1 500 000 kr, indirekte kostnader 650 000 kr og resultat 250 000 kr.</p>",
+ prompt:"Hva er avansen i prosent?",
+ options:["37,5 %","16,7 %","60,0 %","62,5 %"],
+ correct:2,
+ explain:"Avanse i kr = salgsinntekt − varekostnad = 900 000. Avanse i % = 900 000 × 100 / varekostnad 1 500 000 = <b>60,0 %</b>. 37,5 % er bruttofortjenesteprosenten (900 000 / salgsinntekt 2 400 000). 16,7 % er resultatet i prosent av varekostnaden, og 62,5 % er varekostnaden i prosent av salgsinntekten."},
+
+{topic:"6.1 Håndverksbedrift", type:"num",
+ case:"<p>Vestland Maling AS har 6 malere med gjennomsnittslønn 260 kr per time. Arbeidsåret har 1 800 arbeidstimer. Sosiale kostnader er 35 % av direkte lønn. Øvrige indirekte kostnader er 812 000 kr per år. Hver maler kan fakturere ca. 1 500 timer per år. Timeprisen skal gi 12 % fortjeneste.</p>",
+ prompt:"Hva blir timeprisen, avrundet til nærmeste 10 kr?",
+ answer:570, tol:0.5, unit:"kr per time",
+ explain:"Direkte lønn: 6 × 1 800 × 260 = 2 808 000. Sosiale kostnader: 35 % = 982 800. Øvrige indirekte: 812 000. Selvkost: 4 602 800. Med 12 % fortjeneste: 4 602 800 × 1,12 = 5 155 136. Fakturerbare timer: 6 × 1 500 = 9 000. Timepris: 5 155 136 / 9 000 = 572,79 → <b>570 kr</b>. Merk at lønnen beregnes på alle 1 800 timene, mens bare 1 500 timer kan faktureres."},
+
+{topic:"6.1 Fakturaberegning", type:"num",
+ case:"<p>Vestland Maling AS har timepris 570 kr. En kunde har fått malt en stue. Jobben tok 6,5 timer, det gikk med maling for 1 840 kr, dekkmateriell for 160 kr, og det faktureres 250 kr i kjøring. Alle beløp er eksklusiv mva. (25 %).</p>",
+ prompt:"Hva lyder fakturaen på inklusiv mva.? (Oppgi med to desimaler.)",
+ answer:7443.75, tol:0.06, unit:"kr",
+ explain:"Arbeid: 6,5 × 570 = 3 705. Sum eks. mva.: 3 705 + 1 840 + 160 + 250 = 5 955. Mva.: 5 955 × 25 % = 1 488,75. Faktura: <b>7 443,75 kr</b>."},
+
+{topic:"6.1 For- og etterkalkyle", type:"mc",
+ prompt:"Hvilket utsagn om etterkalkyler er riktig?",
+ options:["De settes opp før produksjonen starter, basert på erfaringstall","De bygger på realiserte tall og sammenlignes med forkalkylen for å finne avvik","De brukes først og fremst til å fastsette tilbudsprisen til kunden","De er bare aktuelle i offentlig virksomhet"],
+ correct:1,
+ explain:"En <b>etterkalkyle bygger på realiserte tall</b> og sammenlignes med forkalkylen. Avvikene gir læring til neste prosjekt, og store prosjekter bør oppdateres underveis. Det er forkalkylen som settes opp før produksjonen, bygger på erfaringstall og er basis for prissetting."},
+
+/* ---------- 6.2 Kalkulasjon ---------- */
+{topic:"6.2 Tilleggssatser", type:"mc",
+ case:"<p>Hamre Møbler AS bruker tilleggskalkyler etter selvkostmetoden. Budsjett for året:</p><div class='tblwrap'><table><tr><th>Post</th><th>Beløp</th></tr><tr><td>Direkte materialer</td><td>600 000</td></tr><tr><td>Direkte lønn</td><td>1 100 000</td></tr><tr><td>Innkjøpsavdelingen</td><td>48 000</td></tr><tr><td>Tilvirkningsavdelingen</td><td>770 000</td></tr><tr><td>Salgsavdelingen</td><td>125 900</td></tr></table></div><p>Innkjøp beregnes i % av direkte materialer, tilvirkning i % av direkte lønn og salg i % av tilvirkningskost.</p>",
+ prompt:"Hva blir tilleggssatsen for salgsavdelingen?",
+ options:["5,0 %","7,4 %","4,8 %","21,0 %"],
+ correct:0,
+ explain:"Tilvirkningskost = direkte materialer + innkjøp + direkte lønn + tilvirkning = 600 000 + 48 000 + 1 100 000 + 770 000 = 2 518 000. Salgssats = 125 900 × 100 / 2 518 000 = <b>5,0 %</b>. 7,4 % får du hvis du deler på bare de direkte kostnadene (1 700 000), og 4,8 % hvis du tar med salgskostnadene selv i nevneren. (De andre satsene: innkjøp 8 %, tilvirkning 70 %.)"},
+
+{topic:"6.2 Selvkostkalkyle", type:"num",
+ case:"<p>Lunde Metall AS bruker tilleggskalkyle etter selvkostmetoden med disse satsene: materialavdelingen 15 % av direkte materialer, tilvirkningsavdelingen 60 % av direkte lønn, salgs- og administrasjonsavdelingen 12 % av tilvirkningskost. Bedriften regner med 8 % fortjeneste.</p>",
+ prompt:"Hva blir prisen uten mva. for et produkt med 1 800 kr i direkte materialer og 2 500 kr i direkte lønn? Oppgi i hele kroner.",
+ answer:7342.27, tol:0.5, unit:"kr",
+ explain:"1 800 + 270 (15 %) + 2 500 + 1 500 (60 %) = 6 070 (tilvirkningskost). Salg/adm.: 6 070 × 12 % = 728,40. Selvkost: 6 798,40. Fortjeneste 8 %: 543,87. Pris: 7 342,27 ≈ <b>7 342 kr</b>."},
+
+{topic:"6.2 Bidragskalkyle", type:"num",
+ case:"<p>Hove Plast AS bruker tilleggskalkulasjon etter bidragsmetoden. Variable indirekte satser: materialavdelingen 6 % av direkte materialer, tilvirkningsavdelingen 25 % av direkte lønn, salgs- og administrasjonsavdelingen 4 % av variable tilvirkningskostnader. En kajakkstøtte bruker 900 kr i direkte materialer og 1 400 kr i direkte lønn.</p>",
+ prompt:"Hva er minimumskost (salgsmerkost) for kajakkstøtten? (Oppgi med to desimaler.)",
+ answer:2812.16, tol:0.06, unit:"kr",
+ explain:"900 + 54 (6 %) + 1 400 + 350 (25 %) = 2 704 (variable tilvirkningskostnader). Salg/adm.: 2 704 × 4 % = 108,16. Minimumskost: <b>2 812,16 kr</b>. Dette er laveste pris som dekker merkostnadene ved ledig kapasitet."},
+
+{topic:"6.2 Aktivitetsmål", type:"cat",
+ prompt:"Gir aktivitetsmålet en tilleggssats i kroner eller i prosent?",
+ cats:["Tilleggssats i kr","Tilleggssats i %"],
+ items:[
+  ["Direkte materialer i kvantum (for eksempel kg)",0],
+  ["Direkte materialer i kroner",1],
+  ["Antall produserte eller solgte enheter",0],
+  ["Direkte arbeidede timer",0],
+  ["Direkte lønn i kroner",1],
+  ["Direkte maskintimer",0],
+  ["Tilvirkningskost i kroner (salgs- og administrasjonsavdelingen)",1]],
+ explain:"Tilleggssats = budsjetterte indirekte kostnader / budsjettert aktivitet. Er aktiviteten målt i kroner (materialer, lønn, tilvirkningskost), blir satsen en prosent. Er aktiviteten målt i mengde (kg, enheter, arbeidstimer, maskintimer), blir satsen kroner per enhet, for eksempel 40 kr per maskintime."},
+
+{topic:"6.2 Selvkost eller bidrag", type:"multi",
+ prompt:"Hvilke utsagn om selvkost- og bidragsmetoden er riktige? Velg alle som passer.",
+ options:["Bidragsmetoden er en enklere modell enn selvkostmetoden","Bidragskalkylen har generelt større relevans som underlag for en rekke beslutninger","Selvkostkalkylen tar med både faste og variable, direkte og indirekte kostnader","I bidragsmetoden fordeles de faste kostnadene på produktene med tilleggssatser","Selvkostkalkylen viser hvor lavt prisen kan settes på kort sikt ved ledig kapasitet","Dekningsbidrag = salgspris − selvkost"],
+ correct:[0,1,2],
+ explain:"Bidragsmetoden fokuserer bare på variable kostnader, er enklere og har større beslutningsrelevans. Selvkostmetoden inkluderer alle kostnader. I bidragsmetoden fordeles <i>ikke</i> faste kostnader. Laveste pris på kort sikt ved ledig kapasitet er minimumskost fra bidragskalkylen. DB = salgspris − variable kostnader; salgspris − selvkost er fortjeneste."},
+
+/* ---------- 6.3 Kalkulasjon ---------- */
+{topic:"6.3 Kalkulatoriske kostnader", type:"mc",
+ case:"<p>Bergstad Bakeri AS eier lokalene sine selv. Finansregnskapet viser et driftsresultat på 420 000 kr. Lokalene kunne vært leid ut for 18 000 kr per måned.</p>",
+ prompt:"Hva blir driftsresultatet når kalkulatorisk husleie tas med?",
+ options:["438 000 kr","636 000 kr","402 000 kr","204 000 kr"],
+ correct:3,
+ explain:"Kalkulatorisk husleie per år: 12 × 18 000 = 216 000. Tapt leieinntekt er en relevant kostnad selv om den ikke gir utbetaling. Driftsresultat: 420 000 − 216 000 = <b>204 000 kr</b>. Driften er altså mindre lønnsom enn finansregnskapet viser."},
+
+{topic:"6.3 Forkalkyle", type:"multi",
+ case:"<p>Os Verktøy AS har fått forespørsel om å levere 500 enheter for 150 000 kr. Kalkulerte direkte kostnader: direkte materialer 40 000, direkte lønn avd. 1 25 000, direkte lønn avd. 2 30 000, og 400 maskintimer i avd. 2. Tilleggssatser: materialavd. 12 %, tilvirkningsavd. 1 30 % av direkte lønn, tilvirkningsavd. 2 35 kr per maskintime, salg/adm. 15 % av tilvirkningskost.</p>",
+ prompt:"Hvilke utsagn om forkalkylen etter selvkostmetoden er riktige? Velg alle som passer.",
+ options:["Tilvirkningskost er 121 300 kr","Selvkost er 139 495 kr","Ordren gir et overskudd på 10 505 kr","Indirekte kostnader i tilvirkningsavd. 2 er 10 500 kr (35 % av direkte lønn)","Forkalkylen bygger på realiserte tall fra timelistene","Selvkost per enhet er ca. 300 kr"],
+ correct:[0,1,2],
+ explain:"40 000 + 4 800 (12 %) + 25 000 + 7 500 (30 %) + 30 000 + 14 000 (400 t × 35 kr) = <b>121 300</b>. Salg/adm.: 15 % = 18 195. Selvkost: <b>139 495</b>. Overskudd: 150 000 − 139 495 = <b>10 505 kr</b>. Satsen i avd. 2 er per maskintime, ikke i % av lønn. Forkalkylen bygger på kalkulerte tall og erfaringstall. Selvkost per enhet er 139 495 / 500 ≈ 279 kr."},
+
+{topic:"6.3 Begreper", type:"match",
+ prompt:"Koble begrepet til riktig beskrivelse.",
+ items:[["Forkalkyle",2],["Etterkalkyle",4],["Avvik",0],["Normal aktivitet",1],["Kalkulatorisk husleie",3],["Gjenanskaffelseskost",5]],
+ choices:["Etterkalkyle minus forkalkyle","Grunnlaget tilleggssatsene bør bygge på","Settes opp før produksjonen starter, basert på erfaringstall","Tapt leieinntekt når bedriften bruker egne lokaler selv","Bygger på realiserte tall etter at produksjonen er gjennomført","Utgangspunkt for kalkulatorisk avskrivning, tar hensyn til prisstigning"],
+ explain:"Forkalkyle før produksjonen, etterkalkyle etter, og avvik = etter − for. Tilleggssatser bør bygge på normal aktivitet, ikke perioder med unormalt høy aktivitet. Kalkulatorisk husleie og kalkulatorisk avskrivning (basert på gjenanskaffelseskost) er kalkulatoriske kostnader som gir et mer korrekt bilde av ressursbruken enn finansregnskapet."}
+];
+
+const Q_P6 = [
+/* ---------- 5.2 Prisdifferensiering ---------- */
+{topic:"5.2 Prisdifferensiering", type:"num",
+ case:"<p>Polar Pumper AS er monopolist i Norge. En svensk grossist tilbyr å kjøpe så mange pumper bedriften vil, for 1 100 kr per stk. Det er ingen lekkasje mellom markedene. Sum kostnader ved 0 pumper er de faste kostnadene.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>Pris i Norge</th><th>Sum kostnader</th></tr><tr><td>0</td><td>–</td><td>150 000</td></tr><tr><td>100</td><td>2 000</td><td>230 000</td></tr><tr><td>200</td><td>1 800</td><td>290 000</td></tr><tr><td>300</td><td>1 600</td><td>360 000</td></tr><tr><td>400</td><td>1 400</td><td>435 000</td></tr><tr><td>500</td><td>1 200</td><td>535 000</td></tr><tr><td>600</td><td>1 000</td><td>675 000</td></tr><tr><td>700</td><td>800</td><td>865 000</td></tr></table></div>",
+ prompt:"Hvor mange pumper bør bedriften selge til Sverige?",
+ answer:200, tol:0.5, unit:"pumper",
+ explain:"DEK = endring i sum kostnader / 100: 800, 600, 700, 750, 1 000, 1 400, 1 900. Totaltilbud: produser så lenge DEK < eksportprisen 1 100, altså til 500 pumper (DEK 1 000 fra 400 til 500, 1 400 videre). I Norge selges en pumpe bare hvis DEI i Norge > 1 100. Inntekt i Norge: 200 000, 360 000, 480 000, 560 000 gir DEI 2 000, 1 600, 1 200, 800. Fra 300 til 400 er DEI 800 < 1 100, så 300 selges i Norge. Eksport: 500 − 300 = <b>200 pumper</b>."},
+
+{topic:"5.2 Prisdifferensiering", type:"mc",
+ case:"<p>Fortsett med Polar Pumper AS: 300 pumper selges i Norge og 200 eksporteres.</p>",
+ prompt:"Hva blir totalt overskudd?",
+ options:["315 000 kr","125 000 kr","165 000 kr","260 000 kr"],
+ correct:2,
+ explain:"Inntekt: 300 × 1 600 + 200 × 1 100 = 480 000 + 220 000 = 700 000. Sum kostnader ved 500 pumper: 535 000. Overskudd = <b>165 000 kr</b>. 315 000 kr er dekningsbidraget (700 000 − VTK 385 000). 125 000 kr er overskuddet uten eksport (400 i Norge: 560 000 − 435 000)."},
+
+{topic:"5.2 Prisdifferensiering", type:"multi",
+ case:"<p>Bruk tallene for Polar Pumper AS i de to forrige oppgavene.</p>",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["Totaltilbudet blir 500 pumper","Prisen i Norge blir 1 600 kr","Uten eksportmuligheten ville vinningsoptimal mengde i Norge vært 400 pumper","Eksportsalget øker overskuddet med 40 000 kr sammenlignet med bare å selge i Norge","Bedriften bør selge 400 pumper i Norge, fordi prisen der (1 400 kr) er høyere enn eksportprisen","Opplegget forutsetter at svenske kjøpere kan selge pumpene videre til norske kunder"],
+ correct:[0,1,2,3],
+ explain:"Totaltilbudet er der DEK krysser 1 100: 500 pumper. 300 i Norge gir pris 1 600 kr. Uten eksport: DEI 800 > DEK 750 fra 300 til 400, men DEI 400 < DEK 1 000 videre, så VOM = 400 med overskudd 125 000. Med eksport: 165 000, altså 40 000 kr mer. Det er DEI i Norge (800 fra 300 til 400), ikke prisen, som skal sammenlignes med eksportprisen. Prisdifferensiering krever at det <i>ikke</i> er lekkasje mellom markedene."},
+
+/* ---------- 5.1 Monopol ---------- */
+{topic:"5.1 Monopol: dekningsbidrag", type:"num",
+ case:"<p>Lyngen Kajakk AS har enerett på en sammenleggbar kajakk. Sum kostnader ved 0 kajakker er de faste kostnadene.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>Pris</th><th>Sum kostnader</th></tr><tr><td>0</td><td>–</td><td>700 000</td></tr><tr><td>50</td><td>8 500</td><td>830 000</td></tr><tr><td>100</td><td>8 000</td><td>940 000</td></tr><tr><td>150</td><td>7 500</td><td>1 040 000</td></tr><tr><td>200</td><td>7 000</td><td>1 150 000</td></tr><tr><td>250</td><td>6 500</td><td>1 290 000</td></tr><tr><td>300</td><td>6 000</td><td>1 480 000</td></tr><tr><td>350</td><td>5 500</td><td>1 740 000</td></tr><tr><td>400</td><td>5 000</td><td>2 090 000</td></tr></table></div>",
+ prompt:"Hva er maksimalt dekningsbidrag?",
+ answer:1035000, tol:0.5, unit:"kr",
+ explain:"Sum inntekter: 425 000, 800 000, 1 125 000, 1 400 000, 1 625 000, 1 800 000, 1 925 000, 2 000 000. DEI (per enhet, intervaller på 50): 8 500, 7 500, 6 500, 5 500, 4 500, 3 500, 2 500, 1 500. DEK: 2 600, 2 200, 2 000, 2 200, 2 800, 3 800, 5 200, 7 000. Fra 200 til 250: DEI 4 500 > DEK 2 800. Fra 250 til 300: DEI 3 500 < DEK 3 800. VOM = 250. Overskudd: 1 625 000 − 1 290 000 = 335 000. Maks DB = FTK + maks overskudd = 700 000 + 335 000 = <b>1 035 000 kr</b>."},
+
+{topic:"5.1 Monopol: VOP", type:"mc",
+ case:"<p>Bruk tabellen for Lyngen Kajakk AS i forrige oppgave.</p>",
+ prompt:"Hva er vinningsoptimal pris (VOP)?",
+ options:["4 500 kr","6 500 kr","5 160 kr","6 000 kr"],
+ correct:1,
+ explain:"VOM er 250 kajakker, og prisen som gir dette salget er <b>6 500 kr</b>. 4 500 kr er DEI fra 200 til 250, 5 160 kr er SEK ved 250 (1 290 000 / 250), og 6 000 kr er prisen ved 300 kajakker."},
+
+{topic:"5.1 Dekningspunkter", type:"mc",
+ case:"<p>Bruk tabellen for Lyngen Kajakk AS.</p>",
+ prompt:"Hvilket utsagn om overskuddsområdet er riktig ut fra tabellverdiene?",
+ options:["Overskuddsområdet er fra 250 til 400 kajakker","Overskuddsområdet er fra 0 til 250 kajakker, der DEI > DEK","Tabellverdiene fra 150 til 350 kajakker gir overskudd; dekningspunktene ligger mellom 100 og 150 og mellom 350 og 400","Overskuddsområdet er fra 100 til 300 kajakker"],
+ correct:2,
+ explain:"Overskudd = sum inntekter − sum kostnader: −405 000 (50), −140 000 (100), 85 000 (150), 250 000 (200), 335 000 (250), 320 000 (300), 185 000 (350), −90 000 (400). Pris > SEK fra 150 til 350, så nedre dekningspunkt ligger mellom 100 og 150 og øvre mellom 350 og 400. Området der DEI > DEK sier hvor det lønner seg å øke mengden, ikke hvor det er overskudd."},
+
+/* ---------- 5.2 Laveste pris og kostnadsendringer ---------- */
+{topic:"5.2 Laveste akseptable pris", type:"mc",
+ case:"<p>Halsa Hermetikk AS selger fiskeboller på boks for 130 kr per kartong. Faste kostnader er 20 000 kr per måned og er driftsuavhengige. Prisen faller <b>midlertidig</b> til 100 kr per kartong.</p><div class='tblwrap'><table><tr><th>Mengde</th><th>VTK</th></tr><tr><td>100</td><td>12 000</td></tr><tr><td>200</td><td>20 000</td></tr><tr><td>300</td><td>27 000</td></tr><tr><td>400</td><td>35 400</td></tr><tr><td>500</td><td>46 000</td></tr><tr><td>600</td><td>60 000</td></tr></table></div>",
+ prompt:"Hva bør bedriften gjøre på kort sikt?",
+ options:["Stanse produksjonen, fordi prisen er lavere enn laveste SEK (132 kr)","Fortsette, fordi en pris på 100 kr gir overskudd ved 400 kartonger","Stanse produksjonen, fordi prisen er lavere enn laveste VEK","Fortsette med 400 kartonger: prisen er over laveste VEK (88,50 kr), og tapet blir mindre enn ved stans"],
+ correct:3,
+ explain:"VEK: 120, 100, 90, <b>88,50</b>, 92, 100. SEK: 320, 200, 156,67, 138,50, 132, 133,33. Prisen 100 er under laveste SEK (ikke akseptabelt på lang sikt), men over laveste VEK, som er grensen på kort sikt. DEK: 120, 80, 70, 84, 106, 140, så ved pris 100 produseres 400. Resultat: 40 000 − 35 400 − 20 000 = −15 400 kr, mot −20 000 kr ved stans. Det er bedre å fortsette midlertidig."},
+
+{topic:"5.2 Driftsavhengige kostnader", type:"cat",
+ case:"<p>Halsa Hermetikk AS vurderer midlertidig stans. Ledelsen deler kostnadene inn slik det gjøres når man skal finne laveste akseptable pris på kort sikt.</p>",
+ prompt:"Kategoriser kostnadene.",
+ cats:["Variabel kostnad","Driftsavhengig fast kostnad","Driftsuavhengig fast kostnad (stillstandskostnad)"],
+ items:[
+  ["Fisk og andre råvarer per produsert kartong",0],
+  ["Emballasje per kartong",0],
+  ["Fast månedslønn til en skiftleder som permitteres hvis fabrikken stenger midlertidig",1],
+  ["Oppvarming og lys i produksjonshallen, som slås av ved stans og ikke avhenger av hvor mye som produseres",1],
+  ["Husleie for fabrikkbygget, som løper selv om driften stanses",2],
+  ["Forsikring av bygget",2]],
+ explain:"Driftsavhengige kostnader er merkostnadene ved fortsatt drift: variable kostnader pluss faste kostnader som forsvinner ved stans, men ikke varierer med mengden. Driftsuavhengige faste kostnader (stillstandskostnader) påløper uansett. På kort sikt må prisen dekke VEK + eventuelle driftsavhengige faste enhetskostnader."},
+
+{topic:"5.2 Endring i kostnader", type:"num",
+ case:"<p>Grøtte Fisk AS selger i et marked med fullkommen konkurranse til 80 kr per kg. DEK for hvert intervall på 100 kg:</p><div class='tblwrap'><table><tr><th>Intervall (kg)</th><th>0–100</th><th>100–200</th><th>200–300</th><th>300–400</th><th>400–500</th><th>500–600</th><th>600–700</th></tr><tr><td>DEK (kr)</td><td>50</td><td>40</td><td>45</td><td>60</td><td>75</td><td>95</td><td>120</td></tr></table></div><p>Prisen på emballasje øker med 12 kr per kg. Markedsprisen og de faste kostnadene er uendret.</p>",
+ prompt:"Hva blir ny vinningsoptimal mengde?",
+ answer:400, tol:0.5, unit:"kg",
+ explain:"Før endringen: DEK 75 < 80 fra 400 til 500, men 95 > 80 videre, så VOM = 500. Økte variable kostnader forskyver DEK oppover med 12 kr: 62, 52, 57, 72, 87, 107, 132. Nå er DEK 87 > 80 fra 400 til 500, så ny VOM = <b>400 kg</b>. (Økte faste kostnader ville bare flyttet SEK, og VOM ville vært 500.)"},
+
+{topic:"5.2 Beslutningsregler", type:"match",
+ prompt:"Koble hver situasjon til riktig regel.",
+ items:[
+  ["Laveste akseptable pris ved varig prisnedgang",3],
+  ["Laveste akseptable pris ved midlertidig prisnedgang",0],
+  ["Optimal mengde i fullkommen konkurranse",5],
+  ["Hvilket marked en ekstra enhet skal selges i ved prisdifferensiering",2],
+  ["Maksimalt overskudd i kroner",4],
+  ["Maksimalt dekningsbidrag",1]],
+ choices:["Laveste VEK, pluss eventuelle driftsavhengige faste enhetskostnader","Faste kostnader + maksimalt overskudd","Markedet med størst DEI","Laveste SEK","(Pris − SEK) × vinningsoptimal mengde","Produser til DEK = markedsprisen, siden pris = DEI"],
+ explain:"Lang sikt: pris ≥ SEK. Kort sikt: pris ≥ VEK (+ driftsavhengige faste enhetskostnader). Fullkommen konkurranse: pris = DEI, produser til DEI = DEK. Prisdifferensiering: hver enhet til markedet med størst inntektsvekst (DEI). Maks overskudd = (pris − SEK) × VOM, og maks DB = FTK + maks overskudd."},
+
+/* ---------- 6.3 For- og etterkalkyle ---------- */
+{topic:"6.3 For- og etterkalkyle", type:"num",
+ case:"<p>Steinsland Spill AS skal levere 800 brettspill for 240 000 kr. Tilleggssatser (selvkostmetoden): materialavd. 12 %, tilvirkningsavd. 1 30 % av direkte lønn, tilvirkningsavd. 2 45 kr per maskintime, salg/adm. 15 % av tilvirkningskost.</p><div class='tblwrap'><table><tr><th>Direkte kostnader</th><th>Forkalkyle</th><th>Etterkalkyle</th></tr><tr><td>Direkte material</td><td>70 000</td><td>76 000</td></tr><tr><td>Direkte lønn avd. 1</td><td>32 000</td><td>36 000</td></tr><tr><td>Direkte lønn avd. 2</td><td>45 000</td><td>47 000</td></tr><tr><td>Maskintimer avd. 2</td><td>400</td><td>440</td></tr></table></div>",
+ prompt:"Hva blir fortjenesten på ordren ifølge etterkalkylen?",
+ answer:11472, tol:0.5, unit:"kr",
+ explain:"Etterkalkyle: 76 000 + 9 120 (12 %) + 36 000 + 10 800 (30 %) + 47 000 + 19 800 (440 t × 45) = 198 720 i tilvirkningskost. Salg/adm.: 15 % = 29 808. Selvkost: 228 528. Fortjeneste: 240 000 − 228 528 = <b>11 472 kr</b>. (Forkalkylen ga selvkost 210 450 og fortjeneste 29 550.)"},
+
+{topic:"6.3 Avviksanalyse", type:"num", abs:true,
+ case:"<p>Bruk tallene for Steinsland Spill AS i forrige oppgave.</p>",
+ prompt:"Hvor stort er avviket i selvkost mellom etterkalkyle og forkalkyle (etter − for)?",
+ answer:18078, tol:0.5, unit:"kr",
+ explain:"Forkalkyle: 70 000 + 8 400 + 32 000 + 9 600 + 45 000 + 18 000 = 183 000; + 15 % (27 450) = 210 450. Etterkalkyle: 228 528. Avvik = 228 528 − 210 450 = <b>18 078 kr</b> (høyere kostnader enn planlagt). Fordelt: direkte kostnader +12 000, indirekte material- og tilvirkningskostnader +3 720, salg/adm. +2 358."},
+
+{topic:"6.3 Etterkalkyle etter bidragsmetoden", type:"multi",
+ case:"<p>Steinsland Spill AS setter også opp for- og etterkalkyle etter bidragsmetoden for ordren på 240 000 kr. Variable tilleggssatser: materialavd. 4 %, tilvirkningsavd. 1 10 % av direkte lønn, tilvirkningsavd. 2 20 kr per maskintime, salg/adm. 3 % av variable tilvirkningskostnader. Direkte kostnader og maskintimer er som i forrige oppgave.</p>",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["Dekningsbidraget i forkalkylen er 74 170 kr","Dekningsbidraget i etterkalkylen er 60 326,80 kr","Avviket i merkostnad (etter − for) er 13 843,20 kr","Etterkalkylen etter bidragsmetoden viser at ordren gir negativt dekningsbidrag","Avvik beregnes som forkalkyle minus etterkalkyle","Bidragsmetoden fordeler de faste kostnadene etter faktisk registrert aktivitet"],
+ correct:[0,1,2],
+ explain:"Forkalkyle: 70 000 + 2 800 + 32 000 + 3 200 + 45 000 + 8 000 = 161 000; + 3 % (4 830) = 165 830 i merkostnad. DB = 240 000 − 165 830 = <b>74 170</b>. Etterkalkyle: 76 000 + 3 040 + 36 000 + 3 600 + 47 000 + 8 800 = 174 440; + 3 % (5 233,20) = 179 673,20. DB = <b>60 326,80</b>. Avvik = 179 673,20 − 165 830 = <b>13 843,20</b>. DB er fortsatt positivt. Avvik = etter − for. Bidragsmetoden fordeler ikke faste kostnader, og unngår dermed at mer aktivitet gir tilsynelatende høyere faste kostnader på ordren."},
+
+/* ---------- 6.3 Tilleggsordre ---------- */
+{topic:"6.3 Tilleggsordre", type:"num",
+ case:"<p>Ulstein Komponent AS har ledig kapasitet og får forespørsel om en ordre til 1 150 000 kr. Beregnet aktivitet: direkte materialer 420 000, direkte lønn avd. 1 90 000, direkte lønn avd. 2 140 000 og 3 000 maskintimer i avd. 2.</p><div class='tblwrap'><table><tr><th>Kostnadssted</th><th>Aktivitetsmål</th><th>Tilleggssats</th></tr><tr><td>Materialavd.</td><td>Direkte material</td><td>Variable 15 %, faste 30 %</td></tr><tr><td>Tilvirkningsavd. 1</td><td>Direkte lønn avd. 1</td><td>Variable 12 %, faste 45 %</td></tr><tr><td>Tilvirkningsavd. 2</td><td>Variable: maskintimer. Faste: direkte lønn avd. 2</td><td>Variable 30 kr per time, faste 35 %</td></tr><tr><td>Salgs- og adm.avd.</td><td>Tilvirkningskost</td><td>Faste 18 %</td></tr></table></div>",
+ prompt:"Hvor mye øker bedriftens resultat hvis ordren aksepteres?",
+ answer:336200, tol:0.5, unit:"kr",
+ explain:"Med ledig kapasitet er bidragsmetoden riktig grunnlag, fordi de faste kostnadene påløper uansett. Direkte kostnader: 420 000 + 90 000 + 140 000 = 650 000. Variable indirekte: 63 000 (15 %) + 10 800 (12 %) + 90 000 (3 000 t × 30) = 163 800. Merkostnad: 813 800. DB = 1 150 000 − 813 800 = <b>336 200 kr</b>."},
+
+{topic:"6.3 Tilleggsordre", type:"mc",
+ case:"<p>Samme ordre og samme satser for Ulstein Komponent AS som i forrige oppgave, men anta nå at bedriften <b>ikke</b> har ledig kapasitet.</p>",
+ prompt:"Hva er riktig vurdering?",
+ options:["Godta ordren, fordi dekningsbidraget er 336 200 kr","Avslå ordren eller forhandle om prisen, fordi den ikke dekker selvkost og gir et tap på 64 574 kr","Godta ordren, fordi de faste kostnadene påløper uansett","Avslå ordren, fordi merkostnaden er høyere enn salgsinntekten"],
+ correct:1,
+ explain:"Faste indirekte: 126 000 (30 %) + 40 500 (45 %) + 49 000 (35 % av 140 000) = 215 500. Tilvirkningskost: 650 000 + 163 800 + 215 500 = 1 029 300. Salg/adm. 18 % = 185 274. Selvkost: 1 214 574. Resultat: 1 150 000 − 1 214 574 = <b>−64 574 kr</b>. Uten ledig kapasitet må ordren dekke selvkost, så bedriften bør avslå eller forhandle. Merkostnaden (813 800) er lavere enn salgsinntekten."},
+
+/* ---------- 6.2 og 6.1 ---------- */
+{topic:"6.2 Tilleggssatser og selvkost", type:"num",
+ case:"<p>Gladlyd AS lager høyttalere og bruker tilleggskalkyler etter selvkostmetoden. Budsjett:</p><div class='tblwrap'><table><tr><th>Post</th><th>Beløp</th></tr><tr><td>Direkte materialer</td><td>900 000</td></tr><tr><td>Direkte lønn</td><td>1 500 000</td></tr><tr><td>Innkjøpsavdelingen</td><td>63 000</td></tr><tr><td>Tilvirkningsavdelingen</td><td>825 000</td></tr><tr><td>Salgsavdelingen</td><td>263 040</td></tr></table></div><p>Innkjøp i % av direkte materialer, tilvirkning i % av direkte lønn, salg i % av tilvirkningskost.</p>",
+ prompt:"Hva blir selvkost for en høyttaler med 1 250 kr i direkte materialer og 2 100 kr i direkte lønn? (Oppgi med to desimaler.)",
+ answer:4959.90, tol:0.06, unit:"kr",
+ explain:"Satser: innkjøp 63 000 / 900 000 = 7 %; tilvirkning 825 000 / 1 500 000 = 55 %; tilvirkningskost i budsjettet = 900 000 + 63 000 + 1 500 000 + 825 000 = 3 288 000, så salg = 263 040 / 3 288 000 = 8 %. Høyttaler: 1 250 + 87,50 + 2 100 + 1 155 = 4 592,50 i tilvirkningskost; + 8 % (367,40) = <b>4 959,90 kr</b>."},
+
+{topic:"6.1 Handelsbedrift", type:"num",
+ case:"<p>Turbutikken kalkulerer med 45 % tillegg for indirekte kostnader (av inntakskost) og 20 % fortjeneste (av selvkost). En konkurrent selger samme sovepose for 2 349 kr inklusiv 25 % mva., og Turbutikken vil ha samme utsalgspris. Frakt og spedisjon utgjør 30 kr per sovepose.</p>",
+ prompt:"Hva er den høyeste innkjøpsprisen ifølge faktura (per sovepose) butikken kan akseptere og fortsatt nå sin kalkulerte fortjeneste?",
+ answer:1050, tol:0.5, unit:"kr",
+ explain:"Regn baklengs. Eks. mva.: 2 349 / 1,25 = 1 879,20. Selvkost: 1 879,20 / 1,20 = 1 566. Inntakskost: 1 566 / 1,45 = 1 080. Innkjøpspris ifølge faktura: 1 080 − 30 = <b>1 050 kr</b>. Kontroll: 1 080 + 486 = 1 566; + 313,20 = 1 879,20; × 1,25 = 2 349."},
+
+{topic:"6.3 For- eller etterkalkyle", type:"cat",
+ prompt:"Hører kjennetegnet til forkalkylen eller etterkalkylen?",
+ cats:["Forkalkyle","Etterkalkyle"],
+ items:[
+  ["Utarbeides før produksjonen settes i gang",0],
+  ["Bygger på erfaringstall",0],
+  ["Er basis for prissetting og tilbud til kunden",0],
+  ["Bygger på realiserte tall fra material- og timelister",1],
+  ["Brukes til å finne avvik mot planlagte kostnader",1],
+  ["Gir læring til neste prosjekt som skal kalkuleres",1]],
+ explain:"Forkalkylen settes opp før produksjonen for å planlegge kostnader, vurdere lønnsomhet og sette pris, og bygger på erfaringstall. Etterkalkylen bygger på realiserte tall og sammenlignes med forkalkylen. Avvikene (etter − for) gir innsikt i kostnadsutviklingen og læring til neste prosjekt."},
+
+{topic:"6.3 Kalkulatoriske kostnader", type:"multi",
+ case:"<p>Sola Trykk AS kjøpte en trykkmaskin for 480 000 kr for to år siden. Levetiden er 6 år, uten restverdi, og bedriften avskriver lineært. En tilsvarende ny maskin koster i dag 660 000 kr.</p>",
+ prompt:"Hvilke utsagn er riktige? Velg alle som passer.",
+ options:["Kalkulatorisk avskrivning er 110 000 kr per år","Kalkulatorisk avskrivning bør bygge på gjenanskaffelseskost fordi den tar hensyn til prisstigning","Bruker kalkylen finansregnskapets avskrivning på 80 000 kr, undervurderes den faktiske ressursbruken","Kalkulatorisk avskrivning er 80 000 kr per år","Kostnader uten utbetaling, som kalkulatorisk husleie, skal holdes utenfor kalkylene","Kalkulatoriske kostnader skal alltid være lik kostnadene i finansregnskapet"],
+ correct:[0,1,2],
+ explain:"Regnskapsmessig avskrivning: 480 000 / 6 = 80 000. Kalkulatorisk avskrivning tar utgangspunkt i gjenanskaffelseskost: 660 000 / 6 = <b>110 000 kr</b>. Finansregnskapet gir ikke alltid økonomisk korrekte tall for ressursbruk. Kalkulatoriske kostnader erstatter finansregnskapets tall, og kostnader uten utbetaling (som kalkulatorisk husleie) bør tas med."},
+
+{topic:"6.2 Selvkost og bidrag", type:"match",
+ case:"<p>Tveit Verksted AS lager en arbeidsbenk med 2 000 kr i direkte materialer og 1 500 kr i direkte lønn. Salgsprisen er 6 000 kr.</p><div class='tblwrap'><table><tr><th>Kostnadssted</th><th>Selvkostmetoden (totale satser)</th><th>Bidragsmetoden (variable satser)</th></tr><tr><td>Materialavd. (av direkte materialer)</td><td>10 %</td><td>4 %</td></tr><tr><td>Tilvirkningsavd. (av direkte lønn)</td><td>70 %</td><td>30 %</td></tr><tr><td>Salg/adm.</td><td>12 % av tilvirkningskost</td><td>5 % av variable tilvirkningskostnader</td></tr></table></div>",
+ prompt:"Koble hver post til riktig beløp.",
+ items:[["Tilvirkningskost (selvkostmetoden)",5],["Selvkost",2],["Fortjeneste etter selvkostmetoden",1],["Variable tilvirkningskostnader",6],["Minimumskost (salgsmerkost)",0],["Dekningsbidrag",4]],
+ choices:["4 231,50 kr","680 kr","5 320 kr","3 500 kr","1 768,50 kr","4 750 kr","4 030 kr"],
+ explain:"Selvkost: 2 000 + 200 + 1 500 + 1 050 = <b>4 750</b> (tilvirkningskost); + 12 % (570) = <b>5 320</b>; fortjeneste 6 000 − 5 320 = <b>680</b>. Bidrag: 2 000 + 80 + 1 500 + 450 = <b>4 030</b> (variable tilvirkningskostnader); + 5 % (201,50) = <b>4 231,50</b> (minimumskost); DB = 6 000 − 4 231,50 = <b>1 768,50</b>. 3 500 kr er bare sum direkte kostnader."}
+];
+
+const EB14="HSM122 · Kap. 1 Introduksjon · 2 Inntekts- og kostnadsbegreper · 3 Kostnadsforløpet · 4 Etterspørsel";
+const EB56="HSM122 · Markedstilpasning 5.1–5.2 · Kalkulasjon 6.1–6.3";
+const SETS = {
+  ak1:{q:Q14, key:"hsm122-ovingsprove-ak1", group:"Kap. 1–4", label:"Prøve 1", eyebrow:EB14},
+  p3:{q:Q_P3, key:"hsm122-ovingsprove-p3", group:"Kap. 1–4", label:"Prøve 3", eyebrow:EB14},
+  p5:{q:Q_P5, key:"hsm122-ovingsprove-p5", group:"Kap. 1–4", label:"Prøve 5", eyebrow:EB14+" · vanskeligere"},
+  kap56:{q:Q56, key:"hsm122-ovingsprove-v1", group:"Kap. 5–6", label:"Prøve 2", eyebrow:EB56},
+  p4:{q:Q_P4, key:"hsm122-ovingsprove-p4", group:"Kap. 5–6", label:"Prøve 4", eyebrow:EB56},
+  p6:{q:Q_P6, key:"hsm122-ovingsprove-p6", group:"Kap. 5–6", label:"Prøve 6", eyebrow:EB56+" · vanskeligere"}
+};
+function maxPts(){ return Q.length*3; }
+function passPts(){ return Math.ceil(maxPts()*37/90 - 1e-9); }
+(function buildTabs(){
+  const box=document.getElementById("tabs"); const groups={};
+  Object.entries(SETS).forEach(([k,v])=>{
+    if(!groups[v.group]){ const row=document.createElement("div"); row.className="tabrow"; row.setAttribute("role","tablist"); row.setAttribute("aria-label",v.group);
+      const l=document.createElement("span"); l.className="tabrow-label"; l.textContent=v.group; row.append(l); box.append(row); groups[v.group]=row; }
+    const b=document.createElement("button"); b.type="button"; b.className="tab"; b.dataset.set=k; b.id="tab-"+k; b.setAttribute("role","tab");
+    b.textContent=v.label+" · "+v.q.length+" oppg."; groups[v.group].append(b);
+  });
+})();
+let setKey = SETS[(location.hash||"").slice(1)] ? location.hash.slice(1) : "ak1";
+let Q = SETS[setKey].q;
+
+/* ---------- state ---------- */
+let ans = {};
+let graded = false;
+function load(){ ans = {}; try { const s = JSON.parse(localStorage.getItem(SETS[setKey].key) || "null"); if (s) { ans = s.ans || {}; } } catch(e) {} }
+function save(){ try { localStorage.setItem(SETS[setKey].key, JSON.stringify({ans})); } catch(e) {} }
+load();
+
+/* ---------- scoring (pure) ---------- */
+function parseNum(s){
+  if (s == null) return null;
+  const t = String(s).replace(/\s|kr|%/gi,"").replace(/ /g,"").replace(",",".");
+  if (t === "" ) return null;
+  const v = Number(t);
+  return Number.isFinite(v) ? v : NaN;
+}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function scoreQ(q,a){
+  if (q.type==="mc"){ if (a==null) return {pts:0,state:"blank"}; return a===q.correct?{pts:3,state:"ok"}:{pts:-1,state:"bad"}; }
+  if (q.type==="num"){ const v=parseNum(a); if (v==null) return {pts:0,state:"blank"}; return Math.abs((q.abs?Math.abs(v):v)-q.answer)<=q.tol?{pts:3,state:"ok"}:{pts:-1,state:"bad"}; }
+  if (q.type==="multi"){
+    const sel = Array.isArray(a)?a:[]; if (!sel.length) return {pts:0,state:"blank"};
+    const k=q.correct.length; let r=0,w=0; sel.forEach(i=>q.correct.includes(i)?r++:w++);
+    const pts=clamp(3*(r-w)/k,-1,3); return {pts, state: pts===3?"ok":(pts<=0?"bad":"part")};
+  }
+  /* match & cat: a = {itemIndex: chosenIndex} */
+  const m = a||{}; const keys=Object.keys(m).filter(k=>m[k]!==""&&m[k]!=null);
+  if (!keys.length) return {pts:0,state:"blank"};
+  const n=q.items.length; let r=0,w=0; keys.forEach(k=>Number(m[k])===q.items[k][1]?r++:w++);
+  const pts=clamp(3*(r-w)/n,-1,3); return {pts, state: pts===3?"ok":(pts<=0?"bad":"part")};
+}
+function isAnswered(q,a){ return scoreQ(q,a).state!=="blank"; }
+function fmt(x){ return (Math.round(x*100)/100).toLocaleString("nb-NO",{maximumFractionDigits:2}); }
+
+/* ---------- render ---------- */
+const quiz=document.getElementById("quiz"), map=document.getElementById("map");
+function el(tag,attrs,html){const e=document.createElement(tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e;}
+
+function render(){
+  quiz.innerHTML=""; map.innerHTML="";
+  Q.forEach((q,i)=>{
+    const a=ans[i];
+    const res = graded ? scoreQ(q,a) : null;
+    const card=el("section",{class:"q",id:"q"+(i+1)});
+    const head=el("div",{class:"qhead"});
+    head.append(el("span",{class:"qnum"},"Oppgave "+(i+1)), el("span",{class:"qtype"},TYPE_LABEL[q.type]), el("span",{class:"qtopic"},q.topic));
+    if (res){ const c = res.state==="ok"?"var(--ok)":res.state==="part"?"var(--warn)":res.state==="bad"?"var(--bad)":"var(--muted)";
+      head.append(el("span",{class:"qscore",style:"color:"+c},(res.pts>0?"+":"")+fmt(res.pts)+" / 3")); }
+    else head.append(el("span",{class:"qscore",style:"color:var(--muted)"},"maks 3 p"));
+    card.append(head);
+    if (q.case) card.append(el("div",{class:"case"},q.case));
+    card.append(el("p",{class:"prompt"},q.prompt));
+
+    if (q.type==="mc"||q.type==="multi"){
+      const box=el("div",{class:"opts",role:q.type==="mc"?"radiogroup":"group"});
+      q.options.forEach((o,j)=>{
+        const id=`q${i}o${j}`;
+        const lab=el("label",{class:"opt",for:id});
+        const inp=el("input",{type:q.type==="mc"?"radio":"checkbox",name:"q"+i,id});
+        if (q.type==="mc") inp.checked = a===j; else inp.checked = Array.isArray(a)&&a.includes(j);
+        inp.disabled=graded;
+        inp.addEventListener("change",()=>{
+          if(q.type==="mc") ans[i]=j; else { const s=new Set(Array.isArray(ans[i])?ans[i]:[]); inp.checked?s.add(j):s.delete(j); ans[i]=[...s].sort(); }
+          save(); updateBar();
+        });
+        lab.append(inp, el("span",null,o));
+        if (graded){
+          const isC = q.type==="mc"? j===q.correct : q.correct.includes(j);
+          if (isC) lab.classList.add("is-correct"); else if (inp.checked) lab.classList.add("is-wrong");
+        }
+        box.append(lab);
+      });
+      card.append(box);
+    }
+    if (q.type==="num"){
+      const row=el("div",{class:"numrow"});
+      const id=`q${i}n`;
+      const inp=el("input",{type:"text",inputmode:"decimal",id,autocomplete:"off","aria-label":"Svar oppgave "+(i+1)});
+      inp.value=a??""; inp.disabled=graded;
+      inp.addEventListener("input",()=>{ ans[i]=inp.value; save(); updateBar(); });
+      row.append(inp, el("span",{class:"unit"},q.unit));
+      if (graded) row.append(el("span",{class:"fix"},"Fasit: "+fmt(q.answer)+" "+q.unit));
+      card.append(row);
+    }
+    if (q.type==="match"||q.type==="cat"){
+      const list=el("div",{class:"pairs"});
+      const choices = q.type==="cat"? q.cats : q.choices;
+      q.items.forEach((it,j)=>{
+        const p=el("div",{class:"pair"});
+        const id=`q${i}s${j}`;
+        p.append(el("label",{for:id},it[0]));
+        const sel=el("select",{id});
+        sel.append(el("option",{value:""},"— velg —"));
+        choices.forEach((c,k)=>sel.append(el("option",{value:String(k)},c)));
+        const cur=(a||{})[j]; sel.value = cur==null?"":String(cur);
+        sel.disabled=graded;
+        sel.addEventListener("change",()=>{ ans[i]=Object.assign({},ans[i]||{}); ans[i][j]=sel.value===""?null:Number(sel.value); save(); updateBar(); });
+        if (graded){
+          const ok = cur!=null && Number(cur)===it[1];
+          if (cur!=null) p.classList.add(ok?"is-correct":"is-wrong");
+          if (!ok) { const wrapper=el("div"); wrapper.append(sel, el("div",{class:"fix"},"Riktig: "+choices[it[1]])); p.append(wrapper); }
+          else p.append(sel);
+        } else p.append(sel);
+        list.append(p);
+      });
+      card.append(list);
+    }
+    if (!graded){
+      const clr=el("button",{class:"clear",type:"button"},"Fjern svar");
+      clr.addEventListener("click",()=>{ delete ans[i]; save(); render(); });
+      card.append(clr);
+    } else {
+      card.append(el("div",{class:"explain"},q.explain));
+    }
+    quiz.append(card);
+
+    const b=el("button",{type:"button","aria-label":"Gå til oppgave "+(i+1)},String(i+1));
+    if (res) b.classList.add(res.state==="ok"?"r-ok":res.state==="part"?"r-part":res.state==="bad"?"r-bad":"x");
+    else if (isAnswered(q,a)) b.classList.add("answered");
+    b.addEventListener("click",()=>document.getElementById("q"+(i+1)).scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}));
+    map.append(b);
+  });
+  updateBar();
+}
+
+function updateBar(){
+  const n = Q.filter((q,i)=>isAnswered(q,ans[i])).length;
+  document.getElementById("sAns").textContent=n;
+  if (!graded){
+    [...map.children].forEach((b,i)=>b.classList.toggle("answered",isAnswered(Q[i],ans[i])));
+  }
+}
+
+function grade(){
+  graded=true;
+  let total=0, ok=0, part=0, bad=0, blank=0;
+  Q.forEach((q,i)=>{ const r=scoreQ(q,ans[i]); total+=r.pts; ({ok:()=>ok++,part:()=>part++,bad:()=>bad++,blank:()=>blank++})[r.state](); });
+  const shown=Math.max(0,total);
+  document.getElementById("sScore").textContent=fmt(total);
+  document.getElementById("sScoreWrap").hidden=false;
+  const M=maxPts(), P=passPts();
+  const pass = total>=P;
+  const r=document.getElementById("result");
+  r.innerHTML = `<h2>${fmt(total)} av ${M} poeng</h2>
+    <div class="meter" role="img" aria-label="${fmt(total)} av ${M} poeng, kravet er ${P}"><div class="fill" style="width:${(shown/M*100).toFixed(1)}%"></div><div class="mark" style="left:${(P/M*100).toFixed(1)}%"></div></div>
+    <div class="legend">Streken markerer kravet: ${P} poeng (41 %)</div>
+    <div class="verdict ${pass?"pass":"fail"}">${pass?"Godkjent nivå":"Ikke godkjent nivå ennå"}: du mangler ${pass?"ingenting":fmt(P-total)+" poeng"}.</div>
+    <div class="legend">Riktig: ${ok} · Delvis: ${part} · Feil/minus: ${bad} · Tomme: ${blank}</div>`;
+  r.hidden=false;
+  render();
+  r.scrollIntoView({behavior:"auto"});
+}
+function reset(){
+  graded=false; ans={}; save();
+  document.getElementById("result").hidden=true;
+  document.getElementById("sScoreWrap").hidden=true;
+  render(); window.scrollTo(0,0);
+}
+document.getElementById("btnSubmit").addEventListener("click",grade);
+document.getElementById("btnSubmit2").addEventListener("click",grade);
+document.getElementById("btnReset").addEventListener("click",reset);
+function selectSet(k){
+  setKey=k; Q=SETS[k].q; graded=false; load();
+  document.getElementById("result").hidden=true;
+  document.getElementById("sScoreWrap").hidden=true;
+  document.getElementById("eyebrow").textContent=SETS[k].eyebrow;
+  document.getElementById("sN").textContent=Q.length;
+  document.getElementById("sMax").textContent=maxPts();
+  document.getElementById("introN").textContent=Q.length;
+  document.getElementById("introPass").textContent=passPts()+" av "+maxPts();
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.set===k)));
+  try { history.replaceState(null,"","#"+k); } catch(e) {}
+  render();
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{ selectSet(t.dataset.set); window.scrollTo(0,0); }));
+selectSet(setKey);
+</script>
+
+</body>
+</html>
