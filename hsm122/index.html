@@ -566,6 +566,20 @@ body.sheet-open{overflow:hidden}
 .seg.wide button{flex:1;padding:10px 8px}
 .concept-wrap .concept{box-shadow:var(--edge),var(--shadow)}
 @media (max-width:600px){.mm-wrap{height:auto;aspect-ratio:1/1.1;max-height:72vh}}
+
+/* decks */
+.decks{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;margin:0 -2px}
+.decks::-webkit-scrollbar{display:none}
+.deck{flex:none;display:grid;gap:0;text-align:left;border:0;border-radius:16px;padding:8px 14px;background:var(--glass-strong);box-shadow:var(--edge);color:var(--fg)}
+.deck b{font-size:14px}
+.deck span{font-size:12px;color:var(--muted)}
+.deck.on{background:var(--cc);box-shadow:none;color:#fff}
+.deck.on span{color:rgba(255,255,255,.85)}
+.fc-def{font-size:18px;line-height:1.55}
+
+.bk-text{width:100%;border:0;border-radius:14px;padding:10px 12px;font-family:var(--f-mono);font-size:12px;color:var(--fg);background:var(--fill-2);resize:vertical}
+.bk-text:focus{outline:2px solid var(--accent)}
+label.btn{display:inline-flex;align-items:center;cursor:pointer}
 </style>
 </head>
 <body>
@@ -955,6 +969,7 @@ body.sheet-open{overflow:hidden}
 
   <section class="view" data-route="kort" hidden>
     <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Flashkort</h1><span class="mono subpos" id="fcPos"></span></div>
+    <div class="decks" id="fcDecks" role="group" aria-label="Velg kapittel"></div>
     <div class="lprog" aria-hidden="true"><span id="fcBar"></span></div>
     <div class="stage" id="fcStage"></div>
     <div class="fc-rate" id="fcRate" hidden>
@@ -982,6 +997,15 @@ body.sheet-open{overflow:hidden}
       <div class="card"><h2>Mestring per tema</h2><p class="modehint">Svakeste temaer først.</p><div class="mlist" id="profTopics"></div></div>
       <div class="card"><h2>Merker</h2><div class="badges" id="profBadges"></div></div>
       <div class="card"><h2>Prøver</h2><div class="tblwrap"><table id="profTests"></table></div></div>
+      <div class="card"><h2>Flytt fremgangen</h2>
+        <p class="modehint">Fremgangen lagres bare i denne nettleseren på denne enheten. For å flytte den til en annen enhet: kopier koden her, og lim den inn under «Gjenopprett» på den andre enheten. Lagre gjerne koden et sted som sikkerhetskopi.</p>
+        <div class="rowbtns"><button class="btn" type="button" id="bkCopy">Kopier fremgangskode</button><button class="btn ghost" type="button" id="bkFile" hidden>Last ned som fil</button></div>
+        <textarea id="bkOut" class="bk-text" rows="3" readonly hidden aria-label="Fremgangskode"></textarea>
+        <label class="modehint" for="bkIn">Gjenopprett fra kode</label>
+        <textarea id="bkIn" class="bk-text" rows="3" placeholder="Lim inn fremgangskoden her"></textarea>
+        <div class="rowbtns"><button class="btn ghost" type="button" id="bkRestore">Gjenopprett</button><label class="btn ghost" for="bkUpload">Velg fil</label><input type="file" id="bkUpload" accept=".json,.txt,application/json,text/plain" hidden></div>
+        <div class="confirm" id="bkConfirm" hidden><span id="bkMsg">Dette erstatter fremgangen i denne nettleseren.</span><button class="btn danger sm" type="button" id="bkYes">Erstatt</button><button class="btn ghost sm" type="button" id="bkNo">Avbryt</button></div>
+      </div>
       <div class="card"><h2>Nullstill</h2>
         <p class="modehint">Sletter XP, merker og alle svar i denne nettleseren.</p>
         <div><button class="btn ghost" type="button" id="resetProfile">Nullstill all fremgang</button></div>
@@ -3501,7 +3525,30 @@ const FORMULAS=[
 
 /* ---------- spaced repetition (SM-2 light) ---------- */
 const DAY=864e5, MIN=6e4;
-function cardList(){ return CONCEPTS.map(c=>({id:c.id,kind:"c",ch:c.ch,c})).concat(FORMULAS.map((f,i)=>({id:"f:"+i,kind:"f",ch:f[0],f}))); }
+const TERMS=[
+  [7,"Hovedsted","Avdeling som fakturerer til kunde, for eksempel avdeling kjøtt og avdeling fisk."],
+  [7,"Hjelpested","Avdeling som ikke fakturerer til kunde, men betjener hovedavdelingene, for eksempel bildrift. Kostnadene samles der og fordeles videre på hovedavdelingene."],
+  [7,"Fellessted","Kostnadssted som ikke fakturerer til kunde, med kostnader som deles av flere avdelinger, for eksempel administrasjon."],
+  [7,"Avdelingsspesifikk kostnad","Indirekte kostnad som bare gjelder én avdeling, som avdelingens lønn og avskrivning på avdelingens utstyr. Føres rett på avdelingen."],
+  [7,"Felleskostnad","Kostnad som gjelder flere avdelinger og fordeles med skjønnsmessige fordelingsnøkler etter hvor mye ressurser avdelingene bruker."],
+  [7,"Fordelingsnøkkel","Et forholdstall (for eksempel areal, lønn eller bruk) som fordeler en felleskostnad. Andel = kostnad × egen del / sum av delene. Eksempel: husleie 20 000 i forholdet 10 : 100 : 90 gir 1 000, 10 000 og 9 000."],
+  [7,"Trinnvis kostnadsfordeling","Først fordeles alle kostnader på hoved- og hjelpeavdelinger. Deretter fordeles hjelpeavdelingens sum videre på hovedavdelingene etter en egen nøkkel."],
+  [7,"Direkte kostnader i en handelsbedrift","Kostnader som lett kan føres direkte på en avdeling, først og fremst varesalg og varekostnad."],
+  [7,"Budsjettert og oppnådd bruttofortjeneste","Budsjettert er forventet bruttofortjeneste. Oppnådd er faktisk ifølge driftsregnskapet: virkelig salgsinntekt − varekostnad. Budsjettkontrollen sammenligner dem og finner avvik."],
+  [7,"Svinn","Varer som forsvinner uten salgsinntekt, på grunn av tyveri, feil eller ødeleggelse. Svinn reduserer bruttofortjenesten og kan motvirkes med bedre internkontroll."],
+  [7,"Vareopptelling","Fullstendig opptelling av varelageret ved slutten av perioden. Gir riktig varebeholdning og dermed riktig varekostnad."],
+  [7,"Lagerregnskap","Systematisk oversikt over lagerbeholdningen. Med moderne teknologi kan lagerverdi og varekostnad følges løpende."],
+  [7,"Avvik som effekt på resultatet","Inntekt: regnskap − budsjett. Kostnad: budsjett − regnskap. Negativt avvik betyr dårligere enn budsjett."],
+  [7,"Pris- og mengdeavvik","I avviksanalysen skilles det mellom avvik som skyldes pris og avvik som skyldes mengde, og mellom interne og eksterne årsaker."],
+  [7,"Er et positivt avvik alltid bra?","Nei. Avviket må vurderes mot bedriftens mål og strategi. Lavere kostnad til markedsføring kan for eksempel gi lavere salg senere."],
+  [7,"Faste og variable kostnader i budsjettkontrollen","Faste kostnader bør ha få avvik, så de variable må følges opp tett. Se på trender over tid, fordi månedstall kan gi tilfeldige utslag."],
+  [7,"Kalkyle eller driftsregnskap?","Kalkyle gjelder én vare eller ett vareparti (varekostnad, avanse og utsalgspris per enhet). Driftsregnskap gjelder hele virksomheten totalt for en regnskapsperiode."],
+  [7,"Lovregulering og rapportering","Finansregnskapet er lovregulert (god regnskapsskikk) og rapporteres normalt årlig. Driftsregnskapet er frivillig, uten lovregulering, og rapporteres normalt månedlig."],
+  [7,"Dekningsbidrag eller bruttofortjeneste?","Dekningsbidrag = salgsinntekt − alle variable kostnader. Bruttofortjeneste = salgsinntekt − bare varekostnaden."],
+  [7,"Dekningspunkt og sikkerhetsmargin","Dekningspunkt = faste kostnader / dekningsgrad, omsetningen som gir null i fortjeneste. Sikkerhetsmargin = salgsinntekt − dekningspunkt, hvor mye salget kan falle før det blir tap."]
+];
+let deckCh=0;
+function cardList(){ const all=CONCEPTS.map(c=>({id:c.id,kind:"c",ch:c.ch,c})).concat(FORMULAS.map((f,i)=>({id:"f:"+i,kind:"f",ch:f[0],f})),TERMS.map(t=>({id:"t:"+t[1],kind:"t",ch:t[0],t}))); return deckCh?all.filter(c=>c.ch===deckCh):all; }
 function today(){ const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
 function newLeft(){ if(P.newDay.d!==today()) P.newDay={d:today(),n:0}; return Math.max(0,10-P.newDay.n); }
 function dueCards(){ const now=Date.now(); return cardList().filter(c=>P.cards[c.id] && P.cards[c.id].due<=now).sort((a,b)=>P.cards[a.id].due-P.cards[b.id].due); }
@@ -3518,6 +3565,7 @@ function preview(id,g){ const orig=P.cards[id]; if(orig) P.cards[id]={...orig}; 
 
 /* ---------- hub ---------- */
 function renderLearn(){
+  deckCh=0;
   const due=dueCards().length, nl=newLeft(), total=cardList().length, seen=Object.keys(P.cards).length;
   $("learnHero").innerHTML=`<div class="lh-text"><span class="eyebrow">Dagens repetisjon</span><b>${due?due+" kort klare":"Ingen kort forfalt"}</b><span>${nl} nye kort i dag · ${seen} av ${total} kort påbegynt</span></div><button class="btn" type="button" data-view="kort">${due||nl?"Start":"Øv ekstra"}</button>`;
 }
@@ -3613,9 +3661,17 @@ function zoomAt(f,px,py){
 
 /* ---------- flashcards ---------- */
 let fq=[], fi=0, fDone=0;
+function renderDecks(){
+  const now=Date.now(), save=deckCh; deckCh=0; const all=cardList(); deckCh=save;
+  const chips=[[0,"Alle"]].concat(Object.keys(CH_NAME).map(c=>[+c,"Kap. "+c]));
+  $("fcDecks").innerHTML=chips.map(([c,l])=>{ const list=c?all.filter(x=>x.ch===c):all; const due=list.filter(x=>P.cards[x.id]&&P.cards[x.id].due<=now).length; const nw=list.filter(x=>!P.cards[x.id]).length;
+    return `<button type="button" class="deck${c===deckCh?" on":""}" data-ch="${c}" aria-pressed="${c===deckCh}" style="--cc:${c?CH_COLOR[c]:"var(--accent)"}"><b>${l}</b><span>${list.length} kort${due?" · "+due+" klare":nw?" · "+nw+" nye":""}</span></button>`; }).join("");
+  $("fcDecks").querySelectorAll(".deck").forEach(b=>b.addEventListener("click",()=>{ deckCh=+b.dataset.ch; renderDecks(); startCards(false); }));
+}
 function startCards(extra){
-  const d=dueCards(); const n=newCards(newLeft());
+  const d=dueCards(); const n=newCards(deckCh?15:newLeft());
   fq=d.concat(n); if(!fq.length && extra) fq=shuffle(cardList()).slice(0,15);
+  renderDecks();
   fi=0; fDone=0; showCard();
 }
 function showCard(){
@@ -3623,15 +3679,18 @@ function showCard(){
   $("fcPos").textContent=fq.length?Math.min(fi+1,fq.length)+" av "+fq.length:"";
   $("fcBar").style.width=(fq.length?fi/fq.length*100:0)+"%";
   if(!c){
-    box.innerHTML=`<div class="fc-empty glass"><span class="tile t-green" aria-hidden="true">${IC_CHECK_BIG}</span><b>${fDone?"Ferdig for nå":"Ingen kort å repetere nå"}</b><span>${fDone?fDone+" kort repetert. Kortene kommer tilbake når det er tid for å repetere dem.":"Nye kort kommer i morgen, og gamle kort dukker opp når de forfaller."}</span><button class="btn" type="button" id="fcExtra">Øv ekstra på 15 tilfeldige</button></div>`;
+    box.innerHTML=`<div class="fc-empty glass"><span class="tile t-green" aria-hidden="true">${IC_CHECK_BIG}</span><b>${fDone?"Ferdig for nå":"Ingen kort å repetere nå"}</b><span>${fDone?fDone+" kort repetert. Kortene kommer tilbake når det er tid for å repetere dem.":deckCh?"Alle kortene i kapittel "+deckCh+" er repetert for nå.":"Nye kort kommer i morgen, og gamle kort dukker opp når de forfaller. Velg et kapittel over for å øve på det."}</span><button class="btn" type="button" id="fcExtra">Øv ekstra på 15 tilfeldige</button></div>`;
     $("fcExtra").addEventListener("click",()=>startCards(true)); $("fcRate").hidden=true; return;
   }
-  const front = c.kind==="c"
+  const front = c.kind==="t"
+    ? `<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">Begrep · kap. ${c.ch}</span><b class="fc-title">${c.t[1]}</b><span class="fc-hint">Forklar begrepet for deg selv, og snu kortet.</span>`
+    : c.kind==="c"
     ? `<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">Kap. ${c.ch} · ${CH_NAME[c.ch]}</span><b class="fc-title">${c.c.title}</b><span class="fc-hint">Hva vet du om dette? Tenk gjennom svaret, og snu kortet.</span>`
     : `<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">Formel · kap. ${c.ch}</span><b class="fc-title">${c.f[1]}</b><span class="fc-hint">Hvordan regner du det ut? Si formelen høyt, og snu kortet.</span>`;
   box.innerHTML=`<button class="flip" type="button" id="fcCard" aria-label="Snu kortet"><span class="flip-in"><span class="face front glass">${front}</span><span class="face back glass"></span></span></button>`;
   const back=box.querySelector(".back");
   if(c.kind==="c"){ const n=c.c.el.cloneNode(true); n.querySelectorAll(".formula").forEach(f=>{ f.classList.add("shown"); f.removeAttribute("tabindex"); }); back.append(n); }
+  else if(c.kind==="t") back.innerHTML=`<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">${c.t[1]}</span><span class="fc-def">${c.t[2]}</span>`;
   else back.innerHTML=`<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">${c.f[1]}</span><span class="fc-formula">${c.f[2]}</span>`;
   $("fcCard").addEventListener("click",flipCard);
   $("fcRate").hidden=true;
@@ -3712,6 +3771,41 @@ document.addEventListener("keydown",e=>{
   const t=document.activeElement; if(t && /INPUT|SELECT|TEXTAREA/.test(t.tagName)) return;
   if(e.key===" "||e.key==="Enter"){ if($("fcCard") && !$("fcCard").classList.contains("flipped")){ e.preventDefault(); flipCard(); } }
   if(["1","2","3","4"].includes(e.key) && !$("fcRate").hidden) rateCard(+e.key-1);
+});
+/* ---------- backup / restore ---------- */
+function bkDump(){ const o={v:1,at:new Date().toISOString(),data:{}}; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.startsWith("hsm122")) o.data[k]=localStorage.getItem(k); } }catch(e){} return o; }
+function bkEncode(){ return "HSM122:"+btoa(unescape(encodeURIComponent(JSON.stringify(bkDump())))); }
+function bkDecode(t){
+  t=(t||"").trim(); if(!t) throw new Error("Tom kode");
+  let json=t;
+  if(t.startsWith("HSM122:")) json=decodeURIComponent(escape(atob(t.slice(7).replace(/\s+/g,""))));
+  const o=JSON.parse(json); if(!o||!o.data||typeof o.data!=="object") throw new Error("Ugyldig");
+  const keys=Object.keys(o.data).filter(k=>k.startsWith("hsm122")); if(!keys.length) throw new Error("Ingen data");
+  return o;
+}
+let bkPending=null;
+function bkAsk(o){
+  bkPending=o; const n=Object.keys(o.data).length; const p=(()=>{ try{ return JSON.parse(o.data["hsm122-profile"]||"{}"); }catch(e){ return {}; } })();
+  $("bkMsg").textContent=`Fant fremgang fra ${o.at?new Date(o.at).toLocaleString("nb-NO"):"en annen enhet"} med ${p.xp||0} XP og ${n} lagrede deler. Dette erstatter fremgangen i denne nettleseren.`;
+  $("bkConfirm").hidden=false;
+}
+$("bkCopy").addEventListener("click",()=>{
+  const code=bkEncode(), out=$("bkOut");
+  const show=()=>{ out.hidden=false; out.value=code; out.focus(); out.select(); toast("Marker koden og kopier den"); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(()=>toast("Fremgangskoden er kopiert","streak")).catch(show); } else show();
+});
+if(/github\.io$/.test(location.hostname)){ $("bkFile").hidden=false; }
+$("bkFile").addEventListener("click",()=>{ const blob=new Blob([JSON.stringify(bkDump(),null,1)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="hsm122-fremgang-"+today()+".json"; document.body.append(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500); });
+$("bkRestore").addEventListener("click",()=>{ try{ bkAsk(bkDecode($("bkIn").value)); }catch(e){ toast("Koden ble ikke gjenkjent. Sjekk at hele koden er limt inn."); } });
+$("bkUpload").addEventListener("change",e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ bkAsk(bkDecode(String(r.result))); }catch(err){ toast("Filen ble ikke gjenkjent."); } }; r.readAsText(f); e.target.value=""; });
+$("bkNo").addEventListener("click",()=>{ bkPending=null; $("bkConfirm").hidden=true; });
+$("bkYes").addEventListener("click",()=>{
+  if(!bkPending) return;
+  try{ const old=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.startsWith("hsm122")) old.push(k); } old.forEach(k=>localStorage.removeItem(k)); Object.entries(bkPending.data).forEach(([k,v])=>{ if(k.startsWith("hsm122")) localStorage.setItem(k,v); }); }catch(e){ toast("Kunne ikke lagre i denne nettleseren"); return; }
+  P=Object.assign({xp:0,streak:0,bestStreak:0,answered:0,correct:0,deliveries:0,badges:{},best:{},passed:{},revealed:0,topics:{},wrong:{}},rd("hsm122-profile",{}));
+  P.cards=P.cards||{}; P.newDay=P.newDay||{d:"",n:0}; P.reviews=P.reviews||0; P.mmOpened=P.mmOpened||0; P.feyn=P.feyn||0;
+  practice=!!rd("hsm122-practice",false); layout=rd("hsm122-layout","one");
+  bkPending=null; $("bkConfirm").hidden=true; $("bkIn").value=""; renderProfile(); renderLevel(); toast("Fremgangen er gjenopprettet","streak"); confetti();
 });
 go((location.hash||"").slice(1)||"hjem",true);
 
