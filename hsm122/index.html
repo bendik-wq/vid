@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="240 casebaserte øvingsoppgaver i HSM122 (kap. 1–7) med tankekart, flashkort, formelduell, blandede prøver, XP og merker.">
+<meta name="description" content="240 casebaserte øvingsoppgaver i HSM122 (kap. 1–7) med Excel-oppgaver i nettleseren, tankekart, flashkort, formelduell, blandede prøver, XP og merker.">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <title>Øvingsprøve HSM122</title>
 <meta name="theme-color" content="#eef1f8">
@@ -580,6 +580,63 @@ body.sheet-open{overflow:hidden}
 .bk-text{width:100%;border:0;border-radius:14px;padding:10px 12px;font-family:var(--f-mono);font-size:12px;color:var(--fg);background:var(--fill-2);resize:vertical}
 .bk-text:focus{outline:2px solid var(--accent)}
 label.btn{display:inline-flex;align-items:center;cursor:pointer}
+
+/* ===== v5: regneark ===== */
+:root{--xl:#107c41;--xl-soft:rgba(16,124,65,.10);--xl-head:#f3f3f6;--xl-cell:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--xl:#33c481;--xl-soft:rgba(51,196,129,.14);--xl-head:#1f1f23;--xl-cell:#141417}}
+:root[data-theme="dark"]{--xl:#33c481;--xl-soft:rgba(51,196,129,.14);--xl-head:#1f1f23;--xl-cell:#141417}
+.t-xl{background:linear-gradient(180deg,#1f9d5a,#107c41)}
+.qcard.wide{grid-column:1/-1;min-height:0;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px}
+.qcard.wide .tile{margin:0}
+.qw{display:grid;gap:1px}
+.qw b{font-family:var(--f-display);font-size:17px}
+.xl-hero{display:flex;gap:14px;align-items:center;border-radius:22px;padding:16px 18px;background-image:radial-gradient(120% 90% at 0 0,var(--xl-soft),transparent 60%),linear-gradient(180deg,var(--sheen),transparent 42%)}
+.xl-hero .tile{width:44px;height:44px;border-radius:12px}
+.xl-hero div{display:grid;gap:2px}
+.xl-hero b{font-family:var(--f-display);font-size:19px}
+.xl-hero span{font-size:14px;color:var(--muted)}
+.xl-task{border-radius:22px;padding:18px 20px;display:grid;gap:8px}
+.xl-task h2{margin:0;font-size:21px}
+.xl-task p{margin:0;font-size:15px}
+.xl-task ol{margin:0;padding-left:20px;font-size:15px;display:grid;gap:3px}
+.xl-tools{position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:6;background:var(--bar);border-radius:18px;padding:6px;display:grid;gap:6px}
+.xl-bar{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:8px}
+.xl-name{min-width:62px;text-align:center;font-size:13px;font-weight:600;background:var(--fill);border-radius:9px;padding:7px 8px}
+.xl-fxl{font-family:var(--f-mono);font-style:italic;font-weight:600;color:var(--xl);font-size:14px}
+#xlFx{font:inherit;font-family:var(--f-mono);font-size:15px;border:0;border-radius:10px;background:var(--fill-2);color:var(--fg);padding:8px 10px;width:100%;min-width:0}
+#xlFx:focus{outline:2px solid var(--xl);background:var(--xl-cell)}
+#xlFx[readonly]{color:var(--muted)}
+.xl-pad{display:flex;flex-wrap:wrap;gap:6px}
+.xl-pad button{border:0;border-radius:10px;background:var(--glass-strong);box-shadow:var(--edge);min-width:40px;padding:8px 11px;font-family:var(--f-mono);font-size:15px;font-weight:600;color:var(--fg)}
+.xl-pad button.act{font-family:var(--f-body);font-size:13.5px;color:var(--xl)}
+.xl-pad button.ok{background:var(--xl);color:#fff;box-shadow:none}
+.xl-pad button[aria-pressed="true"]{background:var(--xl);color:#fff}
+.xl-pad button:active{transform:scale(.95)}
+.xl-wrap{overflow:auto;max-height:62vh;border-radius:16px;background:var(--xl-cell);box-shadow:var(--edge),var(--shadow);-webkit-overflow-scrolling:touch;outline:none}
+.xl-wrap:focus-visible{box-shadow:var(--edge),0 0 0 3px var(--xl-soft)}
+table.xl{border-collapse:separate;border-spacing:0;table-layout:fixed;margin:0;border:0;border-radius:0;font-size:14px;font-variant-numeric:tabular-nums;width:max-content;user-select:none;-webkit-user-select:none}
+.xl th,.xl td{border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0 8px;height:34px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;background:var(--xl-cell);color:var(--fg)}
+.xl thead th{position:sticky;top:0;z-index:3;background:var(--xl-head);text-align:center;font-size:12px;font-weight:600;color:var(--muted);height:26px}
+.xl tbody th{position:sticky;left:0;z-index:2;background:var(--xl-head);text-align:center;font-size:12px;font-weight:600;color:var(--muted);padding:0 4px}
+.xl thead th.corner{left:0;z-index:4}
+.xl td{cursor:cell}
+.xl td.num{text-align:right}
+.xl td.given{background:var(--xl-head)}
+.xl td.lbl{font-weight:600}
+.xl td.target{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--xl) 55%,transparent);background:var(--xl-soft)}
+.xl td.inr{background:color-mix(in srgb,var(--xl) 16%,var(--xl-cell))}
+.xl td.ok{background:var(--ok-soft);box-shadow:inset 0 0 0 1.5px var(--ok)}
+.xl td.bad{background:var(--bad-soft);box-shadow:inset 0 0 0 1.5px var(--bad)}
+.xl td.err{color:var(--bad);font-weight:600}
+.xl td.sel{box-shadow:inset 0 0 0 2.5px var(--xl);position:relative;z-index:1}
+.xl td.editing{font-family:var(--f-mono);font-size:13px;text-align:left;background:var(--xl-cell);text-overflow:clip}
+.xl-result{border-radius:18px;padding:14px 16px;display:grid;gap:2px}
+.xl-result b{font-family:var(--f-display);font-size:18px}
+.xl-result span{font-size:14px;color:var(--muted)}
+.xl-result.good{box-shadow:var(--edge),inset 0 0 0 2px var(--ok)}
+.xl-result.good b{color:var(--ok)}
+
+@media (max-width:640px){.xl-pad{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.xl-pad::-webkit-scrollbar{display:none}.xl-pad button{flex:none}.xl-wrap{max-height:56vh}}
 </style>
 </head>
 <body>
@@ -951,6 +1008,7 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
     <header class="largetitle"><span class="eyebrow">Metoder fra læringsforskningen</span><h1>Lær</h1></header>
     <div class="learn-hero glass" id="learnHero"></div>
     <div class="modes">
+      <button class="mode glass" type="button" data-view="excel" style="--mc:#107c41"><span class="tile t-xl" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 9.3h17M3.5 14.7h17M9.3 4v16" stroke="currentColor" stroke-width="2"/></svg></span><b>Regneark</b><span>Excel-oppgavene fra foilene i et regneark med formler, Fyll ned og automatisk retting.</span><em>Del 2 av eksamen er Excel. Øvingen er lagt opp som på eksamen: du bygger formlene selv.</em></button>
       <button class="mode glass" type="button" data-view="kart" style="--mc:#5856d6"><span class="tile t-indigo" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="4.5" cy="5" r="2" fill="currentColor"/><circle cx="19.5" cy="5" r="2" fill="currentColor"/><circle cx="4.5" cy="19" r="2" fill="currentColor"/><circle cx="19.5" cy="19" r="2" fill="currentColor"/><path d="M6 6.3l3.7 3.6M18 6.3l-3.7 3.6M6 17.7l3.7-3.6M18 17.7l-3.7-3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><b>Tankekart</b><span>Hele pensum som et kart. Se hvordan begrepene henger sammen, og hvor du er sterk og svak.</span><em>Elaborering og dobbel koding: struktur og bilder gjør stoffet lettere å huske.</em></button>
       <button class="mode glass" type="button" data-view="kort" style="--mc:#007aff"><span class="tile t-blue" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3.5h10.5A2.5 2.5 0 0 1 21 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Flashkort</b><span>Begreper og formler som repeteres akkurat når du er i ferd med å glemme dem.</span><em>Spaced repetition: repetisjon med økende mellomrom slår pugging (Cepeda m.fl., 2006).</em></button>
       <button class="mode glass" type="button" data-view="formel" style="--mc:#ff9500"><span class="tile t-orange" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 4H7l6 8-6 8h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Formelduell</b><span>10 raske runder: velg riktig formel, eller finn ut hva formelen regner ut.</span><em>Hentetrening: å hente frem svaret selv styrker hukommelsen (Roediger og Karpicke, 2006).</em></button>
@@ -989,6 +1047,20 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
     <div class="stage" id="fxStage"></div>
   </section>
 
+
+  <section class="view" data-route="excel" hidden>
+    <div class="subhead"><button class="navback" type="button" id="xlBack"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Tilbake</button><h1 id="xlTitle">Regneark</h1><span></span></div>
+    <div id="xlList" class="view"></div>
+    <div id="xlWork" class="view" hidden>
+      <div class="xl-task glass" id="xlTask"></div>
+      <div class="xl-tools glass"><div class="xl-bar"><span class="xl-name mono" id="xlName">A1</span><span class="xl-fxl" aria-hidden="true">fx</span><input id="xlFx" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Formellinje"></div>
+      <div class="xl-pad" id="xlPad" role="toolbar" aria-label="Formelknapper"><button type="button" data-ins="=">=</button><button type="button" data-ins="+">+</button><button type="button" data-ins="-">−</button><button type="button" data-ins="*">×</button><button type="button" data-ins="/">÷</button><button type="button" data-ins="(">(</button><button type="button" data-ins=")">)</button><button type="button" data-ins=";">;</button><button type="button" data-ins="$">$</button><button type="button" data-ins="SUMMER(">SUMMER</button><button type="button" data-ins="AVRUND(">AVRUND</button><button type="button" data-act="down" class="act">Fyll ned</button><button type="button" data-act="right" class="act">Fyll høyre</button><button type="button" data-act="extend" class="act" id="xlExtend" aria-pressed="false">Merk område</button><button type="button" data-act="undo" class="act">Angre</button><button type="button" data-act="ok" class="act ok">Enter ↵</button></div></div>
+      <div class="xl-wrap" id="xlWrap" tabindex="0" role="grid" aria-label="Regneark"><table class="xl" id="xlGrid"></table></div>
+      <div class="rowbtns"><button class="btn" type="button" id="xlCheck">Sjekk svarene</button><button class="btn ghost" type="button" id="xlSolution">Vis løsningsforslag</button><button class="btn ghost" type="button" id="xlReset">Tøm arket</button></div>
+      <div class="xl-result glass" id="xlResult" hidden></div>
+      <p class="modehint">Tastatur: piltaster flytter, skriv for å starte, Enter lagrer, F2 redigerer, Ctrl/Cmd + C, V og Z, og Ctrl/Cmd + D fyller ned og R fyller mot høyre. Mens du skriver en formel kan du klikke på en celle for å sette inn referansen, eller dra over flere celler for et område.</p>
+    </div>
+  </section>
   <section id="viewProfile" class="view" hidden>
     <header class="largetitle"><span class="eyebrow">Fremgang lagres i denne nettleseren</span><h1>Profil</h1></header>
     <div class="prof">
@@ -3309,7 +3381,7 @@ function renderHome(){
   const cont = last && st.n>0 && !st.graded
     ? `<button class="qcard glass" type="button" data-view="${last}">${tileHTML(last)}<span>Fortsett</span><b>${DISPLAY[last].t}</b><span>${st.n} av ${st.total} besvart</span><span class="pbar"><i style="width:${(st.n/st.total*100).toFixed(0)}%"></i></span></button>`
     : `<button class="qcard glass" type="button" data-view="mix14">${tileHTML("mix14")}<span>Kom i gang</span><b>30 tilfeldige</b><span>Som arbeidskravet, kap. 1–4</span></button>`;
-  $("homeQuick").innerHTML = cont + `<button class="qcard glass" type="button" data-view="lyn">${tileHTML("lyn")}<span>5 minutter</span><b>Lynrunde</b><span>10 oppgaver med fasit underveis</span></button>`;
+  $("homeQuick").innerHTML = cont + `<button class="qcard glass" type="button" data-view="lyn">${tileHTML("lyn")}<span>5 minutter</span><b>Lynrunde</b><span>10 oppgaver med fasit underveis</span></button><button class="qcard glass wide" type="button" data-view="excel"><span class="tile t-xl" aria-hidden="true">${IC_GRID}</span><span class="qw"><b>Excel-oppgaver</b><span>Øv til del 2 av eksamen i et regneark som retter deg</span></span>${IC_CHEV}</button>`;
   $("homeMastery").innerHTML = masteryHTML();
   const wn=Object.keys(P.wrong||{}).length, hasT=Object.keys(P.topics||{}).length>0;
   $("homeLists").innerHTML = GROUPS.map(([name,sub,keys])=>`<h2 class="sec-h">${name}</h2><p class="sec-sub">${sub}</p><div class="group glass">`+keys.map(k=>{
@@ -3807,6 +3879,455 @@ $("bkYes").addEventListener("click",()=>{
   practice=!!rd("hsm122-practice",false); layout=rd("hsm122-layout","one");
   bkPending=null; $("bkConfirm").hidden=true; $("bkIn").value=""; renderProfile(); renderLevel(); toast("Fremgangen er gjenopprettet","streak"); confetti();
 });
+
+
+/* ================= REGNEARK: formula engine ================= */
+function XLErr(code){ this.code=code; }
+const xlColName=i=>{ let s=""; i++; while(i>0){ const m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); } return s; };
+function xlColIdx(s){ let n=0; for(const ch of s.toUpperCase()) n=n*26+(ch.charCodeAt(0)-64); return n-1; }
+function xlParseRef(r){ const m=/^\$?([A-Za-z]{1,2})\$?(\d+)$/.exec(r); return m?{c:xlColIdx(m[1]),r:+m[2]-1}:null; }
+const xlAddr=(c,r)=>xlColName(c)+(r+1);
+function xlLit(s){
+  const t=String(s).trim(); if(t==="") return null;
+  let u=t.replace(/\s/g,"").replace(/−/g,"-"), pct=false;
+  if(u.endsWith("%")){ pct=true; u=u.slice(0,-1); }
+  if(/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(u)) u=u.replace(/\./g,"");
+  u=u.replace(",",".");
+  if(/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(u)){ const v=+u; return pct?v/100:v; }
+  return t;
+}
+function xlTok(f){
+  const toks=[]; let i=0;
+  while(i<f.length){
+    const ch=f[i]; if(/\s/.test(ch)){ i++; continue; }
+    const rest=f.slice(i); let m;
+    if((m=/^"([^"]*)"/.exec(rest))){ toks.push({t:"str",v:m[1]}); i+=m[0].length; continue; }
+    if((m=/^\$?[A-Za-z]{1,2}\$?\d+(?::\$?[A-Za-z]{1,2}\$?\d+)?(?![A-Za-z0-9_(])/.exec(rest))){ toks.push({t:"ref",v:m[0].toUpperCase()}); i+=m[0].length; continue; }
+    if((m=/^[A-Za-zÆØÅæøå][A-Za-zÆØÅæøå0-9._]*(?=\s*\()/.exec(rest))){ toks.push({t:"fn",v:m[0]}); i+=m[0].length; continue; }
+    if((m=/^\d+(?:[.,]\d+)?(?:[eE][-+]?\d+)?/.exec(rest))||(m=/^[.,]\d+/.exec(rest))){ toks.push({t:"num",v:+m[0].replace(",",".")}); i+=m[0].length; continue; }
+    if((m=/^(<=|>=|<>)/.exec(rest))){ toks.push({t:"op",v:m[0]}); i+=2; continue; }
+    if("+-*/^()%;,=<>&−×÷".includes(ch)){ toks.push({t:"op",v:ch==="−"?"-":ch==="×"?"*":ch==="÷"?"/":ch}); i++; continue; }
+    throw new XLErr("#NAVN?");
+  }
+  return toks;
+}
+function xlParse(src){
+  const toks=xlTok(src); let p=0;
+  const peek=()=>toks[p], next=()=>toks[p++];
+  const isOp=(...vs)=>peek()&&peek().t==="op"&&vs.includes(peek().v);
+  const expect=v=>{ const t=next(); if(!t||t.v!==v) throw new XLErr("#FEIL!"); };
+  function cmp(){ let a=add(); while(isOp("=","<>","<",">","<=",">=")){ const o=next().v; a={k:"bin",o,a,b:add()}; } return a; }
+  function add(){ let a=mul(); while(isOp("+","-","&")){ const o=next().v; a={k:"bin",o,a,b:mul()}; } return a; }
+  function mul(){ let a=pw(); while(isOp("*","/")){ const o=next().v; a={k:"bin",o,a,b:pw()}; } return a; }
+  function pw(){ let a=una(); while(isOp("^")){ next(); a={k:"bin",o:"^",a,b:una()}; } return a; }
+  function una(){ if(isOp("-","+")){ const o=next().v, x=una(); return o==="-"?{k:"neg",x}:x; } return post(); }
+  function post(){ let x=prim(); while(isOp("%")){ next(); x={k:"pct",x}; } return x; }
+  function prim(){
+    const t=next(); if(!t) throw new XLErr("#FEIL!");
+    if(t.t==="num") return {k:"num",v:t.v};
+    if(t.t==="str") return {k:"str",v:t.v};
+    if(t.t==="ref") return t.v.includes(":")?{k:"rng",v:t.v}:{k:"ref",v:t.v};
+    if(t.t==="fn"){ expect("("); const args=[]; if(!isOp(")")){ args.push(cmp()); while(isOp(";",",")){ next(); args.push(cmp()); } } expect(")"); return {k:"fn",n:t.v.toUpperCase(),args}; }
+    if(t.v==="("){ const x=cmp(); expect(")"); return x; }
+    throw new XLErr("#FEIL!");
+  }
+  if(!toks.length) throw new XLErr("#FEIL!");
+  const ast=cmp(); if(p<toks.length) throw new XLErr("#FEIL!"); return ast;
+}
+function xlRange(r){
+  const [a,b]=r.replace(/\$/g,"").split(":").map(xlParseRef); if(!a||!b) throw new XLErr("#REF!");
+  const out=[]; for(let rr=Math.min(a.r,b.r);rr<=Math.max(a.r,b.r);rr++) for(let cc=Math.min(a.c,b.c);cc<=Math.max(a.c,b.c);cc++) out.push(xlAddr(cc,rr));
+  return out;
+}
+function xlNum(v){
+  if(v==null) return 0; if(typeof v==="number") return v; if(typeof v==="boolean") return v?1:0;
+  const n=xlLit(v); if(typeof n==="number") return n; throw new XLErr("#VERDI!");
+}
+const XL_FN={SUMMER:"SUM",GJENNOMSNITT:"AVERAGE",MAKS:"MAX",AVRUND:"ROUND",HVIS:"IF",ANTALL:"COUNT",PRODUKT:"PRODUCT",ROT:"SQRT"};
+function xlNums(args,ctx){
+  const out=[];
+  args.forEach(a=>{ if(a.k==="rng") xlRange(a.v).forEach(ad=>{ const v=ctx.get(ad); if(typeof v==="number") out.push(v); }); else out.push(xlNum(xlEval(a,ctx))); });
+  return out;
+}
+function xlEval(n,ctx){
+  switch(n.k){
+    case "num": case "str": return n.v;
+    case "ref": return ctx.get(n.v.replace(/\$/g,""));
+    case "rng": throw new XLErr("#VERDI!");
+    case "neg": return -xlNum(xlEval(n.x,ctx));
+    case "pct": return xlNum(xlEval(n.x,ctx))/100;
+    case "bin": {
+      const a=xlEval(n.a,ctx), b=xlEval(n.b,ctx);
+      if(n.o==="&") return String(a??"")+String(b??"");
+      if(["=","<>","<",">","<=",">="].includes(n.o)){
+        let x,y; if(typeof a==="string"||typeof b==="string"){ x=String(a??"").toLowerCase(); y=String(b??"").toLowerCase(); } else { x=xlNum(a); y=xlNum(b); }
+        return n.o==="="?x===y:n.o==="<>"?x!==y:n.o==="<"?x<y:n.o===">"?x>y:n.o==="<="?x<=y:x>=y;
+      }
+      const x=xlNum(a), y=xlNum(b);
+      if(n.o==="+") return x+y; if(n.o==="-") return x-y; if(n.o==="*") return x*y;
+      if(n.o==="/"){ if(y===0) throw new XLErr("#DIV/0!"); return x/y; }
+      if(n.o==="^") return Math.pow(x,y);
+      throw new XLErr("#FEIL!");
+    }
+    case "fn": {
+      const name=XL_FN[n.n]||n.n, A=n.args;
+      if(name==="IF"){ if(A.length<2) throw new XLErr("#FEIL!"); const c=xlEval(A[0],ctx); return (typeof c==="string"?c!=="":xlNum(c)!==0)?xlEval(A[1],ctx):(A[2]?xlEval(A[2],ctx):false); }
+      if(name==="ROUND"){ const x=xlNum(xlEval(A[0],ctx)), d=A[1]?xlNum(xlEval(A[1],ctx)):0, f=Math.pow(10,d); return Math.sign(x)*Math.round(Math.abs(x)*f+1e-9)/f; }
+      if(name==="ABS") return Math.abs(xlNum(xlEval(A[0],ctx)));
+      if(name==="SQRT"){ const x=xlNum(xlEval(A[0],ctx)); if(x<0) throw new XLErr("#TALL!"); return Math.sqrt(x); }
+      const v=xlNums(A,ctx);
+      if(name==="SUM") return v.reduce((s,x)=>s+x,0);
+      if(name==="AVERAGE"){ if(!v.length) throw new XLErr("#DIV/0!"); return v.reduce((s,x)=>s+x,0)/v.length; }
+      if(name==="MIN") return v.length?Math.min(...v):0;
+      if(name==="MAX") return v.length?Math.max(...v):0;
+      if(name==="COUNT") return v.length;
+      if(name==="PRODUCT") return v.reduce((s,x)=>s*x,1);
+      throw new XLErr("#NAVN?");
+    }
+  }
+  throw new XLErr("#FEIL!");
+}
+function xlCompute(raw){
+  const memo={}, stack=new Set();
+  const get=ad=>{
+    if(ad in memo){ const m=memo[ad]; if(m instanceof XLErr) throw m; return m; }
+    if(stack.has(ad)) throw new XLErr("#SIRK!");
+    const s=raw[ad]; let v;
+    try{
+      if(s==null||s==="") v=null;
+      else if(String(s)[0]==="="){ stack.add(ad); try{ v=xlEval(xlParse(String(s).slice(1)),{get}); } finally{ stack.delete(ad); } }
+      else v=xlLit(s);
+      if(typeof v==="number" && !isFinite(v)) throw new XLErr("#TALL!");
+    }catch(e){ if(e instanceof XLErr){ memo[ad]=e; throw e; } memo[ad]=new XLErr("#FEIL!"); throw memo[ad]; }
+    memo[ad]=v; return v;
+  };
+  return { get:ad=>{ try{ return get(ad); }catch(e){ return e instanceof XLErr?e:new XLErr("#FEIL!"); } } };
+}
+function xlShift(f,dc,dr){
+  if(String(f)[0]!=="=") return f;
+  return f.replace(/("[^"]*")|(\$?)([A-Za-z]{1,2})(\$?)(\d+)(?![\d(A-Za-z_])/g,(m,str,cd,col,rd,row,off,whole)=>{
+    if(str) return str; const prev=whole[off-1]; if(prev && /[A-Za-z0-9_.]/.test(prev)) return m;
+    let c=xlColIdx(col), r=+row-1; if(!cd) c+=dc; if(!rd) r+=dr; if(c<0||r<0) return "#REF!";
+    return cd+xlColName(c)+rd+(r+1);
+  });
+}
+
+/* ---------- tasks (from the course slides) ---------- */
+function xlRows(start,col,vals){ const o={}; vals.forEach((v,i)=>{ o[col+(start+i)]=v; }); return o; }
+const XL_TASKS=[
+  {id:"avanse",ch:2,title:"Avanse og bruttofortjeneste",src:"Kap. 2, Oppgave 2",
+   intro:"Bedriften selger tre produkter. Beregn avansen og bruttofortjenesten for hvert produkt, både i kroner og i prosent.",
+   steps:["Avanse i kr = salgspris − kostpris","Avanse % = (salgspris − kostpris) / kostpris × 100","Bruttofortjeneste % = (salgspris − kostpris) / salgspris × 100","Skriv formlene i rad 2, og bruk Fyll ned til rad 4"],
+   cols:6,rows:5,widths:[110,96,96,104,104,140],
+   cells:{A1:"Produkt",B1:"Kostpris",C1:"Salgspris",D1:"Avanse (kr)",E1:"Avanse %",F1:"Bruttofortj. %",A2:"Produkt A",B2:"200",C2:"300",A3:"Produkt B",B3:"150",C3:"225",A4:"Produkt C",B4:"100",C4:"160"},
+   targets:{D2:{v:100},D3:{v:75},D4:{v:60},E2:{v:50,pct:1},E3:{v:50,pct:1},E4:{v:60,pct:1},F2:{v:33.3333,pct:1},F3:{v:33.3333,pct:1},F4:{v:37.5,pct:1}},
+   solution:{D2:"=C2-B2",D3:"=C3-B3",D4:"=C4-B4",E2:"=(C2-B2)/B2*100",E3:"=(C3-B3)/B3*100",E4:"=(C4-B4)/B4*100",F2:"=(C2-B2)/C2*100",F3:"=(C3-B3)/C3*100",F4:"=(C4-B4)/C4*100"}},
+  {id:"avskr",ch:2,title:"Lineær avskrivning og saldoavskrivning",src:"Kap. 2, Oppgave 3",
+   intro:"En bedrift kjøper maskineri for 500 000 kr med levetid 5 år og restverdi 50 000 kr. Sett opp avskrivningsplan for begge metodene.",
+   steps:["Lineær: (anskaffelseskost − restverdi) / levetid. Bruk $ på cellene i B1:B3 så formelen kan fylles ned","Bokført verdi = forrige bokførte verdi − årets avskrivning","Saldo: sats × bokført verdi ved årets start","År 1 starter på anskaffelseskosten i B1"],
+   cols:5,rows:11,widths:[150,130,150,130,150],
+   cells:Object.assign({A1:"Anskaffelseskost",B1:"500000",A2:"Restverdi",B2:"50000",A3:"Levetid (år)",B3:"5",A4:"Saldosats",B4:"0,2",A6:"År",B6:"Lineær avskr.",C6:"Bokført (lineær)",D6:"Saldoavskr.",E6:"Bokført (saldo)"},xlRows(7,"A",["1","2","3","4","5"])),
+   targets:Object.assign({},...["B","C","D","E"].map((c,ci)=>Object.fromEntries([[90000,90000,90000,90000,90000],[410000,320000,230000,140000,50000],[100000,80000,64000,51200,40960],[400000,320000,256000,204800,163840]][ci].map((v,i)=>[c+(7+i),{v}])))),
+   solution:Object.assign({B7:"=($B$1-$B$2)/$B$3",C7:"=$B$1-B7",D7:"=$B$1*$B$4",E7:"=$B$1-D7"},...[8,9,10,11].map(r=>({["B"+r]:"=($B$1-$B$2)/$B$3",["C"+r]:`=C${r-1}-B${r}`,["D"+r]:`=E${r-1}*$B$4`,["E"+r]:`=E${r-1}-D${r}`})))},
+  {id:"lia",ch:3,title:"Kostnadstabell: VEK, FEK og SEK",src:"Kap. 3.2, Lia møbelmontasje AS",
+   intro:"Lia møbelmontasje AS har faste kostnader på 25 000 kr per uke (J1). Fyll ut kostnadstabellen og finn kostnadsoptimal mengde.",
+   steps:["FK = de faste kostnadene i J1 (bruk $J$1)","TK = VK + FK","VEK = VK / mengde, FEK = FK / mengde, SEK = TK / mengde","Kostnadsoptimal mengde er mengden med lavest SEK. Skriv den i J2"],
+   cols:10,rows:9,widths:[80,90,90,90,90,90,90,24,190,90],
+   cells:Object.assign({A1:"Mengde",B1:"VK",C1:"FK",D1:"TK",E1:"VEK",F1:"FEK",G1:"SEK",I1:"Faste kostnader",J1:"25000",I2:"Kostnadsoptimal mengde"},xlRows(2,"A",["10","20","30","40","50","60","70","80"]),xlRows(2,"B",["4400","7400","9900","12400","15500","22800","42200","69000"])),
+   targets:Object.assign({J2:{v:60}},...[10,20,30,40,50,60,70,80].map((m,i)=>{ const vk=[4400,7400,9900,12400,15500,22800,42200,69000][i], r=2+i; return {["C"+r]:{v:25000},["D"+r]:{v:vk+25000},["E"+r]:{v:vk/m,tol:.06},["F"+r]:{v:25000/m,tol:.06},["G"+r]:{v:(vk+25000)/m,tol:.06}}; })),
+   solution:Object.assign({J2:"60"},...[2,3,4,5,6,7,8,9].map(r=>({["C"+r]:"=$J$1",["D"+r]:`=B${r}+C${r}`,["E"+r]:`=B${r}/A${r}`,["F"+r]:`=C${r}/A${r}`,["G"+r]:`=D${r}/A${r}`})))},
+  {id:"andersen",ch:3,title:"DK, DEK og kostnadsoptimum",src:"Kap. 3.2, Eksempel 4 (Andersen AS)",
+   intro:"Andersen AS har faste kostnader på 8 000 kr (J1). Fyll ut tabellen og finn optimal mengde med tanke på SEK og VEK.",
+   steps:["VTK = STK − FTK","DK = STK − STK i raden over. DEK = DK / endring i mengde","VEK = VTK / mengde og SEK = STK / mengde (fra 100 enheter)","Skriv mengden med lavest SEK i J2 og lavest VEK i J3"],
+   cols:10,rows:8,widths:[80,90,90,90,90,90,90,24,190,90],
+   cells:Object.assign({A1:"Mengde",B1:"STK",C1:"VTK",D1:"DK",E1:"VEK",F1:"SEK",G1:"DEK",I1:"FTK",J1:"8000",I2:"Optimal mengde, SEK",I3:"Optimal mengde, VEK"},xlRows(2,"A",["0","100","200","300","400","500","600"]),xlRows(2,"B",["8000","12400","14400","17400","23000","33000","48000"])),
+   targets:Object.assign({J2:{v:400},J3:{v:300},C2:{v:0}},...[3,4,5,6,7,8].map((r,i)=>{ const stk=[12400,14400,17400,23000,33000,48000][i], prev=[8000,12400,14400,17400,23000,33000][i], m=(i+1)*100; return {["C"+r]:{v:stk-8000},["D"+r]:{v:stk-prev},["E"+r]:{v:(stk-8000)/m,tol:.06},["F"+r]:{v:stk/m,tol:.06},["G"+r]:{v:(stk-prev)/100,tol:.06}}; })),
+   solution:Object.assign({C2:"=B2-$J$1",J2:"400",J3:"300"},...[3,4,5,6,7,8].map(r=>({["C"+r]:`=B${r}-$J$1`,["D"+r]:`=B${r}-B${r-1}`,["E"+r]:`=C${r}/A${r}`,["F"+r]:`=B${r}/A${r}`,["G"+r]:`=D${r}/(A${r}-A${r-1})`})))},
+  {id:"foldo",ch:4,title:"Salgsinntekt, DI og DEI",src:"Kap. 4, Oppgave 2 (Foldo AS)",
+   intro:"Foldo AS selger en populær plastkrakk. Finn tilnærmet grenseinntekt (DEI) for de ulike mengdene, prisen der DEI er 0, og priselastisiteten når prisen går fra 90 til 80 kr.",
+   steps:["STI = pris × mengde","DI = STI − STI i raden over. DEI = DI / endring i mengde","Prisen der DEI = 0 skrives i H1","Priselastisitet = (mengdeendring / laveste mengde) / (prisendring / laveste pris). Skriv den i H2 som positivt tall"],
+   cols:8,rows:7,widths:[80,90,100,100,90,24,230,90],
+   cells:Object.assign({A1:"Pris",B1:"Mengde",C1:"STI",D1:"DI",E1:"DEI",G1:"Pris der DEI = 0",G2:"Priselastisitet 90 → 80 kr"},xlRows(2,"A",["90","80","70","60","50","40"]),xlRows(2,"B",["500","1000","2000","3000","4000","5000"])),
+   targets:Object.assign({H1:{v:40},H2:{v:8,abs:1,tol:.01},C2:{v:45000}},...[3,4,5,6,7].map((r,i)=>({["C"+r]:{v:[80000,140000,180000,200000,200000][i]},["D"+r]:{v:[35000,60000,40000,20000,0][i]},["E"+r]:{v:[70,60,40,20,0][i]}}))),
+   solution:Object.assign({C2:"=A2*B2",H1:"40",H2:"=((B3-B2)/B2)/((A2-A3)/A3)"},...[3,4,5,6,7].map(r=>({["C"+r]:`=A${r}*B${r}`,["D"+r]:`=C${r}-C${r-1}`,["E"+r]:`=D${r}/(B${r}-B${r-1})`})))},
+  {id:"minimax",ch:5,title:"Prisfast tilpasning og VOM",src:"Kap. 5.2, MiniMax",
+   intro:"MiniMax er i fullkommen konkurranse med markedspris 70 kr (J1). Finn vinningsoptimal mengde og største overskudd.",
+   steps:["STI = mengde × pris ($J$1)","Overskudd = STI − STK","DEK = endring i STK / endring i mengde. DEI = endring i STI / endring i mengde (= prisen)","VOM er der DEI = DEK: øk mengden så lenge DEI > DEK. Skriv VOM i J2 og største overskudd i J3"],
+   cols:10,rows:8,widths:[80,90,90,100,90,90,24,24,190,90],
+   cells:Object.assign({A1:"Mengde",B1:"STK",C1:"STI",D1:"Overskudd",E1:"DEK",F1:"DEI",I1:"Pris",J1:"70",I2:"Vinningsoptimal mengde",I3:"Største overskudd"},xlRows(2,"A",["0","100","200","300","400","500","600"]),xlRows(2,"B",["8000","12400","14400","17400","23000","33000","48000"])),
+   targets:Object.assign({J2:{v:400},J3:{v:5000},C2:{v:0},D2:{v:-8000}},...[3,4,5,6,7,8].map((r,i)=>{ const m=(i+1)*100, stk=[12400,14400,17400,23000,33000,48000][i], prev=[8000,12400,14400,17400,23000,33000][i]; return {["C"+r]:{v:70*m},["D"+r]:{v:70*m-stk},["E"+r]:{v:(stk-prev)/100},["F"+r]:{v:70}}; })),
+   solution:Object.assign({C2:"=A2*$J$1",D2:"=C2-B2",J2:"400",J3:"=MAKS(D2:D8)"},...[3,4,5,6,7,8].map(r=>({["C"+r]:`=A${r}*$J$1`,["D"+r]:`=C${r}-B${r}`,["E"+r]:`=(B${r}-B${r-1})/(A${r}-A${r-1})`,["F"+r]:`=(C${r}-C${r-1})/(A${r}-A${r-1})`})))},
+  {id:"budsjett",ch:1,title:"Budsjett, regnskap og avvik",src:"Kap. 1, Oppgave 3",
+   intro:"En liten bedrift budsjetterte med å selge 500 produkter i juni til 200 kr, med kostnad 120 kr per produkt. Faktisk solgte den 450 til 190 kr, med kostnad 125 kr per produkt. Dataene står i G2:G7.",
+   steps:["Omsetning = antall × pris, kostnader = antall × kostnad per stk","Resultat = omsetning − kostnader","Inntektsavvik = regnskap − budsjett","Kostnadsavvik regnet som effekt på resultatet = budsjett − regnskap"],
+   cols:7,rows:7,widths:[110,100,100,100,24,210,90],
+   cells:{B1:"Budsjett",C1:"Regnskap",D1:"Avvik",A2:"Omsetning",A3:"Kostnader",A4:"Resultat",F1:"Data",F2:"Budsjettert antall",G2:"500",F3:"Budsjettert pris",G3:"200",F4:"Budsjettert kostnad per stk",G4:"120",F5:"Faktisk antall",G5:"450",F6:"Faktisk pris",G6:"190",F7:"Faktisk kostnad per stk",G7:"125"},
+   targets:{B2:{v:100000},C2:{v:85500},D2:{v:-14500,abs:1},B3:{v:60000},C3:{v:56250},D3:{v:3750,abs:1},B4:{v:40000},C4:{v:29250},D4:{v:-10750,abs:1}},
+   solution:{B2:"=G2*G3",C2:"=G5*G6",D2:"=C2-B2",B3:"=G2*G4",C3:"=G5*G7",D3:"=B3-C3",B4:"=B2-B3",C4:"=C2-C3",D4:"=C4-B4"}},
+  {id:"snale",ch:6,title:"Selvkost eller bidrag (tilleggsordre)",src:"Kap. 6.3, Oppgave 2 (Snåle Industri AS)",
+   intro:"Snåle Industri AS har ledig kapasitet og får forespørsel om en ordre på 1 700 000 kr. Satsene og aktiviteten står i G1:G12. Sett opp kalkylen etter selvkost- og bidragsmetoden.",
+   steps:["Direkte kostnader = DM + DL avd. 1 + DL avd. 2","Variable indirekte: DM × 20 % + DL1 × 10 % + maskintimer × 25,50 kr","Faste indirekte: DM × 44 % + DL1 × 41 % + DL2 × 25 % (bare i selvkost)","Faste salgs- og adm.kostnader = 20 % av tilvirkningskost (bare i selvkost)","Resultat = salgsinntekt − selvkost (eller merkostnad)"],
+   cols:7,rows:12,widths:[250,110,110,24,24,210,100],
+   cells:{A1:"Post",B1:"Selvkost",C1:"Bidrag",A2:"Direkte kostnader",A3:"Variable indirekte",A4:"Faste indirekte (mat. og tilv.)",A5:"Tilvirkningskost / merkostnad",A6:"Faste salgs- og adm.kostnader",A7:"Selvkost / merkostnad",A8:"Salgsinntekt",A9:"Fortjeneste / dekningsbidrag",F1:"Ordrepris",G1:"1700000",F2:"Direkte material (DM)",G2:"600000",F3:"Direkte lønn avd. 1",G3:"70000",F4:"Direkte lønn avd. 2",G4:"160000",F5:"Maskintimer avd. 2",G5:"5000",F6:"Mat. variabel sats",G6:"0,2",F7:"Mat. fast sats",G7:"0,44",F8:"Tilv. 1 variabel sats",G8:"0,1",F9:"Tilv. 1 fast sats",G9:"0,41",F10:"Tilv. 2 variabel (kr/time)",G10:"25,5",F11:"Tilv. 2 fast sats",G11:"0,25",F12:"Salg/adm. fast sats",G12:"0,2"},
+   targets:{B2:{v:830000},C2:{v:830000},B3:{v:254500},C3:{v:254500},B4:{v:332700},C4:{v:0},B5:{v:1417200},C5:{v:1084500},B6:{v:283440},C6:{v:0},B7:{v:1700640},C7:{v:1084500},B8:{v:1700000},C8:{v:1700000},B9:{v:-640},C9:{v:615500}},
+   solution:{B2:"=G2+G3+G4",C2:"=B2",B3:"=G2*G6+G3*G8+G5*G10",C3:"=B3",B4:"=G2*G7+G3*G9+G4*G11",C4:"0",B5:"=B2+B3+B4",C5:"=C2+C3+C4",B6:"=B5*G12",C6:"0",B7:"=B5+B6",C7:"=C5+C6",B8:"=G1",C8:"=G1",B9:"=B8-B7",C9:"=C8-C7"}},
+  {id:"ferskvarer",ch:7,title:"Kostnadsfordeling med hjelpeavdeling",src:"Kap. 7.1, Eksempel 1 (AS Ferskvarer)",
+   intro:"Fordel kostnadene for august på bildrift, kjøtt og fisk etter nøklene i kolonne F. Fordel så bildriftens sum videre på kjøtt og fisk i forholdet 3 : 5.",
+   steps:["Andel = kostnad × egen del / sum av delene, for eksempel husleie til kjøtt: =B3*100/200","Sum per avdeling før fordeling i rad 10 (SUMMER)","Rad 11: bildriften tømmes (negativt beløp) og fordeles 3/8 til kjøtt og 5/8 til fisk","Rad 12: sum indirekte kostnader for kjøtt og fisk"],
+   cols:6,rows:12,widths:[190,90,100,100,100,260],
+   cells:{A1:"Kostnad",B1:"Sum",C1:"Bildrift",D1:"Kjøtt",E1:"Fisk",F1:"Fordeling",A2:"Lønn",B2:"90000",F2:"Kjøtt 48 000, fisk 34 000, resten bildrift",A3:"Husleie",B3:"20000",F3:"10 : 100 : 90 (bildrift : kjøtt : fisk)",A4:"Bilkostnader",B4:"14000",F4:"Bildrift",A5:"Diverse kostnader kjøtt",B5:"21000",F5:"Kjøtt",A6:"Diverse kostnader fisk",B6:"16000",F6:"Fisk",A7:"Diverse felleskostnader",B7:"27000",F7:"5 : 4 (kjøtt : fisk)",A8:"Kalk. avskrivninger",B8:"30000",F8:"Bildrift 6 000, resten 7 : 5",A9:"Kalk. renter",B9:"24000",F9:"450 : 1 800 : 1 350",A10:"Sum før fordeling",A11:"Fordeling bildrift (3 : 5)",A12:"Sum indirekte kostnader"},
+   targets:Object.assign({B10:{v:242000},C10:{v:32000},D10:{v:120000},E10:{v:90000},C11:{v:-32000,abs:1},D11:{v:12000},E11:{v:20000},D12:{v:132000},E12:{v:110000}},...[[8000,48000,34000],[1000,10000,9000],[14000,0,0],[0,21000,0],[0,0,16000],[0,15000,12000],[6000,14000,10000],[3000,12000,9000]].map((row,i)=>({["C"+(2+i)]:{v:row[0]},["D"+(2+i)]:{v:row[1]},["E"+(2+i)]:{v:row[2]}}))),
+   solution:{C2:"=B2-D2-E2",D2:"48000",E2:"34000",C3:"=B3*10/200",D3:"=B3*100/200",E3:"=B3*90/200",C4:"=B4",D5:"=B5",E6:"=B6",D7:"=B7*5/9",E7:"=B7*4/9",C8:"6000",D8:"=(B8-C8)*7/12",E8:"=(B8-C8)*5/12",C9:"=B9*450/3600",D9:"=B9*1800/3600",E9:"=B9*1350/3600",B10:"=SUMMER(B2:B9)",C10:"=SUMMER(C2:C9)",D10:"=SUMMER(D2:D9)",E10:"=SUMMER(E2:E9)",C11:"=-C10",D11:"=C10*3/8",E11:"=C10*5/8",D12:"=D10+D11",E12:"=E10+E11"}},
+  {id:"varekost",ch:7,title:"Varekostnad og budsjettkontroll",src:"Kap. 7.1, Varekostnad: eksempel",
+   intro:"Bedriften budsjetterte salgsinntekt 300 000 kr og varekostnad 200 000 kr i mai. Regnskapstallene står i G1:G4. Regn ut varekostnad, bruttofortjeneste og avvik.",
+   steps:["Varekostnad = IB + varekjøp − UB","Bruttofortjeneste = salgsinntekt − varekostnad, BF % = BF / salgsinntekt × 100","Avvik som effekt på resultatet: inntekt = regnskap − budsjett, kostnad = budsjett − regnskap"],
+   cols:7,rows:5,widths:[150,100,100,100,24,210,100],
+   cells:{B1:"Budsjett",C1:"Regnskap",D1:"Avvik",A2:"Salgsinntekt",B2:"300000",A3:"Varekostnad",B3:"200000",A4:"Bruttofortjeneste",A5:"Bruttofortjeneste %",F1:"Virkelig salgsinntekt",G1:"270000",F2:"Varekjøp",G2:"220000",F3:"Varebeholdning 1. mai",G3:"400000",F4:"Varebeholdning 31. mai",G4:"425000"},
+   targets:{C2:{v:270000},D2:{v:-30000,abs:1},C3:{v:195000},D3:{v:5000,abs:1},B4:{v:100000},C4:{v:75000},D4:{v:-25000,abs:1},B5:{v:33.3333,pct:1},C5:{v:27.7778,pct:1}},
+   solution:{C2:"=G1",D2:"=C2-B2",C3:"=G3+G2-G4",D3:"=B3-C3",B4:"=B2-B3",C4:"=C2-C3",D4:"=C4-B4",B5:"=B4/B2*100",C5:"=C4/C2*100"}},
+  {id:"dekning",ch:7,title:"Dekningspunkt og sikkerhetsmargin",src:"Kap. 7.1, Oppgave 2",
+   intro:"Finn dekningsbidrag, dekningsgrad, dekningspunkt, sikkerhetsmargin og resultat.",
+   steps:["Dekningsbidrag = salgsinntekt − variable kostnader","Dekningsgrad = DB / salgsinntekt (ikke avrund underveis)","Dekningspunkt = faste kostnader / dekningsgrad","Sikkerhetsmargin = salgsinntekt − dekningspunkt, resultat = DB − faste kostnader"],
+   cols:2,rows:9,widths:[200,130],
+   cells:{A1:"Salgsinntekt",B1:"1028000",A2:"Variable kostnader",B2:"692000",A3:"Faste kostnader",B3:"210000",A5:"Dekningsbidrag",A6:"Dekningsgrad",A7:"Dekningspunkt",A8:"Sikkerhetsmargin",A9:"Resultat"},
+   targets:{B5:{v:336000},B6:{v:32.6848,pct:1,tol:.01},B7:{v:642500,tol:1},B8:{v:385500,tol:1},B9:{v:126000}},
+   solution:{B5:"=B1-B2",B6:"=B5/B1",B7:"=B3/B6",B8:"=B1-B7",B9:"=B5-B3"}}
+];
+function xlMatch(v,t){
+  if(v instanceof XLErr) return false;
+  const tol=t.tol??.5;
+  if(v==null||v==="") return t.v===0;
+  if(typeof v!=="number") return false;
+  const cands=[v]; if(t.pct) cands.push(v*100);
+  return cands.some(x=>Math.abs((t.abs?Math.abs(x):x)-(t.abs?Math.abs(t.v):t.v))<=tol);
+}
+
+/* ================= REGNEARK: UI ================= */
+BADGES.push(["xl1","XL","Første regneark","Løs en Excel-oppgave helt riktig."],["xl5","XL5","Excel-ess","Løs 5 Excel-oppgaver helt riktig."]);
+P.xl=P.xl||{};
+const IC_GRID='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 9.3h17M3.5 14.7h17M9.3 4v16" stroke="currentColor" stroke-width="2"/></svg>';
+const XL={t:null,raw:{},sel:{c:0,r:0},anc:{c:0,r:0},editing:false,undo:[],clip:null,ins:null,marks:{},extend:false,drag:false,confirmSol:false};
+const xlKey=id=>"hsm122-xl-"+id;
+const xlFx=()=>$("xlFx");
+const xlLocked=a=>XL.t && (a in XL.t.cells);
+function xlSave(){ const o={}; Object.entries(XL.raw).forEach(([a,v])=>{ if(!xlLocked(a) && v!=="" && v!=null) o[a]=v; }); wr(xlKey(XL.t.id),{raw:o}); }
+function xlPush(){ XL.undo.push(JSON.stringify(XL.raw)); if(XL.undo.length>60) XL.undo.shift(); }
+function xlFmt(v){
+  if(v instanceof XLErr) return v.code;
+  if(v==null) return "";
+  if(typeof v==="boolean") return v?"SANN":"USANN";
+  if(typeof v==="number"){ const a=Math.abs(v); return v.toLocaleString("nb-NO",{maximumFractionDigits:a!==0&&a<10?4:2}); }
+  return String(v);
+}
+function xlRect(){ return {c1:Math.min(XL.sel.c,XL.anc.c),c2:Math.max(XL.sel.c,XL.anc.c),r1:Math.min(XL.sel.r,XL.anc.r),r2:Math.max(XL.sel.r,XL.anc.r)}; }
+
+/* ---------- list ---------- */
+function xlRenderList(){
+  const byCh={}; XL_TASKS.forEach(t=>(byCh[t.ch]=byCh[t.ch]||[]).push(t));
+  const solved=XL_TASKS.filter(t=>P.xl[t.id]&&P.xl[t.id].solved).length;
+  $("xlList").innerHTML=`<div class="xl-hero glass"><span class="tile t-xl" aria-hidden="true">${IC_GRID}</span><div><b>Excel-oppgaver</b><span>Del 2 av eksamen er Excel. Løs oppgavene fra foilene i et regneark som retter deg. ${solved} av ${XL_TASKS.length} løst.</span></div></div>`+
+    Object.keys(byCh).sort().map(ch=>`<h2 class="sec-h">Kap. ${ch} · ${CH_NAME[ch]}</h2><div class="group glass">`+byCh[ch].map(t=>{
+      const st=P.xl[t.id]||{}, saved=rd(xlKey(t.id),null), started=saved&&saved.raw&&Object.keys(saved.raw).length;
+      const meta=st.solved?IC_CHECK:started?`<span class="rmeta">Påbegynt</span>`:"<span></span>";
+      return `<button class="row" type="button" data-xl="${t.id}"><span class="tile t-xl" aria-hidden="true">${IC_GRID}</span><span class="rt"><b>${t.title}</b><span>${t.src} · ${Object.keys(t.targets).length} celler</span></span>${meta}${IC_CHEV}</button>`; }).join("")+`</div>`).join("");
+  $("xlList").querySelectorAll("[data-xl]").forEach(b=>b.addEventListener("click",()=>xlOpen(b.dataset.xl)));
+}
+function xlShowList(){ XL.t=null; $("xlWork").hidden=true; $("xlList").hidden=false; $("xlTitle").textContent="Regneark"; xlRenderList(); window.scrollTo(0,0); }
+
+/* ---------- open & build ---------- */
+function xlOpen(id){
+  const t=XL_TASKS.find(x=>x.id===id); if(!t) return;
+  XL.t=t; const saved=rd(xlKey(id),null);
+  XL.raw=Object.assign({},(saved&&saved.raw)||{},t.cells);
+  const first=Object.keys(t.targets).map(xlParseRef).sort((a,b)=>a.r-b.r||a.c-b.c)[0]||{c:0,r:0};
+  XL.sel={...first}; XL.anc={...first}; XL.undo=[]; XL.marks={}; XL.editing=false; XL.extend=false; XL.confirmSol=false;
+  $("xlList").hidden=true; $("xlWork").hidden=false; $("xlTitle").textContent=t.title;
+  $("xlTask").innerHTML=`<span class="fc-ch" style="--cc:${CH_COLOR[t.ch]}">Kap. ${t.ch} · ${t.src}</span><h2>${t.title}</h2><p>${t.intro}</p><ol>${t.steps.map(s=>`<li>${s}</li>`).join("")}</ol><p class="modehint">Grønn kant markerer cellene du skal fylle ut. Grå celler er gitt. På mobil: trykk på en celle for å velge den, og trykk én gang til for å skrive. Bruk semikolon mellom argumenter, for eksempel =AVRUND(B2;1). Både norske (SUMMER, HVIS, MAKS) og engelske (SUM, IF, MAX) funksjonsnavn virker.</p>`;
+  $("xlResult").hidden=true; $("xlSolution").textContent="Vis løsningsforslag";
+  xlBuild(); xlPaint(); window.scrollTo(0,0);
+}
+function xlBuild(){
+  const t=XL.t, tbl=$("xlGrid");
+  let h=`<colgroup><col style="width:40px">${Array.from({length:t.cols},(_,c)=>`<col style="width:${t.widths[c]||96}px">`).join("")}</colgroup><thead><tr><th class="corner"></th>${Array.from({length:t.cols},(_,c)=>`<th scope="col">${xlColName(c)}</th>`).join("")}</tr></thead><tbody>`;
+  for(let r=0;r<t.rows+2;r++){ h+=`<tr><th scope="row">${r+1}</th>`; for(let c=0;c<t.cols;c++){ const a=xlAddr(c,r); h+=`<td data-a="${a}" id="x-${a}"></td>`; } h+="</tr>"; }
+  tbl.innerHTML=h+"</tbody>";
+}
+function xlPaint(){
+  const t=XL.t; if(!t) return;
+  const comp=xlCompute(XL.raw), R=xlRect(), sa=xlAddr(XL.sel.c,XL.sel.r);
+  $("xlGrid").querySelectorAll("td").forEach(td=>{
+    const a=td.dataset.a, p=xlParseRef(a);
+    let txt;
+    if(XL.editing && a===sa) txt=xlFx().value;
+    else { const v=comp.get(a); txt=xlFmt(v); td.classList.toggle("err",v instanceof XLErr); td.classList.toggle("num",typeof v==="number"||typeof v==="boolean"); }
+    td.textContent=txt;
+    td.classList.toggle("given",a in t.cells); td.classList.toggle("lbl",(a in t.cells)&&isNaN(xlLit(t.cells[a])));
+    td.classList.toggle("target",a in t.targets);
+    td.classList.toggle("sel",a===sa);
+    td.classList.toggle("inr",p.c>=R.c1&&p.c<=R.c2&&p.r>=R.r1&&p.r<=R.r2&&(R.c1!==R.c2||R.r1!==R.r2));
+    td.classList.toggle("ok",XL.marks[a]==="ok"); td.classList.toggle("bad",XL.marks[a]==="bad");
+    td.classList.toggle("editing",XL.editing&&a===sa);
+  });
+  $("xlName").textContent=(R.c1!==R.c2||R.r1!==R.r2)?xlAddr(R.c1,R.r1)+":"+xlAddr(R.c2,R.r2):sa;
+  if(!XL.editing){ xlFx().value=XL.raw[sa]??""; xlFx().readOnly=xlLocked(sa); xlFx().placeholder=xlLocked(sa)?"Gitt i oppgaven":"Skriv et tall eller en formel, f.eks. =B2*C2"; }
+  $("xlExtend").setAttribute("aria-pressed",String(XL.extend));
+}
+function xlScrollSel(){ const td=$("x-"+xlAddr(XL.sel.c,XL.sel.r)); if(td) td.scrollIntoView({block:"nearest",inline:"nearest"}); }
+
+/* ---------- editing ---------- */
+function xlStartEdit(initial){
+  const a=xlAddr(XL.sel.c,XL.sel.r);
+  if(xlLocked(a)){ toast("Denne cellen er gitt i oppgaven"); return; }
+  XL.editing=true; XL.anc={...XL.sel};
+  const fx=xlFx(); fx.readOnly=false; fx.value=initial!=null?initial:(XL.raw[a]??""); fx.focus({preventScroll:true});
+  const n=fx.value.length; try{ fx.setSelectionRange(n,n); }catch(e){}
+  xlPaint();
+}
+function xlCommit(dr,dc){
+  if(!XL.editing) return;
+  const a=xlAddr(XL.sel.c,XL.sel.r), v=xlFx().value;
+  if((XL.raw[a]??"")!==v){ xlPush(); if(v==="") delete XL.raw[a]; else XL.raw[a]=v; XL.marks={}; xlSave(); }
+  XL.editing=false; XL.ins=null;
+  if(dr||dc) xlMove(dr,dc,false); else xlPaint();
+}
+function xlCancel(){ XL.editing=false; XL.ins=null; xlPaint(); }
+function xlMove(dr,dc,ext){
+  const t=XL.t; XL.sel={c:clamp(XL.sel.c+dc,0,t.cols-1),r:clamp(XL.sel.r+dr,0,t.rows+1)};
+  if(!ext) XL.anc={...XL.sel};
+  xlPaint(); xlScrollSel();
+}
+function xlRefSlot(){
+  const fx=xlFx(), v=fx.value; if(v[0]!=="=") return false;
+  const pos=fx.selectionStart??v.length; if(XL.ins && pos===XL.ins.from+XL.ins.len) return true;
+  const before=v.slice(0,pos).replace(/\s+$/,""); return /[=+\-*/^(;,<>&:]$/.test(before);
+}
+function xlInsertRef(ref){
+  const fx=xlFx(); let v=fx.value, pos=fx.selectionStart??v.length;
+  if(XL.ins && pos===XL.ins.from+XL.ins.len){ v=v.slice(0,XL.ins.from)+v.slice(XL.ins.from+XL.ins.len); pos=XL.ins.from; }
+  fx.value=v.slice(0,pos)+ref+v.slice(pos); XL.ins={from:pos,len:ref.length};
+  const np=pos+ref.length; fx.focus({preventScroll:true}); try{ fx.setSelectionRange(np,np); }catch(e){}
+  xlPaint();
+}
+function xlInsertText(s){
+  if(!XL.editing){ const a=xlAddr(XL.sel.c,XL.sel.r); if(xlLocked(a)){ toast("Denne cellen er gitt i oppgaven"); return; } xlStartEdit(XL.raw[a]&&String(XL.raw[a])[0]==="="?XL.raw[a]:""); }
+  const fx=xlFx(), v=fx.value, p1=fx.selectionStart??v.length, p2=fx.selectionEnd??p1;
+  fx.value=v.slice(0,p1)+s+v.slice(p2); const np=p1+s.length; XL.ins=null; fx.focus({preventScroll:true}); try{ fx.setSelectionRange(np,np); }catch(e){} xlPaint();
+}
+
+/* ---------- range ops ---------- */
+function xlSetMany(fn){ xlPush(); let n=0; fn((a,v)=>{ if(xlLocked(a)) return; if(v===""||v==null) delete XL.raw[a]; else XL.raw[a]=v; n++; }); XL.marks={}; xlSave(); xlPaint(); return n; }
+function xlFill(dir){
+  if(XL.editing) xlCommit(0,0);
+  let R=xlRect(); const t=XL.t;
+  if(R.c1===R.c2 && R.r1===R.r2){ // single cell: extend through the target block
+    if(dir==="down"){ let r=R.r1+1; while(r<t.rows+2 && (xlAddr(R.c1,r) in t.targets)) r++; R.r2=r-1; }
+    else { let c=R.c1+1; while(c<t.cols && (xlAddr(c,R.r1) in t.targets)) c++; R.c2=c-1; }
+    if(R.r1===R.r2 && R.c1===R.c2){ toast(dir==="down"?"Velg cellene du vil fylle ned til":"Velg cellene du vil fylle mot høyre"); return; }
+  }
+  const n=xlSetMany(set=>{
+    if(dir==="down") for(let c=R.c1;c<=R.c2;c++){ const src=XL.raw[xlAddr(c,R.r1)]??""; for(let r=R.r1+1;r<=R.r2;r++) set(xlAddr(c,r),xlShift(src,0,r-R.r1)); }
+    else for(let r=R.r1;r<=R.r2;r++){ const src=XL.raw[xlAddr(R.c1,r)]??""; for(let c=R.c1+1;c<=R.c2;c++) set(xlAddr(c,r),xlShift(src,c-R.c1,0)); }
+  });
+  XL.anc={c:R.c1,r:R.r1}; XL.sel={c:R.c2,r:R.r2}; xlPaint();
+  toast(n?"Fylt "+(dir==="down"?"ned":"mot høyre"):"Ingen celler å fylle");
+}
+function xlCopy(){ const R=xlRect(), m=[]; for(let r=R.r1;r<=R.r2;r++){ const row=[]; for(let c=R.c1;c<=R.c2;c++) row.push(XL.raw[xlAddr(c,r)]??""); m.push(row); } XL.clip={c:R.c1,r:R.r1,m}; toast("Kopiert"); }
+function xlPaste(){
+  if(!XL.clip) return; const R=xlRect(), cp=XL.clip, h=cp.m.length, w=cp.m[0].length;
+  const single=(R.c1===R.c2&&R.r1===R.r2);
+  xlSetMany(set=>{
+    const rows=single?h:R.r2-R.r1+1, cols=single?w:R.c2-R.c1+1;
+    for(let i=0;i<rows;i++) for(let j=0;j<cols;j++){ const r=R.r1+i, c=R.c1+j; if(c>=XL.t.cols||r>=XL.t.rows+2) continue; const src=cp.m[i%h][j%w]; set(xlAddr(c,r),xlShift(src,c-(cp.c+j%w),r-(cp.r+i%h))); }
+  });
+}
+function xlClear(){ const R=xlRect(); xlSetMany(set=>{ for(let r=R.r1;r<=R.r2;r++) for(let c=R.c1;c<=R.c2;c++) set(xlAddr(c,r),""); }); }
+function xlUndo(){ if(XL.editing){ xlCancel(); return; } const s=XL.undo.pop(); if(!s){ toast("Ingenting å angre"); return; } XL.raw=JSON.parse(s); XL.marks={}; xlSave(); xlPaint(); }
+
+/* ---------- check & solution ---------- */
+function xlCheck(){
+  if(XL.editing) xlCommit(0,0);
+  const t=XL.t, comp=xlCompute(XL.raw); let ok=0; const miss=[];
+  XL.marks={};
+  Object.entries(t.targets).forEach(([a,tg])=>{ const v=comp.get(a); const good=xlMatch(v,tg); XL.marks[a]=good?"ok":"bad"; if(good) ok++; else miss.push(a); });
+  const n=Object.keys(t.targets).length, all=ok===n;
+  const st=P.xl[t.id]||{};
+  let bonus="";
+  if(all && !st.solved){ st.solved=true; if(!st.help){ award(25); bonus=" +25 XP"; } P.xl[t.id]=st; const cnt=Object.values(P.xl).filter(x=>x.solved).length; unlock("xl1"); if(cnt>=5) unlock("xl5"); saveP(); renderLevel(); confetti(); }
+  const r=$("xlResult"); r.hidden=false; r.className="xl-result glass "+(all?"good":"");
+  r.innerHTML=all?`<b>Alt riktig${bonus}</b><span>${n} av ${n} celler stemmer. ${st.help?"Du brukte løsningsforslaget, så denne gir ikke XP.":"Godt jobbet!"}</span>`
+    :`<b>${ok} av ${n} riktige</b><span>Røde celler stemmer ikke ennå: ${miss.slice(0,8).join(", ")}${miss.length>8?" …":""}. Tomme celler teller som feil.</span>`;
+  xlPaint(); r.scrollIntoView({block:"nearest",behavior:reduceMotion?"auto":"smooth"});
+}
+function xlSolution(){
+  const b=$("xlSolution");
+  if(!XL.confirmSol){ XL.confirmSol=true; b.textContent="Trykk igjen for å fylle inn"; setTimeout(()=>{ XL.confirmSol=false; if(b) b.textContent="Vis løsningsforslag"; },3500); return; }
+  XL.confirmSol=false; b.textContent="Vis løsningsforslag";
+  const st=P.xl[XL.t.id]||{}; if(!st.solved){ st.help=true; P.xl[XL.t.id]=st; saveP(); }
+  xlSetMany(set=>Object.entries(XL.t.solution).forEach(([a,v])=>set(a,v)));
+  toast("Løsningsforslaget er fylt inn. Klikk på cellene for å se formlene."); xlCheck();
+}
+function xlReset(){ xlPush(); XL.raw=Object.assign({},XL.t.cells); XL.marks={}; xlSave(); $("xlResult").hidden=true; xlPaint(); toast("Arket er tømt. Angre for å få det tilbake."); }
+
+/* ---------- wiring ---------- */
+(function(){
+  const wrap=$("xlWrap"), grid=$("xlGrid"), fx=xlFx();
+  const tdAt=(x,y)=>{ const e=document.elementFromPoint(x,y); return e&&e.closest?e.closest("#xlGrid td"):null; };
+  grid.addEventListener("pointerdown",e=>{
+    const td=e.target.closest("td"); if(!td) return; const p=xlParseRef(td.dataset.a);
+    if(XL.editing && xlRefSlot()){ e.preventDefault(); xlInsertRef(td.dataset.a); XL.dragIns={start:p}; return; }
+    if(XL.editing) xlCommit(0,0);
+    const again=p.c===XL.sel.c&&p.r===XL.sel.r&&XL.sel.c===XL.anc.c&&XL.sel.r===XL.anc.r;
+    if(e.pointerType!=="mouse" && again && !e.shiftKey && !XL.extend){ xlStartEdit(); return; }
+    if(e.shiftKey||XL.extend){ XL.sel=p; XL.extend=false; } else { XL.sel={...p}; XL.anc={...p}; }
+    XL.drag=e.pointerType==="mouse"; xlPaint();
+    if(e.pointerType==="mouse"){ e.preventDefault(); wrap.focus({preventScroll:true}); }
+  });
+  grid.addEventListener("pointermove",e=>{
+    if(XL.dragIns && e.buttons){ const td=tdAt(e.clientX,e.clientY); if(!td) return; const p=xlParseRef(td.dataset.a), s=XL.dragIns.start;
+      const ref=(p.c===s.c&&p.r===s.r)?xlAddr(s.c,s.r):xlAddr(Math.min(s.c,p.c),Math.min(s.r,p.r))+":"+xlAddr(Math.max(s.c,p.c),Math.max(s.r,p.r)); xlInsertRef(ref); return; }
+    if(!XL.drag||!e.buttons) return; const td=tdAt(e.clientX,e.clientY); if(!td) return; const p=xlParseRef(td.dataset.a);
+    if(p.c!==XL.sel.c||p.r!==XL.sel.r){ XL.sel=p; xlPaint(); }
+  });
+  window.addEventListener("pointerup",()=>{ XL.drag=false; XL.dragIns=null; });
+  grid.addEventListener("dblclick",e=>{ const td=e.target.closest("td"); if(td) xlStartEdit(); });
+  wrap.addEventListener("keydown",e=>{
+    if(!XL.t||XL.editing) return; const mod=e.ctrlKey||e.metaKey, k=e.key;
+    const mv={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]}[k];
+    if(mv){ e.preventDefault(); xlMove(mv[0],mv[1],e.shiftKey); return; }
+    if(k==="Enter"){ e.preventDefault(); xlMove(e.shiftKey?-1:1,0,false); return; }
+    if(k==="Tab"){ e.preventDefault(); xlMove(0,e.shiftKey?-1:1,false); return; }
+    if(k==="F2"){ e.preventDefault(); xlStartEdit(); return; }
+    if(k==="Delete"||k==="Backspace"){ e.preventDefault(); xlClear(); return; }
+    if(mod){ const l=k.toLowerCase(); if(l==="z"){ e.preventDefault(); xlUndo(); } else if(l==="c"){ e.preventDefault(); xlCopy(); } else if(l==="v"){ e.preventDefault(); xlPaste(); } else if(l==="d"){ e.preventDefault(); xlFill("down"); } else if(l==="r"){ e.preventDefault(); xlFill("right"); } return; }
+    if(k.length===1 && !e.altKey){ e.preventDefault(); xlStartEdit(k); }
+  });
+  fx.addEventListener("focus",()=>{ if(!XL.editing && !fx.readOnly){ XL.editing=true; XL.anc={...XL.sel}; xlPaint(); } });
+  fx.addEventListener("input",()=>{ XL.ins=null; if(!XL.editing){ XL.editing=true; } xlPaint(); });
+  fx.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){ e.preventDefault(); xlCommit(e.shiftKey?-1:1,0); wrap.focus({preventScroll:true}); }
+    else if(e.key==="Tab"){ e.preventDefault(); xlCommit(0,e.shiftKey?-1:1); wrap.focus({preventScroll:true}); }
+    else if(e.key==="Escape"){ e.preventDefault(); xlCancel(); wrap.focus({preventScroll:true}); }
+  });
+  fx.addEventListener("blur",()=>{ setTimeout(()=>{ if(XL.editing && document.activeElement!==fx) xlCommit(0,0); },0); });
+  $("xlPad").addEventListener("pointerdown",e=>{ if(e.target.closest("button")) e.preventDefault(); });
+  $("xlPad").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    if(b.dataset.ins) xlInsertText(b.dataset.ins);
+    else if(b.dataset.act==="down") xlFill("down");
+    else if(b.dataset.act==="right") xlFill("right");
+    else if(b.dataset.act==="undo") xlUndo();
+    else if(b.dataset.act==="ok"){ if(XL.editing) xlCommit(1,0); else xlMove(1,0,false); }
+    else if(b.dataset.act==="extend"){ XL.extend=!XL.extend; xlPaint(); if(XL.extend) toast("Trykk på cellen der området skal slutte"); }
+  });
+  $("xlCheck").addEventListener("click",xlCheck);
+  $("xlSolution").addEventListener("click",xlSolution);
+  $("xlReset").addEventListener("click",xlReset);
+  $("xlBack").addEventListener("click",()=>{ if(XL.t){ if(XL.editing) xlCommit(0,0); xlShowList(); } else go("laer"); });
+})();
+
+LEARN_SUB.push("excel");
+const learnEnterBase=learnEnter;
+learnEnter=function(v){ learnEnterBase(v); if(v==="excel") xlShowList(); };
 go((location.hash||"").slice(1)||"hjem",true);
 
 </script>
