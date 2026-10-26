@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="190 casebaserte øvingsoppgaver i HSM122 (kap. 1–7) med blandede prøver, formelsammendrag, XP, nivåer og merker.">
+<meta name="description" content="240 casebaserte øvingsoppgaver i HSM122 (kap. 1–7) med tankekart, flashkort, formelduell, blandede prøver, XP og merker.">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <title>Øvingsprøve HSM122</title>
 <meta name="theme-color" content="#eef1f8">
@@ -427,6 +427,145 @@ body.in-quiz .toasts{top:calc(74px + env(safe-area-inset-top,0px))}
 .opt{background:var(--fill-2)}
 .opt:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
 .map button.answered{background:var(--accent)}
+
+/* ===== v3: focus mode, mastery, sheet ===== */
+body.in-quiz.one{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+.pager{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:12;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px;border-radius:999px;width:min(420px,calc(100vw - 32px));background:var(--bar);box-shadow:var(--edge),0 10px 30px rgba(0,0,0,.12)}
+.pager .btn{min-width:96px}
+.pager #pagePos{font-size:14px;color:var(--muted)}
+.map button.cur{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
+.numrow input.invalid{border-color:var(--bad)}
+.numhint{flex-basis:100%;font-size:13px;color:var(--bad);min-height:0}
+.numhint:empty{display:none}
+.formlink{justify-self:start;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--fill);color:var(--accent);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600}
+.formlink svg{width:15px;height:15px}
+.row:disabled{cursor:default;opacity:.55}
+.row:disabled:hover{background:transparent}
+.mastery{border-radius:var(--r-md);padding:16px 18px;display:grid;gap:10px}
+.m-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.m-head h2{margin:0;font-size:20px}
+.mrow{display:grid;grid-template-columns:minmax(0,170px) 1fr 52px;align-items:center;gap:10px;font-size:14px}
+.mrow > span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow b{text-align:right;font-variant-numeric:tabular-nums;font-size:14px}
+.mbar{height:8px;border-radius:4px;background:var(--fill);overflow:hidden}
+.mbar i{display:block;height:100%;border-radius:4px;background:var(--muted)}
+.mbar i.hi{background:var(--c-green)}.mbar i.mid{background:var(--c-orange)}.mbar i.lo{background:#ff3b30}
+.mlist{display:grid;gap:8px}
+.m-weak{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.wchip{font-size:13px;font-weight:600;background:var(--bad-soft);color:var(--bad);border-radius:999px;padding:3px 10px}
+@media (max-width:420px){.mrow{grid-template-columns:minmax(0,130px) 1fr 46px}}
+.sheet-bg{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.28);display:grid;align-items:end;justify-items:center}
+.sheet{width:min(680px,100%);max-height:84vh;overflow:auto;background:var(--glass-strong);-webkit-backdrop-filter:blur(30px) saturate(200%);backdrop-filter:blur(30px) saturate(200%);border-radius:26px 26px 0 0;box-shadow:var(--edge),0 -10px 40px rgba(0,0,0,.2);padding:10px max(18px,env(safe-area-inset-left,0px)) calc(22px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+.sheet::before{content:"";justify-self:center;width:38px;height:5px;border-radius:3px;background:var(--fill)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sheet-head b{font-family:var(--f-display);font-size:18px}
+.sheet .concept{box-shadow:none;background:transparent;padding:0}
+.confirmbox{display:grid;gap:12px}
+.confirmbox p{margin:0}
+body.sheet-open{overflow:hidden}
+@media (min-width:700px){.sheet-bg{align-items:center}.sheet{border-radius:26px;margin:16px}}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .3s cubic-bezier(.2,.9,.3,1)}@keyframes up{from{transform:translateY(40px);opacity:.6}}}
+
+/* ===== v4: Lær — modes, mind map, flashcards, duel ===== */
+.tabbar{width:min(440px,calc(100vw - 32px))}
+.learn-hero{display:flex;align-items:center;justify-content:space-between;gap:14px;border-radius:24px;padding:18px 20px;background-image:linear-gradient(135deg,rgba(0,122,255,.16),rgba(175,82,222,.12) 55%,rgba(52,199,89,.10)),linear-gradient(180deg,var(--sheen),transparent 42%)}
+.lh-text{display:grid;gap:2px;min-width:0}
+.lh-text b{font-family:var(--f-display);font-size:24px;font-weight:700;letter-spacing:-.03em}
+.lh-text > span:last-child{font-size:13px;color:var(--muted)}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.modes{grid-template-columns:1fr}}
+.mode{display:grid;gap:6px;align-content:start;text-align:left;border-radius:22px;padding:18px;color:var(--fg);background-image:radial-gradient(130% 90% at 0% 0%,color-mix(in srgb,var(--mc) 17%,transparent),transparent 62%),linear-gradient(180deg,var(--sheen),transparent 42%);transition:transform .15s}
+.mode:hover{transform:translateY(-2px)}
+.mode:active{transform:scale(.98)}
+.mode .tile{margin-bottom:6px;width:42px;height:42px;border-radius:12px}
+.mode .tile svg{width:23px;height:23px}
+.mode b{font-family:var(--f-display);font-size:19px;letter-spacing:-.025em}
+.mode > span:not(.tile){font-size:14px;color:var(--muted)}
+.mode em{font-style:normal;font-size:12.5px;color:var(--muted);border-top:.5px solid var(--line);padding-top:9px;margin-top:4px}
+.subhead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding-top:16px}
+.subhead .navback{justify-self:start}
+.subhead h1{margin:0;font-size:19px;font-weight:600;letter-spacing:-.02em;text-align:center}
+.subhead > :last-child{justify-self:end}
+.subpos{font-size:13px;color:var(--muted)}
+.lprog{height:5px;border-radius:3px;background:var(--fill);overflow:hidden}
+.lprog span{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .35s}
+.stage{display:grid;gap:14px}
+
+/* mind map */
+.mm-tools{display:flex;gap:6px}
+.mm-tools button{border:0;background:var(--fill);border-radius:999px;min-width:36px;height:34px;padding:0 10px;font-weight:700;font-size:16px;color:var(--accent)}
+.mm-wrap{height:min(70vh,780px);border-radius:28px;overflow:hidden;touch-action:none;background-image:radial-gradient(60% 60% at 50% 50%,rgba(0,122,255,.08),transparent 70%),linear-gradient(180deg,var(--sheen),transparent 30%)}
+#mm{width:100%;height:100%;display:block;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+#mm:active{cursor:grabbing}
+.mm-l1{fill:none;stroke-width:7;stroke-linecap:round;opacity:.9}
+.mm-l2{fill:none;stroke-width:2.5;stroke-linecap:round;opacity:.45}
+.mm-dot{stroke-width:3.5}
+.mm-dot.none{fill:var(--glass-strong)}.mm-dot.hi{fill:#34c759}.mm-dot.mid{fill:#ff9500}.mm-dot.lo{fill:#ff3b30}
+.mm-t{font-family:var(--f-body);font-size:21px;font-weight:600;fill:var(--fg);letter-spacing:-.01em}
+.mm-leaf,.mm-ch,.mm-center{cursor:pointer;outline:none}
+.mm-leaf:hover .mm-t,.mm-leaf:focus-visible .mm-t{fill:var(--accent)}
+.mm-leaf:hover .mm-dot,.mm-leaf:focus-visible .mm-dot{stroke-width:6}
+.mm-chc{filter:drop-shadow(0 6px 14px rgba(0,0,0,.18))}
+.mm-ch:focus-visible .mm-chc,.mm-ch:hover .mm-chc{stroke:#fff;stroke-width:4}
+.mm-chn{font-family:var(--f-display);font-size:44px;font-weight:700;fill:#fff}
+.mm-chl{font-family:var(--f-display);font-size:28px;font-weight:700;fill:var(--fg);letter-spacing:-.02em;paint-order:stroke;stroke:var(--bg);stroke-width:6px;stroke-linejoin:round}
+.mm-chp{font-family:var(--f-body);font-size:18px;font-weight:600;fill:var(--muted);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+.mm-ring-bg{fill:none;stroke:var(--fill);stroke-width:7}
+.mm-ring{fill:none;stroke-width:7;stroke-linecap:round}
+.mm-ct{font-family:var(--f-display);font-size:34px;font-weight:800;fill:#fff;letter-spacing:-.02em}
+.mm-cs{font-family:var(--f-body);font-size:17px;font-weight:600;fill:rgba(255,255,255,.88)}
+@media (prefers-reduced-motion:no-preference){
+  #mm.animate .mm-l1,#mm.animate .mm-l2{stroke-dasharray:1;stroke-dashoffset:1;animation:mmdraw .9s cubic-bezier(.3,.7,.2,1) forwards}
+  #mm.animate .mm-leaf,#mm.animate .mm-ch{animation:mmfade .5s ease both}
+  @keyframes mmdraw{to{stroke-dashoffset:0}}
+  @keyframes mmfade{from{opacity:.15}}
+}
+.mm-legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--muted);padding:0 4px}
+.mm-legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:11px;height:11px;border-radius:50%;display:inline-block}
+.lg.hi{background:#34c759}.lg.mid{background:#ff9500}.lg.lo{background:#ff3b30}.lg.none{background:var(--fill);box-shadow:inset 0 0 0 1.5px var(--muted)}
+
+/* flashcards */
+.flip{border:0;background:none;padding:0;width:100%;perspective:1600px;cursor:pointer;display:block;text-align:left;color:inherit;font:inherit}
+.flip-in{display:grid;transition:transform .65s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.flip.flipped .flip-in{transform:rotateY(180deg)}
+.face{grid-area:1/1;-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-backdrop-filter:none;backdrop-filter:none;background-color:var(--glass-strong);border-radius:30px;padding:30px 24px;min-height:min(56vh,420px);display:grid;align-content:center;gap:16px}
+.face.back{transform:rotateY(180deg);align-content:start;cursor:default}
+.face.front{background-image:radial-gradient(120% 80% at 100% 0%,rgba(0,122,255,.10),transparent 60%),linear-gradient(180deg,var(--sheen),transparent 42%)}
+.face .concept{background:none;box-shadow:none;padding:0}
+.fc-ch{justify-self:start;font-size:13px;font-weight:600;color:var(--cc,var(--accent));background:color-mix(in srgb,var(--cc,var(--accent)) 13%,transparent);padding:4px 11px;border-radius:999px}
+.fc-title{font-family:var(--f-display);font-size:clamp(26px,6vw,34px);font-weight:700;letter-spacing:-.035em;line-height:1.12}
+.fc-hint{color:var(--muted);font-size:15px}
+.fc-formula{font-family:var(--f-mono);font-size:clamp(18px,4.5vw,22px);line-height:1.55;font-weight:500}
+.fc-rate{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.fc-rate button{border:0;border-radius:18px;padding:11px 4px;display:grid;gap:1px;color:#fff;font-size:15px;transition:transform .12s;box-shadow:inset 0 .5px 0 rgba(255,255,255,.4)}
+.fc-rate button:active{transform:scale(.96)}
+.fc-rate span{font-size:12px;opacity:.85;font-weight:500}
+.fc-rate .r0{background:#ff3b30}.fc-rate .r1{background:#ff9500}.fc-rate .r2{background:#34c759}.fc-rate .r3{background:#007aff}
+.fc-empty{border-radius:28px;padding:32px 22px;display:grid;justify-items:center;text-align:center;gap:10px}
+.fc-empty b{font-family:var(--f-display);font-size:22px;letter-spacing:-.025em}
+.fc-empty > span:not(.tile):not(.score-big){color:var(--muted);max-width:42ch}
+.fc-empty .tile{width:52px;height:52px;border-radius:16px}
+.fc-empty .tile svg{width:28px;height:28px}
+.score-big{font-family:var(--f-display);font-size:68px;font-weight:800;letter-spacing:-.05em;line-height:1}
+.score-big small{font-size:28px;color:var(--muted);font-weight:600}
+
+/* duel & explain */
+.duel-q{border-radius:26px;padding:24px 22px;display:grid;gap:12px}
+.duel-opts{display:grid;gap:10px}
+.duel-o{border:0;text-align:left;padding:16px 18px;border-radius:18px;font-size:16px;color:var(--fg);transition:transform .12s}
+.duel-o:active{transform:scale(.985)}
+.duel-o .mono{font-size:14.5px}
+.duel-o.right{box-shadow:var(--edge),inset 0 0 0 2px var(--ok);background-color:var(--ok-soft)}
+.duel-o.wrong{box-shadow:var(--edge),inset 0 0 0 2px var(--bad);background-color:var(--bad-soft)}
+.duel-o:disabled{cursor:default}
+.duel-next{justify-self:end}
+.fx-text{width:100%;border:0;border-radius:20px;padding:16px 18px;font:inherit;font-size:16px;color:var(--fg);resize:vertical;min-height:170px;background-color:var(--glass-strong)}
+.fx-text:focus{outline:2px solid var(--accent);outline-offset:0}
+.seg.wide{display:flex;width:100%}
+.seg.wide button{flex:1;padding:10px 8px}
+.concept-wrap .concept{box-shadow:var(--edge),var(--shadow)}
+@media (max-width:600px){.mm-wrap{height:auto;aspect-ratio:1/1.1;max-height:72vh}}
 </style>
 </head>
 <body>
@@ -457,6 +596,7 @@ body.in-quiz .toasts{top:calc(74px + env(safe-area-inset-top,0px))}
       <span class="streak" id="streakChip" title="Helt riktige svar på rad"><b id="streakN">0</b>på rad</span>
     </button>
     <div class="quick" id="homeQuick"></div>
+    <div id="homeMastery"></div>
     <div id="homeLists" class="view"></div>
   </section>
 
@@ -475,6 +615,10 @@ body.in-quiz .toasts{top:calc(74px + env(safe-area-inset-top,0px))}
       <div class="seg" role="group" aria-label="Modus">
         <button type="button" id="modeExam" aria-pressed="true">Eksamen</button>
         <button type="button" id="modePractice" aria-pressed="false">Øving med fasit</button>
+      </div>
+      <div class="seg" role="group" aria-label="Visning">
+        <button type="button" id="layoutOne" aria-pressed="true">Én om gangen</button>
+        <button type="button" id="layoutAll" aria-pressed="false">Alle på én side</button>
       </div>
       <p class="modehint" id="modeHint">Eksamen: du får fasit når du leverer. Øving: sjekk svaret etter hver oppgave. 10 XP per riktig svar, 4 XP for delvis riktig, og bonus når du består.</p>
     </header>
@@ -788,11 +932,54 @@ body.in-quiz .toasts{top:calc(74px + env(safe-area-inset-top,0px))}
 </section>
 
 
+
+  <section class="view" data-route="laer" hidden>
+    <header class="largetitle"><span class="eyebrow">Metoder fra læringsforskningen</span><h1>Lær</h1></header>
+    <div class="learn-hero glass" id="learnHero"></div>
+    <div class="modes">
+      <button class="mode glass" type="button" data-view="kart" style="--mc:#5856d6"><span class="tile t-indigo" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="4.5" cy="5" r="2" fill="currentColor"/><circle cx="19.5" cy="5" r="2" fill="currentColor"/><circle cx="4.5" cy="19" r="2" fill="currentColor"/><circle cx="19.5" cy="19" r="2" fill="currentColor"/><path d="M6 6.3l3.7 3.6M18 6.3l-3.7 3.6M6 17.7l3.7-3.6M18 17.7l-3.7-3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><b>Tankekart</b><span>Hele pensum som et kart. Se hvordan begrepene henger sammen, og hvor du er sterk og svak.</span><em>Elaborering og dobbel koding: struktur og bilder gjør stoffet lettere å huske.</em></button>
+      <button class="mode glass" type="button" data-view="kort" style="--mc:#007aff"><span class="tile t-blue" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3.5h10.5A2.5 2.5 0 0 1 21 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Flashkort</b><span>Begreper og formler som repeteres akkurat når du er i ferd med å glemme dem.</span><em>Spaced repetition: repetisjon med økende mellomrom slår pugging (Cepeda m.fl., 2006).</em></button>
+      <button class="mode glass" type="button" data-view="formel" style="--mc:#ff9500"><span class="tile t-orange" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 4H7l6 8-6 8h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Formelduell</b><span>10 raske runder: velg riktig formel, eller finn ut hva formelen regner ut.</span><em>Hentetrening: å hente frem svaret selv styrker hukommelsen (Roediger og Karpicke, 2006).</em></button>
+      <button class="mode glass" type="button" data-view="forklar" style="--mc:#34c759"><span class="tile t-green" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 8.5h8M8 11.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Forklar det</b><span>Skriv en forklaring med egne ord, og sammenlign med modellsvaret.</span><em>Feynman-teknikken og selvforklaring avslører hull i forståelsen (Chi m.fl., 1994).</em></button>
+      <button class="mode glass" type="button" data-view="feil" style="--mc:#ff2d55"><span class="tile t-pink" aria-hidden="true">!</span><b>Feilbanken</b><span>Øv på oppgavene du har svart feil på, til du har dem riktig to ganger.</span><em>Å jobbe målrettet med egne feil gir bedre læring (Metcalfe, 2017).</em></button>
+      <button class="mode glass" type="button" data-view="mix14" style="--mc:#32ade6"><span class="tile t-teal" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3.5c2 0 3 1 4.2 2.8l1.6 2.4C14.5 14 15.5 17 18 17h2M4 17h3.5c1.4 0 2.3-.6 3-1.5M14.2 8.4c.9-.9 1.9-1.4 3.8-1.4h2M17.5 4.5L20 7l-2.5 2.5M17.5 14.5L20 17l-2.5 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Blandet øving</b><span>Tilfeldige oppgaver på tvers av temaer, slik som på prøven.</span><em>Interleaving: blandede oppgaver lærer deg å velge riktig metode (Rohrer og Taylor, 2007).</em></button>
+    </div>
+  </section>
+
+  <section class="view" data-route="kart" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Tankekart</h1><div class="mm-tools"><button type="button" id="mmOut" aria-label="Zoom ut">−</button><button type="button" id="mmIn" aria-label="Zoom inn">+</button><button type="button" id="mmFit">Hele</button></div></div>
+    <div class="mm-wrap glass"><svg id="mm" role="group" aria-label="Tankekart over HSM122" viewBox="-960 -960 1920 1920" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="mm-legend"><span><i class="lg hi"></i>Kan godt</span><span><i class="lg mid"></i>På vei</span><span><i class="lg lo"></i>Øv mer</span><span><i class="lg none"></i>Ikke øvd</span></div>
+    <p class="modehint">Trykk på et kapittel for å zoome inn, og på et begrep for å lese det. Dra for å flytte, og klyp eller rull for å zoome.</p>
+  </section>
+
+  <section class="view" data-route="kort" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Flashkort</h1><span class="mono subpos" id="fcPos"></span></div>
+    <div class="lprog" aria-hidden="true"><span id="fcBar"></span></div>
+    <div class="stage" id="fcStage"></div>
+    <div class="fc-rate" id="fcRate" hidden>
+      <button type="button" id="fr0" class="r0"></button><button type="button" id="fr1" class="r1"></button><button type="button" id="fr2" class="r2"></button><button type="button" id="fr3" class="r3"></button>
+    </div>
+    <p class="modehint">Mellomrom snur kortet, og 1–4 gir vurdering. Vær ærlig: kortet kommer tilbake akkurat når du trenger det.</p>
+  </section>
+
+  <section class="view" data-route="formel" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Formelduell</h1><span class="mono subpos" id="duelPos"></span></div>
+    <div class="lprog" aria-hidden="true"><span id="duelBar"></span></div>
+    <div class="stage" id="duelStage"></div>
+  </section>
+
+  <section class="view" data-route="forklar" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Forklar det</h1><span></span></div>
+    <div class="stage" id="fxStage"></div>
+  </section>
+
   <section id="viewProfile" class="view" hidden>
     <header class="largetitle"><span class="eyebrow">Fremgang lagres i denne nettleseren</span><h1>Profil</h1></header>
     <div class="prof">
       <div class="card"><div id="profLevel"></div></div>
       <div class="card"><h2>Statistikk</h2><div class="kvs" id="profStats"></div></div>
+      <div class="card"><h2>Mestring per tema</h2><p class="modehint">Svakeste temaer først.</p><div class="mlist" id="profTopics"></div></div>
       <div class="card"><h2>Merker</h2><div class="badges" id="profBadges"></div></div>
       <div class="card"><h2>Prøver</h2><div class="tblwrap"><table id="profTests"></table></div></div>
       <div class="card"><h2>Nullstill</h2>
@@ -806,9 +993,21 @@ body.in-quiz .toasts{top:calc(74px + env(safe-area-inset-top,0px))}
 
 <nav class="tabbar glass" id="tabbar" aria-label="Hovedmeny">
   <button type="button" data-view="hjem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z" fill="currentColor"/></svg>Øving</button>
+  <button type="button" data-view="laer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7.2 4.5 4 4.8v13.4c3.2-.3 6 .2 8 1.7 2-1.5 4.8-2 8-1.7V4.8c-3.2-.3-6 .2-8 1.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.5v13.4" stroke="currentColor" stroke-width="2"/></svg>Lær</button>
   <button type="button" data-view="formler"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 4H7l6 8-6 8h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Formler</button>
   <button type="button" data-view="profil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.2" fill="currentColor"/><path d="M4 20.5c.8-4 4-6.2 8-6.2s7.2 2.2 8 6.2z" fill="currentColor"/></svg>Profil</button>
 </nav>
+<div class="pager glass" id="pager" hidden>
+  <button type="button" class="btn ghost sm" id="prevQ">Forrige</button>
+  <span id="pagePos" class="mono">1 av 30</span>
+  <button type="button" class="btn sm" id="nextQ">Neste</button>
+</div>
+<div class="sheet-bg" id="sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-head"><b id="sheetTitle">Formler</b><button type="button" class="navback" id="sheetClose">Lukk</button></div>
+    <div id="sheetBody"></div>
+  </div>
+</div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 <canvas id="confetti" hidden aria-hidden="true"></canvas>
 
@@ -2232,13 +2431,404 @@ const Q_P7 = [
  explain:"DB = 1 028 000 − 692 000 = 336 000. Dekningsgrad = 336 000 / 1 028 000 ≈ 32,68 %. Dekningspunkt = 210 000 / (336 000 / 1 028 000) = 642 500. Sikkerhetsmargin = 1 028 000 − 642 500 = <b>385 500 kr</b>."}
 ];
 
+const Q_P8 = [
+/* ---------- Finans- og driftsregnskap ---------- */
+{topic:"7 Finans- og driftsregnskap", type:"match",
+ prompt:"Koble hver egenskap til hvordan den beskrives for <b>finansregnskapet</b>.",
+ items:[["Mottakere av informasjonen",4],["Type informasjon",2],["Detaljeringsnivå",6],["Informasjonens natur",0],["Tidshorisont",5],["Lovregulering",1],["Brukerorientering",3]],
+ choices:["Objektiv, kontrollerbar, til å stole på, konsistent og forsiktig","Detaljregulert gjennom lover og regler for god regnskapsskikk","Gjerne begrenset til finansiell informasjon (kroner)","Mer ekspertorientert","De som oppfattes som eksterne, for eksempel leverandører, långivere, myndigheter og aksjonærer","Tilbakeskuende (i all hovedsak)","Omfatter som regel hele virksomheten uten særlig oppdeling på lønnsomhetsområder"],
+ explain:"Fra sammenligningstabellen: finansregnskapet har eksterne mottakere, er gjerne begrenset til kroner, omfatter hele virksomheten uten særlig oppdeling, er objektivt og forsiktig, i all hovedsak tilbakeskuende, detaljregulert gjennom lover og god regnskapsskikk, og mer ekspertorientert. Driftsregnskapet er på alle disse punktene det motsatte: internt, detaljert, skjønnsmessig, fremoverskuende, uregulert og brukerorientert."},
+
+{topic:"7 Finans- og driftsregnskap", type:"mc",
+ case:"<p>Sportshuset Nordby AS søker om et lån i banken. Banken ber om informasjon for å vurdere bedriftens økonomiske situasjon og evne til å betjene lånet.</p>",
+ prompt:"Hvilken informasjon er det mest typisk at banken får og legger vekt på?",
+ options:["Det månedlige driftsregnskapet per avdeling med budsjettavvik, fordi det er mer detaljert","Det offisielle finansregnskapet, som er utarbeidet etter lover og regler for god regnskapsskikk og bygger på objektive kriterier","Kalkylene for de enkelte produktene, fordi de viser avansen per enhet","Driftsregnskapet, fordi det er mer forsiktig enn finansregnskapet"],
+ correct:1,
+ explain:"Långivere er typiske <b>eksterne</b> mottakere, og de får <b>finansregnskapet</b>: virksomhetens offisielle regnskap, regulert av lov og god regnskapsskikk, objektivt og forsiktig. Driftsregnskapet er et internt styringsverktøy for ledere og ansatte, og det er realisme, ikke forsiktighet, som preger det. Kalkyler gjelder enkeltvarer."},
+
+/* ---------- Kalkyle og driftsregnskap ---------- */
+{topic:"7 Kalkyle og driftsregnskap", type:"cat",
+ case:"<p>Sportsbutikken Turglede AS bruker både kalkyler og driftsregnskap.</p>",
+ prompt:"Plasser hver beregning under det verktøyet den hører hjemme i.",
+ cats:["Kalkyle","Driftsregnskap"],
+ items:[
+  ["Varekostnad per enhet for en ny modell fjellsko",0],
+  ["Utsalgspris for et vareparti med regnjakker",0],
+  ["Avanse per par ski",0],
+  ["Sum salgsinntekter for hele mars",1],
+  ["Fortjeneste totalt for alle produkter i første kvartal",1],
+  ["Sum kostnader i perioden fordelt på avdelingene",1]],
+ explain:"<b>Kalkylen</b> fokuserer på kostnader og fortjeneste for en enkelt vare eller et vareparti: varekostnad per enhet, avanse per enhet og utsalgspris. <b>Driftsregnskapet</b> beregner kostnader og fortjeneste totalt for en regnskapsperiode: sum salgsinntekter, sum kostnader og fortjeneste totalt for alle produkter."},
+
+{topic:"7 Finans- og driftsregnskap", type:"mc",
+ prompt:"Driftsregnskapet tar ofte med kalkulatoriske renter på egenkapitalen, mens finansregnskapet ikke gjør det. Hva er den beste begrunnelsen?",
+ options:["Kalkulatoriske renter er pålagt etter regnskapsloven i internregnskapet","Kalkulatoriske renter skal betales til banken, og må derfor være med","Finansregnskapet har ikke noe resultat, så renter kan ikke tas med der","Driftsregnskapet bruker subjektive kriterier og realisme framfor forsiktighet for å vise den reelle lønnsomheten, mens finansregnskapet bygger på objektive kriterier som historisk kost"],
+ correct:3,
+ explain:"Driftsregnskapet er handlingsorientert og bygger på <b>subjektive kriterier for kostnadsfastsettelse</b>, med realisme framfor forsiktighet. Kalkulatoriske kostnader, som renter på egenkapital, er ikke betalbare, men tas med for å vise hva det reelt koster å binde kapital i virksomheten. Finansregnskapet bruker objektive kriterier som historisk kost. Driftsregnskapet er ikke lovregulert."},
+
+/* ---------- Oppstillingsform ---------- */
+{topic:"7 Oppstillingsform", type:"cat",
+ prompt:"I oppstillingsformen for driftsregnskapet deles kostnadene inn i grupper. Plasser hver kostnad riktig.",
+ cats:["Direkte kostnad","Indirekte, betalbar","Indirekte, kalkulatorisk"],
+ items:[
+  ["Varekostnad",0],
+  ["Lønn til de ansatte",1],
+  ["Husleie for butikklokalet",1],
+  ["Strøm og renhold",1],
+  ["Renter på den egenkapitalen som er bundet i varelageret",2],
+  ["Avskrivninger beregnet etter bedriftens egne vurderinger av slit på inventaret",2]],
+ explain:"I oppstillingen trekkes <b>varekostnaden</b> (direkte kostnad) fra salgsinntekten og gir bruttofortjenesten. Deretter følger de <b>indirekte kostnadene</b>, delt i <b>betalbare</b> (lønn, husleie, strøm) og <b>kalkulatoriske</b> (kalkulatoriske renter og avskrivninger), som ikke nødvendigvis gir en utbetaling, men tas med for å vise den reelle ressursbruken."},
+
+{topic:"7 Oppstillingsform", type:"match",
+ case:"<p>Elektrohuset Moe AS har disse tallene for juni (kr):</p><div class='tblwrap'><table><tr><th>Post</th><th>kr</th></tr><tr><td>Salgsinntekt</td><td>820 000</td></tr><tr><td>Varekostnad</td><td>533 000</td></tr><tr><td>Lønn</td><td>128 000</td></tr><tr><td>Husleie</td><td>36 000</td></tr><tr><td>Strøm og diverse</td><td>14 500</td></tr><tr><td>Kalkulatoriske avskrivninger</td><td>9 000</td></tr><tr><td>Kalkulatoriske renter</td><td>6 500</td></tr></table></div>",
+ prompt:"Koble hver post i driftsregnskapet til riktig beløp.",
+ items:[["Bruttofortjeneste",3],["Sum indirekte kostnader",0],["Selvkost",5],["Sum kalkulatoriske kostnader",2],["Bruttofortjeneste i prosent av salgsinntekten",4]],
+ choices:["194 000 kr","178 500 kr","15 500 kr","287 000 kr","35,0 %","727 000 kr"],
+ explain:"Bruttofortjeneste = 820 000 − 533 000 = <b>287 000</b>, som er 287 000 / 820 000 = <b>35,0 %</b>. Betalbare indirekte = 128 000 + 36 000 + 14 500 = 178 500. Kalkulatoriske = 9 000 + 6 500 = <b>15 500</b>. Sum indirekte = 178 500 + 15 500 = <b>194 000</b>. Selvkost = varekostnad + sum indirekte = 533 000 + 194 000 = <b>727 000</b>. 178 500 er bare de betalbare indirekte kostnadene."},
+
+{topic:"7 Oppstillingsform", type:"num",
+ case:"<p>Bruk tallene for Elektrohuset Moe AS i forrige oppgave.</p>",
+ prompt:"Hva er resultatet i driftsregnskapet for juni?",
+ answer:93000, tol:0.5, unit:"kr",
+ explain:"Bruttofortjeneste = 820 000 − 533 000 = 287 000. Sum indirekte kostnader (betalbare + kalkulatoriske) = 178 500 + 15 500 = 194 000. Resultat = 287 000 − 194 000 = <b>93 000 kr</b>. Kontroll: salgsinntekt − selvkost = 820 000 − 727 000 = 93 000."},
+
+/* ---------- Kostnadsfordeling ---------- */
+{topic:"7 Kostnadsfordeling", type:"multi",
+ case:"<p>Trelast Vest AS har disse avdelingene: trelast, maling, verktøy, bildrift (frakter varer fra sentrallageret til de andre avdelingene) og administrasjon (felles kontor, regnskap og ledelse).</p>",
+ prompt:"Hvilke avdelinger er <b>hovedsteder</b>? Velg alle som passer.",
+ options:["Trelast","Maling","Bildrift","Verktøy","Administrasjon"],
+ correct:[0,1,3],
+ explain:"Hovedsteder er avdelinger som <b>faktureres til kunde</b>: trelast, maling og verktøy. Bildrift er et <b>hjelpested</b> som yter tjenester til de andre avdelingene, og administrasjon er et <b>fellessted</b>. Ingen av dem faktureres; kostnadene deres fordeles videre på hovedstedene."},
+
+{topic:"7 Kostnadsfordeling", type:"cat",
+ case:"<p>Klesstua AS er en klesbutikk med to hovedavdelinger: dame og herre.</p>",
+ prompt:"Plasser hver kostnad i riktig kategori.",
+ cats:["Direkte kostnad","Avdelingsspesifikk indirekte kostnad","Felleskostnad (fordeles med fordelingsnøkkel)"],
+ items:[
+  ["Varekostnad for solgte dameklær",0],
+  ["Varekostnad for solgte herreklær",0],
+  ["Lønn til en selger som bare jobber i herreavdelingen",1],
+  ["Avskrivning på stativer og speil som bare står i dameavdelingen",1],
+  ["Husleie for hele butikklokalet",2],
+  ["En felles reklamekampanje for hele butikken",2],
+  ["Honorar til regnskapsføreren",2]],
+ explain:"Direkte kostnader, som varekostnad, kan lett føres direkte på avdelingene. Avdelingsspesifikke indirekte kostnader påvirker bare én avdeling, som lønn og avskrivninger på avdelingens eget utstyr. Felleskostnader (husleie, felles reklame, regnskapshonorar) gjelder hele butikken og fordeles med skjønnsmessige fordelingsnøkler basert på avdelingenes bruk av ressurser."},
+
+{topic:"7 Fordelingsnøkler", type:"num",
+ case:"<p>Torget Apotek har to hovedavdelinger, reseptekspedisjon (120 m²) og handelsvarer (200 m²), og en hjelpeavdeling for lager og varemottak (80 m²). Husleien for måneden er 48 000 kr og fordeles etter areal på alle tre avdelingene.</p>",
+ prompt:"Hvor mye husleie belastes avdeling handelsvarer direkte i første trinn (før lageret fordeles videre)?",
+ answer:24000, tol:0.5, unit:"kr",
+ explain:"Samlet areal = 120 + 200 + 80 = 400 m². Handelsvarer = 48 000 × 200/400 = <b>24 000 kr</b>. Reseptekspedisjon får 14 400 og lageret 9 600. Lagerets kostnader fordeles i neste trinn. 30 000 får man hvis man glemmer lageret og deler på 320 m²."},
+
+/* ---------- Trinnvis fordeling ---------- */
+{topic:"7 Trinnvis kostnadsfordeling", type:"num",
+ case:"<p>Bokhuset Sentrum AS har to hovedavdelinger, bøker og papir, og hjelpeavdelingen varemottak. Fordelingsgrunnlag for november:</p><div class='tblwrap'><table><tr><th>Kostnad</th><th>Sum (kr)</th><th>Fordeling</th></tr><tr><td>Lønn</td><td>150 000</td><td>Bøker 70 000, papir 55 000. Resten til varemottak</td></tr><tr><td>Husleie</td><td>40 000</td><td>Forhold 1 : 5 : 4 (varemottak : bøker : papir)</td></tr><tr><td>Diverse felleskostnader</td><td>18 000</td><td>Forhold 2 : 1 (bøker : papir)</td></tr><tr><td>Kalk. avskrivninger</td><td>15 000</td><td>Varemottak 3 000. Resten i forholdet 1 : 1 (bøker : papir)</td></tr><tr><td>Kalk. renter</td><td>12 000</td><td>Forhold 300 000 : 900 000 : 600 000 (varemottak : bøker : papir)</td></tr><tr><td>Varemottak fordeles på hovedavdelingene</td><td></td><td>Etter antall leveranser, 60 : 40 (bøker : papir)</td></tr></table></div>",
+ prompt:"Hvor mye er de samlede kostnadene i hjelpeavdelingen varemottak før de fordeles videre?",
+ answer:34000, tol:0.5, unit:"kr",
+ explain:"Lønn: 150 000 − 70 000 − 55 000 = 25 000. Husleie: 40 000 × 1/10 = 4 000. Avskrivninger: 3 000. Renter: 12 000 × 300 000/1 800 000 = 2 000. Felleskostnadene går bare til bøker og papir. Sum varemottak = 25 000 + 4 000 + 3 000 + 2 000 = <b>34 000 kr</b>."},
+
+{topic:"7 Trinnvis kostnadsfordeling", type:"multi",
+ case:"<p>Bruk tallene for Bokhuset Sentrum AS i forrige oppgave.</p>",
+ prompt:"Hvilke utsagn om fordelingen er riktige? Velg alle som passer.",
+ options:["Varemottak belaster avdeling bøker med 20 400 kr","Avdeling papir får 4 000 kr i kalkulatoriske renter","Avdeling bøker får 7 500 kr i kalkulatoriske avskrivninger","Varemottak faktureres til kunde fordi det håndterer varene som selges","Avdeling papir får 16 000 kr i husleie","Diverse felleskostnader fordeles også på varemottak"],
+ correct:[0,1,4],
+ explain:"Varemottak 34 000 × 0,6 = <b>20 400 kr</b> til bøker. Renter papir = 12 000 × 600 000/1 800 000 = <b>4 000 kr</b>. Husleie papir = 40 000 × 4/10 = <b>16 000 kr</b>. Avskrivninger: 3 000 går først til varemottak, og resten 12 000 deles likt, så bøker får 6 000 (7 500 får man hvis man glemmer varemottak). Varemottak er et hjelpested og faktureres ikke, og felleskostnadene fordeles etter nøkkelen 2 : 1 bare på bøker og papir."},
+
+{topic:"7 Trinnvis kostnadsfordeling", type:"num",
+ case:"<p>Bruk tallene for Bokhuset Sentrum AS i forrige oppgave. I tillegg vet du at avdeling papir hadde salgsinntekt på 280 000 kr og varekostnad på 168 000 kr i november.</p>",
+ prompt:"Hva ble resultatet for avdeling papir i november?",
+ answer:11400, tol:0.5, unit:"kr",
+ explain:"Indirekte kostnader papir: lønn 55 000 + husleie 16 000 + felleskostnader 18 000 × 1/3 = 6 000 + avskrivninger 6 000 + renter 4 000 + varemottak 34 000 × 0,4 = 13 600 = 100 600. Bruttofortjeneste = 280 000 − 168 000 = 112 000. Resultat = 112 000 − 100 600 = <b>11 400 kr</b>. Kontroll: bøker får 134 400, og 134 400 + 100 600 = 235 000 = summen av alle kostnadene."},
+
+/* ---------- Kontroll av kostnader og lønnsomhet ---------- */
+{topic:"7 Kontroll av kostnader og lønnsomhet", type:"mc",
+ prompt:"Ifølge forelesningen: hvilke kostnader bør følges særlig tett opp i budsjettkontrollen, og hvorfor?",
+ options:["De variable kostnadene, fordi de faste kostnadene normalt bør ha få avvik","De faste kostnadene, fordi de alltid er de største","Bare varekostnaden, fordi indirekte kostnader ikke kan påvirkes","Kalkulatoriske kostnader, fordi de ikke er lovregulert"],
+ correct:0,
+ explain:"Faste kostnader (som husleie) er avtalt på forhånd og bør ha <b>få avvik</b>. Derfor bør de <b>variable kostnadene følges tett</b>, siden de svinger med aktiviteten. Får en fast kostnad likevel et stort avvik, er det et signal om at noe bør undersøkes."},
+
+{topic:"7 Kontroll av kostnader og lønnsomhet", type:"mc",
+ case:"<p>Klesbutikken Stil AS hadde budsjettert med 30 000 kr i markedsføring i april, men brukte bare 8 000 kr fordi en planlagt kampanje ble avlyst. Salget i april ble 12 % lavere enn budsjettert.</p>",
+ prompt:"Hvordan bør avviket på markedsføring vurderes?",
+ options:["Det er et negativt avvik på 22 000 kr, fordi regnskapstallet er lavere enn budsjettet","Det er et positivt avvik på 22 000 kr, og det er utelukkende gunstig for butikken","Det er et positivt avvik på 22 000 kr isolert sett, men det kan ha bidratt til det svake salget og må vurderes mot butikkens mål og strategi","Avviket er uten betydning, fordi markedsføring er en fast kostnad"],
+ correct:2,
+ explain:"Kostnadsavvik = budsjett − regnskap = 30 000 − 8 000 = <b>+22 000</b>, et positivt avvik isolert sett. Men <b>positive avvik er ikke alltid gunstige</b>: den avlyste kampanjen kan ha ført til lavere salg og dermed lavere bruttofortjeneste. Avviket må vurderes mot bedriftens mål og strategi."},
+
+{topic:"7 Kontroll av kostnader og lønnsomhet", type:"cat",
+ case:"<p>Byggevarehuset Nord AS analyserer avvikene fra budsjettet i tredje kvartal.</p>",
+ prompt:"Plasser hver årsak etter om den er intern eller ekstern.",
+ cats:["Intern årsak","Ekstern årsak"],
+ items:[
+  ["En leverandør økte innkjøpsprisene på all trelast",1],
+  ["En ny konkurrent åpnet like ved",1],
+  ["Strømprisen steg kraftig i hele landet",1],
+  ["Dårlig vaktplanlegging førte til mye overtid",0],
+  ["En feilbestilling gjorde at et parti maling måtte kastes",0],
+  ["Butikksjefen ga større rabatter enn retningslinjene tillater",0]],
+ explain:"Ved avviksanalyse bør man skille mellom <b>interne årsaker</b>, som bedriften selv har kontroll over (vaktplanlegging, feilbestillinger, rabattpraksis), og <b>eksterne årsaker</b> i omgivelsene (leverandørpriser, konkurrenter, strømpris). Skillet viser hva ledelsen kan gjøre noe med."},
+
+/* ---------- Budsjettkontroll ---------- */
+{topic:"7 Budsjettkontroll", type:"num",
+ case:"<p>Toppturbutikken AS har dette budsjettet og regnskapet for februar (kr):</p><div class='tblwrap'><table><tr><th></th><th>Budsjett</th><th>Regnskap</th></tr><tr><td>Salgsinntekt</td><td>900 000</td><td>855 000</td></tr><tr><td>Varekostnad</td><td>585 000</td><td>564 300</td></tr><tr><td>Lønn</td><td>140 000</td><td>146 000</td></tr><tr><td>Husleie</td><td>45 000</td><td>45 000</td></tr><tr><td>Markedsføring</td><td>25 000</td><td>18 000</td></tr><tr><td>Andre kostnader</td><td>30 000</td><td>31 500</td></tr></table></div><p>Avvik regnes som effekt på resultatet: negativt avvik betyr dårligere enn budsjett.</p>",
+ prompt:"Hva er avviket for bruttofortjenesten? Oppgi svaret med fortegn etter konvensjonen (negativt = dårligere enn budsjett).",
+ answer:-24300, tol:0.5, unit:"kr",
+ explain:"Budsjettert BF = 900 000 − 585 000 = 315 000. Oppnådd BF = 855 000 − 564 300 = 290 700. Avvik = regnskap − budsjett = 290 700 − 315 000 = <b>−24 300 kr</b>. Kontroll: salgsavvik −45 000 og varekostnadsavvik +20 700 gir −24 300."},
+
+{topic:"7 Budsjettkontroll", type:"num",
+ case:"<p>Bruk tallene for Toppturbutikken AS i forrige oppgave.</p>",
+ prompt:"Hvor mange kroner er avviket for varekostnaden?",
+ answer:20700, tol:0.5, unit:"kr", abs:true,
+ explain:"Kostnadsavvik = budsjett − regnskap = 585 000 − 564 300 = +20 700. Det er et <b>positivt avvik på 20 700 kr</b> isolert sett, men det skyldes først og fremst at salget ble lavere enn budsjettert. Et positivt avvik er derfor ikke et tegn på bedre innkjøp."},
+
+{topic:"7 Budsjettkontroll", type:"mc",
+ case:"<p>Bruk tallene for Toppturbutikken AS i forrige oppgave.</p>",
+ prompt:"Hvilken oppsummering av budsjettkontrollen er riktig?",
+ options:["Sum indirekte kostnader har et positivt avvik på 500 kr fordi de ble høyere enn budsjettert","Bruttofortjenesteprosenten økte fra 34,0 % til 35,0 %","Resultatavviket skyldes i hovedsak at varekostnaden har et negativt avvik","Resultatavviket er −24 800 kr, og det skyldes nesten helt bruttofortjenesten (−24 300 kr); de indirekte kostnadene samlet er nesten som budsjettert (−500 kr)"],
+ correct:3,
+ explain:"Sum indirekte: budsjett 240 000, regnskap 240 500, avvik <b>−500</b> (høyere kostnad gir negativt avvik). Resultat: budsjett 315 000 − 240 000 = 75 000, regnskap 290 700 − 240 500 = 50 200, avvik <b>−24 800</b>. Nesten hele avviket kommer fra bruttofortjenesten. BF % falt fra 35,0 % til 34,0 %, og varekostnadsavviket er positivt (+20 700)."},
+
+/* ---------- Varekostnad, vareopptelling og svinn ---------- */
+{topic:"7 Varekostnad", type:"num",
+ case:"<p>Fargehandelen Kvist AS hadde varebeholdning på 380 000 kr 1. januar. I løpet av første kvartal kjøpte butikken varer for 1 240 000 kr. Ved vareopptellingen 31. mars var beholdningen 415 000 kr.</p>",
+ prompt:"Hva var varekostnaden i første kvartal?",
+ answer:1205000, tol:0.5, unit:"kr",
+ explain:"Varekostnad = IB + innkjøp − UB = 380 000 + 1 240 000 − 415 000 = <b>1 205 000 kr</b>. Med den andre formelen: varekjøp − økning i varebeholdning = 1 240 000 − 35 000 = 1 205 000."},
+
+{topic:"7 Budsjettert og oppnådd bruttofortjeneste", type:"num",
+ case:"<p>Bruk tallene for Fargehandelen Kvist AS i forrige oppgave. Salgsinntekten i kvartalet var 1 850 000 kr, og budsjettert bruttofortjeneste var 36 % av salgsinntekten.</p>",
+ prompt:"Hva ble oppnådd bruttofortjeneste i prosent av salgsinntekten? Oppgi svaret i prosent med én desimal.",
+ answer:34.9, tol:0.1, unit:"%",
+ explain:"Oppnådd bruttofortjeneste = virkelig salgsinntekt − varekostnad = 1 850 000 − 1 205 000 = 645 000. BF % = 645 000 / 1 850 000 = <b>34,9 %</b>, altså lavere enn budsjettert 36 %. Mulige årsaker er svinn, rabatter eller salg av varer med lav avanse."},
+
+{topic:"7 Svinn", type:"num",
+ case:"<p>Nærbutikken Bakken AS hadde varebeholdning på 210 000 kr ved starten av måneden og kjøpte varer for 760 000 kr. Salgsinntekten ble 1 040 000 kr. Butikken priser varene slik at bruttofortjenesten skal bli 28 % av salgsinntekten. Ved vareopptellingen ved slutten av måneden er beholdningen 212 600 kr (innkjøpspris). Anta at alle varer er solgt til ordinær pris, slik at hele differansen skyldes svinn.</p>",
+ prompt:"Hvor stort var svinnet i måneden, målt i innkjøpspris?",
+ answer:8600, tol:0.5, unit:"kr",
+ explain:"Forventet varekostnad for solgte varer = 1 040 000 × 0,72 = 748 800. Forventet beholdning = 210 000 + 760 000 − 748 800 = 221 200. Opptalt beholdning = 212 600. Svinn = 221 200 − 212 600 = <b>8 600 kr</b>."},
+
+{topic:"7 Svinn og oppnådd bruttofortjeneste", type:"num",
+ case:"<p>Bruk tallene for Nærbutikken Bakken AS i forrige oppgave.</p>",
+ prompt:"Hva ble oppnådd bruttofortjeneste i prosent av salgsinntekten? Oppgi svaret i prosent med én desimal.",
+ answer:27.2, tol:0.1, unit:"%",
+ explain:"Varekostnad etter opptelling = 210 000 + 760 000 − 212 600 = 757 400. Oppnådd bruttofortjeneste = 1 040 000 − 757 400 = 282 600. BF % = 282 600 / 1 040 000 = <b>27,2 %</b>, mot budsjettert 28 %. Svinnet på 8 600 kr reduserer bruttofortjenesten tilsvarende (291 200 − 8 600 = 282 600)."},
+
+{topic:"7 Budsjettert og oppnådd bruttofortjeneste", type:"multi",
+ prompt:"En butikk oppnår lavere bruttofortjenesteprosent enn budsjettert. Hvilke forhold kan forklare dette? Velg alle som passer.",
+ options:["Svinn på grunn av tyveri eller ødelagte varer","Kundene kjøpte mer av varer med lav avanse enn budsjettert","Leverandørene økte innkjøpsprisene uten at utsalgsprisene ble justert","Husleien ble høyere enn budsjettert","Lønnskostnadene økte på grunn av overtid","De kalkulatoriske rentene ble høyere enn budsjettert"],
+ correct:[0,1,2],
+ explain:"Bruttofortjeneste = salgsinntekt − varekostnad, så bare forhold som påvirker salgsinntekt eller varekostnad endrer BF %. <b>Svinn</b> øker varekostnaden, <b>salgsmiks</b> med lav avanse og <b>høyere innkjøpspriser</b> gir lavere margin. Husleie, lønn og kalkulatoriske renter er indirekte kostnader som trekkes fra <i>etter</i> bruttofortjenesten; de påvirker resultatet, men ikke BF %."},
+
+/* ---------- Bidragsmetoden ---------- */
+{topic:"7 Bidragsmetoden", type:"num",
+ case:"<p>Interiørbutikken Lun AS har dette budsjettet for året:</p><div class='tblwrap'><table><tr><th></th><th>kr</th></tr><tr><td>Salgsinntekt</td><td>2 400 000</td></tr><tr><td>Varekostnad (variabel)</td><td>1 440 000</td></tr><tr><td>Frakt til kunde (variabel, 4 % av salgsinntekten)</td><td>96 000</td></tr><tr><td>Faste kostnader</td><td>576 000</td></tr></table></div>",
+ prompt:"Hva er dekningsgraden? Oppgi svaret i prosent med én desimal.",
+ answer:36.0, tol:0.1, unit:"%",
+ explain:"Variable kostnader = 1 440 000 + 96 000 = 1 536 000. Dekningsbidrag = 2 400 000 − 1 536 000 = 864 000. Dekningsgrad = 864 000 / 2 400 000 = <b>36,0 %</b>. Merk at bruttofortjenesten (960 000, 40 %) er noe annet, fordi frakten også er variabel."},
+
+{topic:"7 Bidragsmetoden", type:"num",
+ case:"<p>Bruk tallene for Interiørbutikken Lun AS i forrige oppgave.</p>",
+ prompt:"Hva er dekningspunktet (omsetningen som gir null i fortjeneste)?",
+ answer:1600000, tol:0.5, unit:"kr",
+ explain:"Dekningspunkt = faste kostnader / dekningsgrad = 576 000 / 0,36 = <b>1 600 000 kr</b>. Kontroll: ved 1 600 000 i salg er DB = 0,36 × 1 600 000 = 576 000, som akkurat dekker de faste kostnadene."},
+
+{topic:"7 Bidragsmetoden", type:"mc",
+ case:"<p>Bruk tallene for Interiørbutikken Lun AS i forrige oppgave.</p>",
+ prompt:"Hvor mye kan omsetningen falle fra budsjettet før butikken går i null?",
+ options:["288 000 kr, som er budsjettert resultat","864 000 kr, som er dekningsbidraget","800 000 kr, som er sikkerhetsmarginen (33,3 % av salget)","1 600 000 kr, som er dekningspunktet"],
+ correct:2,
+ explain:"Sikkerhetsmargin = salgsinntekt − dekningspunkt = 2 400 000 − 1 600 000 = <b>800 000 kr</b>, det vil si 800 000 / 2 400 000 = 33,3 % av salget. Resultatet på 288 000 er hvor mye <i>fortjenesten</i> kan falle; omsetningen kan falle mer, fordi hver krone i tapt salg bare reduserer resultatet med 0,36 kr (288 000 / 0,36 = 800 000)."},
+
+{topic:"7 Bidragsmetoden", type:"match",
+ prompt:"Koble hvert begrep til riktig formel.",
+ items:[["Dekningsbidrag",2],["Dekningsgrad",5],["Dekningspunkt",0],["Sikkerhetsmargin",4],["Bruttofortjeneste",1],["Resultat (bidragsmetoden)",3]],
+ choices:["Faste kostnader / dekningsgrad","Salgsinntekt − varekostnad","Salgsinntekt − variable kostnader","Dekningsbidrag − faste kostnader","Salgsinntekt − dekningspunkt","Dekningsbidrag / salgsinntekt"],
+ explain:"DB = salgsinntekt − variable kostnader. Dekningsgrad = DB / salgsinntekt. Dekningspunkt = faste kostnader / dekningsgrad. Sikkerhetsmargin = salgsinntekt − dekningspunkt. Resultat = DB − faste kostnader. Bruttofortjeneste er noe annet: salgsinntekt minus bare varekostnaden."},
+
+{topic:"7 Bidragsmetoden", type:"num",
+ case:"<p>Optikeren Klarsyn AS har en dekningsgrad på 42 % og faste kostnader på 630 000 kr per år. Eieren ønsker en fortjeneste på 84 000 kr.</p>",
+ prompt:"Hvor stor omsetning trengs for å oppnå ønsket fortjeneste?",
+ answer:1700000, tol:0.5, unit:"kr",
+ explain:"Dekningsbidraget må dekke både faste kostnader og ønsket fortjeneste: (630 000 + 84 000) / 0,42 = <b>1 700 000 kr</b>. Til sammenligning er dekningspunktet 630 000 / 0,42 = 1 500 000 kr."},
+
+{topic:"7 Driftsregnskap i handelsbedrifter", type:"mc",
+ prompt:"Hva er forholdet mellom budsjett og driftsregnskap i en handelsbedrift?",
+ options:["Budsjettet er en del av finansregnskapet og settes opp etter regnskapsloven","Budsjettet bygger på de samme prinsippene som driftsregnskapet, men med ulik input, og rapportene sammenlignes mot budsjettet","Budsjettet brukes bare i kalkylen for enkeltvarer","Driftsregnskapet erstatter budsjettet, slik at sammenligning ikke er nødvendig"],
+ correct:1,
+ explain:"Fra forelesningen: <b>budsjettet følger de samme prinsippene som driftsregnskapet, men har ulik input</b> (forventede i stedet for faktiske tall). Driftsrapportene sammenlignes mot budsjettet; i driftsregnskapet er budsjettsammenligning «en selvfølge»."}
+];
+
+const Q_P9 = [
+/* ---------- Finans- og driftsregnskap i praksis ---------- */
+{topic:"7 Finans- og driftsregnskap", type:"cat",
+ prompt:"Hvilken regnskapstype hører hver praksis mest naturlig hjemme i?",
+ cats:["Finansregnskap (eksternt)","Driftsregnskap (internt)"],
+ items:[
+  ["Varelageret verdsettes forsiktig, til laveste av anskaffelseskost og virkelig verdi",0],
+  ["Rapporten skal følge regnskapsloven og revideres",0],
+  ["Tallene skal være konsistente, utarbeidet etter samme prinsipper over tid, og kunne kontrolleres",0],
+  ["Avskrivninger beregnes ut fra antatt gjenanskaffelsesverdi i stedet for historisk kost",1],
+  ["Ledelsen får et anslag på månedens resultat tre dager etter månedsslutt, selv om noen fakturaer er estimert",1],
+  ["Rapporten viser antall leveranser til rett tid og kundetilfredshet per butikk",1],
+  ["Renter på egenkapitalen tas med som kostnad",1]],
+ explain:"Finansregnskapet er <b>regelstyrt og forsiktig</b>, lovregulert og bygger på objektive, konsistente kriterier som historisk kost. Driftsregnskapet er <b>handlingsorientert</b> (god nok informasjon raskt), bruker <b>subjektive kriterier</b> for kostnadsfastsettelse (gjenanskaffelsesverdi, kalkulatoriske renter) og omfatter også ikke-finansiell informasjon som leveringspresisjon og kundetilfredshet."},
+
+{topic:"7 Avviksanalyse", type:"match",
+ prompt:"I avviksanalysen bør man skille mellom pris- og mengdeavvik og mellom interne og eksterne årsaker. Koble hver situasjon til riktig type avvik.",
+ items:[
+  ["Leverandøren hevet innkjøpsprisen på alle varer med 4 %",2],
+  ["Innkjøperen glemte å bruke kvantumsrabatten bedriften har avtale om",0],
+  ["Butikken solgte færre enheter fordi en ny konkurrent åpnet i nabobygget",3],
+  ["Dårlig vaktplanlegging ga flere arbeidstimer enn kundestrømmen tilsa",1],
+  ["En uvanlig kald vinter ga høyere strømforbruk (flere kWh) til oppvarming",3]],
+ choices:["Prisavvik, intern årsak","Mengdeavvik, intern årsak","Prisavvik, ekstern årsak","Mengdeavvik, ekstern årsak"],
+ explain:"<b>Prisavvik</b> gjelder pris per enhet (innkjøpspris, rabatt), mens <b>mengdeavvik</b> gjelder antall enheter (solgte varer, arbeidstimer, kWh). Årsaken er <b>intern</b> når bedriften selv styrer den (innkjøpsrutiner, vaktplan) og <b>ekstern</b> når den ligger i omgivelsene (leverandør, konkurrent, vær)."},
+
+/* ---------- Volt AS: full avdelingsoppstilling ---------- */
+{topic:"7 Trinnvis kostnadsfordeling", type:"multi",
+ case:"<p>Volt AS selger elektronikk og har to hovedavdelinger, hvitevarer (H) og mobil og PC (M), og hjelpeavdelingen levering (L). Tall for september:</p><div class='tblwrap'><table><tr><th>Avdeling</th><th>Salgsinntekt</th><th>Varebeholdning 1.9.</th><th>Varekjøp</th><th>Varebeholdning 30.9.</th></tr><tr><td>Hvitevarer</td><td>1 150 000</td><td>640 000</td><td>760 000</td><td>655 000</td></tr><tr><td>Mobil og PC</td><td>820 000</td><td>410 000</td><td>690 000</td><td>430 000</td></tr></table></div><div class='tblwrap'><table><tr><th>Indirekte kostnad</th><th>Sum (kr)</th><th>Fordeling</th></tr><tr><td>Lønn</td><td>260 000</td><td>H 118 000, M 84 000. Resten til levering</td></tr><tr><td>Husleie</td><td>72 000</td><td>Forhold 2 : 9 : 7 (L : H : M)</td></tr><tr><td>Bilkostnader</td><td>21 000</td><td>Levering</td></tr><tr><td>Diverse felleskostnader</td><td>30 000</td><td>Forhold 3 : 2 (H : M)</td></tr><tr><td>Kalk. avskrivninger</td><td>36 000</td><td>Levering 9 000. Resten i forholdet 2 : 1 (H : M)</td></tr><tr><td>Kalk. renter</td><td>28 000</td><td>Forhold 400 000 : 1 400 000 : 1 000 000 (L : H : M)</td></tr><tr><td>Levering fordeles på hovedavdelingene</td><td></td><td>Etter antall leveranser, 7 : 3 (H : M)</td></tr></table></div>",
+ prompt:"Hvilke utsagn om kostnadsfordelingen er riktige? Velg alle som passer.",
+ options:["Leveringsavdelingen har samlede kostnader på 100 000 kr før videre fordeling","Avdeling hvitevarer belastes med 70 000 kr fra leveringsavdelingen","Avdeling mobil og PC får 12 000 kr i kalkulatoriske avskrivninger","Avdeling mobil og PC får 28 000 kr i husleie","Leveringsavdelingen får en andel av diverse felleskostnader","Avdeling hvitevarer får 14 000 kr i kalkulatoriske renter"],
+ correct:[0,1,3,5],
+ explain:"Levering: lønn 260 000 − 118 000 − 84 000 = 58 000 + husleie 72 000 × 2/18 = 8 000 + bil 21 000 + avskrivninger 9 000 + renter 28 000 × 400 000/2 800 000 = 4 000 = <b>100 000</b>. Til H: 100 000 × 0,7 = <b>70 000</b>. Husleie M = 72 000 × 7/18 = <b>28 000</b>. Renter H = 28 000 × 1 400 000/2 800 000 = <b>14 000</b>. Avskrivninger M = (36 000 − 9 000) × 1/3 = 9 000, ikke 12 000 (som man får ved å glemme levering). Felleskostnadene fordeles bare på H og M."},
+
+{topic:"7 Trinnvis kostnadsfordeling", type:"num",
+ case:"<p>Bruk tallene for Volt AS i forrige oppgave.</p>",
+ prompt:"Hva ble resultatet for avdeling hvitevarer i september?",
+ answer:131000, tol:0.5, unit:"kr",
+ explain:"Varekostnad H = IB + innkjøp − UB = 640 000 + 760 000 − 655 000 = 745 000. Bruttofortjeneste = 1 150 000 − 745 000 = 405 000. Indirekte kostnader H: lønn 118 000 + husleie 36 000 + felleskostnader 18 000 + avskrivninger 18 000 + renter 14 000 + levering 70 000 = 274 000. Resultat = 405 000 − 274 000 = <b>131 000 kr</b>."},
+
+{topic:"7 Trinnvis kostnadsfordeling", type:"num",
+ case:"<p>Bruk tallene for Volt AS i forrige oppgave.</p>",
+ prompt:"Hva ble resultatet for avdeling mobil og PC i september? Oppgi et underskudd med minustegn.",
+ answer:-23000, tol:0.5, unit:"kr",
+ explain:"Varekostnad M = 410 000 + 690 000 − 430 000 = 670 000. Bruttofortjeneste = 820 000 − 670 000 = 150 000 (18,3 %). Indirekte kostnader M: lønn 84 000 + husleie 28 000 + felleskostnader 12 000 + avskrivninger 9 000 + renter 10 000 + levering 30 000 = 173 000. Resultat = 150 000 − 173 000 = <b>−23 000 kr</b>. Kontroll: 274 000 + 173 000 = 447 000 = summen av alle indirekte kostnader, og samlet resultat er 131 000 − 23 000 = 108 000."},
+
+{topic:"7 Fordelingsnøkler", type:"mc",
+ case:"<p>Bruk tallene for Volt AS i forrige oppgave.</p>",
+ prompt:"Ledelsen i mobil og PC mener leveringsnøkkelen er urettferdig, og foreslår å fordele levering 5 : 5 i stedet for 7 : 3 (H : M). Hva blir konsekvensen?",
+ options:["Samlet resultat øker med 20 000 kr, fordi mobil og PC får lavere kostnader","Hvitevarer får 111 000 kr og mobil og PC −3 000 kr; samlet resultat er uendret","Hvitevarer får 151 000 kr og mobil og PC −43 000 kr; samlet resultat er uendret på 108 000 kr","Samlet resultat faller fordi mobil og PC får høyere kostnader"],
+ correct:2,
+ explain:"Med 5 : 5 får hver avdeling 50 000 i leveringskostnader. H får 20 000 mindre: 131 000 + 20 000 = <b>151 000</b>. M får 20 000 mer: −23 000 − 20 000 = <b>−43 000</b>. Endringen gjør altså M sitt resultat <i>dårligere</i>, siden M i dag bare bærer 30 %. Fordelingsnøkler flytter kostnader mellom avdelinger, men endrer ikke samlet resultat (108 000). Derfor er nøklene skjønnsmessige, og avdelingsresultater må tolkes med forsiktighet."},
+
+{topic:"7 Lønnsomhet i avdelinger", type:"num",
+ case:"<p>Bruk tallene for Volt AS i forrige oppgave. Styret vurderer å legge ned avdeling mobil og PC. Ved nedleggelse forsvinner avdelingens salgsinntekt og varekostnad, og de 84 000 kr i lønn til de ansatte i avdelingen. Bilkostnadene i levering reduseres med 12 000 kr. Husleie, felleskostnader, kalkulatoriske avskrivninger og renter og resten av leveringskostnadene blir værende og må bæres av hvitevarer.</p>",
+ prompt:"Hva blir Volt AS sitt samlede resultat per måned dersom avdelingen legges ned?",
+ answer:54000, tol:0.5, unit:"kr",
+ explain:"Dagens samlede resultat = 131 000 − 23 000 = 108 000. Avdelingen bidrar med bruttofortjeneste 150 000 minus kostnader som forsvinner: lønn 84 000 og bilkostnader 12 000. Bidrag til felleskostnadene = 150 000 − 84 000 − 12 000 = 54 000. Nytt samlet resultat = 108 000 − 54 000 = <b>54 000 kr</b>. Resultatet blir altså halvert, ikke bedre."},
+
+{topic:"7 Lønnsomhet i avdelinger", type:"mc",
+ case:"<p>Bruk tallene for Volt AS i forrige oppgave.</p>",
+ prompt:"Hva er den beste anbefalingen til styret?",
+ options:["Ikke legg ned. Avdelingen viser underskudd etter fordeling, men bidrar med 54 000 kr per måned til å dekke kostnader som ikke forsvinner","Legg ned. Samlet resultat blir 23 000 kr bedre fordi underskuddet forsvinner","Legg ned, fordi bruttofortjenesteprosenten i mobil og PC (18,3 %) er lavere enn i hvitevarer (35,2 %)","Det spiller ingen rolle, fordi samlet resultat er uendret når kostnadene bare flyttes"],
+ correct:0,
+ explain:"Underskuddet på −23 000 kommer etter at avdelingen er belastet med felleskostnader som blir værende også uten avdelingen. Det relevante er hva som <b>forsvinner</b>: avdelingen bidrar med 54 000 kr til dekning av disse kostnadene, så samlet resultat faller fra 108 000 til 54 000 kr ved nedleggelse. Lav BF % alene er ikke et argument for nedleggelse; man bør heller vurdere tiltak for bedre margin."},
+
+/* ---------- Sentrumsapoteket: budsjettkontroll ---------- */
+{topic:"7 Budsjettkontroll", type:"cat",
+ case:"<p>Sentrumsapoteket AS har dette budsjettet og regnskapet for oktober. Varekostnaden i regnskapet må du selv beregne ut fra varebeholdning 1. oktober på 520 000 kr, varekjøp på 846 000 kr og varebeholdning 31. oktober på 532 000 kr.</p><div class='tblwrap'><table><tr><th></th><th>Budsjett</th><th>Regnskap</th></tr><tr><td>Salgsinntekt</td><td>1 200 000</td><td>1 260 000</td></tr><tr><td>Varekostnad</td><td>780 000</td><td>?</td></tr><tr><td>Lønn</td><td>210 000</td><td>228 000</td></tr><tr><td>Husleie (fast)</td><td>60 000</td><td>60 000</td></tr><tr><td>IT-lisenser (fast avtale)</td><td>12 000</td><td>19 500</td></tr><tr><td>Markedsføring</td><td>25 000</td><td>14 000</td></tr><tr><td>Andre kostnader</td><td>30 000</td><td>33 000</td></tr></table></div><p>Avvik regnes som effekt på resultatet: negativt avvik betyr dårligere enn budsjett.</p>",
+ prompt:"Plasser hver linje etter hvilket avvik den har.",
+ cats:["Positivt avvik","Negativt avvik","Ingen avvik"],
+ items:[
+  ["Salgsinntekt",0],
+  ["Varekostnad",1],
+  ["Bruttofortjeneste",0],
+  ["Lønn",1],
+  ["Husleie",2],
+  ["IT-lisenser",1],
+  ["Markedsføring",0],
+  ["Resultat",1]],
+ explain:"Varekostnad = 520 000 + 846 000 − 532 000 = 834 000. Avvik: salgsinntekt +60 000, varekostnad 780 000 − 834 000 = −54 000, bruttofortjeneste 426 000 − 420 000 = +6 000, lønn −18 000, husleie 0, IT-lisenser −7 500, markedsføring +11 000, andre kostnader −3 000. Sum indirekte: 337 000 − 354 500 = −17 500. Resultat: 71 500 − 83 000 = <b>−11 500</b>."},
+
+{topic:"7 Budsjettkontroll", type:"multi",
+ case:"<p>Bruk tallene for Sentrumsapoteket AS i forrige oppgave.</p>",
+ prompt:"Hvilke tolkninger av budsjettkontrollen er riktige? Velg alle som passer.",
+ options:["Salgsinntekten har et positivt avvik på 60 000 kr","Varekostnadsavviket på −54 000 kr skyldes i sin helhet at salget var høyere enn budsjettert","Bruttofortjenesten økte i kroner, men bruttofortjenesteprosenten falt fra 35,0 % til 33,8 %","Avviket på IT-lisenser bør undersøkes særskilt, fordi faste kostnader normalt bør ha få avvik","Det positive avviket på markedsføring er alltid gunstig for apoteket","Sum indirekte kostnader har et positivt avvik på 17 500 kr"],
+ correct:[0,2,3],
+ explain:"Riktig: salg +60 000; BF % = 420 000/1 200 000 = 35,0 % i budsjett og 426 000/1 260 000 = 33,8 % i regnskap; og IT-lisenser er en fast avtale med avvik på −7 500, noe som bør undersøkes. Galt: med budsjettert varekostnadsandel (65 %) ville varekostnaden på faktisk salg vært 819 000, så 15 000 av avviket skyldes lavere margin, ikke volum. Positive avvik er ikke alltid gunstige (lavere markedsføring kan svekke salget senere). Sum indirekte har et <i>negativt</i> avvik på 17 500 (354 500 mot 337 000)."},
+
+{topic:"7 Budsjettert og oppnådd bruttofortjeneste", type:"num",
+ case:"<p>Bruk tallene for Sentrumsapoteket AS i forrige oppgave.</p>",
+ prompt:"Hvor mange kroner lavere ble bruttofortjenesten enn den ville vært dersom apoteket hadde oppnådd budsjettert bruttofortjenesteprosent på det faktiske salget?",
+ answer:15000, tol:0.5, unit:"kr", abs:true,
+ explain:"Med budsjettert BF % på 35 % og faktisk salg: 1 260 000 × 0,35 = 441 000. Oppnådd BF = 1 260 000 − 834 000 = 426 000. Differanse = 441 000 − 426 000 = <b>15 000 kr</b> (marginavvik, negativt). Det samlede BF-avviket på +6 000 kan da deles i et volumavvik på 60 000 × 0,35 = +21 000 (mer salg) og et marginavvik på −15 000 (lavere margin): 21 000 − 15 000 = 6 000."},
+
+/* ---------- Matsentralen Vik: svinn og rabatt ---------- */
+{topic:"7 Svinn", type:"num",
+ case:"<p>Matsentralen Vik AS priser varene slik at varekostnaden skal være 70 % av ordinær utsalgsverdi (bruttofortjeneste 30 %). For andre kvartal har du disse opplysningene:</p><div class='tblwrap'><table><tr><th></th><th>kr</th></tr><tr><td>Varebeholdning 1. april</td><td>340 000</td></tr><tr><td>Varekjøp i kvartalet</td><td>1 180 000</td></tr><tr><td>Salgsinntekt i kvartalet</td><td>1 600 000</td></tr><tr><td>Varebeholdning 30. juni ifølge vareopptelling</td><td>386 000</td></tr></table></div><p>Salgsinntekten inkluderer varer med kort holdbarhet som ble solgt med 20 % rabatt. Disse varene hadde en ordinær utsalgsverdi på 50 000 kr, men ble solgt for 40 000 kr. Resten av salget skjedde til ordinær pris. All øvrig differanse skyldes svinn.</p>",
+ prompt:"Hvor stort var svinnet i kvartalet, målt i innkjøpspris?",
+ answer:7000, tol:0.5, unit:"kr",
+ explain:"Solgte varer til ordinær utsalgsverdi = 1 600 000 + 10 000 i rabatt = 1 610 000. Forventet varekostnad = 1 610 000 × 0,70 = 1 127 000. Forventet beholdning = 340 000 + 1 180 000 − 1 127 000 = 393 000. Svinn = 393 000 − 386 000 = <b>7 000 kr</b>. Glemmer man rabatten og bruker 1 600 000 × 0,70, får man feilaktig 14 000."},
+
+{topic:"7 Svinn og oppnådd bruttofortjeneste", type:"num",
+ case:"<p>Bruk tallene for Matsentralen Vik AS i forrige oppgave.</p>",
+ prompt:"Hva ble oppnådd bruttofortjeneste i prosent av salgsinntekten? Oppgi svaret i prosent med én desimal.",
+ answer:29.1, tol:0.1, unit:"%",
+ explain:"Varekostnad etter opptelling = 340 000 + 1 180 000 − 386 000 = 1 134 000. Oppnådd bruttofortjeneste = 1 600 000 − 1 134 000 = 466 000. BF % = 466 000 / 1 600 000 = <b>29,1 %</b>, mot budsjettert 30 %."},
+
+{topic:"7 Svinn og oppnådd bruttofortjeneste", type:"mc",
+ case:"<p>Bruk tallene for Matsentralen Vik AS i forrige oppgave.</p>",
+ prompt:"Hvilket utsagn er riktig?",
+ options:["Uten svinnet ville oppnådd bruttofortjeneste vært nøyaktig 30,0 % av salgsinntekten","Rabatten øker varekostnaden med 10 000 kr","Svinnet er 14 000 kr, fordi forventet varekostnad er 70 % av salgsinntekten på 1 600 000 kr","Rabatten og svinnet reduserte til sammen bruttofortjenesten med 17 000 kr sammenlignet med salg til ordinær pris uten svinn"],
+ correct:3,
+ explain:"Med salg til ordinær pris og uten svinn: BF = 1 610 000 − 1 127 000 = 483 000. Oppnådd BF = 466 000. Differansen 17 000 = rabatt 10 000 (lavere salgsinntekt) + svinn 7 000 (høyere varekostnad). Uten svinn ville BF vært 473 000 / 1 600 000 = 29,6 %, ikke 30,0 %, fordi rabatten fortsatt trekker ned. Rabatten påvirker salgsinntekten, ikke varekostnaden."},
+
+/* ---------- Byggsenteret Haug: bidragsmetoden ---------- */
+{topic:"7 Bidragsmetoden", type:"match",
+ case:"<p>Byggsenteret Haug AS har dette budsjettet for året:</p><div class='tblwrap'><table><tr><th></th><th>kr</th></tr><tr><td>Salgsinntekt</td><td>4 800 000</td></tr><tr><td>Varekostnad (variabel)</td><td>3 120 000</td></tr><tr><td>Salgsprovisjon (variabel, 2 % av salgsinntekten)</td><td>96 000</td></tr><tr><td>Faste kostnader</td><td>1 155 000</td></tr></table></div>",
+ prompt:"Koble hvert nøkkeltall til riktig verdi.",
+ items:[["Variable kostnader",4],["Dekningsbidrag",1],["Dekningsgrad",5],["Dekningspunkt",0],["Bruttofortjeneste",3],["Resultat",2]],
+ choices:["3 500 000 kr","1 584 000 kr","429 000 kr","1 680 000 kr","3 216 000 kr","33 %"],
+ explain:"Variable kostnader = 3 120 000 + 96 000 = 3 216 000. DB = 4 800 000 − 3 216 000 = 1 584 000. Dekningsgrad = 1 584 000 / 4 800 000 = 33 %. Dekningspunkt = 1 155 000 / 0,33 = 3 500 000. Bruttofortjeneste = 4 800 000 − 3 120 000 = 1 680 000 (bare varekostnaden trekkes fra). Resultat = 1 584 000 − 1 155 000 = 429 000."},
+
+{topic:"7 Bidragsmetoden", type:"num",
+ case:"<p>Bruk tallene for Byggsenteret Haug AS i forrige oppgave.</p>",
+ prompt:"Hvor mange prosent kan salget falle fra budsjettet før resultatet blir null? Oppgi svaret i prosent med én desimal.",
+ answer:27.1, tol:0.1, unit:"%",
+ explain:"Dekningspunkt = 1 155 000 / 0,33 = 3 500 000. Sikkerhetsmargin = 4 800 000 − 3 500 000 = 1 300 000. I prosent av salget: 1 300 000 / 4 800 000 = <b>27,1 %</b>. Kontroll: tapt DB = 1 300 000 × 0,33 = 429 000, som akkurat tilsvarer resultatet."},
+
+{topic:"7 Bidragsmetoden", type:"mc",
+ case:"<p>Bruk tallene for Byggsenteret Haug AS i forrige oppgave. Ledelsen vurderer å ansette en ny fagselger på fast lønn, noe som øker de faste kostnadene med 99 000 kr per år. Priser og variable kostnader per salgskrone er uendret.</p>",
+ prompt:"Hvordan påvirker ansettelsen dekningspunktet og sikkerhetsmarginen, dersom salget blir som budsjettert?",
+ options:["Dekningspunktet øker med 99 000 kr til 3 599 000 kr, og sikkerhetsmarginen blir 1 201 000 kr","Dekningspunktet øker til 3 800 000 kr, og sikkerhetsmarginen faller til 1 000 000 kr","Dekningspunktet er uendret fordi dekningsgraden er uendret","Dekningspunktet øker til 3 800 000 kr, men sikkerhetsmarginen er uendret på 1 300 000 kr"],
+ correct:1,
+ explain:"Nye faste kostnader = 1 155 000 + 99 000 = 1 254 000. Nytt dekningspunkt = 1 254 000 / 0,33 = <b>3 800 000</b>, altså en økning på 99 000 / 0,33 = 300 000. Ny sikkerhetsmargin = 4 800 000 − 3 800 000 = <b>1 000 000</b>. Dekningspunktet øker mer enn kostnadsøkningen, fordi hver salgskrone bare gir 0,33 kr i DB."},
+
+{topic:"7 Bidragsmetoden", type:"num",
+ case:"<p>Bruk tallene for Byggsenteret Haug AS i forrige oppgave, med ansettelsen av den nye fagselgeren (faste kostnader +99 000 kr).</p>",
+ prompt:"Hvor mye må salgsinntekten øke for at resultatet skal bli det samme som før ansettelsen (429 000 kr)?",
+ answer:300000, tol:0.5, unit:"kr",
+ explain:"Den nye selgeren må skaffe nok ekstra dekningsbidrag til å dekke sin egen faste kostnad: 99 000 / 0,33 = <b>300 000 kr</b> i økt salg. Kontroll: salg 5 100 000 gir DB 1 683 000 − faste 1 254 000 = 429 000."},
+
+/* ---------- Moteloftet: skal avdelingen legges ned? ---------- */
+{topic:"7 Lønnsomhet i avdelinger", type:"cat",
+ case:"<p>Moteloftet AS har tre avdelinger: dame, herre og barn. Tall for året (kr):</p><div class='tblwrap'><table><tr><th></th><th>Dame</th><th>Herre</th><th>Barn</th><th>Sum</th></tr><tr><td>Salgsinntekt</td><td>2 600 000</td><td>1 400 000</td><td>1 000 000</td><td>5 000 000</td></tr><tr><td>Variable kostnader (varekostnad og salgsprovisjon)</td><td>1 560 000</td><td>868 000</td><td>760 000</td><td>3 188 000</td></tr><tr><td><b>Dekningsbidrag</b></td><td><b>1 040 000</b></td><td><b>532 000</b></td><td><b>240 000</b></td><td><b>1 812 000</b></td></tr><tr><td>Avdelingsspesifikke faste kostnader (egen lønn)</td><td>180 000</td><td>120 000</td><td>60 000</td><td>360 000</td></tr><tr><td>Fordelte felleskostnader (25 % av salget)</td><td>650 000</td><td>350 000</td><td>250 000</td><td>1 250 000</td></tr><tr><td><b>Resultat</b></td><td><b>210 000</b></td><td><b>62 000</b></td><td><b>−70 000</b></td><td><b>202 000</b></td></tr></table></div><p>Felleskostnadene er husleie for hele lokalet, felles reklame og lønn til daglig leder. Barneavdelingen har én egen deltidsansatt som blir sagt opp dersom avdelingen legges ned.</p>",
+ prompt:"Ledelsen vurderer å legge ned barneavdelingen. Plasser hver post etter hva som skjer med den ved en nedleggelse.",
+ cats:["Forsvinner ved nedleggelse","Blir værende"],
+ items:[
+  ["Salgsinntekten i barneavdelingen",0],
+  ["Varekostnaden for barneklær",0],
+  ["Salgsprovisjon på salg av barneklær",0],
+  ["Lønn til den deltidsansatte i barneavdelingen",0],
+  ["Husleie for hele butikklokalet",1],
+  ["Felles reklame for butikken",1],
+  ["Lønn til daglig leder",1]],
+ explain:"Ved nedleggelse forsvinner det som følger avdelingens aktivitet: salgsinntekt, variable kostnader (varekostnad og provisjon) og avdelingsspesifikke faste kostnader som sies opp. <b>Felleskostnadene</b> (husleie, felles reklame, daglig leder) blir værende og må bæres av de andre avdelingene."},
+
+{topic:"7 Lønnsomhet i avdelinger", type:"mc",
+ case:"<p>Bruk tallene for Moteloftet AS i forrige oppgave.</p>",
+ prompt:"Hva blir konsekvensen for samlet resultat dersom barneavdelingen legges ned?",
+ options:["Samlet resultat øker med 70 000 kr til 272 000 kr, fordi underskuddet forsvinner","Samlet resultat faller med 240 000 kr til −38 000 kr","Samlet resultat faller med 180 000 kr til 22 000 kr, fordi barneavdelingen bidrar med 180 000 kr til dekning av felleskostnadene","Samlet resultat er uendret, fordi felleskostnadene bare fordeles på nytt"],
+ correct:2,
+ explain:"Barneavdelingens bidrag = DB 240 000 − egen faste lønn 60 000 = <b>180 000 kr</b>, som i dag dekker en del av felleskostnadene på 1 250 000. Disse kostnadene forsvinner ikke. Nytt samlet resultat = 202 000 − 180 000 = <b>22 000 kr</b>. Underskuddet på −70 000 skyldes bare de fordelte felleskostnadene (250 000). −38 000 får man hvis man glemmer at den deltidsansattes lønn også forsvinner. Avdelingen bør derfor ikke legges ned på dette grunnlaget."}
+];
+
 /* ---------- sets ---------- */
 const EB14="HSM122 · Kap. 1 Introduksjon · 2 Inntekts- og kostnadsbegreper · 3 Kostnadsforløpet · 4 Etterspørsel";
 const EB56="HSM122 · Markedstilpasning 5.1–5.2 · Kalkulasjon 6.1–6.3";
 const EB7="HSM122 · Kap. 7 Driftsregnskap";
-const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6,p7:Q_P7};
-const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6",p7:"Prøve 7"};
-const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"], CH7=["p7"], ALL=CH14.concat(CH56,CH7);
+const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6,p7:Q_P7,p8:Q_P8,p9:Q_P9};
+const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6",p7:"Prøve 7",p8:"Prøve 8",p9:"Prøve 9"};
+const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"], CH7=["p7","p8","p9"], ALL=CH14.concat(CH56,CH7);
 const LINK_RE=/forrige oppgave|Fortsett med|Samme (tall|maskin|ordre)|Bruk tabellen for/;
 function getQ(id){ const [k,i]=id.split(":"); return BASE[k][+i]; }
 function groupsOf(keys){
@@ -2255,6 +2845,16 @@ function draw(keys,n){
   for(const g of gs){ if(out.length>=n) break; if(out.length+g.length<=n) out.push(...g); }
   return out;
 }
+const drawn=S=>!!(S.random||S.dyn);
+function take(gs,n){ const out=[]; for(const g of gs){ if(out.length>=n) break; if(out.length+g.length<=n) out.push(...g); } return out; }
+function tk(t){ return t.split(":")[0].trim(); }
+function topicAcc(t){ const d=(P.topics||{})[tk(t)]; return d&&d[1]? d[0]/d[1] : .6; }
+function drawDyn(kind,n){
+  const gs=shuffle(groupsOf(ALL));
+  if(kind==="wrong"){ const w=P.wrong||{}; return take(gs.filter(g=>g.some(id=>id in w)),n); }
+  return take(gs.map(g=>[Math.min(...g.map(id=>topicAcc(getQ(id).topic))),g]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]),n);
+}
+function dynAvailable(kind){ return kind==="wrong" ? Object.keys(P.wrong||{}).length>0 : Object.keys(P.topics||{}).length>0; }
 const SETS = {
   ak1:{base:"ak1", key:"hsm122-ovingsprove-ak1", group:"Kap. 1–4", label:"Prøve 1", eyebrow:EB14},
   p3:{base:"p3", key:"hsm122-ovingsprove-p3", group:"Kap. 1–4", label:"Prøve 3", eyebrow:EB14},
@@ -2263,13 +2863,19 @@ const SETS = {
   p4:{base:"p4", key:"hsm122-ovingsprove-p4", group:"Kap. 5–6", label:"Prøve 4", eyebrow:EB56},
   p6:{base:"p6", key:"hsm122-ovingsprove-p6", group:"Kap. 5–6", label:"Prøve 6", eyebrow:EB56+" · vanskeligere"},
   p7:{base:"p7", key:"hsm122-ovingsprove-p7", group:"Kap. 7", label:"Prøve 7", eyebrow:EB7},
+  p8:{base:"p8", key:"hsm122-ovingsprove-p8", group:"Kap. 7", label:"Prøve 8", eyebrow:EB7},
+  p9:{base:"p9", key:"hsm122-ovingsprove-p9", group:"Kap. 7", label:"Prøve 9", eyebrow:EB7+" · vanskeligere"},
   mix14:{random:CH14, n:30, key:"hsm122-mix14", group:"Blandet", label:"Kap. 1–4 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 1, 3 og 5"},
   mix56:{random:CH56, n:30, key:"hsm122-mix56", group:"Blandet", label:"Kap. 5–6 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 2, 4 og 6"},
   mixall:{random:ALL, n:1e9, key:"hsm122-mixall", group:"Blandet", label:"Alle oppgaver · tilfeldig rekkefølge", eyebrow:"Alle oppgavene fra prøve 1–7 i tilfeldig rekkefølge"},
+  feil:{dyn:"wrong", n:20, practice:true, key:"hsm122-feil", group:"Din øving", label:"Feilbank", eyebrow:"Oppgaver du har svart feil på. En oppgave forsvinner fra feilbanken når du har svart riktig på den to ganger på rad."},
+  svak:{dyn:"weak", n:10, practice:true, key:"hsm122-svak", group:"Din øving", label:"Svake temaer", eyebrow:"10 oppgaver fra temaene der du har lavest treffprosent"},
   lyn:{random:ALL, n:10, practice:true, key:"hsm122-lyn", group:"Blandet", label:"Lynrunde · 10", eyebrow:"10 tilfeldige oppgaver fra hele pensum, med svar etter hver oppgave"}
 };
 const TOTAL_Q=Object.values(BASE).reduce((s,a)=>s+a.length,0);
 const IC_SHUFFLE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3.5c2 0 3 1 4.2 2.8l1.6 2.4C14.5 14 15.5 17 18 17h2M4 17h3.5c1.4 0 2.3-.6 3-1.5M14.2 8.4c.9-.9 1.9-1.4 3.8-1.4h2M17.5 4.5L20 7l-2.5 2.5M17.5 14.5L20 17l-2.5 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const IC_TARGET='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>';
+const IC_SIGMA='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 4H7l6 8-6 8h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const IC_BOLT='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2L5 13.5h6L10 22l9-12h-6.2z" fill="currentColor"/></svg>';
 const IC_CHEV='<svg class="chev" viewBox="0 0 9 15" aria-hidden="true"><path d="M1.5 1.5l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const IC_CHECK='<span class="donebadge" title="Bestått"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
@@ -2281,15 +2887,21 @@ const DISPLAY={
   p4:{t:"Prøve 4",s:"30 oppgaver",tile:"t-indigo",ic:"4"},
   p6:{t:"Prøve 6",s:"20 oppgaver · vanskeligere",tile:"t-indigo",ic:"6"},
   p7:{t:"Prøve 7",s:"30 oppgaver",tile:"t-teal",ic:"7"},
+  p8:{t:"Prøve 8",s:"30 oppgaver",tile:"t-teal",ic:"8"},
+  p9:{t:"Prøve 9",s:"20 oppgaver · vanskeligere",tile:"t-teal",ic:"9"},
   mix14:{t:"30 tilfeldige · kap. 1–4",s:"Ny trekning hver gang",tile:"t-orange",ic:IC_SHUFFLE},
   mix56:{t:"30 tilfeldige · kap. 5–6",s:"Ny trekning hver gang",tile:"t-orange",ic:IC_SHUFFLE},
   mixall:{t:"Alle "+TOTAL_Q+" oppgaver",s:"Tilfeldig rekkefølge",tile:"t-pink",ic:IC_SHUFFLE},
-  lyn:{t:"Lynrunde",s:"10 oppgaver med fasit underveis",tile:"t-green",ic:IC_BOLT}
+  lyn:{t:"Lynrunde",s:"10 oppgaver med fasit underveis",tile:"t-green",ic:IC_BOLT},
+  feil:{t:"Øv på feilene dine",s:"",tile:"t-pink",ic:"!"},
+  svak:{t:"Svake temaer",s:"10 oppgaver fra temaene du er svakest på",tile:"t-indigo",ic:IC_TARGET}
 };
+const CH_NAME={1:"Introduksjon",2:"Inntekter og kostnader",3:"Kostnadsforløpet",4:"Etterspørsel",5:"Markedstilpasning",6:"Kalkulasjon",7:"Driftsregnskap"};
 const GROUPS=[
+  ["Din øving","Bygget på svarene dine",["feil","svak"]],
   ["Kap. 1–4","Introduksjon, inntekter og kostnader, kostnadsforløp, etterspørsel",["ak1","p3","p5"]],
   ["Kap. 5–6","Markedstilpasning og kalkulasjon",["kap56","p4","p6"]],
-  ["Kap. 7","Driftsregnskap",["p7"]],
+  ["Kap. 7","Driftsregnskap",["p7","p8","p9"]],
   ["Blandet","Tilfeldige trekninger fra hele pensum",["mix14","mix56","mixall","lyn"]]
 ];
 
@@ -2298,17 +2910,19 @@ function rd(k,d){ try{ const v=JSON.parse(localStorage.getItem(k)||"null"); retu
 function wr(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 
 /* ---------- state ---------- */
-let setKey="ak1", ids=[], Q=[], ans={}, checked={}, graded=false, startedAt=null, elapsed=null, gained={}, bonusXp=0;
+let setKey="ak1", ids=[], Q=[], ans={}, checked={}, graded=false, startedAt=null, elapsed=null, gained={}, bonusXp=0, cur=0;
+let layout=rd("hsm122-layout","one");
 let practice=!!rd("hsm122-practice",false);
 function load(){
   const S=SETS[setKey], s=rd(S.key,null)||{};
   ans=s.ans||{}; checked=s.checked||{}; graded=!!s.graded; startedAt=s.startedAt||null; elapsed=s.elapsed??null; gained=s.gained||{}; bonusXp=s.bonusXp||0;
-  if(S.random){ ids=(Array.isArray(s.ids)&&s.ids.length&&s.ids.every(id=>{try{return !!getQ(id);}catch(e){return false;}}))?s.ids:draw(S.random,S.n); }
+  if(drawn(S)){ ids=(Array.isArray(s.ids)&&s.ids.length&&s.ids.every(id=>{try{return !!getQ(id);}catch(e){return false;}}))?s.ids:(S.dyn?drawDyn(S.dyn,S.n):draw(S.random,S.n)); }
   else ids=BASE[S.base].map((_,i)=>S.base+":"+i);
   Q=ids.map(getQ);
+  cur=Math.min(s.cur||0,Math.max(0,Q.length-1));
   save();
 }
-function save(){ wr(SETS[setKey].key,{ans,checked,graded,startedAt,elapsed,gained,bonusXp,ids:SETS[setKey].random?ids:undefined}); }
+function save(){ wr(SETS[setKey].key,{ans,checked,graded,startedAt,elapsed,gained,bonusXp,cur,ids:drawn(SETS[setKey])?ids:undefined}); }
 function isPractice(){ return !!SETS[setKey].practice || practice; }
 
 /* ---------- profile / gamification ---------- */
@@ -2320,7 +2934,7 @@ const BADGES=[
   ["p100","100","Full pott","Få alle poengene på en prøve."],
   ["m14","1–4","Mester kap. 1–4","Bestå prøve 1, 3 og 5."],
   ["m56","5–6","Mester kap. 5–6","Bestå prøve 2, 4 og 6."],
-  ["m7","7","Mester kap. 7","Bestå prøve 7 om driftsregnskap."],
+  ["m7","7","Mester kap. 7","Bestå prøve 7, 8 og 9 om driftsregnskap."],
   ["mix","MIX","Blandet bestått","Bestå en blandet prøve med 30 oppgaver."],
   ["marathon","ALL","Maraton","Lever alle oppgavene i én prøve."],
   ["lyn","10","Lynmester","Få 10 av 10 riktige i en lynrunde."],
@@ -2332,7 +2946,7 @@ const BADGES=[
   ["drill","?","Puggemester","Avslør 20 formler i puggmodus."],
   ["lvl5","CFO","Finansdirektør","Nå nivå 7 (2 000 XP)."]
 ];
-let P=Object.assign({xp:0,streak:0,bestStreak:0,answered:0,correct:0,deliveries:0,badges:{},best:{},passed:{},revealed:0},rd("hsm122-profile",{}));
+let P=Object.assign({xp:0,streak:0,bestStreak:0,answered:0,correct:0,deliveries:0,badges:{},best:{},passed:{},revealed:0,topics:{},wrong:{}},rd("hsm122-profile",{}));
 function saveP(){ wr("hsm122-profile",P); }
 function levelOf(xp){ let i=0; LEVELS.forEach((l,j)=>{ if(xp>=l[0]) i=j; }); return i; }
 function award(xp){
@@ -2351,25 +2965,34 @@ function bumpStreak(state){
   else P.streak=0;
   if(P.streak>=5) unlock("s5"); if(P.streak>=10) unlock("s10"); if(P.streak>=20) unlock("s20");
 }
+function record(id,q,r){
+  P.topics=P.topics||{}; P.wrong=P.wrong||{};
+  const k=tk(q.topic), d=P.topics[k]||[0,0]; d[0]+=r.state==="ok"?1:(r.state==="part"?.5:0); d[1]++; P.topics[k]=d;
+  if(r.state==="ok"){ if(id in P.wrong){ P.wrong[id]++; if(P.wrong[id]>=2){ delete P.wrong[id]; toast("Fjernet fra feilbanken","streak"); } } }
+  else P.wrong[id]=0;
+}
 function xpFor(r){ return r.state==="ok"?10:(r.pts>0?4:0); }
 function scoreOne(i){
   const r=scoreQ(Q[i],ans[i]);
-  if(gained[i]==null){ const x=xpFor(r); gained[i]=x; if(r.state!=="blank"){ award(x); bumpStreak(r.state); } }
+  if(gained[i]==null){ const x=xpFor(r); gained[i]=x; if(r.state!=="blank"){ award(x); bumpStreak(r.state); record(ids[i],Q[i],r); } }
   return r;
 }
 
 /* ---------- scoring (pure) ---------- */
 function parseNum(s){
   if (s == null) return null;
-  const t = String(s).replace(/\s|kr|%/gi,"").replace(/−/g,"-").replace(",",".");
-  if (t === "" ) return null;
+  let t = String(s).replace(/\s|kr|%/gi,"").replace(/\u2212/g,"-");
+  if (t === "") return null;
+  if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) t=t.replace(/\./g,"");
+  t=t.replace(",",".");
   const v = Number(t);
   return Number.isFinite(v) ? v : NaN;
 }
+function invalidNum(q,a){ return q.type==="num" && Number.isNaN(parseNum(a)); }
 function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
 function scoreQ(q,a){
   if (q.type==="mc"){ if (a==null) return {pts:0,state:"blank"}; return a===q.correct?{pts:3,state:"ok"}:{pts:-1,state:"bad"}; }
-  if (q.type==="num"){ const v=parseNum(a); if (v==null) return {pts:0,state:"blank"}; return Math.abs((q.abs?Math.abs(v):v)-q.answer)<=q.tol?{pts:3,state:"ok"}:{pts:-1,state:"bad"}; }
+  if (q.type==="num"){ const v=parseNum(a); if (v==null||Number.isNaN(v)) return {pts:0,state:"blank"}; return Math.abs((q.abs?Math.abs(v):v)-q.answer)<=q.tol?{pts:3,state:"ok"}:{pts:-1,state:"bad"}; }
   if (q.type==="multi"){
     const sel = Array.isArray(a)?a:[]; if (!sel.length) return {pts:0,state:"blank"};
     const k=q.correct.length; let r=0,w=0; sel.forEach(i=>q.correct.includes(i)?r++:w++);
@@ -2416,7 +3039,7 @@ function onChange(){ touch(); save(); updateBar(); }
 
 function render(){
   quiz.innerHTML=""; map.innerHTML="";
-  const showSrc=!!SETS[setKey].random;
+  const showSrc=drawn(SETS[setKey]);
   Q.forEach((q,i)=>{
     const a=ans[i], locked=graded||!!checked[i];
     const res = locked ? scoreQ(q,a) : null;
@@ -2458,9 +3081,12 @@ function render(){
       const id=`q${i}n`;
       const inp=el("input",{type:"text",inputmode:"decimal",id,autocomplete:"off","aria-label":"Svar oppgave "+(i+1)});
       inp.value=a??""; inp.disabled=locked;
-      inp.addEventListener("input",()=>{ ans[i]=inp.value; onChange(); syncCheck(i); });
-      inp.addEventListener("keydown",e=>{ if(e.key==="Enter" && isPractice() && !locked && isAnswered(q,ans[i])) check(i); });
+      const hint=el("span",{class:"numhint"});
+      const vfy=()=>{ const bad=invalidNum(q,inp.value); inp.classList.toggle("invalid",bad); hint.textContent=bad?"Skriv bare et tall, f.eks. 12 400 eller 57,5":""; };
+      inp.addEventListener("input",()=>{ ans[i]=inp.value; vfy(); onChange(); syncCheck(i); });
+      inp.addEventListener("keydown",e=>{ if(e.key!=="Enter"||locked) return; if(isPractice() && isAnswered(q,ans[i])) check(i); else if(layout==="one") step(1); });
       row.append(inp, el("span",{class:"unit"},q.unit));
+      if(!locked){ row.append(hint); vfy(); }
       if (locked) row.append(el("span",{class:"fix"},"Fasit: "+fmt(q.answer)+" "+q.unit));
       card.append(row);
     }
@@ -2501,17 +3127,64 @@ function render(){
       card.append(row);
     } else {
       card.append(el("div",{class:"explain"},q.explain));
+      const ce=conceptFor(q.topic);
+      if(ce){ const fb=el("button",{class:"formlink",type:"button"},IC_SIGMA+"<span>Se formel: "+ce.querySelector("h3").textContent+"</span>"); fb.addEventListener("click",()=>openConcept(ce)); card.append(fb); }
     }
     quiz.append(card);
 
     const b=el("button",{type:"button","aria-label":"Gå til oppgave "+(i+1)},String(i+1));
     if (res) b.classList.add(res.state==="ok"?"r-ok":res.state==="part"?"r-part":res.state==="bad"?"r-bad":"x");
     else if (isAnswered(q,a)) b.classList.add("answered");
-    b.addEventListener("click",()=>$("q"+(i+1)).scrollIntoView({behavior:reduceMotion?"auto":"smooth"}));
+    b.addEventListener("click",()=>{ if(layout==="one"){ cur=i; showCur(true); } else $("q"+(i+1)).scrollIntoView({behavior:reduceMotion?"auto":"smooth"}); });
     map.append(b);
   });
-  updateBar();
+  updateBar(); showCur(false);
 }
+function showCur(scroll){
+  const one=layout==="one" && Q.length>0;
+  cur=clamp(cur,0,Math.max(0,Q.length-1));
+  quiz.querySelectorAll(".q").forEach((c,i)=>{ c.hidden=one && i!==cur; });
+  [...map.children].forEach((b,i)=>b.classList.toggle("cur",one&&i===cur));
+  $("pager").hidden=!one || !SETS[view];
+  document.body.classList.toggle("one",one);
+  if(one){
+    $("pagePos").textContent=(cur+1)+" av "+Q.length;
+    $("prevQ").disabled=cur===0;
+    const last=cur===Q.length-1;
+    $("nextQ").textContent= last ? (graded?"Resultat":"Lever") : "Neste";
+  }
+  if(scroll){ const c=$("q"+(cur+1)); if(c) c.scrollIntoView({block:"start",behavior:reduceMotion?"auto":"smooth"}); }
+  save();
+}
+function step(d){
+  if(d>0 && cur===Q.length-1){ if(graded) $("result").scrollIntoView({behavior:reduceMotion?"auto":"smooth"}); else requestSubmit(); return; }
+  cur=clamp(cur+d,0,Q.length-1); showCur(true);
+}
+function requestSubmit(){
+  if(graded) return;
+  const blank=[],inval=[],part=[];
+  Q.forEach((q,i)=>{ const a=ans[i];
+    if(invalidNum(q,a)) inval.push(i);
+    else if(!isAnswered(q,a)) blank.push(i);
+    else if((q.type==="match"||q.type==="cat") && q.items.some((_,j)=>a[j]==null||a[j]==="")) part.push(i); });
+  if(!blank.length && !inval.length && !part.length){ grade(); return; }
+  const first=[...inval,...part,...blank].sort((a,b)=>a-b)[0];
+  const lines=[];
+  if(blank.length) lines.push(`<b>${blank.length}</b> ${blank.length===1?"oppgave er":"oppgaver er"} ubesvart og gir 0 poeng.`);
+  if(inval.length) lines.push(`<b>${inval.length}</b> tallsvar er ikke gyldige tall og regnes som tomme.`);
+  if(part.length) lines.push(`<b>${part.length}</b> matching- eller kategoriseringsoppgaver er bare delvis fylt ut.`);
+  const box=el("div",{class:"confirmbox"});
+  box.innerHTML=`<p>${lines.join("<br>")}</p><p class="modehint">Feil svar kan gi minuspoeng, så det kan være lurt å la oppgaver du er usikker på stå tomme.</p><div class="rowbtns"><button class="btn ghost" type="button" id="cfGo">Gå til oppgave ${first+1}</button><button class="btn" type="button" id="cfSubmit">Lever likevel</button></div>`;
+  openSheet("Lever prøven?",box);
+  $("cfSubmit").addEventListener("click",()=>{ closeSheet(); grade(); });
+  $("cfGo").addEventListener("click",()=>{ closeSheet(); if(layout==="one"){ cur=first; showCur(true); } else $("q"+(first+1)).scrollIntoView({behavior:reduceMotion?"auto":"smooth"}); });
+}
+function openSheet(title,node){
+  $("sheetTitle").textContent=title; const b=$("sheetBody"); b.innerHTML=""; b.append(node);
+  $("sheet").hidden=false; document.body.classList.add("sheet-open"); $("sheetClose").focus();
+}
+function closeSheet(){ $("sheet").hidden=true; document.body.classList.remove("sheet-open"); }
+function openConcept(c){ const n=c.cloneNode(true); n.hidden=false; n.querySelectorAll(".formula").forEach(f=>{ f.classList.add("shown"); f.removeAttribute("tabindex"); }); openSheet("Formler og begreper",n); }
 function syncCheck(i){ const b=$("chk"+i); if(b) b.disabled=!isAnswered(Q[i],ans[i]); }
 
 function check(i){
@@ -2584,7 +3257,7 @@ function showResult(){
         <div class="verdict ${pass?"pass":"fail"}">${pass?"Du klarte kravet på "+Pp+" poeng.":"Du mangler "+fmt(Pp-total)+" poeng til kravet på "+Pp+"."}</div>
         <div class="legend">Streken på ringen viser kravet (41 %).</div></div></div>
     <div class="statchips"><span><b>${ok}</b>riktige</span><span><b>${part}</b>delvis</span><span><b>${bad}</b>feil</span><span><b>${blank}</b>tomme</span>${elapsed!=null?`<span><b>${mmss(elapsed)}</b>tid</span>`:""}<span><b>+${xp}</b>XP${bonus?" (bonus "+bonus+")":""}</span></div>
-    <div class="rowbtns"><button class="btn" type="button" id="againBtn">${SETS[setKey].random?"Ny trekning":"Ta prøven på nytt"}</button><button class="btn ghost" type="button" data-view="hjem">Til oversikten</button></div>`;
+    <div class="rowbtns"><button class="btn" type="button" id="againBtn">${drawn(SETS[setKey])?"Ny trekning":"Ta prøven på nytt"}</button><button class="btn ghost" type="button" data-view="hjem">Til oversikten</button></div>`;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ const rr=$("resRing"); if(rr) rr.style.strokeDashoffset=(C*(1-frac)).toFixed(1); }));
   r.hidden=false;
   $("againBtn").addEventListener("click",reset);
@@ -2593,7 +3266,8 @@ function showResult(){
 function reset(){
   const S=SETS[setKey];
   ans={}; checked={}; graded=false; startedAt=null; elapsed=null; gained={}; bonusXp=0;
-  if(S.random) ids=draw(S.random,S.n), Q=ids.map(getQ);
+  if(drawn(S)){ if(S.dyn && !dynAvailable(S.dyn)){ toast(S.dyn==="wrong"?"Feilbanken er tom":"Ingen data ennå"); go("hjem"); return; } ids=S.dyn?drawDyn(S.dyn,S.n):draw(S.random,S.n); Q=ids.map(getQ); }
+  cur=0;
   save();
   $("result").hidden=true;
   render(); tick(); applySetText(); window.scrollTo(0,0);
@@ -2602,7 +3276,7 @@ function reset(){
 /* ---------- home & views ---------- */
 function setStatus(k){
   const s=rd(SETS[k].key,null)||{}; const n=Object.keys(s.ans||{}).length;
-  const total=SETS[k].random?(Array.isArray(s.ids)?s.ids.length:(SETS[k].n>=1e9?TOTAL_Q:SETS[k].n)):BASE[SETS[k].base].length;
+  const total=drawn(SETS[k])?(Array.isArray(s.ids)?s.ids.length:(SETS[k].n>=1e9?TOTAL_Q:SETS[k].n)):BASE[SETS[k].base].length;
   return {n,total,graded:!!s.graded};
 }
 function tileHTML(k){ const d=DISPLAY[k]; return `<span class="tile ${d.tile}" aria-hidden="true">${d.ic}</span>`; }
@@ -2612,15 +3286,33 @@ function renderHome(){
     ? `<button class="qcard glass" type="button" data-view="${last}">${tileHTML(last)}<span>Fortsett</span><b>${DISPLAY[last].t}</b><span>${st.n} av ${st.total} besvart</span><span class="pbar"><i style="width:${(st.n/st.total*100).toFixed(0)}%"></i></span></button>`
     : `<button class="qcard glass" type="button" data-view="mix14">${tileHTML("mix14")}<span>Kom i gang</span><b>30 tilfeldige</b><span>Som arbeidskravet, kap. 1–4</span></button>`;
   $("homeQuick").innerHTML = cont + `<button class="qcard glass" type="button" data-view="lyn">${tileHTML("lyn")}<span>5 minutter</span><b>Lynrunde</b><span>10 oppgaver med fasit underveis</span></button>`;
+  $("homeMastery").innerHTML = masteryHTML();
+  const wn=Object.keys(P.wrong||{}).length, hasT=Object.keys(P.topics||{}).length>0;
   $("homeLists").innerHTML = GROUPS.map(([name,sub,keys])=>`<h2 class="sec-h">${name}</h2><p class="sec-sub">${sub}</p><div class="group glass">`+keys.map(k=>{
-      const d=DISPLAY[k], st=setStatus(k);
+      const d=Object.assign({},DISPLAY[k]), st=setStatus(k);
+      let dis=false;
+      if(k==="feil"){ d.s=wn?wn+(wn===1?" oppgave":" oppgaver")+" i feilbanken":"Tom. Oppgaver du svarer feil på havner her."; dis=!wn; }
+      if(k==="svak" && !hasT){ d.s="Svar på noen oppgaver først"; dis=true; }
       let meta="";
       if(P.passed[k]) meta=IC_CHECK;
       else if(st.n>0 && !st.graded) meta=`<span class="rmeta">${st.n}/${st.total}</span>`;
       else if(P.best[k]!=null) meta=`<span class="pct">${P.best[k]} %</span>`;
       const best=P.passed[k]&&P.best[k]!=null?" · beste "+P.best[k]+" %":"";
+      if(dis) return `<button class="row" type="button" disabled>${tileHTML(k)}<span class="rt"><b>${d.t}</b><span>${d.s}</span></span><span></span>${IC_CHEV}</button>`;
       return `<button class="row" type="button" data-view="${k}">${tileHTML(k)}<span class="rt"><b>${d.t}</b><span>${d.s}${best}</span></span>${meta||"<span></span>"}${IC_CHEV}</button>`;
     }).join("")+`</div>`).join("");
+}
+function chapterStats(){ const ch={}; Object.entries(P.topics||{}).forEach(([k,d])=>{ const m=k.match(/^(\d)/); if(!m) return; const x=ch[m[1]]||[0,0]; x[0]+=d[0]; x[1]+=d[1]; ch[m[1]]=x; }); return ch; }
+function weakTopics(n){ return Object.entries(P.topics||{}).filter(([k,d])=>d[1]>=2 && d[0]/d[1]<.8).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]).slice(0,n); }
+function pctClass(p){ return p<50?"lo":p<75?"mid":"hi"; }
+function masteryHTML(){
+  const ch=chapterStats(), any=Object.keys(ch).length>0;
+  const rows=Object.keys(CH_NAME).map(c=>{ const d=ch[c]; const p=d?Math.round(d[0]/d[1]*100):null;
+    return `<div class="mrow"><span>${c} ${CH_NAME[c]}</span><span class="mbar"><i class="${p==null?"":pctClass(p)}" style="width:${p??0}%"></i></span><b>${p==null?"–":p+" %"}</b></div>`; }).join("");
+  const w=weakTopics(3);
+  return `<div class="mastery glass"><div class="m-head"><h2>Mestring</h2><span class="legend">${P.answered} besvart</span></div>
+    ${any?rows:`<p class="modehint">Svar på noen oppgaver, så ser du her hvor godt du kan hvert kapittel og hvilke temaer du bør øve mer på.</p>`}
+    ${w.length?`<div class="m-weak"><span class="legend">Øv mer på</span>${w.map(([k,d])=>`<span class="wchip">${k.replace(/^[\d.]+\s*/,"")} · ${Math.round(d[0]/d[1]*100)} %</span>`).join("")}</div>`:""}</div>`;
 }
 function applySetText(){
   const d=DISPLAY[setKey];
@@ -2628,18 +3320,21 @@ function applySetText(){
   $("eyebrow").textContent=SETS[setKey].eyebrow;
   $("introN").textContent=Q.length;
   $("introPass").textContent=passPts()+" av "+maxPts();
-  $("btnReset").textContent=SETS[setKey].random?"Ny trekning":"Start på nytt";
+  $("btnReset").textContent=drawn(SETS[setKey])?"Ny trekning":"Start på nytt";
+  $("layoutOne").setAttribute("aria-pressed",String(layout==="one")); $("layoutAll").setAttribute("aria-pressed",String(layout!=="one"));
   const pr=isPractice(), forced=!!SETS[setKey].practice;
   $("modeExam").setAttribute("aria-pressed",String(!pr)); $("modePractice").setAttribute("aria-pressed",String(pr)); $("modeExam").disabled=forced;
   $("mapbox").open=Q.length<=40;
 }
 let view="hjem";
 function go(v,noScroll){
-  if(!SETS[v] && !["hjem","formler","profil"].includes(v)) v="hjem";
-  view=v;
+  if(!SETS[v] && !["hjem","formler","profil","laer"].concat(LEARN_SUB).includes(v)) v="hjem";
+  if(SETS[v] && SETS[v].dyn && !dynAvailable(SETS[v].dyn)) v="hjem";
+  view=v; closeSheet();
   const isQuiz=!!SETS[v];
   $("viewHome").hidden=v!=="hjem"; $("viewQuiz").hidden=!isQuiz; $("viewSummary").hidden=v!=="formler"; $("viewProfile").hidden=v!=="profil";
-  $("qnav").hidden=!isQuiz; $("tabbar").hidden=isQuiz; document.body.classList.toggle("in-quiz",isQuiz);
+  document.querySelectorAll("[data-route]").forEach(sec=>{ sec.hidden=sec.dataset.route!==v; });
+  $("qnav").hidden=!isQuiz; $("tabbar").hidden=isQuiz||LEARN_SUB.includes(v); if(!isQuiz){ $("pager").hidden=true; document.body.classList.remove("one"); } document.body.classList.toggle("in-quiz",isQuiz);
   if(isQuiz){
     setKey=v; P.last=v; saveP(); load();
     $("result").hidden=true;
@@ -2649,7 +3344,8 @@ function go(v,noScroll){
   if(v==="hjem") renderHome();
   if(v==="formler"){ unlock("reader"); saveP(); }
   if(v==="profil") renderProfile();
-  document.querySelectorAll("#tabbar button").forEach(b=>{ if(b.dataset.view===(isQuiz?"hjem":v)) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  learnEnter(v);
+  document.querySelectorAll("#tabbar button").forEach(b=>{ if(b.dataset.view===(isQuiz?"hjem":LEARN_SUB.includes(v)?"laer":v)) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   try{ history.replaceState(null,"","#"+v); }catch(e){}
   renderLevel();
   if(!noScroll) window.scrollTo(0,0);
@@ -2664,12 +3360,14 @@ function renderProfile(){
   $("profStats").innerHTML=[["Besvarte oppgaver",P.answered],["Helt riktige",P.correct+" ("+acc+" %)"],["Beste rekke",P.bestStreak],["Leverte prøver",P.deliveries],["Merker",Object.keys(P.badges).length+" av "+BADGES.length]]
     .map(([k,v])=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`).join("");
   $("profBadges").innerHTML=BADGES.map(([id,sym,name,desc])=>`<div class="badge${P.badges[id]?"":" locked"}"><span class="medal" aria-hidden="true">${sym}</span><div><b>${name}</b><span>${desc}</span>${P.badges[id]?"":'<em>Ikke låst opp</em>'}</div></div>`).join("");
-  $("profTests").innerHTML=`<tr><th>Prøve</th><th>Beste</th><th>Bestått</th></tr>`+Object.entries(SETS).map(([k,v])=>`<tr><td>${v.random?v.label:v.label+" ("+v.group+")"}</td><td>${P.best[k]!=null?P.best[k]+" %":"–"}</td><td>${P.passed[k]?"Ja":"–"}</td></tr>`).join("");
+  const tps=Object.entries(P.topics||{}).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]);
+  $("profTopics").innerHTML=tps.length?tps.map(([k,d])=>{ const p=Math.round(d[0]/d[1]*100); return `<div class="mrow"><span>${k}</span><span class="mbar"><i class="${pctClass(p)}" style="width:${p}%"></i></span><b>${p} %</b></div>`; }).join(""):`<p class="modehint">Ingen data ennå.</p>`;
+  $("profTests").innerHTML=`<tr><th>Prøve</th><th>Beste</th><th>Bestått</th></tr>`+Object.entries(SETS).map(([k,v])=>`<tr><td>${drawn(v)?v.label:v.label+" ("+v.group+")"}</td><td>${P.best[k]!=null?P.best[k]+" %":"–"}</td><td>${P.passed[k]?"Ja":"–"}</td></tr>`).join("");
 }
 $("resetProfile").addEventListener("click",()=>{ $("confirmReset").hidden=false; });
 $("cancelReset").addEventListener("click",()=>{ $("confirmReset").hidden=true; });
 $("doReset").addEventListener("click",()=>{
-  P={xp:0,streak:0,bestStreak:0,answered:0,correct:0,deliveries:0,badges:{},best:{},passed:{},revealed:0}; saveP();
+  P={xp:0,streak:0,bestStreak:0,answered:0,correct:0,deliveries:0,badges:{},best:{},passed:{},revealed:0,topics:{},wrong:{}}; saveP();
   Object.values(SETS).forEach(s=>{ try{ localStorage.removeItem(s.key); }catch(e){} });
   $("confirmReset").hidden=true; renderProfile(); renderLevel(); toast("Fremgangen er nullstilt");
 });
@@ -2682,6 +3380,29 @@ $("sumSearch").addEventListener("input",e=>{
   sumBody.querySelectorAll(".sum-h").forEach(h=>{ let n=h.nextElementSibling, any=false; while(n&&!n.classList.contains("sum-h")){ if(n.classList.contains("concept")&&!n.hidden) any=true; n=n.nextElementSibling; } h.hidden=!any; });
   $("sumEmpty").hidden=hits>0;
 });
+const conceptEls={}; sumBody.querySelectorAll(".concept").forEach(c=>{ conceptEls[c.querySelector("h3").textContent]=c; });
+const CONCEPT_MAP=[
+  [/Regnskapstyper/,"Regnskapstyper"],[/interessegrupper/,"Interessegrupper"],[/ansvar/,"Samfunnsansvar"],
+  [/Økonomistyring|^1 Budsjett/,"Økonomistyring og avvik"],[/Modeller/,"Modeller"],[/Selskapsformer/,"Selskapsformer"],[/^1 KI/,"KI i faget"],[/Type bedrifter/,"Bedriftsøkonomi"],
+  [/Kostnadsbegreper/,"Seks grunnbegreper"],[/Kostnadsart/,"Kostnadsart og kostnadssted"],[/^(2|6\.1) Direkte/,"Direkte og indirekte kostnader"],
+  [/^2 Faste og variable/,"Faste og variable kostnader"],[/^3\.1 Faste/,"Faste kostnader (FTK og FEK)"],
+  [/^2 Bruttofortjeneste|^6\.1 Bruttofortjeneste/,"Bruttofortjeneste"],[/Avanse/,"Avanse"],[/Lønnskostnad/,"Lønnskostnader"],[/Avskrivning/,"Avskrivning"],[/MVA|mva/,"Merverdiavgift (mva.)"],
+  [/Sprangvise|eversible/,"Sprangvise, reversible og irreversible kostnader"],[/Proporsjonalitet/,"Variable kostnader og proporsjonalitet"],
+  [/Matematisk/,"Matematisk kostnadsmodell"],[/Kostnadsoptimal|VEK-optimal|DEK, SEK og VEK/,"Kostnadsoptimum"],[/Grensekostnad$|Differanseenhetskostnad|DEK og enhetskostnader/,"Grensekostnad, DK og DEK"],
+  [/^4 Etterspørsel|Faktorer/,"Etterspørsel og faktorer"],[/Substitutter/,"Substitutter og komplementer"],[/Bevegelse|Kurveskift/,"Bevegelse langs kurven og skift i kurven"],
+  [/Differanseenhetsinntekt/,"Inntektsbegreper"],[/lastisitet|lastisk|Nødvendighetsvarer|^4 Prisreduksjon/,"Priselastisitet"],
+  [/Markedsformer|Oligopol|Fullkommen/,"Markedsformer"],[/^5\.1 Dekningsbidrag/,"Overskudd og dekningsbidrag"],[/^5\.1 Dekningspunkt/,"Dekningspunkter og overskuddsområde"],
+  [/Monopol|Vinningsoptimal|Grenseinntekt|Beslutningsregler|^5\.1 Begreper/,"Vinningsoptimal tilpasning"],[/Prisfast/,"Prisfast tilpasning"],
+  [/Laveste akseptable|Kort eller lang|Driftsavhengige/,"Laveste akseptable pris"],[/Prisdifferensiering/,"Prisdifferensiering"],[/Endring i kostnader/,"Kostnadsendringer"],
+  [/^6\.1 Handelsbedrift/,"Handelsbedrift"],[/Håndverksbedrift|Fakturaberegning/,"Håndverksbedrift: timepris og faktura"],[/Produktkalkyler|^6\.1 For/,"Tradisjonell kalkulasjon"],
+  [/Tilleggssats|Aktivitetsmål|Enkel tilleggskalkyle/,"Tilleggssats"],[/Selvkostkalkyle|Kalkylebegreper/,"Selvkostkalkyle"],[/Bidragskalkyle/,"Bidragskalkyle"],
+  [/Selvkost (eller|og) bidrag|Tilleggsordre/,"Tilleggsordre"],[/Kalkulatoriske|Resultatmåling/,"Kalkulatoriske kostnader"],
+  [/^6\.3 (Avvik|For|Etter|Begreper)/,"For- og etterkalkyle, avvik"],
+  [/^7 (Finans|Begreper)/,"Finansregnskap og driftsregnskap"],[/^7 Kalkyle/,"Kalkyle og driftsregnskap"],[/Oppstilling/,"Oppstilling i en handelsbedrift"],
+  [/Kostnadsfordeling|kostnadsfordeling|Hjelpeavdeling|Kostnadssted|Fordelingsnøkler/,"Kostnadssteder og kostnadsfordeling"],[/^7 Driftsregnskap i handel/,"Oppstilling i en handelsbedrift"],[/^7 Lønnsomhet/,"Bidragsmetoden i handelsbedrifter"],[/^7 (Budsjettkontroll|Kontroll|Avvik)/,"Budsjettkontroll og avvik"],
+  [/Varekostnad|Svinn|Vareopptelling|oppnådd bruttofortjeneste|^7 Bruttofortjeneste/,"Varekostnad, vareopptelling og svinn"],[/^7 (Bidragsmetoden|Dekning|Sikkerhet)/,"Bidragsmetoden i handelsbedrifter"]
+];
+function conceptFor(topic){ for(const [re,t] of CONCEPT_MAP) if(re.test(topic)) return conceptEls[t]||null; return null; }
 const formulas=[...sumBody.querySelectorAll(".formula")];
 formulas.forEach(f=>{ f.tabIndex=0; const rev=()=>{ if(sumBody.classList.contains("drill") && !f.classList.contains("shown")){ f.classList.add("shown"); P.revealed=(P.revealed||0)+1; if(P.revealed>=20) unlock("drill"); saveP(); drillStat(); } };
   f.addEventListener("click",rev); f.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); rev(); } }); });
@@ -2689,14 +3410,309 @@ function drillStat(){ const on=sumBody.classList.contains("drill"); $("drillStat
 $("drillToggle").addEventListener("change",e=>{ sumBody.classList.toggle("drill",e.target.checked); formulas.forEach(f=>f.classList.remove("shown")); drillStat(); });
 
 /* ---------- wiring ---------- */
-$("btnSubmit").addEventListener("click",grade);
-$("btnSubmit2").addEventListener("click",grade);
+$("btnSubmit").addEventListener("click",requestSubmit);
+$("btnSubmit2").addEventListener("click",requestSubmit);
+$("prevQ").addEventListener("click",()=>step(-1));
+$("nextQ").addEventListener("click",()=>step(1));
+$("layoutOne").addEventListener("click",()=>{ layout="one"; wr("hsm122-layout",layout); applySetText(); showCur(true); });
+$("layoutAll").addEventListener("click",()=>{ layout="all"; wr("hsm122-layout",layout); applySetText(); showCur(false); });
+$("sheetClose").addEventListener("click",closeSheet);
+$("sheet").addEventListener("click",e=>{ if(e.target.id==="sheet") closeSheet(); });
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && !$("sheet").hidden){ closeSheet(); return; }
+  if(!SETS[view] || layout!=="one" || !$("sheet").hidden) return;
+  const t=document.activeElement; if(t && /INPUT|SELECT|TEXTAREA/.test(t.tagName)) return;
+  if(e.key==="ArrowRight") step(1); else if(e.key==="ArrowLeft") step(-1);
+});
+let tsx=null,tsy=0;
+quiz.addEventListener("touchstart",e=>{ if(layout!=="one"||e.target.closest(".tblwrap,input,select")){ tsx=null; return; } tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; },{passive:true});
+quiz.addEventListener("touchend",e=>{ if(tsx==null) return; const dx=e.changedTouches[0].clientX-tsx, dy=e.changedTouches[0].clientY-tsy; tsx=null; if(Math.abs(dx)>70 && Math.abs(dy)<50) step(dx<0?1:-1); },{passive:true});
 $("btnReset").addEventListener("click",reset);
 $("modeExam").addEventListener("click",()=>{ practice=false; wr("hsm122-practice",practice); applySetText(); render(); });
 $("modePractice").addEventListener("click",()=>{ practice=true; wr("hsm122-practice",practice); applySetText(); render(); });
 $("btnBack").addEventListener("click",()=>go("hjem"));
 $("lvlChip").addEventListener("click",()=>go("profil"));
 document.addEventListener("click",e=>{ const t=e.target.closest("button[data-view]"); if(t) go(t.dataset.view); });
+
+
+/* ================= LÆR: research-based learning modes ================= */
+const LEARN_SUB=["kart","kort","formel","forklar"];
+const CH_COLOR={1:"#007aff",2:"#5856d6",3:"#af52de",4:"#ff2d55",5:"#ff9500",6:"#34c759",7:"#32ade6"};
+BADGES.push(
+  ["mm","MAP","Kartleser","Åpne 10 begreper i tankekartet."],
+  ["cards","50","Repetisjon","Repeter 50 flashkort."],
+  ["duel","10/10","Formelmester","Få 10 av 10 i formelduellen."],
+  ["feyn","FX","Feynman","Forklar 10 begreper med egne ord."]
+);
+P.cards=P.cards||{}; P.newDay=P.newDay||{d:"",n:0}; P.reviews=P.reviews||0; P.mmOpened=P.mmOpened||0; P.feyn=P.feyn||0;
+
+/* ---------- concept index from the summary ---------- */
+const CONCEPTS=[];
+(function(){
+  let ch=null;
+  [...sumBody.children].forEach(n=>{
+    if(n.classList.contains("sum-h")){ const m=(n.id||"").match(/^k(\d)$/); ch=m?+m[1]:null; return; }
+    if(n.classList.contains("concept") && ch){ const t=n.querySelector("h3").textContent; CONCEPTS.push({id:"c:"+t,title:t,ch,el:n}); }
+  });
+})();
+function conceptAcc(){
+  const acc={};
+  Object.entries(P.topics||{}).forEach(([k,d])=>{ const c=conceptFor(k); if(!c) return; const t=c.querySelector("h3").textContent; const a=acc[t]||[0,0]; a[0]+=d[0]; a[1]+=d[1]; acc[t]=a; });
+  return acc;
+}
+
+/* ---------- formulas (curated from the slides) ---------- */
+const FORMULAS=[
+  [2,"Bruttofortjenesteprosent","(salgspris − kostpris) / salgspris × 100"],
+  [2,"Avanseprosent","(salgspris − kostpris) / kostpris × 100"],
+  [2,"Lineær avskrivning","(anskaffelseskost − restverdi) / levetid"],
+  [2,"Saldoavskrivning","sats × bokført verdi ved årets start"],
+  [2,"Pris inkl. mva. (25 %)","netto pris × 1,25"],
+  [2,"Netto mva. til staten","utgående mva. − inngående mva."],
+  [2,"Arbeidsgiveravgift","(lønn + feriepenger) × AGA-sats"],
+  [2,"Feriepenger","lønn × 12 %"],
+  [3,"Faste enhetskostnader (FEK)","FTK / mengde"],
+  [3,"Variable enhetskostnader (VEK)","VTK / mengde"],
+  [3,"Sum enhetskostnader (SEK)","STK / mengde = FEK + VEK"],
+  [3,"Differansekostnad (DK)","STK₂ − STK₁"],
+  [3,"Differanseenhetskostnad (DEK)","DK / (mengde₂ − mengde₁)"],
+  [3,"Kostnadsoptimum","der DEK = SEK"],
+  [3,"Laveste VEK","der DEK = VEK"],
+  [4,"Salgsinntekt (STI)","pris × mengde"],
+  [4,"Differanseenhetsinntekt (DEI)","DI / (mengde₂ − mengde₁)"],
+  [4,"Priselastisitet","(mengdeendring / laveste mengde) / (prisendring / laveste pris)"],
+  [5,"Vinningsoptimal mengde (VOM)","der DEI = DEK"],
+  [5,"Prisfast tilpasning","produser til DEK = pris"],
+  [5,"Overskudd","STI − STK"],
+  [5,"Dekningsbidrag","salgsinntekt − variable kostnader"],
+  [5,"Laveste akseptable pris, kort sikt","laveste VEK"],
+  [5,"Laveste akseptable pris, lang sikt","laveste SEK"],
+  [6,"Tilleggssats","budsjetterte indirekte kostnader / budsjettert aktivitet × 100"],
+  [6,"Tilvirkningskost","DM + DL + indirekte tilvirkningskostnader"],
+  [6,"Selvkost (industri)","tilvirkningskost + indirekte salgs- og adm.kostnader"],
+  [6,"Inntakskost","innkjøpspris + frakt og forsikring"],
+  [6,"Kalkyleavvik","etterkalkyle − forkalkyle"],
+  [7,"Varekostnad","IB + innkjøp − UB"],
+  [7,"Dekningsgrad","dekningsbidrag / salgsinntekt"],
+  [7,"Dekningspunkt","faste kostnader / dekningsgrad"],
+  [7,"Sikkerhetsmargin","salgsinntekt − dekningspunkt"],
+  [7,"Andel med fordelingsnøkkel","kostnad × egen del / sum av delene"]
+];
+
+/* ---------- spaced repetition (SM-2 light) ---------- */
+const DAY=864e5, MIN=6e4;
+function cardList(){ return CONCEPTS.map(c=>({id:c.id,kind:"c",ch:c.ch,c})).concat(FORMULAS.map((f,i)=>({id:"f:"+i,kind:"f",ch:f[0],f}))); }
+function today(){ const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+function newLeft(){ if(P.newDay.d!==today()) P.newDay={d:today(),n:0}; return Math.max(0,10-P.newDay.n); }
+function dueCards(){ const now=Date.now(); return cardList().filter(c=>P.cards[c.id] && P.cards[c.id].due<=now).sort((a,b)=>P.cards[a.id].due-P.cards[b.id].due); }
+function newCards(n){ return shuffle(cardList().filter(c=>!P.cards[c.id])).slice(0,n); }
+function schedule(id,g){
+  const s=P.cards[id]||{ivl:0,ease:2.5,reps:0,due:0}, now=Date.now();
+  if(g===0){ s.reps=0; s.ivl=0; s.due=now+MIN; s.ease=Math.max(1.3,s.ease-.2); }
+  else if(g===1){ s.ease=Math.max(1.3,s.ease-.15); s.ivl=s.reps?Math.max(1,s.ivl*1.2):0; s.due=s.ivl?now+s.ivl*DAY:now+10*MIN; s.reps++; }
+  else if(g===2){ s.ivl=s.reps===0?1:s.reps===1?3:Math.round(s.ivl*s.ease); s.due=now+s.ivl*DAY; s.reps++; }
+  else { s.ease+=.15; s.ivl=s.reps===0?4:Math.round(Math.max(1,s.ivl)*s.ease*1.3); s.due=now+s.ivl*DAY; s.reps++; }
+  P.cards[id]=s; return s;
+}
+function preview(id,g){ const orig=P.cards[id]; if(orig) P.cards[id]={...orig}; const r=schedule(id,g); if(orig) P.cards[id]=orig; else delete P.cards[id]; const ms=r.due-Date.now(); return ms<60*MIN?Math.max(1,Math.round(ms/MIN))+" min":ms<DAY?Math.round(ms/36e5)+" t":Math.round(ms/DAY)+" d"; }
+
+/* ---------- hub ---------- */
+function renderLearn(){
+  const due=dueCards().length, nl=newLeft(), total=cardList().length, seen=Object.keys(P.cards).length;
+  $("learnHero").innerHTML=`<div class="lh-text"><span class="eyebrow">Dagens repetisjon</span><b>${due?due+" kort klare":"Ingen kort forfalt"}</b><span>${nl} nye kort i dag · ${seen} av ${total} kort påbegynt</span></div><button class="btn" type="button" data-view="kort">${due||nl?"Start":"Øv ekstra"}</button>`;
+}
+
+/* ---------- mind map ---------- */
+let mmBuilt=false, vb={x:-960,y:-960,w:1920,h:1920}, VB0={x:-960,y:-960,w:1920,h:1920}, mmMoved=false;
+const svgNS="http://www.w3.org/2000/svg";
+function sv(tag,attrs,txt){ const e=document.createElementNS(svgNS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(txt!=null) e.textContent=txt; return e; }
+function buildMap(){
+  const svg=$("mm"); svg.innerHTML="";
+  const acc=conceptAcc(), chs=Object.keys(CH_NAME).map(Number);
+  const byCh={}; CONCEPTS.forEach(c=>(byCh[c.ch]=byCh[c.ch]||[]).push(c));
+  const gap=7, total=CONCEPTS.length, span=360-gap*chs.length, per=span/total;
+  const R1=250, R2=470; let a0=-90;
+  const links=sv("g",{class:"mm-links"}), nodes=sv("g",{class:"mm-nodes"});
+  const defs=sv("defs",{});
+  const cg=sv("radialGradient",{id:"mmc",cx:"35%",cy:"30%",r:"75%"}); cg.append(sv("stop",{offset:"0%","stop-color":"#5ac8fa"}),sv("stop",{offset:"100%","stop-color":"#007aff"})); defs.append(cg);
+  chs.forEach(ch=>{
+    const list=byCh[ch]||[]; const sec=list.length*per; const mid=a0+sec/2; const col=CH_COLOR[ch];
+    const gr=sv("radialGradient",{id:"g"+ch,cx:"35%",cy:"30%",r:"80%"}); gr.append(sv("stop",{offset:"0%","stop-color":col,"stop-opacity":".75"}),sv("stop",{offset:"100%","stop-color":col})); defs.append(gr);
+    const rad=d=>d*Math.PI/180, cx=R1*Math.cos(rad(mid)), cy=R1*Math.sin(rad(mid));
+    links.append(sv("path",{d:`M0 0 Q ${(cx*.5+cy*.12).toFixed(1)} ${(cy*.5-cx*.12).toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`,stroke:col,class:"mm-l1",pathLength:"1",style:`animation-delay:${ch*60}ms`}));
+    const box={x1:cx,y1:cy,x2:cx,y2:cy};
+    list.forEach((c,i)=>{
+      const ang=a0+per*(i+.5), r=R2+(i%2?38:0), lx=r*Math.cos(rad(ang)), ly=r*Math.sin(rad(ang));
+      const c1x=cx*1.35, c1y=cy*1.35, c2x=lx*.82, c2y=ly*.82;
+      links.append(sv("path",{d:`M${cx.toFixed(1)} ${cy.toFixed(1)} C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${lx.toFixed(1)} ${ly.toFixed(1)}`,stroke:col,class:"mm-l2",pathLength:"1",style:`animation-delay:${300+ch*60+i*18}ms`}));
+      const d=acc[c.title], p=d?d[0]/d[1]:null, cls=p==null?"none":p<.5?"lo":p<.75?"mid":"hi";
+      const g=sv("g",{class:"mm-leaf",tabindex:"0",role:"button","aria-label":c.title,transform:`translate(${lx.toFixed(1)} ${ly.toFixed(1)})`,style:`animation-delay:${450+ch*60+i*18}ms`});
+      g.append(sv("circle",{r:"11",class:"mm-dot "+cls,stroke:col}));
+      const right=Math.cos(rad(ang))>=0, rot=right?ang:ang+180;
+      g.append(sv("text",{class:"mm-t",x:right?"20":"-20",y:"5","text-anchor":right?"start":"end",transform:`rotate(${rot.toFixed(1)})`},c.title));
+      const open=()=>{ if(mmMoved) return; P.mmOpened++; if(P.mmOpened>=10) unlock("mm"); saveP(); openConcept(c.el); };
+      g.addEventListener("click",open); g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); open(); } });
+      nodes.append(g);
+      const ex=(r+260)*Math.cos(rad(ang)), ey=(r+260)*Math.sin(rad(ang));
+      box.x1=Math.min(box.x1,lx,ex); box.y1=Math.min(box.y1,ly,ey); box.x2=Math.max(box.x2,lx,ex); box.y2=Math.max(box.y2,ly,ey);
+    });
+    const cd=acc && Object.entries(acc).filter(([t])=>CONCEPTS.find(x=>x.title===t&&x.ch===ch)).reduce((s,[,d])=>[s[0]+d[0],s[1]+d[1]],[0,0]);
+    const pct=cd&&cd[1]?Math.round(cd[0]/cd[1]*100):null;
+    const g=sv("g",{class:"mm-ch",tabindex:"0",role:"button","aria-label":"Kapittel "+ch+" "+CH_NAME[ch],transform:`translate(${cx.toFixed(1)} ${cy.toFixed(1)})`,style:`animation-delay:${150+ch*60}ms`});
+    g.append(sv("circle",{r:"52",fill:`url(#g${ch})`,class:"mm-chc"}));
+    if(pct!=null){ const C=2*Math.PI*60; g.append(sv("circle",{r:"60",class:"mm-ring-bg"}), sv("circle",{r:"60",class:"mm-ring",stroke:col,"stroke-dasharray":C.toFixed(1),"stroke-dashoffset":(C*(1-pct/100)).toFixed(1),transform:"rotate(-90)"})); }
+    g.append(sv("text",{class:"mm-chn","text-anchor":"middle",y:"14"},String(ch)));
+    g.append(sv("text",{class:"mm-chl","text-anchor":"middle",y:"92"},CH_NAME[ch]));
+    if(pct!=null) g.append(sv("text",{class:"mm-chp","text-anchor":"middle",y:"116"},pct+" % riktig"));
+    const zoom=()=>{ if(mmMoved) return; const pad=40; setVB({x:box.x1-pad,y:box.y1-pad,w:box.x2-box.x1+pad*2,h:box.y2-box.y1+pad*2},true); };
+    g.addEventListener("click",zoom); g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); zoom(); } });
+    nodes.append(g);
+    a0+=sec+gap;
+  });
+  const center=sv("g",{class:"mm-center",role:"button",tabindex:"0","aria-label":"Vis hele kartet"});
+  center.append(sv("circle",{r:"84",fill:"url(#mmc)"}), sv("text",{"text-anchor":"middle",y:"-4",class:"mm-ct"},"HSM122"), sv("text",{"text-anchor":"middle",y:"26",class:"mm-cs"},CONCEPTS.length+" begreper"));
+  center.addEventListener("click",()=>{ if(!mmMoved) setVB(VB0,true); });
+  svg.append(defs,links,nodes,center);
+  svg.classList.toggle("animate",!reduceMotion);
+  mmBuilt=true;
+}
+let vbAnim=null;
+function applyVB(){ $("mm").setAttribute("viewBox",`${vb.x.toFixed(1)} ${vb.y.toFixed(1)} ${vb.w.toFixed(1)} ${vb.h.toFixed(1)}`); }
+function setVB(t,anim){
+  cancelAnimationFrame(vbAnim);
+  if(!anim||reduceMotion){ vb={...t}; applyVB(); return; }
+  const f={...vb}, t0=performance.now(), D=520, ease=x=>1-Math.pow(1-x,3);
+  const stepA=now=>{ const k=ease(Math.min(1,(now-t0)/D)); vb={x:f.x+(t.x-f.x)*k,y:f.y+(t.y-f.y)*k,w:f.w+(t.w-f.w)*k,h:f.h+(t.h-f.h)*k}; applyVB(); if(k<1) vbAnim=requestAnimationFrame(stepA); };
+  vbAnim=requestAnimationFrame(stepA);
+}
+function zoomAt(f,px,py){
+  const r=$("mm").getBoundingClientRect(), sc=Math.max(vb.w/r.width,vb.h/r.height);
+  const ox=(r.width*sc-vb.w)/2, oy=(r.height*sc-vb.h)/2;
+  const wx=vb.x-ox+(px-r.left)*sc, wy=vb.y-oy+(py-r.top)*sc;
+  const nw=clamp(vb.w*f,220,2600), k=nw/vb.w;
+  vb={x:wx-(wx-vb.x)*k,y:wy-(wy-vb.y)*k,w:nw,h:vb.h*k}; applyVB();
+}
+(function wireMap(){
+  const svg=$("mm"), pts=new Map(); let last=null, pinch=null, downAt=null;
+  svg.addEventListener("pointerdown",e=>{ pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); mmMoved=false; downAt={x:e.clientX,y:e.clientY}; last={x:e.clientX,y:e.clientY}; if(pts.size===2){ const [a,b]=[...pts.values()]; pinch=Math.hypot(a.x-b.x,a.y-b.y); } });
+  svg.addEventListener("pointermove",e=>{
+    if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size===2){ const [a,b]=[...pts.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); if(pinch){ zoomAt(pinch/d,(a.x+b.x)/2,(a.y+b.y)/2); } pinch=d; mmMoved=true; return; }
+    if(downAt && !mmMoved && Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)>6){ mmMoved=true; try{ svg.setPointerCapture(e.pointerId); }catch(_){} }
+    if(!mmMoved) return;
+    const r=svg.getBoundingClientRect(), sc=Math.max(vb.w/r.width,vb.h/r.height);
+    vb.x-=(e.clientX-last.x)*sc; vb.y-=(e.clientY-last.y)*sc; last={x:e.clientX,y:e.clientY}; applyVB();
+  });
+  const up=e=>{ pts.delete(e.pointerId); if(pts.size<2) pinch=null; if(!pts.size){ setTimeout(()=>{ mmMoved=false; },0); } };
+  svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up);
+  svg.addEventListener("wheel",e=>{ e.preventDefault(); zoomAt(Math.pow(1.0018,e.deltaY),e.clientX,e.clientY); },{passive:false});
+  $("mmIn").addEventListener("click",()=>{ const r=svg.getBoundingClientRect(); zoomAt(.7,r.left+r.width/2,r.top+r.height/2); });
+  $("mmOut").addEventListener("click",()=>{ const r=svg.getBoundingClientRect(); zoomAt(1.4,r.left+r.width/2,r.top+r.height/2); });
+  $("mmFit").addEventListener("click",()=>setVB(VB0,true));
+})();
+
+/* ---------- flashcards ---------- */
+let fq=[], fi=0, fDone=0;
+function startCards(extra){
+  const d=dueCards(); const n=newCards(newLeft());
+  fq=d.concat(n); if(!fq.length && extra) fq=shuffle(cardList()).slice(0,15);
+  fi=0; fDone=0; showCard();
+}
+function showCard(){
+  const box=$("fcStage"); const c=fq[fi];
+  $("fcPos").textContent=fq.length?Math.min(fi+1,fq.length)+" av "+fq.length:"";
+  $("fcBar").style.width=(fq.length?fi/fq.length*100:0)+"%";
+  if(!c){
+    box.innerHTML=`<div class="fc-empty glass"><span class="tile t-green" aria-hidden="true">${IC_CHECK_BIG}</span><b>${fDone?"Ferdig for nå":"Ingen kort å repetere nå"}</b><span>${fDone?fDone+" kort repetert. Kortene kommer tilbake når det er tid for å repetere dem.":"Nye kort kommer i morgen, og gamle kort dukker opp når de forfaller."}</span><button class="btn" type="button" id="fcExtra">Øv ekstra på 15 tilfeldige</button></div>`;
+    $("fcExtra").addEventListener("click",()=>startCards(true)); $("fcRate").hidden=true; return;
+  }
+  const front = c.kind==="c"
+    ? `<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">Kap. ${c.ch} · ${CH_NAME[c.ch]}</span><b class="fc-title">${c.c.title}</b><span class="fc-hint">Hva vet du om dette? Tenk gjennom svaret, og snu kortet.</span>`
+    : `<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">Formel · kap. ${c.ch}</span><b class="fc-title">${c.f[1]}</b><span class="fc-hint">Hvordan regner du det ut? Si formelen høyt, og snu kortet.</span>`;
+  box.innerHTML=`<button class="flip" type="button" id="fcCard" aria-label="Snu kortet"><span class="flip-in"><span class="face front glass">${front}</span><span class="face back glass"></span></span></button>`;
+  const back=box.querySelector(".back");
+  if(c.kind==="c"){ const n=c.c.el.cloneNode(true); n.querySelectorAll(".formula").forEach(f=>{ f.classList.add("shown"); f.removeAttribute("tabindex"); }); back.append(n); }
+  else back.innerHTML=`<span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">${c.f[1]}</span><span class="fc-formula">${c.f[2]}</span>`;
+  $("fcCard").addEventListener("click",flipCard);
+  $("fcRate").hidden=true;
+  ["Igjen","Vanskelig","Bra","Lett"].forEach((l,g)=>{ $("fr"+g).innerHTML=`<b>${l}</b><span>${preview(c.id,g)}</span>`; });
+}
+function flipCard(){ const f=$("fcCard"); if(!f) return; f.classList.add("flipped"); $("fcRate").hidden=false; }
+function rateCard(g){
+  const c=fq[fi]; if(!c) return;
+  if(!P.cards[c.id]){ newLeft(); P.newDay.n++; }
+  schedule(c.id,g); P.reviews++; award(2); if(P.reviews>=50) unlock("cards");
+  if(g===0) fq.push(c); else fDone++;
+  saveP(); fi++; showCard();
+}
+[0,1,2,3].forEach(g=>$("fr"+g).addEventListener("click",()=>rateCard(g)));
+
+/* ---------- formula duel ---------- */
+let dq=[], di=0, dScore=0, dLocked=false;
+function startDuel(){
+  dq=shuffle(FORMULAS.map((f,i)=>i)).slice(0,10).map((i,k)=>({i,rev:k%2===1}));
+  di=0; dScore=0; showDuel();
+}
+function showDuel(){
+  const box=$("duelStage"); dLocked=false;
+  $("duelPos").textContent=di<dq.length?(di+1)+" av "+dq.length:"";
+  $("duelBar").style.width=(di/dq.length*100)+"%";
+  if(di>=dq.length){
+    const perfect=dScore===dq.length; if(perfect) unlock("duel"); saveP(); renderLevel();
+    box.innerHTML=`<div class="fc-empty glass"><span class="score-big">${dScore}<small>/${dq.length}</small></span><b>${perfect?"Perfekt runde":dScore>=7?"Sterkt":"Godt i gang"}</b><span>${dScore*5} XP opptjent</span><button class="btn" type="button" id="duelAgain">Ny runde</button></div>`;
+    $("duelAgain").addEventListener("click",startDuel); if(perfect) confetti(); return;
+  }
+  const {i,rev}=dq[di], f=FORMULAS[i];
+  const same=FORMULAS.map((x,k)=>k).filter(k=>k!==i && FORMULAS[k][0]===f[0]), other=FORMULAS.map((x,k)=>k).filter(k=>k!==i && FORMULAS[k][0]!==f[0]);
+  const opts=shuffle([i,...shuffle(same).slice(0,2),...shuffle(other)].filter((v,k,a)=>a.indexOf(v)===k).slice(0,4));
+  box.innerHTML=`<div class="duel-q glass"><span class="fc-ch" style="--cc:${CH_COLOR[f[0]]}">${rev?"Hvilken størrelse regnes ut slik?":"Velg riktig formel"}</span><b class="${rev?"fc-formula":"fc-title"}">${rev?f[2]:f[1]}</b></div><div class="duel-opts">${opts.map(k=>`<button class="duel-o glass" type="button" data-k="${k}"><span class="${rev?"":"mono"}">${rev?FORMULAS[k][1]:FORMULAS[k][2]}</span></button>`).join("")}</div>`;
+  box.querySelectorAll(".duel-o").forEach(b=>b.addEventListener("click",()=>{
+    if(dLocked) return; dLocked=true; const k=+b.dataset.k, ok=k===i;
+    box.querySelectorAll(".duel-o").forEach(x=>{ const kk=+x.dataset.k; if(kk===i) x.classList.add("right"); else if(x===b) x.classList.add("wrong"); x.disabled=true; });
+    if(ok){ dScore++; award(5); } saveP();
+    const nx=el("button",{class:"btn duel-next",type:"button"},di===dq.length-1?"Se resultat":"Neste");
+    nx.addEventListener("click",()=>{ di++; showDuel(); }); box.append(nx); nx.focus();
+  }));
+}
+
+/* ---------- explain it (Feynman) ---------- */
+let fxCur=null;
+function nextExplain(){
+  const acc=conceptAcc();
+  const pool=CONCEPTS.filter(c=>c!==fxCur);
+  pool.sort((a,b)=>{ const pa=acc[a.title]?acc[a.title][0]/acc[a.title][1]:.6, pb=acc[b.title]?acc[b.title][0]/acc[b.title][1]:.6; return pa-pb+(Math.random()-.5)*.5; });
+  fxCur=pool[0]; showExplain();
+}
+function showExplain(){
+  const c=fxCur, box=$("fxStage");
+  box.innerHTML=`<div class="duel-q glass"><span class="fc-ch" style="--cc:${CH_COLOR[c.ch]}">Kap. ${c.ch} · ${CH_NAME[c.ch]}</span><b class="fc-title">Forklar «${c.title}»</b><span class="fc-hint">Skriv som om du forklarer det til en venn som ikke tar faget. Ta med formler og et eksempel hvis du kan.</span></div>
+    <label class="sr" for="fxText">Din forklaring</label><textarea id="fxText" class="fx-text glass" rows="7" placeholder="Med egne ord …"></textarea>
+    <div class="rowbtns"><button class="btn" type="button" id="fxShow">Vis modellsvar</button><button class="btn ghost" type="button" id="fxSkip">Hopp over</button></div><div id="fxAns"></div>`;
+  $("fxSkip").addEventListener("click",nextExplain);
+  $("fxShow").addEventListener("click",()=>{
+    const n=c.el.cloneNode(true); n.querySelectorAll(".formula").forEach(f=>{ f.classList.add("shown"); f.removeAttribute("tabindex"); });
+    const a=$("fxAns"); a.innerHTML=`<p class="sec-h" style="margin:6px 4px">Modellsvar</p>`; const w=el("div",{class:"concept-wrap"}); w.append(n); a.append(w);
+    a.insertAdjacentHTML("beforeend",`<p class="modehint" style="margin:10px 4px 6px">Sammenlign med det du skrev. Hvor godt fikk du det med?</p><div class="seg wide" role="group"><button type="button" data-g="0">Bommet</button><button type="button" data-g="1">Delvis</button><button type="button" data-g="2">Kunne det</button></div>`);
+    a.querySelectorAll("[data-g]").forEach(b=>b.addEventListener("click",()=>{ schedule(c.id,+b.dataset.g); P.feyn++; award(5); if(P.feyn>=10) unlock("feyn"); saveP(); toast(["Kortet kommer snart tilbake","Repeteres om noen dager","Flott, repeteres senere"][+b.dataset.g],"streak"); nextExplain(); window.scrollTo(0,0); }));
+    $("fxShow").hidden=true; a.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"start"});
+  });
+}
+
+/* ---------- routing hook ---------- */
+const IC_CHECK_BIG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function learnEnter(v){
+  if(v==="laer") renderLearn();
+  if(v==="kart"){ buildMap(); vb={...VB0}; applyVB(); }
+  if(v==="kort") startCards(false);
+  if(v==="formel") startDuel();
+  if(v==="forklar") nextExplain();
+}
+document.addEventListener("keydown",e=>{
+  if(view!=="kort" || !$("sheet").hidden) return;
+  const t=document.activeElement; if(t && /INPUT|SELECT|TEXTAREA/.test(t.tagName)) return;
+  if(e.key===" "||e.key==="Enter"){ if($("fcCard") && !$("fcCard").classList.contains("flipped")){ e.preventDefault(); flipCard(); } }
+  if(["1","2","3","4"].includes(e.key) && !$("fcRate").hidden) rateCard(+e.key-1);
+});
 go((location.hash||"").slice(1)||"hjem",true);
 
 </script>
