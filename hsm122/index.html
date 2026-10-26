@@ -346,6 +346,87 @@ td:first-child,th:first-child{text-align:left}
 :root[data-theme="dark"]{--bar:rgba(28,30,40,.86)}
 .hero-t .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.06em}
 body.in-quiz .toasts{top:calc(74px + env(safe-area-inset-top,0px))}
+
+/* ===== v2: cleaner, sharper glass ===== */
+:root{
+  --bg:#f2f2f7; --fg:#0b0b0f; --muted:#6c6c72; --line:rgba(60,60,67,.12);
+  --glass:rgba(255,255,255,.66); --glass-strong:rgba(255,255,255,.86); --glass-border:rgba(255,255,255,.95);
+  --fill:rgba(120,120,128,.12); --fill-2:rgba(120,120,128,.06);
+  --accent:#007aff; --accent-soft:rgba(0,122,255,.1);
+  --ok:#1f8f3a; --ok-soft:rgba(52,199,89,.13); --bad:#e0241b; --bad-soft:rgba(255,59,48,.1);
+  --warn:#c25e00; --warn-soft:rgba(255,149,0,.13); --gold:#f08c00; --gold-soft:rgba(255,149,0,.12);
+  --b1:#9cc8ff; --b2:#c9e2ff; --b3:#c8f0e6; --b4:#e9efff; --blob-o:.55;
+  --sheen:rgba(255,255,255,.7);
+  --edge:inset 0 1px 0 rgba(255,255,255,1),inset 0 0 0 .5px rgba(255,255,255,.7),0 0 0 .5px rgba(0,0,0,.07);
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 28px rgba(15,23,42,.07);
+  --bar:rgba(249,249,251,.8);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#000; --fg:#f5f5f7; --muted:#8e8e93; --line:rgba(84,84,88,.45);
+  --glass:rgba(28,28,32,.62); --glass-strong:rgba(32,32,36,.82); --glass-border:rgba(255,255,255,.12);
+  --fill:rgba(118,118,128,.24); --fill-2:rgba(118,118,128,.12);
+  --accent:#0a84ff; --accent-soft:rgba(10,132,255,.2);
+  --ok:#30d158; --ok-soft:rgba(48,209,88,.16); --bad:#ff453a; --bad-soft:rgba(255,69,58,.16);
+  --warn:#ff9f0a; --warn-soft:rgba(255,159,10,.16); --gold:#ff9f0a; --gold-soft:rgba(255,159,10,.16);
+  --b1:#0a3d91; --b2:#0b2a5c; --b3:#073b3a; --b4:#111; --blob-o:.5;
+  --sheen:rgba(255,255,255,.05);
+  --edge:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 .5px rgba(255,255,255,.07),0 0 0 .5px rgba(0,0,0,.6);
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+  --bar:rgba(22,22,26,.8)}}
+:root[data-theme="dark"]{
+  --bg:#000; --fg:#f5f5f7; --muted:#8e8e93; --line:rgba(84,84,88,.45);
+  --glass:rgba(28,28,32,.62); --glass-strong:rgba(32,32,36,.82); --glass-border:rgba(255,255,255,.12);
+  --fill:rgba(118,118,128,.24); --fill-2:rgba(118,118,128,.12);
+  --accent:#0a84ff; --accent-soft:rgba(10,132,255,.2);
+  --ok:#30d158; --ok-soft:rgba(48,209,88,.16); --bad:#ff453a; --bad-soft:rgba(255,69,58,.16);
+  --warn:#ff9f0a; --warn-soft:rgba(255,159,10,.16); --gold:#ff9f0a; --gold-soft:rgba(255,159,10,.16);
+  --b1:#0a3d91; --b2:#0b2a5c; --b3:#073b3a; --b4:#111; --blob-o:.5;
+  --sheen:rgba(255,255,255,.05);
+  --edge:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 .5px rgba(255,255,255,.07),0 0 0 .5px rgba(0,0,0,.6);
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+  --bar:rgba(22,22,26,.8)}
+
+/* calmer light field: one cool glow, no haze */
+.bg i{filter:blur(90px)}
+.bg .b1{width:70vmax;height:42vmax;left:-20vmax;top:-26vmax}
+.bg .b2{width:50vmax;height:34vmax;right:-22vmax;top:-12vmax}
+.bg .b3{width:40vmax;height:30vmax;left:-16vmax;bottom:-20vmax}
+.bg .b4{display:none}
+
+/* crisp glass: hairline edge + specular top sheen instead of thick borders */
+.glass,.q,.concept,.card,.qcard,.surface{border:0;box-shadow:var(--edge),var(--shadow);background-image:linear-gradient(180deg,var(--sheen),transparent 42%)}
+.glass{-webkit-backdrop-filter:blur(24px) saturate(200%);backdrop-filter:blur(24px) saturate(200%)}
+.q.st-ok{box-shadow:var(--edge),var(--shadow),inset 0 0 0 2px var(--ok)}
+.q.st-bad{box-shadow:var(--edge),var(--shadow),inset 0 0 0 2px var(--bad)}
+.q.st-part{box-shadow:var(--edge),var(--shadow),inset 0 0 0 2px var(--warn)}
+.qnav{background-image:none;box-shadow:0 .5px 0 var(--line)}
+.tabbar{box-shadow:var(--edge),0 10px 30px rgba(0,0,0,.12)}
+.toast{border:0;box-shadow:var(--edge),0 10px 30px rgba(0,0,0,.14)}
+.sum-nav a{border:0;box-shadow:var(--edge)}
+#viewSummary .intro{background-image:none;box-shadow:none}
+
+/* flat system colours */
+.tile{box-shadow:inset 0 .5px 0 rgba(255,255,255,.45),0 1px 2px rgba(0,0,0,.1)}
+.t-blue{background:linear-gradient(180deg,#1a8cff,#007aff)}
+.t-indigo{background:linear-gradient(180deg,#6b69e0,#5856d6)}
+.t-teal{background:linear-gradient(180deg,#38b9dd,#32ade6)}
+.t-orange{background:linear-gradient(180deg,#ffa31a,#ff9500)}
+.t-pink{background:linear-gradient(180deg,#ff4369,#ff2d55)}
+.t-green{background:linear-gradient(180deg,#45cf68,#34c759)}
+.plvl-n,.medal{background:linear-gradient(180deg,#ffa31a,#ff9500);box-shadow:inset 0 .5px 0 rgba(255,255,255,.5),0 1px 3px rgba(255,149,0,.3)}
+.xpbar > div,.xpbar > span{background:#ff9500}
+.ring-lvl .fgc{stroke:#ff9500}
+.streak.hot{background:var(--gold-soft);color:var(--gold)}
+.streak.hot b{color:var(--gold)}
+
+/* sharper type */
+.largetitle h1,.intro h1{font-weight:700;letter-spacing:-.035em}
+.qnum,.plvl-name,.hero-t .lvlname{letter-spacing:-.03em}
+.sec-h{color:var(--muted);font-weight:600}
+.case{background:var(--fill-2)}
+.opt{background:var(--fill-2)}
+.opt:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.map button.answered{background:var(--accent)}
 </style>
 </head>
 <body>
