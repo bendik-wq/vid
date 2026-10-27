@@ -747,6 +747,35 @@ body.xl-full .wrap,body.xl-full .tabbar{display:none}
 .mt-review summary{cursor:pointer;font-weight:600}
 .mt-review ul{margin:8px 0 0;padding-left:18px;display:grid;gap:6px}
 @media (max-width:520px){.mt-grid{grid-template-columns:1fr}.mt-col:first-child{grid-template-columns:repeat(2,minmax(0,1fr))}.mt-c{min-height:0}}
+
+/* ===== v7: mock exam ===== */
+.t-red{font-size:15px;font-weight:800}
+.ex-hero{border-radius:22px;padding:18px 20px;display:grid;gap:4px;background-image:radial-gradient(120% 90% at 0 0,color-mix(in srgb,#ff3b30 14%,transparent),transparent 60%),linear-gradient(180deg,var(--sheen),transparent 42%)}
+.ex-hero b{font-family:var(--f-display);font-size:22px;letter-spacing:-.02em}
+.ex-hero>span:last-child{color:var(--muted);font-size:15px}
+.ex-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.ex-opts{grid-template-columns:1fr}}
+.ex-opts .tile{font-size:14px;font-weight:800;color:#fff}
+.ex-g{font-size:17px;font-weight:800;color:#fff}
+.ex-clock{border-radius:22px;padding:16px 20px;display:grid;justify-items:center;gap:2px;text-align:center}
+.ex-clock>span:first-child{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.ex-clock b{font-size:40px;font-weight:700;letter-spacing:-.02em}
+.ex-clock b.over{color:var(--bad)}
+.ex-tip{font-size:13.5px;color:var(--muted)}
+.ex-part{border-radius:22px;padding:16px 18px;display:grid;gap:8px;align-content:start}
+.ex-part>b{font-family:var(--f-display);font-size:19px}
+.ex-part>span{color:var(--muted);font-size:14.5px}
+.ex-part>.btn{justify-self:start}
+.ex-part .row{border-radius:14px;background:var(--fill-2)}
+.ex-parts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:720px){.ex-parts{grid-template-columns:1fr}}
+.ex-chs{display:grid;gap:6px}
+.ex-res{border-radius:24px;padding:20px 22px;display:flex;align-items:center;gap:18px}
+.ex-res div{display:grid;gap:2px}.ex-res b{font-family:var(--f-display);font-size:24px}.ex-res span{color:var(--muted)}
+.ex-grade{width:84px;height:84px;border-radius:24px;display:grid;place-items:center;font-family:var(--f-display);font-size:48px;font-weight:800;color:#fff;background:linear-gradient(180deg,#45cf68,#28b44d);flex:none}
+.ex-grade.g-C,.ex-grade.g-D{background:linear-gradient(180deg,#ffb340,#ff9500)}
+.ex-grade.g-E,.ex-grade.g-F{background:linear-gradient(180deg,#ff5a50,#ff3b30)}
+.ex-res .ex-grade{color:#fff}
 </style>
 </head>
 <body>
@@ -1095,6 +1124,12 @@ body.xl-full .wrap,body.xl-full .tabbar{display:none}
     <p>Dekningspunktet er omsetningen som gir null i fortjeneste. Sikkerhetsmarginen er hvor mye salget kan falle før bedriften går med tap. Bruttofortjeneste er noe annet: salgsinntekt minus bare varekostnaden.</p>
     <p>Eksempel: salg 1 028 000, variable 692 000, faste 210 000. DB = 336 000, DG = 32,7 %, dekningspunkt = 642 500, sikkerhetsmargin = 385 500.</p></article>
 
+  <article class="concept"><h3>Normalkost og dekningsdifferanse</h3>
+    <p>I et normalkostregnskap belastes produktene med indirekte kostnader etter en <b>normalsats</b> som er fastsatt på forhånd, ikke med de virkelige kostnadene. Satsen bygger på <b>normal aktivitet</b>, så enhetskostnaden ikke svinger med aktiviteten fra måned til måned.</p>
+    <div class="formula">Normalsats (fast) = budsjetterte faste indirekte kostnader / normal aktivitet<br>Innkalkulerte kostnader = normalsats × virkelig aktivitet<br>Dekningsdifferanse = innkalkulerte − virkelige indirekte kostnader<br>Beskjeftigelsesavvik = (virkelig − normal aktivitet) × fast normalsats<br>Kostnadsavvik = budsjetterte − virkelige faste kostnader</div>
+    <p>Positiv dekningsdifferanse er <b>overdekning</b> (mer innkalkulert enn påløpt), negativ er <b>underdekning</b>. For de faste kostnadene er dekningsdifferanse = beskjeftigelsesavvik + kostnadsavvik. Beskjeftigelsesavviket skyldes at aktiviteten avviker fra normal, og kostnadsavviket at de faste kostnadene ble andre enn budsjettert. Virkelig resultat = resultat med innkalkulerte kostnader + dekningsdifferanse.</p>
+    <p>Eksempel: normal aktivitet 2 000 maskintimer, budsjetterte faste 300 000 gir 150 kr/t. Virkelig 1 800 timer og 310 000 i faste kostnader: innkalkulert 270 000, dekningsdifferanse −40 000 (underdekning) = beskjeftigelsesavvik −30 000 + kostnadsavvik −10 000.</p></article>
+
   <h2 class="sum-h" id="kfork">Forkortelser</h2>
   <article class="concept"><h3>Forkortelser</h3>
     <div class="tblwrap"><table><tr><th>Kort</th><th>Betyr</th><th>Kort</th><th>Betyr</th></tr>
@@ -1181,6 +1216,11 @@ body.xl-full .wrap,body.xl-full .tabbar{display:none}
     <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Begrepsmatch</h1><span></span></div>
     <div class="decks" id="mtDecks" role="group" aria-label="Velg kapittel"></div>
     <div class="stage" id="mtStage"></div>
+  </section>
+
+  <section class="view" data-route="eksamen" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="hjem"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Øving</button><h1>Prøveeksamen</h1><span></span></div>
+    <div class="stage" id="exStage"></div>
   </section>
 
   <section class="view" data-route="excel" hidden>
@@ -3069,13 +3109,140 @@ const Q_P9 = [
  explain:"Barneavdelingens bidrag = DB 240 000 − egen faste lønn 60 000 = <b>180 000 kr</b>, som i dag dekker en del av felleskostnadene på 1 250 000. Disse kostnadene forsvinner ikke. Nytt samlet resultat = 202 000 − 180 000 = <b>22 000 kr</b>. Underskuddet på −70 000 skyldes bare de fordelte felleskostnadene (250 000). −38 000 får man hvis man glemmer at den deltidsansattes lønn også forsvinner. Avdelingen bør derfor ikke legges ned på dette grunnlaget."}
 ];
 
+const Q_P10 = [
+/* ---------- Normalkost: begreper ---------- */
+{topic:"7 Normalkost", type:"mc",
+ prompt:"Hva kjennetegner et <b>normalkostregnskap</b>?",
+ options:["Produktene belastes med de virkelige indirekte kostnadene hver måned","Produktene belastes med indirekte kostnader etter en normalsats fastsatt på forhånd, ganget med virkelig aktivitet","Bare de variable kostnadene belastes produktene","De indirekte kostnadene fordeles likt på alle produktene"],
+ correct:1,
+ explain:"I et normalkostregnskap brukes en <b>normalsats</b> som er fastsatt på forhånd ut fra budsjetterte kostnader og normal aktivitet. Innkalkulerte kostnader = normalsats × virkelig aktivitet. Forskjellen mot de virkelige kostnadene blir dekningsdifferansen."},
+
+{topic:"7 Normalkost", type:"mc",
+ prompt:"Hvorfor bygger normalsatsen på <b>normal</b> aktivitet og ikke på aktiviteten i den enkelte måneden?",
+ options:["Fordi normal aktivitet alltid er høyere enn virkelig aktivitet","For at kostnaden per enhet ikke skal svinge med aktiviteten, slik at produktene ikke blir dyrere i måneder med lav aktivitet","Fordi loven krever det","For å unngå at de variable kostnadene endrer seg"],
+ correct:1,
+ explain:"Hvis faste kostnader ble fordelt på faktisk aktivitet, ville hver enhet blitt dyrere i måneder med lav aktivitet og billigere i travle måneder. Med normal aktivitet får produktene en stabil og «riktig» kostnad, og ubrukt eller overutnyttet kapasitet vises i stedet som et <b>beskjeftigelsesavvik</b>."},
+
+{topic:"7 Normalkost", type:"match",
+ prompt:"Koble hvert begrep til riktig beskrivelse.",
+ items:[["Normalsats",2],["Innkalkulerte kostnader",0],["Dekningsdifferanse",4],["Beskjeftigelsesavvik",1],["Kostnadsavvik",3]],
+ choices:["Normalsats × virkelig aktivitet","(Virkelig − normal aktivitet) × fast normalsats","Budsjetterte indirekte kostnader / normal aktivitet","Budsjetterte − virkelige faste kostnader","Innkalkulerte − virkelige indirekte kostnader"],
+ explain:"Normalsats = budsjetterte kostnader / normal aktivitet. Innkalkulert = sats × virkelig aktivitet. Dekningsdifferanse = innkalkulert − virkelig. For de faste kostnadene deles dekningsdifferansen i beskjeftigelsesavvik (aktiviteten) og kostnadsavvik (kostnadsnivået)."},
+
+{topic:"7 Normalkost", type:"cat",
+ prompt:"Gir situasjonen <b>overdekning</b> eller <b>underdekning</b> av indirekte kostnader?",
+ cats:["Overdekning","Underdekning"],
+ items:[["Innkalkulerte kostnader er høyere enn de virkelige",0],["Dekningsdifferansen er negativ",1],["Virkelig aktivitet er over normal, og de faste kostnadene er som budsjettert",0],["Et maskinhavari gir uplanlagte reparasjonskostnader, og aktiviteten er normal",1],["Virkelig aktivitet er under normal, og de faste kostnadene er som budsjettert",1],["De faste kostnadene blir lavere enn budsjettert, og aktiviteten er normal",0]],
+ explain:"<b>Overdekning</b>: mer er innkalkulert enn det som faktisk påløp (positiv dekningsdifferanse). Det skjer ved aktivitet over normal eller lavere kostnader enn budsjettert. <b>Underdekning</b> er det motsatte: lav aktivitet eller høyere kostnader, for eksempel uplanlagte reparasjoner."},
+
+{topic:"7 Normalkost", type:"multi",
+ prompt:"Hvilke forhold bidrar til <b>underdekning</b> av de faste indirekte kostnadene? Velg alle som passer.",
+ options:["Virkelig aktivitet er lavere enn normal aktivitet","De virkelige faste kostnadene er høyere enn budsjettert","Virkelig aktivitet er høyere enn normal aktivitet","De virkelige faste kostnadene er lavere enn budsjettert","En uplanlagt reparasjon øker de faste kostnadene"],
+ correct:[0,1,4],
+ explain:"Underdekning betyr at innkalkulert < virkelig. Lav aktivitet gir negativt <b>beskjeftigelsesavvik</b> (for lite er innkalkulert), og høyere faste kostnader enn budsjettert gir negativt <b>kostnadsavvik</b>. Høy aktivitet og lavere kostnader trekker mot overdekning."},
+
+/* ---------- Case A: Verksted Nord ---------- */
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Verksted Nord AS bruker maskintimer som fordelingsnøkkel. Normal aktivitet er 2 000 maskintimer per måned. Budsjetterte faste indirekte kostnader er 300 000 kr per måned, og variable indirekte kostnader er budsjettert til 50 kr per maskintime.</p>",
+ prompt:"Hva er den <b>faste</b> normalsatsen per maskintime?",
+ answer:150, tol:0.5, unit:"kr/t",
+ explain:"Fast normalsats = budsjetterte faste indirekte kostnader / normal aktivitet = 300 000 / 2 000 = <b>150 kr per maskintime</b>."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Samme tall for Verksted Nord AS: normal aktivitet 2 000 maskintimer, faste indirekte kostnader 300 000 kr, variable indirekte 50 kr per maskintime.</p>",
+ prompt:"Hva er den <b>samlede</b> normalsatsen (fast + variabel) per maskintime?",
+ answer:200, tol:0.5, unit:"kr/t",
+ explain:"Fast sats 150 + variabel sats 50 = <b>200 kr per maskintime</b>."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Verksted Nord AS (fast normalsats 150 kr/t, normal aktivitet 2 000 maskintimer, budsjetterte faste 300 000 kr). I mars ble det brukt 1 800 maskintimer, og de virkelige faste indirekte kostnadene ble 310 000 kr.</p>",
+ prompt:"Hvor store faste indirekte kostnader ble <b>innkalkulert</b> i mars?",
+ answer:270000, tol:0.5, unit:"kr",
+ explain:"Innkalkulert = fast normalsats × virkelig aktivitet = 150 × 1 800 = <b>270 000 kr</b>. Merk at det er virkelig aktivitet, ikke normal aktivitet, som ganges med satsen."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Fortsett med Verksted Nord AS i mars: innkalkulerte faste kostnader 270 000 kr, virkelige faste kostnader 310 000 kr.</p>",
+ prompt:"Hva er dekningsdifferansen for de faste kostnadene? Oppgi underdekning med minus.",
+ answer:-40000, tol:0.5, unit:"kr",
+ explain:"Dekningsdifferanse = innkalkulert − virkelig = 270 000 − 310 000 = <b>−40 000 kr</b>, altså en underdekning. Produktene er belastet med 40 000 kr mindre enn det som faktisk påløp."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Fortsett med Verksted Nord AS i mars: normal aktivitet 2 000 maskintimer, virkelig aktivitet 1 800 maskintimer, fast normalsats 150 kr/t.</p>",
+ prompt:"Hva er <b>beskjeftigelsesavviket</b>? Oppgi negativt avvik med minus.",
+ answer:-30000, tol:0.5, unit:"kr",
+ explain:"Beskjeftigelsesavvik = (virkelig − normal aktivitet) × fast normalsats = (1 800 − 2 000) × 150 = <b>−30 000 kr</b>. 200 timer med ubrukt kapasitet betyr at 30 000 kr av de faste kostnadene ikke ble fordelt på produktene."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Fortsett med Verksted Nord AS i mars: budsjetterte faste kostnader 300 000 kr, virkelige faste kostnader 310 000 kr.</p>",
+ prompt:"Hva er <b>kostnadsavviket</b> for de faste kostnadene? Oppgi negativt avvik med minus.",
+ answer:-10000, tol:0.5, unit:"kr",
+ explain:"Kostnadsavvik = budsjetterte − virkelige faste kostnader = 300 000 − 310 000 = <b>−10 000 kr</b>. Kontroll: beskjeftigelsesavvik −30 000 + kostnadsavvik −10 000 = dekningsdifferansen −40 000."},
+
+{topic:"7 Normalkost", type:"mc",
+ case:"<p>Verksted Nord AS hadde en underdekning på 40 000 kr i mars: beskjeftigelsesavvik −30 000 og kostnadsavvik −10 000.</p>",
+ prompt:"Hvilken forklaring er riktig?",
+ options:["Underdekningen skyldes bare at de faste kostnadene ble for høye","Det meste skyldes at aktiviteten var 200 timer under normal, og resten at de faste kostnadene ble 10 000 kr høyere enn budsjettert","Det meste skyldes at aktiviteten var over normal","Underdekningen betyr at produktene er belastet med for mye kostnader"],
+ correct:1,
+ explain:"Beskjeftigelsesavviket (−30 000) kommer av lav aktivitet: 200 færre timer × 150 kr. Kostnadsavviket (−10 000) kommer av at de faste kostnadene ble høyere enn budsjettert. Underdekning betyr at produktene er belastet med <b>for lite</b>, ikke for mye."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Verksted Nord AS i mars: variabel normalsats 50 kr per maskintime, 1 800 maskintimer, virkelige variable indirekte kostnader 93 000 kr.</p>",
+ prompt:"Hva er dekningsdifferansen for de <b>variable</b> indirekte kostnadene? Oppgi underdekning med minus.",
+ answer:-3000, tol:0.5, unit:"kr",
+ explain:"Innkalkulert variabel = 50 × 1 800 = 90 000. Dekningsdifferanse = 90 000 − 93 000 = <b>−3 000 kr</b>. For variable kostnader blir det ikke noe beskjeftigelsesavvik, fordi de innkalkulerte kostnadene følger aktiviteten. Avviket skyldes at forbruket per time ble høyere enn normalt."},
+
+/* ---------- Case B: Trykkeriet Vest ---------- */
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Trykkeriet Vest AS fordeler faste indirekte kostnader etter direkte arbeidstimer. Normal aktivitet er 5 000 timer per måned, og budsjetterte faste indirekte kostnader er 400 000 kr. I oktober ble det jobbet 5 500 timer, og de virkelige faste indirekte kostnadene ble 415 000 kr.</p>",
+ prompt:"Hvor store faste kostnader ble innkalkulert i oktober?",
+ answer:440000, tol:0.5, unit:"kr",
+ explain:"Fast normalsats = 400 000 / 5 000 = 80 kr per time. Innkalkulert = 80 × 5 500 = <b>440 000 kr</b>."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Trykkeriet Vest AS i oktober: innkalkulerte faste kostnader 440 000 kr, virkelige faste kostnader 415 000 kr.</p>",
+ prompt:"Hva er dekningsdifferansen? Oppgi underdekning med minus.",
+ answer:25000, tol:0.5, unit:"kr",
+ explain:"Dekningsdifferanse = 440 000 − 415 000 = <b>+25 000 kr</b>, altså en overdekning. Produktene er belastet med mer enn det som faktisk påløp."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Trykkeriet Vest AS i oktober: normal aktivitet 5 000 timer, virkelig aktivitet 5 500 timer, fast normalsats 80 kr per time.</p>",
+ prompt:"Hva er beskjeftigelsesavviket?",
+ answer:40000, tol:0.5, unit:"kr",
+ explain:"(5 500 − 5 000) × 80 = <b>+40 000 kr</b>. Høyere aktivitet enn normalt betyr at de faste kostnadene er fordelt på flere timer enn planlagt."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Trykkeriet Vest AS i oktober: budsjetterte faste kostnader 400 000 kr, virkelige faste kostnader 415 000 kr.</p>",
+ prompt:"Hva er kostnadsavviket? Oppgi negativt avvik med minus.",
+ answer:-15000, tol:0.5, unit:"kr",
+ explain:"400 000 − 415 000 = <b>−15 000 kr</b>. Kontroll: beskjeftigelsesavvik +40 000 + kostnadsavvik −15 000 = dekningsdifferanse +25 000."},
+
+{topic:"7 Normalkost", type:"mc",
+ prompt:"Et positivt <b>beskjeftigelsesavvik</b> betyr at …",
+ options:["de faste kostnadene ble lavere enn budsjettert","virkelig aktivitet var høyere enn normal aktivitet, så mer faste kostnader ble innkalkulert enn budsjettert","de variable kostnadene per enhet var lavere enn normalt","bedriften har underdekning"],
+ correct:1,
+ explain:"Beskjeftigelsesavviket måler bare aktiviteten: (virkelig − normal) × fast sats. Positivt avvik betyr aktivitet over normal, som gir overdekning av faste kostnader. Om kostnadene ble lavere enn budsjettert, vises det i <b>kostnadsavviket</b>."},
+
+/* ---------- Resultat ---------- */
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Driftsregnskapet til Møbelfabrikken Sør AS er satt opp med innkalkulerte (normal)kostnader og viser et samlet produktresultat på 120 000 kr i november. Dekningsdifferansen for de indirekte kostnadene er en underdekning på 18 000 kr.</p>",
+ prompt:"Hva er det <b>virkelige</b> resultatet i november?",
+ answer:102000, tol:0.5, unit:"kr",
+ explain:"Virkelig resultat = resultat med innkalkulerte kostnader + dekningsdifferanse = 120 000 + (−18 000) = <b>102 000 kr</b>. Ved underdekning er de virkelige kostnadene høyere enn de innkalkulerte, så resultatet må justeres ned."},
+
+{topic:"7 Normalkost", type:"num",
+ case:"<p>Normal aktivitet for Støperiet AS er 900 maskintimer per måned, og budsjetterte faste indirekte kostnader er 240 000 kr per måned.</p>",
+ prompt:"Hva blir den faste normalsatsen per maskintime? Rund av til to desimaler.",
+ answer:266.67, tol:0.01, unit:"kr/t",
+ explain:"240 000 / 900 = <b>266,67 kr per maskintime</b>. Merk at det er normal aktivitet (900) som brukes, selv om bedriften i enkelte måneder bruker flere eller færre timer."}
+];
+
 /* ---------- sets ---------- */
 const EB14="HSM122 · Kap. 1 Introduksjon · 2 Inntekts- og kostnadsbegreper · 3 Kostnadsforløpet · 4 Etterspørsel";
 const EB56="HSM122 · Markedstilpasning 5.1–5.2 · Kalkulasjon 6.1–6.3";
 const EB7="HSM122 · Kap. 7 Driftsregnskap";
-const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6,p7:Q_P7,p8:Q_P8,p9:Q_P9};
-const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6",p7:"Prøve 7",p8:"Prøve 8",p9:"Prøve 9"};
-const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"], CH7=["p7","p8","p9"], ALL=CH14.concat(CH56,CH7);
+const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6,p7:Q_P7,p8:Q_P8,p9:Q_P9,p10:Q_P10};
+const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6",p7:"Prøve 7",p8:"Prøve 8",p9:"Prøve 9",p10:"Prøve 10"};
+const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"], CH7=["p7","p8","p9","p10"], ALL=CH14.concat(CH56,CH7);
 const LINK_RE=/forrige oppgave|Fortsett med|Samme (tall|maskin|ordre)|Bruk tabellen for/;
 function getQ(id){ const [k,i]=id.split(":"); return BASE[k][+i]; }
 function groupsOf(keys){
@@ -3092,7 +3259,7 @@ function draw(keys,n){
   for(const g of gs){ if(out.length>=n) break; if(out.length+g.length<=n) out.push(...g); }
   return out;
 }
-const drawn=S=>!!(S.random||S.dyn);
+const drawn=S=>!!(S.random||S.dyn||S.gen);
 function take(gs,n){ const out=[]; for(const g of gs){ if(out.length>=n) break; if(out.length+g.length<=n) out.push(...g); } return out; }
 function tk(t){ return t.split(":")[0].trim(); }
 function topicAcc(t){ const d=(P.topics||{})[tk(t)]; return d&&d[1]? d[0]/d[1] : .6; }
@@ -3112,9 +3279,10 @@ const SETS = {
   p7:{base:"p7", key:"hsm122-ovingsprove-p7", group:"Kap. 7", label:"Prøve 7", eyebrow:EB7},
   p8:{base:"p8", key:"hsm122-ovingsprove-p8", group:"Kap. 7", label:"Prøve 8", eyebrow:EB7},
   p9:{base:"p9", key:"hsm122-ovingsprove-p9", group:"Kap. 7", label:"Prøve 9", eyebrow:EB7+" · vanskeligere"},
+  p10:{base:"p10", key:"hsm122-ovingsprove-p10", group:"Kap. 7", label:"Prøve 10", eyebrow:"HSM122 · Normalkost og avvik (kap. 7.3 / bok 2 kap. 3.7)"},
   mix14:{random:CH14, n:30, key:"hsm122-mix14", group:"Blandet", label:"Kap. 1–4 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 1, 3 og 5"},
   mix56:{random:CH56, n:30, key:"hsm122-mix56", group:"Blandet", label:"Kap. 5–6 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 2, 4 og 6"},
-  mixall:{random:ALL, n:1e9, key:"hsm122-mixall", group:"Blandet", label:"Alle oppgaver · tilfeldig rekkefølge", eyebrow:"Alle oppgavene fra prøve 1–7 i tilfeldig rekkefølge"},
+  mixall:{random:ALL, n:1e9, key:"hsm122-mixall", group:"Blandet", label:"Alle oppgaver · tilfeldig rekkefølge", eyebrow:"Alle oppgavene fra prøve 1–10 i tilfeldig rekkefølge"},
   feil:{dyn:"wrong", n:20, practice:true, key:"hsm122-feil", group:"Din øving", label:"Feilbank", eyebrow:"Oppgaver du har svart feil på. En oppgave forsvinner fra feilbanken når du har svart riktig på den to ganger på rad."},
   svak:{dyn:"weak", n:10, practice:true, key:"hsm122-svak", group:"Din øving", label:"Svake temaer", eyebrow:"10 oppgaver fra temaene der du har lavest treffprosent"},
   lyn:{random:ALL, n:10, practice:true, key:"hsm122-lyn", group:"Blandet", label:"Lynrunde · 10", eyebrow:"10 tilfeldige oppgaver fra hele pensum, med svar etter hver oppgave"}
@@ -3136,6 +3304,7 @@ const DISPLAY={
   p7:{t:"Prøve 7",s:"30 oppgaver",tile:"t-teal",ic:"7"},
   p8:{t:"Prøve 8",s:"30 oppgaver",tile:"t-teal",ic:"8"},
   p9:{t:"Prøve 9",s:"20 oppgaver · vanskeligere",tile:"t-teal",ic:"9"},
+  p10:{t:"Prøve 10 · Normalkost",s:"20 oppgaver · dekningsdifferanse og avvik",tile:"t-teal",ic:"10"},
   mix14:{t:"30 tilfeldige · kap. 1–4",s:"Ny trekning hver gang",tile:"t-orange",ic:IC_SHUFFLE},
   mix56:{t:"30 tilfeldige · kap. 5–6",s:"Ny trekning hver gang",tile:"t-orange",ic:IC_SHUFFLE},
   mixall:{t:"Alle "+TOTAL_Q+" oppgaver",s:"Tilfeldig rekkefølge",tile:"t-pink",ic:IC_SHUFFLE},
@@ -3148,7 +3317,7 @@ const GROUPS=[
   ["Din øving","Bygget på svarene dine",["feil","svak"]],
   ["Kap. 1–4","Introduksjon, inntekter og kostnader, kostnadsforløp, etterspørsel",["ak1","p3","p5"]],
   ["Kap. 5–6","Markedstilpasning og kalkulasjon",["kap56","p4","p6"]],
-  ["Kap. 7","Driftsregnskap",["p7","p8","p9"]],
+  ["Kap. 7","Driftsregnskap, normalkost og avvik",["p7","p8","p9","p10"]],
   ["Blandet","Tilfeldige trekninger fra hele pensum",["mix14","mix56","mixall","lyn"]]
 ];
 
@@ -3163,7 +3332,7 @@ let practice=!!rd("hsm122-practice",false);
 function load(){
   const S=SETS[setKey], s=rd(S.key,null)||{};
   ans=s.ans||{}; checked=s.checked||{}; graded=!!s.graded; startedAt=s.startedAt||null; elapsed=s.elapsed??null; gained=s.gained||{}; bonusXp=s.bonusXp||0;
-  if(drawn(S)){ ids=(Array.isArray(s.ids)&&s.ids.length&&s.ids.every(id=>{try{return !!getQ(id);}catch(e){return false;}}))?s.ids:(S.dyn?drawDyn(S.dyn,S.n):draw(S.random,S.n)); }
+  if(drawn(S)){ ids=(Array.isArray(s.ids)&&s.ids.length&&s.ids.every(id=>{try{return !!getQ(id);}catch(e){return false;}}))?s.ids:(S.gen?S.gen():S.dyn?drawDyn(S.dyn,S.n):draw(S.random,S.n)); }
   else ids=BASE[S.base].map((_,i)=>S.base+":"+i);
   Q=ids.map(getQ);
   cur=Math.min(s.cur||0,Math.max(0,Q.length-1));
@@ -3513,7 +3682,7 @@ function showResult(){
 function reset(){
   const S=SETS[setKey];
   ans={}; checked={}; graded=false; startedAt=null; elapsed=null; gained={}; bonusXp=0;
-  if(drawn(S)){ if(S.dyn && !dynAvailable(S.dyn)){ toast(S.dyn==="wrong"?"Feilbanken er tom":"Ingen data ennå"); go("hjem"); return; } ids=S.dyn?drawDyn(S.dyn,S.n):draw(S.random,S.n); Q=ids.map(getQ); }
+  if(drawn(S)){ if(S.dyn && !dynAvailable(S.dyn)){ toast(S.dyn==="wrong"?"Feilbanken er tom":"Ingen data ennå"); go("hjem"); return; } ids=S.gen?S.gen():S.dyn?drawDyn(S.dyn,S.n):draw(S.random,S.n); Q=ids.map(getQ); }
   cur=0;
   save();
   $("result").hidden=true;
@@ -3647,7 +3816,7 @@ const CONCEPT_MAP=[
   [/^6\.3 (Avvik|For|Etter|Begreper)/,"For- og etterkalkyle, avvik"],
   [/^7 (Finans|Begreper)/,"Finansregnskap og driftsregnskap"],[/^7 Kalkyle/,"Kalkyle og driftsregnskap"],[/Oppstilling/,"Oppstilling i en handelsbedrift"],
   [/Kostnadsfordeling|kostnadsfordeling|Hjelpeavdeling|Kostnadssted|Fordelingsnøkler/,"Kostnadssteder og kostnadsfordeling"],[/^7 Driftsregnskap i handel/,"Oppstilling i en handelsbedrift"],[/^7 Lønnsomhet/,"Bidragsmetoden i handelsbedrifter"],[/^7 (Budsjettkontroll|Kontroll|Avvik)/,"Budsjettkontroll og avvik"],
-  [/Varekostnad|Svinn|Vareopptelling|oppnådd bruttofortjeneste|^7 Bruttofortjeneste/,"Varekostnad, vareopptelling og svinn"],[/^7 (Bidragsmetoden|Dekning|Sikkerhet)/,"Bidragsmetoden i handelsbedrifter"]
+  [/Varekostnad|Svinn|Vareopptelling|oppnådd bruttofortjeneste|^7 Bruttofortjeneste/,"Varekostnad, vareopptelling og svinn"],[/^7 (Normalkost|Over|Beskjeftigelse|Kostnadsavvik)/,"Normalkost og dekningsdifferanse"],[/^7 (Bidragsmetoden|Dekning|Sikkerhet)/,"Bidragsmetoden i handelsbedrifter"]
 ];
 function conceptFor(topic){ for(const [re,t] of CONCEPT_MAP) if(re.test(topic)) return conceptEls[t]||null; return null; }
 const formulas=[...sumBody.querySelectorAll(".formula")];
@@ -3677,7 +3846,7 @@ quiz.addEventListener("touchend",e=>{ if(tsx==null) return; const dx=e.changedTo
 $("btnReset").addEventListener("click",reset);
 $("modeExam").addEventListener("click",()=>{ practice=false; wr("hsm122-practice",practice); applySetText(); render(); });
 $("modePractice").addEventListener("click",()=>{ practice=true; wr("hsm122-practice",practice); applySetText(); render(); });
-$("btnBack").addEventListener("click",()=>go("hjem"));
+$("btnBack").addEventListener("click",()=>go(SETS[setKey]&&SETS[setKey].back||"hjem"));
 $("lvlChip").addEventListener("click",()=>go("profil"));
 document.addEventListener("click",e=>{ const t=e.target.closest("button[data-view]"); if(t) go(t.dataset.view); });
 
@@ -4140,7 +4309,15 @@ const GLOSS=[
   [7,"Sikkerhetsmargin","Salgsinntekt minus dekningspunkt: hvor mye salget kan falle før bedriften går med tap."],
   [7,"Budsjettkontroll","Sammenligning av regnskap og budsjett per avdeling for å finne og forklare avvik."],
   [7,"Prisavvik","Avvik som skyldes at prisen per enhet ble en annen enn budsjettert."],
-  [7,"Mengdeavvik","Avvik som skyldes at mengden (solgt eller brukt) ble en annen enn budsjettert."]
+  [7,"Mengdeavvik","Avvik som skyldes at mengden (solgt eller brukt) ble en annen enn budsjettert."],
+  [7,"Normalkostregnskap","Driftsregnskap der produktene belastes med indirekte kostnader etter en normalsats fastsatt på forhånd, ganget med virkelig aktivitet."],
+  [7,"Normalsats","Budsjetterte indirekte kostnader delt på normal aktivitet, for eksempel kroner per maskintime.","Normal = fastsatt på forhånd ut fra et vanlig år."],
+  [7,"Innkalkulerte kostnader","Normalsats ganger virkelig aktivitet: de indirekte kostnadene produktene faktisk blir belastet med."],
+  [7,"Dekningsdifferanse","Innkalkulerte minus virkelige indirekte kostnader. Positiv er overdekning, negativ er underdekning.","Inn minus virkelig: har produktene «dekket» kostnadene?"],
+  [7,"Overdekning","Mer indirekte kostnader er innkalkulert enn det som faktisk påløp (positiv dekningsdifferanse)."],
+  [7,"Underdekning","Mindre indirekte kostnader er innkalkulert enn det som faktisk påløp (negativ dekningsdifferanse)."],
+  [7,"Beskjeftigelsesavvik","(Virkelig − normal aktivitet) × fast normalsats. Viser hvor mye av dekningsdifferansen som skyldes at aktiviteten avvek fra normal.","Beskjeftigelse = hvor mye bedriften er sysselsatt."],
+  [7,"Kostnadsavvik","Budsjetterte minus virkelige faste kostnader. Viser hvor mye av dekningsdifferansen som skyldes at kostnadsnivået avvek fra budsjettet."]
 ].map(([ch,t,d,k,alt])=>({ch,t,d,k:k||"",alt:alt||[],id:"g:"+t}));
 
 /* Begreper som lett forveksles: scenario → riktig begrep */
@@ -4173,6 +4350,10 @@ const SKILL_SETS=[
     items:[["Avdeling fisk.","Hovedsted"],["Bildrift.","Hjelpested"],["Administrasjon.","Fellessted"],["Avdeling kjøtt.","Hovedsted"],["Avdelingen sender faktura til kundene.","Hovedsted"],["Kjører varer for avdelingene, og summen fordeles i forholdet 3 : 5.","Hjelpested"]]},
   {ch:7,name:"Bruttofortjeneste, dekningsbidrag eller avanse",opts:["Bruttofortjeneste","Dekningsbidrag","Avanse"],why:{Bruttofortjeneste:"Salgsinntekt − bare varekostnaden.",Dekningsbidrag:"Salgsinntekt − alle variable kostnader.",Avanse:"Påslag i prosent av kostprisen."},
     items:[["Salgsinntekt minus bare varekostnaden.","Bruttofortjeneste"],["Salgsinntekt minus alle variable kostnader.","Dekningsbidrag"],["Påslag i prosent av kostprisen.","Avanse"],["Brukes til å finne dekningsgraden og dekningspunktet.","Dekningsbidrag"],["Kostpris 350 kr og salgspris 500 kr gir 42,9 %.","Avanse"],["Kostpris 350 kr og salgspris 500 kr gir 30 %.","Bruttofortjeneste"]]},
+  {ch:7,name:"Beskjeftigelsesavvik eller kostnadsavvik",opts:["Beskjeftigelsesavvik","Kostnadsavvik"],why:{Beskjeftigelsesavvik:"Skyldes at aktiviteten avvek fra normal aktivitet.",Kostnadsavvik:"Skyldes at de faste kostnadene ble andre enn budsjettert."},
+    items:[["Bedriften brukte 1 800 maskintimer mot normalt 2 000.","Beskjeftigelsesavvik"],["Et maskinhavari ga 28 000 kr i uplanlagte reparasjoner.","Kostnadsavvik"],["Husleien ble økt midt i året.","Kostnadsavvik"],["En stor ordre ga 500 timer mer enn normalt.","Beskjeftigelsesavvik"],["Regnes som (virkelig − normal aktivitet) × fast sats.","Beskjeftigelsesavvik"],["Regnes som budsjetterte − virkelige faste kostnader.","Kostnadsavvik"]]},
+  {ch:7,name:"Overdekning eller underdekning",opts:["Overdekning","Underdekning"],why:{Overdekning:"Innkalkulert > virkelig (positiv dekningsdifferanse).",Underdekning:"Innkalkulert < virkelig (negativ dekningsdifferanse)."},
+    items:[["Innkalkulert 270 000, virkelig 310 000.","Underdekning"],["Innkalkulert 440 000, virkelig 415 000.","Overdekning"],["Aktiviteten er over normal, og kostnadene er som budsjettert.","Overdekning"],["Aktiviteten er normal, og de faste kostnadene ble høyere enn budsjettert.","Underdekning"],["Dekningsdifferansen er negativ.","Underdekning"]]},
   {ch:7,name:"Positivt eller negativt avvik",opts:["Positivt avvik","Negativt avvik"],why:{"Positivt avvik":"Bedre for resultatet enn budsjettert.","Negativt avvik":"Dårligere for resultatet enn budsjettert."},
     items:[["Salg: budsjett 450 000, regnskap 470 000.","Positivt avvik"],["Lønn: budsjett 35 000, regnskap 34 000.","Positivt avvik"],["Bildrift: budsjett 15 000, regnskap 20 000.","Negativt avvik"],["Varekostnad: budsjett 290 000, regnskap 300 000.","Negativt avvik"],["Salg: budsjett 450 000, regnskap 430 000.","Negativt avvik"],["Diverse kostnader: budsjett 14 000, regnskap 16 000.","Negativt avvik"]]}
 ];
@@ -4710,8 +4891,9 @@ function xlHide(){
 function xlShowList(){ xlHide(); $("xlList").hidden=false; $("xlTitle").textContent="Regneark"; xlRenderList(); window.scrollTo(0,0); }
 
 /* ---------- open & build ---------- */
-function xlOpen(id){
-  const t=XL_TASKS.find(x=>x.id===id); if(!t) return;
+function xlOpen(id,exam){
+  const t=xlTaskById(id); if(!t) return;
+  XL.examMode=!!exam; $("xlCheck").hidden=$("xlSolution").hidden=!!exam; $("xlClose").lastChild.textContent=exam?"Eksamen":"Oppgaver";
   XL.t=t; const saved=rd(xlKey(id),null);
   XL.raw=Object.assign({},(saved&&saved.raw)||{},t.cells);
   const first=Object.keys(t.targets).map(xlParseRef).sort((a,b)=>a.r-b.r||a.c-b.c)[0]||{c:0,r:0};
@@ -4750,7 +4932,7 @@ function xlPaint(){
   xlStatus(comp,R);
 }
 function xlStatus(comp,R){
-  const t=XL.t, keys=Object.keys(t.targets), filled=keys.filter(a=>(XL.raw[a]??"")!=="" || xlMatch(comp.get(a),t.targets[a])).length;
+  const t=XL.t, keys=Object.keys(t.targets), filled=keys.filter(a=>(XL.raw[a]??"")!=="" || (!XL.examMode && xlMatch(comp.get(a),t.targets[a]))).length;
   let sel="";
   if(R.c1!==R.c2||R.r1!==R.r2){ let sum=0,n=0,cnt=0; for(let r=R.r1;r<=R.r2;r++) for(let c=R.c1;c<=R.c2;c++){ const v=comp.get(xlAddr(c,r)); if(v!=null&&v!=="") cnt++; if(typeof v==="number"){ sum+=v; n++; } }
     sel=n?`<span>Gjennomsnitt <b>${xlFmt(sum/n)}</b></span><span>Antall <b>${cnt}</b></span><span>Sum <b>${xlFmt(sum)}</b></span>`:`<span>Antall <b>${cnt}</b></span>`; }
@@ -4914,7 +5096,7 @@ function xlReset(){ xlPush(); XL.raw=Object.assign({},XL.t.cells); XL.marks={}; 
   $("xlSolution").addEventListener("click",xlSolution);
   $("xlReset").addEventListener("click",xlReset);
   $("xlBack").addEventListener("click",()=>go("laer"));
-  $("xlClose").addEventListener("click",xlShowList);
+  $("xlClose").addEventListener("click",()=>{ if(XL.examMode){ xlHide(); XL.examMode=false; if(typeof renderExam==="function") renderExam(); } else xlShowList(); });
   $("xlTaskTgl").addEventListener("click",()=>{ XLUI.task=!XLUI.task; xlUiSave(); xlApplyUi(); });
   $("xlZoomIn").addEventListener("click",()=>xlZoom(.1));
   $("xlZoomOut").addEventListener("click",()=>xlZoom(-.1));
@@ -4928,6 +5110,249 @@ function xlReset(){ xlPush(); XL.raw=Object.assign({},XL.t.cells); XL.marks={}; 
 LEARN_SUB.push("excel");
 const learnEnterBase=learnEnter;
 learnEnter=function(v){ learnEnterBase(v); if(v==="excel") xlShowList(); else if(XL.t) xlHide(); };
+
+/* ================= PRØVEEKSAMEN: generated Excel tasks + full mock exam ================= */
+function xlRng(seed){ let a=seed>>>0; return ()=>{ a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function xlR(r){ return { ri:(a,b,s=1)=>a+Math.floor(r()*(Math.floor((b-a)/s)+1))*s, pick:a=>a[Math.floor(r()*a.length)] }; }
+const dec=x=>String(x).replace(".",",");
+const kr=x=>Math.round(x).toLocaleString("nb-NO");
+
+/* Each template: ch, title, make(R) → {intro,steps,cols,rows,widths,cells,solution,pct?,tol?,abs?} */
+const GEN={
+  pris:{ch:6,title:"Handelskalkyle og pris inkl. mva.",make({ri}){
+    const ip=ri(200,900,10), fr=ri(10,80,5), ind=ri(20,60,5), fo=ri(10,25,5);
+    return {intro:`En butikk kjøper inn en vare for ${kr(ip)} kr per enhet og betaler ${fr} kr i frakt og forsikring per enhet. Indirekte kostnader legges på med ${ind} % av inntakskost, og fortjenesten skal være ${fo} % av selvkost.`,
+      steps:["Inntakskost = innkjøpspris + frakt og forsikring","Selvkost = inntakskost + indirekte kostnader. Salgspris = selvkost + fortjeneste","Mva. 25 % kommer på salgsprisen","Avanse % regnes av inntakskost, bruttofortjeneste % av salgspris (eks. mva.)"],
+      cols:2,rows:15,widths:[310,130],
+      cells:{A1:"Innkjøpspris per enhet",B1:ip,A2:"Frakt og forsikring per enhet",B2:fr,A3:"Indirekte kostnader (% av inntakskost)",B3:ind,A4:"Fortjeneste (% av selvkost)",B4:fo,A5:"Mva.-sats (%)",B5:25,A7:"Inntakskost",A8:"Indirekte kostnader",A9:"Selvkost",A10:"Fortjeneste",A11:"Salgspris eks. mva.",A12:"Mva.",A13:"Salgspris inkl. mva.",A14:"Avanse (% av inntakskost)",A15:"Bruttofortjeneste (% av salgspris)"},
+      solution:{B7:"=B1+B2",B8:"=B7*B3/100",B9:"=B7+B8",B10:"=B9*B4/100",B11:"=B9+B10",B12:"=B11*B5/100",B13:"=B11+B12",B14:"=(B11-B7)/B7*100",B15:"=(B11-B7)/B11*100"},pct:["B14","B15"]};}},
+  avskr:{ch:2,title:"Lineær og saldoavskrivning",make({ri}){
+    const ak=ri(20,90)*10000, rv=ri(2,10)*5000, sats=ri(15,35,5);
+    const sol={};
+    for(let i=0;i<5;i++){ const r=7+i; sol["B"+r]="=($B$1-$B$2)/$B$3"; sol["C"+r]=i?`=C${r-1}-B${r}`:"=$B$1-B7"; sol["D"+r]=i?`=E${r-1}*$B$4/100`:"=$B$1*$B$4/100"; sol["E"+r]=i?`=E${r-1}-D${r}`:"=$B$1-D7"; }
+    const cells={A1:"Anskaffelseskost",B1:ak,A2:"Restverdi (utrangeringsverdi)",B2:rv,A3:"Levetid (år)",B3:5,A4:"Saldosats (%)",B4:sats,A6:"År",B6:"Lineær avskr.",C6:"Bokført (lineær)",D6:"Saldoavskr.",E6:"Bokført (saldo)"};
+    for(let i=0;i<5;i++) cells["A"+(7+i)]=i+1;
+    return {intro:`En maskin koster ${kr(ak)} kr og har en restverdi på ${kr(rv)} kr etter 5 år. Sett opp avskrivningsplanen både lineært og med saldoavskrivning (${sats} %).`,
+      steps:["Lineær avskrivning = (anskaffelseskost − restverdi) / levetid","Saldoavskrivning = sats × bokført verdi ved årets start","Bokført verdi = forrige års bokførte verdi − årets avskrivning","Tips: lag år 1 og år 2, og bruk Fyll ned"],
+      cols:5,rows:11,widths:[220,120,140,120,140],cells,solution:sol};}},
+  kost:{ch:3,title:"Kostnadstabell fra kostnadsfunksjon",make({ri,pick}){
+    const a=pick([0.02,0.025,0.04,0.05,0.1]), b=ri(20,80,5), c=ri(10,40)*1000;
+    const step=Math.max(50,Math.round(Math.sqrt(c/a)/3/50)*50);
+    const cells={A1:"a (x²-leddet)",B1:dec(a),A2:"b (x-leddet)",B2:b,A3:"c (faste kostnader)",B3:c,A5:"Mengde",B5:"FTK",C5:"VTK",D5:"STK",E5:"FEK",F5:"VEK",G5:"SEK",H5:"DK",I5:"DEK",F13:"Laveste SEK:"};
+    const sol={};
+    for(let i=0;i<6;i++){ const r=6+i; cells["A"+r]=step*(i+1); sol["B"+r]="=$B$3"; sol["C"+r]=`=$B$1*A${r}^2+$B$2*A${r}`; sol["D"+r]=`=B${r}+C${r}`; sol["E"+r]=`=B${r}/A${r}`; sol["F"+r]=`=C${r}/A${r}`; sol["G"+r]=`=D${r}/A${r}`; if(i){ sol["H"+r]=`=D${r}-D${r-1}`; sol["I"+r]=`=H${r}/(A${r}-A${r-1})`; } }
+    sol.G13="=MIN(G6:G11)";
+    return {intro:`Kostnadsfunksjonen er K(x) = ${dec(a)}x² + ${b}x + ${kr(c)}. Lag kostnadstabellen og finn laveste SEK i tabellen.`,
+      steps:["FTK = c. VTK = a·x² + b·x (bruk ^ for potens: =$B$1*A6^2+$B$2*A6)","STK = FTK + VTK. FEK, VEK og SEK = totalkostnad / mengde","DK = STK₂ − STK₁, DEK = DK / (mengde₂ − mengde₁)","Laveste SEK med =MIN(G6:G11). Kostnadsoptimum er der DEK krysser SEK"],
+      cols:9,rows:13,widths:[110,90,100,100,80,80,80,90,80],cells,solution:sol};}},
+  elast:{ch:4,title:"Salgsinntekt, DEI og priselastisitet",make({ri,pick}){
+    const p0=ri(25,40)*10, dp=pick([10,20,25]), q0=ri(4,16)*50, k=ri(3,12);
+    const cells={A1:"Pris",B1:"Mengde",C1:"STI",D1:"DI",E1:"DEI",F1:"Elastisitet"}, sol={}; let best=null,bestP=0;
+    for(let i=0;i<6;i++){ const r=2+i, P=p0-i*dp, Q=q0+k*i*dp; cells["A"+r]=P; cells["B"+r]=Q; sol["C"+r]=`=A${r}*B${r}`; if(best==null||P*Q>best){ best=P*Q; bestP=P; }
+      if(i){ sol["D"+r]=`=C${r}-C${r-1}`; sol["E"+r]=`=D${r}/(B${r}-B${r-1})`; sol["F"+r]=`=((B${r}-B${r-1})/MIN(B${r-1}:B${r}))/((A${r-1}-A${r})/MIN(A${r-1}:A${r}))`; } }
+    cells.A9="Pris med høyest STI:"; sol.C9=String(bestP);
+    const tol={}; for(let r=3;r<=7;r++) tol["F"+r]=.01;
+    return {intro:"Tabellen viser etterspørselen ved ulike priser. Regn ut salgsinntekt, differanseinntekt, DEI og priselastisitet mellom hvert prisnivå.",
+      steps:["STI = pris × mengde, DI = STI₂ − STI₁, DEI = DI / mengdeendring","Elastisitet med laveste verdi som grunnlag: (mengdeendring / laveste mengde) / (prisendring / laveste pris)","Elastisitet > 1 er elastisk: da gir prisreduksjon høyere salgsinntekt","Skriv inn prisen med høyest STI i C9"],
+      cols:6,rows:9,widths:[170,100,110,100,90,100],cells,solution:sol,tol};}},
+  vom:{ch:5,title:"Vinningsoptimal mengde (VOM)",make(R){
+    for(let tries=0;tries<80;tries++){
+      const p0=R.ri(50,90)*10, dp=R.ri(4,10)*5, a=R.pick([.1,.15,.2,.25]), b=R.ri(10,25)*10, c=R.ri(20,80)*1000, step=100;
+      const rows=[]; for(let i=1;i<=7;i++){ const x=step*i, P=p0-dp*i, K=Math.round(c+b*x+a*x*x); rows.push({x,P,K,o:x*P-K}); }
+      let bi=0; rows.forEach((r,i)=>{ if(r.o>rows[bi].o) bi=i; });
+      if(bi===0||bi===6||rows.some(r=>r.P<=0)||rows[bi].o<=0) continue;
+      const cells={A1:"Mengde",B1:"Pris",C1:"STI",D1:"STK",E1:"Overskudd",F1:"DEI",G1:"DEK",A10:"Høyeste overskudd:",A11:"VOM (mengde):"}, sol={};
+      rows.forEach((o,i)=>{ const r=2+i; cells["A"+r]=o.x; cells["B"+r]=o.P; cells["D"+r]=o.K; sol["C"+r]=`=A${r}*B${r}`; sol["E"+r]=`=C${r}-D${r}`; if(i){ sol["F"+r]=`=(C${r}-C${r-1})/(A${r}-A${r-1})`; sol["G"+r]=`=(D${r}-D${r-1})/(A${r}-A${r-1})`; } });
+      sol.C10="=MAKS(E2:E8)"; sol.C11=String(rows[bi].x);
+      return {intro:"En bedrift med fallende etterspørselskurve vurderer hvor mye den skal produsere. Pris og totale kostnader per mengde er gitt.",
+        steps:["STI = mengde × pris, overskudd = STI − STK","DEI = endring i STI / endring i mengde, DEK = endring i STK / endring i mengde","VOM er der DEI = DEK: øk mengden så lenge DEI > DEK","Høyeste overskudd med =MAKS(E2:E8), og skriv inn VOM i C11"],
+        cols:7,rows:11,widths:[170,90,110,110,110,90,90],cells,solution:sol};
+    } throw new Error("vom");}},
+  selvkost:{ch:6,title:"Tilleggssats og selvkostkalkyle",make({ri,pick}){
+    const dm=ri(20,80)*100, t=ri(5,30), tl=ri(35,60)*10, im=ri(5,20), rate=pick([60,75,80,90,120,150]), bdl=ri(10,30)*100000, sa=ri(10,25), fo=ri(10,25);
+    return {intro:`En industribedrift skal kalkulere en ordre med ${kr(dm)} kr i direkte materialer og ${t} direkte arbeidstimer à ${tl} kr. Indirekte tilvirkningskostnader fordeles etter direkte lønn.`,
+      steps:["Tilleggssats = budsjetterte indirekte kostnader / budsjettert direkte lønn × 100","Tilvirkningskost = DM + DL + indirekte material + indirekte tilvirkning","Selvkost = tilvirkningskost + salg og adm.","Salgspris = selvkost + fortjeneste"],
+      cols:2,rows:18,widths:[360,130],
+      cells:{A1:"Direkte materialer (DM)",B1:dm,A2:"Direkte arbeidstimer",B2:t,A3:"Timelønn",B3:tl,A4:"Indirekte materialkostnader (% av DM)",B4:im,A5:"Budsjetterte indirekte tilvirkningskostnader",B5:bdl*rate/100,A6:"Budsjettert direkte lønn",B6:bdl,A7:"Salg og adm. (% av tilvirkningskost)",B7:sa,A8:"Fortjeneste (% av selvkost)",B8:fo,
+        A10:"Tilleggssats tilvirkning (% av DL)",A11:"Direkte lønn (DL)",A12:"Indirekte materialkostnader",A13:"Indirekte tilvirkningskostnader",A14:"Tilvirkningskost",A15:"Salg og administrasjon",A16:"Selvkost",A17:"Fortjeneste",A18:"Salgspris"},
+      solution:{B10:"=B5/B6*100",B11:"=B2*B3",B12:"=B1*B4/100",B13:"=B11*B10/100",B14:"=B1+B11+B12+B13",B15:"=B14*B7/100",B16:"=B14+B15",B17:"=B16*B8/100",B18:"=B16+B17"},pct:["B10"]};}},
+  fordel:{ch:7,title:"Kostnadsfordeling med hjelpeavdeling",make({ri,pick}){
+    const N=pick([["Herre","Dame","Barn"],["Kjøtt","Fisk","Frukt"],["Sko","Klær","Utstyr"],["Bøker","Papir","Gaver"]]);
+    const ar=[ri(5,20)*10,ri(10,30)*10,ri(10,30)*10,ri(10,30)*10], om=[0,ri(2,10)*100000,ri(2,10)*100000,ri(2,10)*100000], ln=[ri(6,24)*5000,ri(10,30)*5000,ri(10,30)*5000,ri(10,30)*5000], lk=[0,ri(1,5),ri(1,5),ri(1,5)];
+    const hus=ri(6,20)*10000, str=ri(10,40)*1000, adm=ri(6,18)*5000, sum=a=>a.reduce((s,x)=>s+x,0);
+    const cells={A1:"Kostnad",B1:"Sum",C1:"Lager",D1:N[0],E1:N[1],F1:N[2],G1:"Sum nøkkel",A2:"Husleie",B2:hus,A3:"Lønn",B3:sum(ln),A4:"Strøm",B4:str,A5:"Administrasjon",B5:adm,A6:"Sum før fordeling",A7:"Fordeling lager",A8:"Sum indirekte kostnader",A10:"Areal (m²)",A11:"Omsetning",A12:"Lagernøkkel",A13:"Lønn per avdeling"};
+    "CDEF".split("").forEach((c,i)=>{ cells[c+"10"]=ar[i]; if(i){ cells[c+"11"]=om[i]; cells[c+"12"]=lk[i]; } cells[c+"13"]=ln[i]; });
+    cells.G10=sum(ar); cells.G11=sum(om); cells.G12=sum(lk); cells.G13=sum(ln);
+    const sol={};
+    "CDEF".split("").forEach(c=>{ sol[c+"2"]=`=$B2*${c}$10/$G$10`; sol[c+"3"]=`=${c}13`; sol[c+"4"]=`=$B4*${c}$10/$G$10`; sol[c+"6"]=`=SUMMER(${c}2:${c}5)`; });
+    "DEF".split("").forEach(c=>{ sol[c+"5"]=`=$B5*${c}$11/$G$11`; sol[c+"7"]=`=$C6*${c}12/$G$12`; sol[c+"8"]=`=${c}6+${c}7`; });
+    sol.B6="=SUMMER(B2:B5)"; sol.C7="=-C6"; sol.B8="=SUMMER(D8:F8)";
+    return {intro:`En butikk har avdelingene ${N.join(", ").toLowerCase()} og et felles lager (hjelpeavdeling). Fordel kostnadene med nøklene i rad 10–13, og fordel så lageret videre etter lagernøkkelen.`,
+      steps:["Husleie og strøm etter areal, for eksempel =$B2*C$10/$G$10","Lønn direkte fra rad 13. Administrasjon etter omsetning (lageret får ingen)","Rad 6: sum før fordeling. Rad 7: lageret tømmes (negativt) og fordeles etter lagernøkkelen","Rad 8: sum indirekte kostnader per salgsavdeling"],
+      cols:7,rows:13,widths:[190,100,100,100,100,100,100],cells,solution:sol,abs:["C7"]};}},
+  budk:{ch:7,title:"Budsjettkontroll med avvik",make({ri}){
+    const bs=ri(40,90)*10000, bf=ri(25,40), bv=Math.round(bs*(1-bf/100)/1000)*1000;
+    const rs=Math.round(bs*(1+ri(-12,12)/100)/1000)*1000, rv=Math.round(rs*(1-(bf+ri(-4,3))/100)/1000)*1000;
+    const L=[ri(6,15)*5000,ri(2,6)*5000,ri(1,6)*2000,ri(2,8)*2000];
+    const R=[L[0]+ri(-4,4)*1000,L[1],L[2]+ri(-3,3)*1000,L[3]+ri(-3,4)*1000];
+    const cells={A1:"Post",B1:"Budsjett",C1:"Regnskap",D1:"Avvik",A2:"Salgsinntekt",B2:bs,C2:rs,A3:"Varekostnad",B3:bv,C3:rv,A4:"Bruttofortjeneste",A5:"Lønn",A6:"Husleie",A7:"Markedsføring",A8:"Andre kostnader",A9:"Sum indirekte kostnader",A10:"Resultat",A11:"Bruttofortjeneste %"};
+    for(let i=0;i<4;i++){ cells["B"+(5+i)]=L[i]; cells["C"+(5+i)]=R[i]; }
+    const sol={B4:"=B2-B3",C4:"=C2-C3",B9:"=SUMMER(B5:B8)",C9:"=SUMMER(C5:C8)",B10:"=B4-B9",C10:"=C4-C9",D2:"=C2-B2",D3:"=B3-C3",D4:"=C4-B4",D5:"=B5-C5",D6:"=B6-C6",D7:"=B7-C7",D8:"=B8-C8",D9:"=B9-C9",D10:"=C10-B10",B11:"=B4/B2*100",C11:"=C4/C2*100"};
+    return {intro:"Sett opp budsjettkontrollen for avdelingen for måneden. Regn ut bruttofortjeneste, sum indirekte kostnader, resultat og avvik.",
+      steps:["Avvik som effekt på resultatet: inntekter og fortjeneste = regnskap − budsjett","Kostnader: budsjett − regnskap. Negativt avvik betyr dårligere enn budsjett","Kontroll: resultatavviket = avvik bruttofortjeneste + avvik sum indirekte","Bruttofortjeneste % = BF / salgsinntekt × 100"],
+      cols:4,rows:11,widths:[220,120,120,120],cells,solution:sol,pct:["B11","C11"]};}},
+  dekn:{ch:7,title:"Nullpunkt, sikkerhetsmargin og målsatt salg",make({ri}){
+    const p=ri(20,80)*10, v=Math.round(p*ri(40,70)/100/10)*10, fk=ri(20,90)*10000, db=p-v, np=fk/db;
+    const q=Math.ceil(np*(1+ri(10,50)/100)/100)*100, mr=ri(1,4)*50000;
+    return {intro:`Et produkt selges for ${p} kr per enhet og har variable kostnader på ${v} kr per enhet. Faste kostnader er ${kr(fk)} kr. Budsjettert salg er ${kr(q)} enheter, og ledelsen ønsker et resultat på ${kr(mr)} kr.`,
+      steps:["DB per enhet = pris − VEK, DG = DB / pris × 100","Nullpunkt i enheter = FK / DB per enhet, i kroner = FK / DG","Sikkerhetsmargin = budsjettert salgsinntekt − nullpunkt i kroner","Målsatt salg = (FK + ønsket resultat) / DB per enhet"],
+      cols:2,rows:15,widths:[320,130],
+      cells:{A1:"Salgspris per enhet",B1:p,A2:"Variable kostnader per enhet",B2:v,A3:"Faste kostnader",B3:fk,A4:"Budsjettert salg (enheter)",B4:q,A5:"Ønsket resultat",B5:mr,A7:"Dekningsbidrag per enhet",A8:"Dekningsgrad (%)",A9:"Nullpunkt (enheter)",A10:"Nullpunkt (kr)",A11:"Budsjettert salgsinntekt",A12:"Sikkerhetsmargin (kr)",A13:"Sikkerhetsmargin (%)",A14:"Budsjettert resultat",A15:"Målsatt salg (enheter)"},
+      solution:{B7:"=B1-B2",B8:"=B7/B1*100",B9:"=B3/B7",B10:"=B3/(B8/100)",B11:"=B1*B4",B12:"=B11-B10",B13:"=B12/B11*100",B14:"=B4*B7-B3",B15:"=(B3+B5)/B7"},pct:["B8","B13"]};}},
+  svinn:{ch:7,title:"Varekostnad og svinn",make({ri,pick}){
+    const s=ri(50,150)*10000, bf=pick([25,30,35,40]), ev=s*(1-bf/100), sv=Math.round(s*ri(5,40)/1000/1000)*1000, vk=ev+sv, ib=ri(10,30)*10000, ub=ri(10,30)*10000;
+    return {intro:`En butikk kalkulerer alle varer med ${bf} % bruttofortjeneste. Etter vareopptellingen har den tallene i B1:B5. Finn varekostnaden og hvor stort svinnet er.`,
+      steps:["Varekostnad = IB + innkjøp − UB","Forventet varekostnad = salgsinntekt × (1 − kalkulert BF %)","Svinn til kostpris = faktisk − forventet varekostnad","Oppnådd BF % = (salg − varekostnad) / salg × 100"],
+      cols:2,rows:13,widths:[300,130],
+      cells:{A1:"Salgsinntekt",B1:s,A2:"Varebeholdning ved periodens start (IB)",B2:ib,A3:"Innkjøp",B3:vk-ib+ub,A4:"Varebeholdning ved periodens slutt (UB)",B4:ub,A5:"Kalkulert bruttofortjeneste (%)",B5:bf,A7:"Faktisk varekostnad",A8:"Forventet varekostnad",A9:"Svinn til kostpris",A10:"Oppnådd bruttofortjeneste",A11:"Oppnådd BF %",A12:"Kalkulert bruttofortjeneste (kr)",A13:"Svinn i % av salg"},
+      solution:{B7:"=B2+B3-B4",B8:"=B1*(1-B5/100)",B9:"=B7-B8",B10:"=B1-B7",B11:"=B10/B1*100",B12:"=B1*B5/100",B13:"=B9/B1*100"},pct:["B11","B13"]};}},
+  normal:{ch:7,title:"Normalkost: dekningsdifferanse og avvik",make({ri}){
+    const n=ri(10,40)*100, fs=ri(8,30)*10, vs=ri(4,16)*5, va=Math.round(n*(1+ri(-15,15)/100)/10)*10, bf=n*fs, vf=bf+ri(-30,30)*1000, vv=vs*va+ri(-10,10)*500;
+    return {intro:`Bedriften fordeler indirekte kostnader etter maskintimer med normalkost. Normal aktivitet er ${kr(n)} maskintimer per måned. Finn normalsatsene, innkalkulerte kostnader og dekningsdifferansen, og del den faste dekningsdifferansen i beskjeftigelsesavvik og kostnadsavvik.`,
+      steps:["Fast normalsats = budsjetterte faste / normal aktivitet","Innkalkulert = normalsats × virkelig aktivitet. Dekningsdifferanse = innkalkulert − virkelig (minus = underdekning)","Beskjeftigelsesavvik = (virkelig − normal aktivitet) × fast sats","Kostnadsavvik = budsjetterte − virkelige faste. Kontroll: summen = dekningsdifferansen for de faste"],
+      cols:2,rows:17,widths:[360,130],
+      cells:{A1:"Normal aktivitet (maskintimer)",B1:n,A2:"Budsjetterte faste indirekte kostnader",B2:bf,A3:"Variabel normalsats per maskintime",B3:vs,A4:"Virkelig aktivitet (maskintimer)",B4:va,A5:"Virkelige faste indirekte kostnader",B5:vf,A6:"Virkelige variable indirekte kostnader",B6:vv,
+        A8:"Fast normalsats per maskintime",A9:"Samlet normalsats per maskintime",A10:"Innkalkulerte faste kostnader",A11:"Dekningsdifferanse, faste",A12:"Beskjeftigelsesavvik",A13:"Kostnadsavvik",A14:"Innkalkulerte variable kostnader",A15:"Dekningsdifferanse, variable",A16:"Samlet dekningsdifferanse",A17:"Kontroll: beskjeftigelses- + kostnadsavvik"},
+      solution:{B8:"=B2/B1",B9:"=B8+B3",B10:"=B8*B4",B11:"=B10-B5",B12:"=(B4-B1)*B8",B13:"=B2-B5",B14:"=B3*B4",B15:"=B14-B6",B16:"=B11+B15",B17:"=B12+B13"}};}}
+};
+const GEN_ORDER=["avskr","kost","elast","vom","pris","selvkost","fordel","budk","dekn","svinn","normal"];
+const genCache={};
+function genTask(tpl,seed){
+  const id="g-"+tpl+"-"+seed; if(genCache[id]) return genCache[id];
+  const g=GEN[tpl]; if(!g) return null;
+  const t=g.make(xlR(xlRng(seed)));
+  const cells={}; Object.entries(t.cells).forEach(([a,v])=>cells[a]=String(v));
+  const comp=xlCompute(Object.assign({},cells,t.solution)), targets={};
+  Object.keys(t.solution).forEach(a=>{ const v=comp.get(a); const pct=(t.pct||[]).includes(a);
+    const tol=(t.tol&&t.tol[a])??(pct?.1:Math.max(.5,Math.abs(v)*.002));
+    targets[a]={v:Math.round(v*1e6)/1e6,tol}; if(pct) targets[a].pct=1; if((t.abs||[]).includes(a)) targets[a].abs=1; });
+  const task={id,ch:g.ch,title:g.title,src:"Generert oppgave · nye tall hver gang",gen:tpl,intro:t.intro,steps:t.steps,cols:t.cols,rows:t.rows,widths:t.widths,cells,targets,solution:t.solution};
+  genCache[id]=task; return task;
+}
+function xlTaskById(id){ const m=/^g-(\w+)-(\d+)$/.exec(id); return m?genTask(m[1],+m[2]):XL_TASKS.find(x=>x.id===id); }
+const newSeed=()=>Math.floor(Math.random()*1e9)+1;
+
+/* Excel list: generator section */
+const xlRenderListBase=xlRenderList;
+xlRenderList=function(){
+  xlRenderListBase();
+  const byCh={}; GEN_ORDER.forEach(k=>(byCh[GEN[k].ch]=byCh[GEN[k].ch]||[]).push(k));
+  $("xlList").insertAdjacentHTML("afterbegin",`<h2 class="sec-h">Generator · nye tall hver gang</h2><p class="sec-sub">Samme type oppgave som på eksamen, men med nye tall hver gang du trykker. Øv til du gjør den feilfritt.</p><div class="group glass">`+
+    GEN_ORDER.map(k=>`<button class="row" type="button" data-gen="${k}"><span class="tile t-xl" aria-hidden="true">${IC_SHUFFLE}</span><span class="rt"><b>${GEN[k].title}</b><span>Kap. ${GEN[k].ch} · ${CH_NAME[GEN[k].ch]}</span></span><span></span>${IC_CHEV}</button>`).join("")+`</div>`);
+  const hero=$("xlList").querySelector(".xl-hero"); if(hero) $("xlList").prepend(hero);
+  $("xlList").querySelectorAll("[data-gen]").forEach(b=>b.addEventListener("click",()=>xlOpen("g-"+b.dataset.gen+"-"+newSeed())));
+};
+
+/* ================= Mock exam ================= */
+BADGES.push(["eks","EKS","Prøveeksamen","Lever en full prøveeksamen."],["eksB","B","Eksamensklar","Få B eller bedre på en prøveeksamen."]);
+P.exams=P.exams||[];
+function drawStrat(chs,per,total){
+  const gs=shuffle(groupsOf(ALL)), out=[];
+  chs.forEach(ch=>{ let n=0; for(const g of gs){ if(n>=per) break; if(getQ(g[0]).topic[0]!==String(ch) || g.some(id=>out.includes(id))) continue; if(n+g.length>per+1) continue; out.push(...g); n+=g.length; } });
+  return out.slice(0,total);
+}
+SETS.ak2={gen:()=>drawStrat([5,6,7],10,30),n:30,exam:true,key:"hsm122-ak2",group:"Eksamenstrening",label:"AK2-simulering",eyebrow:"Arbeidskrav 2 · kap. 5–7 · uten hjelpemidler · krav 41 %"};
+SETS.eks1={gen:()=>drawStrat([1,2,3,4,5,6,7],3,21),n:21,exam:true,back:"eksamen",key:"hsm122-eks1",group:"Eksamen",label:"Prøveeksamen del 1",eyebrow:"Prøveeksamen · del 1 · uten hjelpemidler · kap. 1–7"};
+DISPLAY.ak2={t:"AK2-simulering",s:"30 oppgaver fra kap. 5–7, som arbeidskrav 2",tile:"t-purple",ic:"AK2"};
+DISPLAY.eks1={t:"Prøveeksamen · del 1",s:"21 oppgaver fra kap. 1–7",tile:"t-red",ic:"E1"};
+GROUPS.splice(1,0,["Eksamenstrening","Simuleringer av arbeidskrav og eksamen",["ak2"]]);
+LEARN_SUB.push("eksamen");
+const isPracticeBase=isPractice; isPractice=function(){ return SETS[setKey].exam?false:isPracticeBase(); };
+const applySetTextBase=applySetText; applySetText=function(){ applySetTextBase(); const ex=!!SETS[setKey].exam; $("modePractice").disabled=ex; $("btnReset").hidden=setKey==="eks1"; };
+const showResultBase=showResult; showResult=function(){ showResultBase(); if(setKey==="eks1"){ const b=$("againBtn"); if(b){ const n=b.cloneNode(false); n.textContent="Tilbake til eksamen"; n.addEventListener("click",()=>go("eksamen")); b.replaceWith(n); } } };
+
+const EX_KEY="hsm122-exam", EX_MS=4*3600e3;
+function exState(){ return rd(EX_KEY,null); }
+function exSave(s){ wr(EX_KEY,s); }
+function exNew(){
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const tpls=[pick(["avskr","kost","elast","pris"]),pick(["vom","selvkost","normal"]),pick(["fordel","budk","dekn","svinn"])];
+  if(tpls[1]!=="normal" && Math.random()<.35) tpls[2]="normal";
+  const del2=tpls.map(t=>"g-"+t+"-"+newSeed());
+  try{ localStorage.removeItem(SETS.eks1.key); }catch(e){}
+  exSave({started:Date.now(),del2,done:false}); renderExam();
+}
+function exDel1(){
+  const s=rd(SETS.eks1.key,null)||{}; const ids1=Array.isArray(s.ids)?s.ids:[]; const a=s.ans||{};
+  const Qs=ids1.map(getQ); let pts=0, by={};
+  Qs.forEach((q,i)=>{ const r=scoreQ(q,a[i]); pts+=r.pts; const c=q.topic[0]; const b=by[c]||[0,0]; b[0]+=r.pts; b[1]+=3; by[c]=b; });
+  return {n:Qs.length,answered:Qs.filter((q,i)=>isAnswered(q,a[i])).length,pts,max:Qs.length*3,by,graded:!!s.graded};
+}
+function exTask(id){
+  const t=xlTaskById(id), saved=rd(xlKey(id),null), raw=Object.assign({},(saved&&saved.raw)||{},t.cells), comp=xlCompute(raw);
+  const keys=Object.keys(t.targets); const ok=keys.filter(a=>xlMatch(comp.get(a),t.targets[a])).length; const filled=keys.filter(a=>(raw[a]??"")!=="").length;
+  return {t,ok,n:keys.length,filled};
+}
+function exGrade(p){ return p>=90?"A":p>=80?"B":p>=60?"C":p>=50?"D":p>=40?"E":"F"; }
+function exDeliver(){
+  const s=exState(); if(!s) return;
+  { const prev=setKey; setKey="eks1"; load(); if(!graded) grade(); setKey=prev; }
+  const d1=exDel1(), tasks=s.del2.map(exTask);
+  const p1=Math.max(0,d1.pts)/Math.max(1,d1.max)*100, p2=tasks.reduce((x,k)=>x+k.ok/k.n,0)/tasks.length*100, tot=(p1+p2)/2, g=exGrade(tot);
+  s.done=true; s.result={at:Date.now(),p1,p2,tot,g,el:Date.now()-s.started}; exSave(s);
+  P.exams.push({at:Date.now(),g,tot:Math.round(tot)}); if(P.exams.length>30) P.exams.shift();
+  unlock("eks"); if("AB".includes(g)) unlock("eksB"); award(Math.round(tot)); saveP(); renderLevel();
+  if("ABC".includes(g)) confetti(); renderExam(); window.scrollTo(0,0);
+}
+let exTimer=null;
+function renderExam(){
+  clearInterval(exTimer);
+  const box=$("exStage"), s=exState();
+  if(!s){
+    const hist=P.exams.slice(-6).reverse();
+    box.innerHTML=`<div class="ex-hero glass"><span class="eyebrow">HSM122 · Prøveeksamen</span><b>Øv under eksamenslike forhold</b><span>Eksamen er en todelt skoleeksamen på 4 timer: del 1 uten hjelpemidler og del 2 med hjelpemidler (Excel). Generatoren lager en ny eksamen hver gang.</span></div>
+      <div class="ex-opts">
+        <button class="mode glass" type="button" id="exStart" style="--mc:#ff3b30"><span class="tile t-red" aria-hidden="true">4t</span><b>Full prøveeksamen</b><span>Del 1: 21 oppgaver fra kap. 1–7. Del 2: 3 Excel-oppgaver med nye tall. 4 timer, ingen fasit underveis, veiledende karakter til slutt.</span><em>Gjennomfør den i ett strekk, slik som på eksamensdagen.</em></button>
+        <button class="mode glass" type="button" data-view="ak2" style="--mc:#af52de"><span class="tile t-purple" aria-hidden="true">AK2</span><b>AK2-simulering</b><span>30 oppgaver fra kap. 5–7 uten fasit underveis, med kravet på 41 %. Ny trekning hver gang.</span><em>Arbeidskrav 2 er tirsdag 3. november.</em></button>
+      </div>
+      ${hist.length?`<h2 class="sec-h">Tidligere prøveeksamener</h2><div class="group glass">${hist.map(h=>`<div class="row"><span class="tile t-red ex-g" aria-hidden="true">${h.g}</span><span class="rt"><b>${h.tot} %</b><span>${new Date(h.at).toLocaleDateString("nb-NO",{day:"numeric",month:"long"})}</span></span><span></span><span></span></div>`).join("")}</div>`:""}
+      <p class="modehint">Karakteren er veiledende: del 1 og del 2 teller like mye, og skalaen er A ≥ 90 %, B ≥ 80 %, C ≥ 60 %, D ≥ 50 % og E ≥ 40 %. Den virkelige vektingen og poengsettingen på eksamen kan være annerledes.</p>`;
+    $("exStart").addEventListener("click",exNew); return;
+  }
+  const d1=exDel1(), tasks=s.del2.map(exTask);
+  if(s.done){
+    const R=s.result;
+    box.innerHTML=`<div class="ex-res glass"><span class="ex-grade g-${R.g}">${R.g}</span><div><b>${Math.round(R.tot)} % samlet</b><span>Veiledende karakter · brukt tid ${mmss(R.el)}</span></div></div>
+      <div class="ex-parts">
+        <div class="ex-part glass"><b>Del 1 · ${Math.round(R.p1)} %</b><span>${fmt(d1.pts)} av ${d1.max} poeng</span><div class="ex-chs">${Object.keys(CH_NAME).map(c=>{ const b=d1.by[c]; if(!b) return ""; const p=Math.max(0,b[0])/b[1]*100; return `<div class="mrow"><span>${c} ${CH_NAME[c]}</span><span class="mbar"><i class="${pctClass(p)}" style="width:${p}%"></i></span><b>${Math.round(p)} %</b></div>`; }).join("")}</div><button class="btn ghost sm" type="button" data-view="eks1">Se gjennom del 1</button></div>
+        <div class="ex-part glass"><b>Del 2 · ${Math.round(R.p2)} %</b><span>Excel-oppgaver</span>${tasks.map((k,i)=>`<button class="row" type="button" data-rev="${i}"><span class="tile t-xl" aria-hidden="true">${IC_GRID}</span><span class="rt"><b>${k.t.title}</b><span>${k.ok} av ${k.n} celler riktige · trykk for fasit</span></span><span class="pct">${Math.round(k.ok/k.n*100)} %</span>${IC_CHEV}</button>`).join("")}</div>
+      </div>
+      <div class="rowbtns"><button class="btn" type="button" id="exAgain">Ny prøveeksamen</button><button class="btn ghost" type="button" id="exClose">Til oversikten</button></div>`;
+    box.querySelectorAll("[data-rev]").forEach(b=>b.addEventListener("click",()=>{ xlOpen(s.del2[+b.dataset.rev],false); xlCheck(); XL.examMode=true; $("xlClose").lastChild.textContent="Eksamen"; }));
+    $("exAgain").addEventListener("click",exNew);
+    $("exClose").addEventListener("click",()=>{ try{ localStorage.removeItem(EX_KEY); }catch(e){} renderExam(); });
+    return;
+  }
+  const left=()=>s.started+EX_MS-Date.now();
+  box.innerHTML=`<div class="ex-clock glass"><span>Gjenstående tid</span><b class="mono" id="exLeft"></b><span class="ex-tip">Forslag: del 1 ca. 1 t 15 min, del 2 ca. 2 t 45 min.</span></div>
+    <div class="ex-part glass"><b>Del 1 · uten hjelpemidler</b><span>${d1.n?d1.answered+" av "+d1.n+" besvart":"21 oppgaver fra kap. 1–7"}. Flervalg og tallsvar, feil svar kan gi minuspoeng.</span><button class="btn" type="button" data-view="eks1">${d1.n?"Fortsett del 1":"Start del 1"}</button></div>
+    <div class="ex-part glass"><b>Del 2 · med hjelpemidler (Excel)</b><span>Løs oppgavene i regnearket. Svarene rettes først når du leverer.</span>${tasks.map((k,i)=>`<button class="row" type="button" data-x="${i}"><span class="tile t-xl" aria-hidden="true">${i+1}</span><span class="rt"><b>${k.t.title}</b><span>Kap. ${k.t.ch} · ${k.filled} av ${k.n} celler fylt ut</span></span><span></span>${IC_CHEV}</button>`).join("")}</div>
+    <div class="rowbtns"><button class="btn" type="button" id="exDeliver">Lever eksamen</button><button class="btn ghost" type="button" id="exQuit">Avbryt</button></div>
+    <div class="confirm" id="exConfirm" hidden><span id="exConfMsg"></span><button class="btn danger sm" type="button" id="exYes">Lever</button><button class="btn ghost sm" type="button" id="exNo">Fortsett å jobbe</button></div>`;
+  const upd=()=>{ const ms=left(), e=$("exLeft"); if(!e){ clearInterval(exTimer); return; } e.textContent=ms>0?mmss(ms):"Tiden er ute"; e.classList.toggle("over",ms<=0); };
+  upd(); exTimer=setInterval(upd,1000);
+  box.querySelectorAll("[data-x]").forEach(b=>b.addEventListener("click",()=>xlOpen(s.del2[+b.dataset.x],true)));
+  let quit=false;
+  $("exDeliver").addEventListener("click",()=>{ const miss=(d1.n-d1.answered)+(d1.n?0:21), empty=tasks.filter(k=>k.filled<k.n).length; $("exConfMsg").textContent=(miss||empty)?`Du har ${miss} ubesvarte oppgaver i del 1 og ${empty} Excel-oppgaver som ikke er ferdige. Lever likevel?`:"Lever eksamen og se resultatet?"; quit=false; $("exYes").textContent="Lever"; $("exConfirm").hidden=false; });
+  $("exQuit").addEventListener("click",()=>{ $("exConfMsg").textContent="Avbryte prøveeksamenen? Svarene slettes."; quit=true; $("exYes").textContent="Avbryt eksamen"; $("exConfirm").hidden=false; });
+  $("exNo").addEventListener("click",()=>{ $("exConfirm").hidden=true; });
+  $("exYes").addEventListener("click",()=>{ if(quit){ try{ localStorage.removeItem(EX_KEY); localStorage.removeItem(SETS.eks1.key); }catch(e){} renderExam(); } else exDeliver(); });
+}
+const learnEnterExam=learnEnter;
+learnEnter=function(v){ learnEnterExam(v); if(v==="eksamen") renderExam(); else clearInterval(exTimer); };
+
+const renderHomeBase=renderHome;
+renderHome=function(){ renderHomeBase(); const st=exState(); $("homeQuick").insertAdjacentHTML("beforeend",`<button class="qcard glass wide" type="button" data-view="eksamen"><span class="tile t-red" aria-hidden="true">4t</span><span class="qw"><b>Prøveeksamen</b><span>${st&&!st.done?"Pågår · trykk for å fortsette":"Ny eksamen med del 1 og Excel-del, eller AK2-simulering"}</span></span>${IC_CHEV}</button>`); };
 go((location.hash||"").slice(1)||"hjem",true);
 
 </script>
