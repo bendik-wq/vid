@@ -637,6 +637,116 @@ table.xl{border-collapse:separate;border-spacing:0;table-layout:fixed;margin:0;b
 .xl-result.good b{color:var(--ok)}
 
 @media (max-width:640px){.xl-pad{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.xl-pad::-webkit-scrollbar{display:none}.xl-pad button{flex:none}.xl-wrap{max-height:56vh}}
+
+/* ===== v6: full-screen spreadsheet ===== */
+[hidden]{display:none!important}
+body.xl-full{overflow:hidden;padding-bottom:0}
+body.xl-full .wrap,body.xl-full .tabbar{display:none}
+.xl-work{position:fixed;inset:0;z-index:20;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);background:var(--bg);padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+.xl-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 12px;background:var(--bar);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--line)}
+.xl-top .navback{padding-left:0}
+.xl-ttl{flex:1 1 160px;min-width:0;font-family:var(--f-display);font-size:17px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xl-acts{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.xl-acts::-webkit-scrollbar{display:none}
+.xl-acts>*{flex:none}
+.xl-ib{border:0;border-radius:999px;background:var(--fill);color:var(--fg);font-size:14px;font-weight:600;padding:7px 12px;min-width:34px}
+.xl-ib[aria-pressed="true"]{background:var(--xl-soft);color:var(--xl)}
+.xl-zoom{display:inline-flex;align-items:center;gap:2px;background:var(--fill);border-radius:999px;padding:0 2px}
+.xl-zoom .xl-ib{background:transparent;padding:7px 10px;font-size:16px}
+.xl-zoom .mono{font-size:12px;color:var(--muted);min-width:42px;text-align:center}
+.btn.xl-go{background:var(--xl);color:#fff}
+.xl-side{overflow:auto;max-height:34vh;padding:14px 16px;display:grid;gap:12px;align-content:start;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 70%,var(--xl-cell))}
+.xl-work.notask .xl-side{display:none}
+.xl-side .xl-task{padding:0;border-radius:0;background:none;box-shadow:none}
+.xl-side .xl-task h2{font-size:20px}
+.xl-side .xl-task p,.xl-side .xl-task ol{font-size:14.5px}
+.xl-keys{font-size:13.5px;color:var(--muted)}
+.xl-keys summary{cursor:pointer;font-weight:600;color:var(--fg)}
+.xl-keys p{margin:6px 0 0}
+.xl-main{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-height:0;min-width:0;gap:8px;padding:8px 10px 0}
+.xl-work .xl-tools{position:static;border-radius:14px;box-shadow:var(--edge)}
+.xl-work .xl-wrap{max-height:none;height:100%;min-height:0;border-radius:12px}
+.xl-status{display:flex;align-items:center;gap:16px;font-size:12.5px;color:var(--muted);padding:4px 4px calc(8px + env(safe-area-inset-bottom,0px));white-space:nowrap;overflow-x:auto;scrollbar-width:none}
+.xl-status::-webkit-scrollbar{display:none}
+.xl-status b{color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}
+.xl-status .st-ok{color:var(--ok)} .xl-status .st-bad{color:var(--bad)}
+.xl-status .st-prog{display:inline-flex;align-items:center;gap:6px}
+.xl-status .st-prog i{display:inline-block;width:60px;height:5px;border-radius:3px;background:var(--fill);overflow:hidden}
+.xl-status .st-prog i span{display:block;height:100%;background:var(--xl)}
+.xl-status .st-right{margin-left:auto}
+.xl-work table.xl{font-size:calc(14px * var(--xlz,1))}
+.xl-work .xl td{height:calc(34px * var(--xlz,1))}
+.xl-work .xl td.editing{font-size:calc(13px * var(--xlz,1))}
+@media (min-width:900px){
+  .xl-work{grid-template-columns:minmax(300px,30%) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .xl-top{grid-column:1/-1;flex-wrap:nowrap}
+  .xl-side{max-height:none;border-bottom:0;border-right:1px solid var(--line);padding:18px 20px}
+  .xl-work.notask{grid-template-columns:minmax(0,1fr)}
+  .xl-main{padding:12px 16px 0}
+}
+@media (max-width:640px){
+  .xl-top{padding:6px 10px}
+  .xl-ttl{font-size:16px}
+  .xl-acts{flex:1 1 100%}
+  .xl-acts .btn.xl-go{margin-left:auto}
+  .xl-side{max-height:30vh;padding:12px 14px}
+  .xl-main{padding:6px 6px 0;gap:6px}
+}
+
+/* ===== v6: memory training ===== */
+.t-purple{background:linear-gradient(180deg,#bf6ae8,#af52de)}
+.t-red{background:linear-gradient(180deg,#ff5a50,#ff3b30)}
+.t-yellow{background:linear-gradient(180deg,#ffd426,#f5b800)}
+.mode-wide{grid-column:1/-1}
+.mode-meta{font-size:13px;font-weight:600;color:var(--mc)}
+.mode-meta:empty{display:none}
+.hk-lbl{font-size:14px;font-weight:600;color:var(--muted)}
+.duel-q .fc-def{font-size:17px}
+.duel-o.picked{box-shadow:var(--edge),inset 0 0 0 2px var(--accent)}
+.hk-conf{display:grid;gap:8px;justify-items:start}
+.hk-conf>span{font-size:14px;font-weight:600;color:var(--muted)}
+.hk-cbtn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.hk-cbtn button{border:0;border-radius:14px;padding:12px 8px;font-weight:600;font-size:15px;background:var(--glass-strong);box-shadow:var(--edge);color:var(--fg)}
+.hk-cbtn button[data-c="g"]{color:var(--muted)}
+.hk-cbtn button[data-c="s"]{background:var(--accent);color:var(--on-accent);box-shadow:none}
+.hk-cbtn button:disabled{opacity:.45}
+.hk-in{width:100%;font:inherit;font-size:19px;padding:14px 18px;border-radius:18px;border:0;color:var(--fg);outline:none}
+.hk-in:focus{box-shadow:var(--edge),inset 0 0 0 2px var(--accent)}
+.hk-in.right{box-shadow:var(--edge),inset 0 0 0 2px var(--ok);background-color:var(--ok-soft)}
+.hk-in.wrong{box-shadow:var(--edge),inset 0 0 0 2px var(--bad);background-color:var(--bad-soft)}
+.hk-help{display:flex;gap:8px;flex-wrap:wrap}
+.hk-fb{border-radius:20px;padding:16px 18px;display:grid;gap:6px;font-size:15px}
+.hk-fb>b{font-family:var(--f-display);font-size:19px}
+.hk-fb.good{box-shadow:var(--edge),inset 0 0 0 2px var(--ok)} .hk-fb.good>b{color:var(--ok)}
+.hk-fb.bad{box-shadow:var(--edge),inset 0 0 0 2px var(--bad)} .hk-fb.bad>b{color:var(--bad)}
+.hk-term{font-weight:700}
+.hk-hook{display:grid;gap:1px;background:color-mix(in srgb,#af52de 12%,transparent);border-radius:12px;padding:8px 12px}
+.hk-hook i{font-style:normal;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#af52de}
+.hk-surp{background:color-mix(in srgb,var(--bad) 12%,transparent);border-radius:12px;padding:8px 12px;font-weight:600}
+.hk-again{color:var(--muted);font-size:14px}
+.hk-run{justify-self:start;font-size:13px;font-weight:700;color:#ff9500}
+.hk-next{justify-self:start}
+.hk-cal{display:grid;gap:8px;width:100%;max-width:420px;text-align:left;margin:6px 0}
+.hk-calrow{display:grid;grid-template-columns:76px 1fr 64px;align-items:center;gap:10px;font-size:14px}
+.hk-calrow i{height:8px;border-radius:4px;background:var(--fill);overflow:hidden}
+.hk-calrow i span{display:block;height:100%;background:var(--ok)}
+.hk-calrow b{text-align:right;font-variant-numeric:tabular-nums}
+.sk-txt{font-family:var(--f-display);font-size:clamp(21px,4.6vw,26px);font-weight:700;letter-spacing:-.025em;line-height:1.25}
+.sk-opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.mt-head{display:flex;justify-content:space-between;font-weight:600;color:var(--muted);padding:0 4px}
+.mt-head .mono{color:var(--fg);font-size:17px}
+.mt-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:10px}
+.mt-col{display:grid;gap:10px;align-content:start}
+.mt-c{border:0;text-align:left;border-radius:16px;padding:12px 14px;color:var(--fg);font-size:14.5px;line-height:1.35;min-height:56px;transition:transform .12s,opacity .3s}
+.mt-t{font-weight:700;font-size:15px}
+.mt-c.on{box-shadow:var(--edge),inset 0 0 0 2px var(--accent)}
+.mt-c.done{opacity:.35;box-shadow:var(--edge),inset 0 0 0 2px var(--ok);background-color:var(--ok-soft)}
+.mt-c.shake{box-shadow:var(--edge),inset 0 0 0 2px var(--bad)}
+@media (prefers-reduced-motion:no-preference){.mt-c.shake{animation:mtshake .35s}@keyframes mtshake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}}
+.mt-review{border-radius:18px;padding:12px 16px;font-size:14.5px}
+.mt-review summary{cursor:pointer;font-weight:600}
+.mt-review ul{margin:8px 0 0;padding-left:18px;display:grid;gap:6px}
+@media (max-width:520px){.mt-grid{grid-template-columns:1fr}.mt-col:first-child{grid-template-columns:repeat(2,minmax(0,1fr))}.mt-c{min-height:0}}
 </style>
 </head>
 <body>
@@ -1008,6 +1118,9 @@ table.xl{border-collapse:separate;border-spacing:0;table-layout:fixed;margin:0;b
     <header class="largetitle"><span class="eyebrow">Metoder fra læringsforskningen</span><h1>Lær</h1></header>
     <div class="learn-hero glass" id="learnHero"></div>
     <div class="modes">
+      <button class="mode glass mode-wide" type="button" data-view="huske" style="--mc:#af52de"><span class="tile t-purple" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a5.5 5.5 0 0 0-5.5 5.5c0 1.9 1 3.3 2.2 4.4.8.7 1.3 1.6 1.3 2.6v.5h4v-.5c0-1 .5-1.9 1.3-2.6 1.2-1.1 2.2-2.5 2.2-4.4A5.5 5.5 0 0 0 12 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19.5h4M10.5 22h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Huskeøkt</b><span>12 begreper fra kap. 1–7 på ulike måter: kjenn igjen, forstå og skriv selv. Feil kommer tilbake til du har dem, og du trener på å vite hva du kan.</span><span class="mode-meta" id="hkMeta"></span><em>Hentetrening, gjentatt gjenlæring (Rawson og Dunlosky, 2011), Leitner-bokser og sikkerhetsvurdering med hyperkorreksjon (Butterfield og Metcalfe, 2001).</em></button>
+      <button class="mode glass" type="button" data-view="skill" style="--mc:#ff3b30"><span class="tile t-red" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7l-3 6h6zM19 7l-3 6h6zM5 7h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Skill begrepene</b><span>Kostnad eller utgift? Hjelpested eller fellessted? Korte situasjoner der du velger mellom begreper som lett blandes.</span><em>Diskrimineringstrening: å sammenligne like begreper side om side gir skarpere forståelse (Kang og Pashler, 2012).</em></button>
+      <button class="mode glass" type="button" data-view="match" style="--mc:#ffcc00"><span class="tile t-yellow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="7" height="6" rx="1.8" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="6" rx="1.8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 7h2.5a2 2 0 0 1 2 2v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Begrepsmatch</b><span>Match 6 begreper med forklaringen på tid. Slå din egen rekord.</span><em>Flyt: når du henter frem raskt, frigjøres kapasitet til selve oppgaveløsningen.</em></button>
       <button class="mode glass" type="button" data-view="excel" style="--mc:#107c41"><span class="tile t-xl" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 9.3h17M3.5 14.7h17M9.3 4v16" stroke="currentColor" stroke-width="2"/></svg></span><b>Regneark</b><span>Excel-oppgavene fra foilene i et regneark med formler, Fyll ned og automatisk retting.</span><em>Del 2 av eksamen er Excel. Øvingen er lagt opp som på eksamen: du bygger formlene selv.</em></button>
       <button class="mode glass" type="button" data-view="kart" style="--mc:#5856d6"><span class="tile t-indigo" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="4.5" cy="5" r="2" fill="currentColor"/><circle cx="19.5" cy="5" r="2" fill="currentColor"/><circle cx="4.5" cy="19" r="2" fill="currentColor"/><circle cx="19.5" cy="19" r="2" fill="currentColor"/><path d="M6 6.3l3.7 3.6M18 6.3l-3.7 3.6M6 17.7l3.7-3.6M18 17.7l-3.7-3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><b>Tankekart</b><span>Hele pensum som et kart. Se hvordan begrepene henger sammen, og hvor du er sterk og svak.</span><em>Elaborering og dobbel koding: struktur og bilder gjør stoffet lettere å huske.</em></button>
       <button class="mode glass" type="button" data-view="kort" style="--mc:#007aff"><span class="tile t-blue" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3.5h10.5A2.5 2.5 0 0 1 21 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Flashkort</b><span>Begreper og formler som repeteres akkurat når du er i ferd med å glemme dem.</span><em>Spaced repetition: repetisjon med økende mellomrom slår pugging (Cepeda m.fl., 2006).</em></button>
@@ -1048,17 +1161,55 @@ table.xl{border-collapse:separate;border-spacing:0;table-layout:fixed;margin:0;b
   </section>
 
 
+
+  <section class="view" data-route="huske" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Huskeøkt</h1><span class="mono subpos" id="hkPos"></span></div>
+    <div class="decks" id="hkDecks" role="group" aria-label="Velg kapittel"></div>
+    <div class="lprog" aria-hidden="true"><span id="hkBar"></span></div>
+    <div class="stage" id="hkStage"></div>
+    <p class="modehint">Velg svar og si hvor sikker du er (tastene 1–3). Begreper du bommer på kommer tilbake senere i økten, og alle begrepene repeteres med økende mellomrom.</p>
+  </section>
+
+  <section class="view" data-route="skill" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Skill begrepene</h1><span class="mono subpos" id="skPos"></span></div>
+    <div class="decks" id="skDecks" role="group" aria-label="Velg kapittel"></div>
+    <div class="lprog" aria-hidden="true"><span id="skBar"></span></div>
+    <div class="stage" id="skStage"></div>
+  </section>
+
+  <section class="view" data-route="match" hidden>
+    <div class="subhead"><button class="navback" type="button" data-view="laer"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lær</button><h1>Begrepsmatch</h1><span></span></div>
+    <div class="decks" id="mtDecks" role="group" aria-label="Velg kapittel"></div>
+    <div class="stage" id="mtStage"></div>
+  </section>
+
   <section class="view" data-route="excel" hidden>
     <div class="subhead"><button class="navback" type="button" id="xlBack"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Tilbake</button><h1 id="xlTitle">Regneark</h1><span></span></div>
     <div id="xlList" class="view"></div>
-    <div id="xlWork" class="view" hidden>
-      <div class="xl-task glass" id="xlTask"></div>
-      <div class="xl-tools glass"><div class="xl-bar"><span class="xl-name mono" id="xlName">A1</span><span class="xl-fxl" aria-hidden="true">fx</span><input id="xlFx" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Formellinje"></div>
-      <div class="xl-pad" id="xlPad" role="toolbar" aria-label="Formelknapper"><button type="button" data-ins="=">=</button><button type="button" data-ins="+">+</button><button type="button" data-ins="-">−</button><button type="button" data-ins="*">×</button><button type="button" data-ins="/">÷</button><button type="button" data-ins="(">(</button><button type="button" data-ins=")">)</button><button type="button" data-ins=";">;</button><button type="button" data-ins="$">$</button><button type="button" data-ins="SUMMER(">SUMMER</button><button type="button" data-ins="AVRUND(">AVRUND</button><button type="button" data-act="down" class="act">Fyll ned</button><button type="button" data-act="right" class="act">Fyll høyre</button><button type="button" data-act="extend" class="act" id="xlExtend" aria-pressed="false">Merk område</button><button type="button" data-act="undo" class="act">Angre</button><button type="button" data-act="ok" class="act ok">Enter ↵</button></div></div>
-      <div class="xl-wrap" id="xlWrap" tabindex="0" role="grid" aria-label="Regneark"><table class="xl" id="xlGrid"></table></div>
-      <div class="rowbtns"><button class="btn" type="button" id="xlCheck">Sjekk svarene</button><button class="btn ghost" type="button" id="xlSolution">Vis løsningsforslag</button><button class="btn ghost" type="button" id="xlReset">Tøm arket</button></div>
-      <div class="xl-result glass" id="xlResult" hidden></div>
-      <p class="modehint">Tastatur: piltaster flytter, skriv for å starte, Enter lagrer, F2 redigerer, Ctrl/Cmd + C, V og Z, og Ctrl/Cmd + D fyller ned og R fyller mot høyre. Mens du skriver en formel kan du klikke på en celle for å sette inn referansen, eller dra over flere celler for et område.</p>
+    <div id="xlWork" class="xl-work" hidden>
+      <header class="xl-top">
+        <button class="navback" type="button" id="xlClose"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Oppgaver</button>
+        <b class="xl-ttl" id="xlTtl"></b>
+        <div class="xl-acts">
+          <button type="button" class="xl-ib" id="xlTaskTgl" aria-pressed="true" aria-controls="xlSide">Oppgave</button>
+          <span class="xl-zoom" role="group" aria-label="Zoom"><button type="button" class="xl-ib" id="xlZoomOut" aria-label="Mindre celler">−</button><span class="mono" id="xlZoomVal">100 %</span><button type="button" class="xl-ib" id="xlZoomIn" aria-label="Større celler">+</button></span>
+          <button type="button" class="xl-ib" id="xlFs" hidden>Fullskjerm</button>
+          <button class="btn sm ghost" type="button" id="xlReset">Tøm</button>
+          <button class="btn sm ghost" type="button" id="xlSolution">Løsning</button>
+          <button class="btn sm xl-go" type="button" id="xlCheck">Sjekk svarene</button>
+        </div>
+      </header>
+      <aside class="xl-side" id="xlSide">
+        <div class="xl-task" id="xlTask"></div>
+        <div class="xl-result" id="xlResult" hidden></div>
+        <details class="xl-keys"><summary>Hurtigtaster og tips</summary><p>Piltaster flytter, skriv for å starte, Enter lagrer og F2 redigerer. Ctrl/Cmd + C, V og Z kopierer, limer inn og angrer. Ctrl/Cmd + D fyller ned og R fyller mot høyre. Shift + piltast merker et område. Mens du skriver en formel kan du klikke på en celle for å sette inn referansen, eller dra over flere celler for et område. På mobil: trykk på en celle for å velge den, og trykk én gang til for å skrive.</p></details>
+      </aside>
+      <div class="xl-main">
+        <div class="xl-tools"><div class="xl-bar"><span class="xl-name mono" id="xlName">A1</span><span class="xl-fxl" aria-hidden="true">fx</span><input id="xlFx" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Formellinje"></div>
+        <div class="xl-pad" id="xlPad" role="toolbar" aria-label="Formelknapper"><button type="button" data-ins="=">=</button><button type="button" data-ins="+">+</button><button type="button" data-ins="-">−</button><button type="button" data-ins="*">×</button><button type="button" data-ins="/">÷</button><button type="button" data-ins="(">(</button><button type="button" data-ins=")">)</button><button type="button" data-ins=";">;</button><button type="button" data-ins="$">$</button><button type="button" data-ins="SUMMER(">SUMMER</button><button type="button" data-ins="AVRUND(">AVRUND</button><button type="button" data-act="down" class="act">Fyll ned</button><button type="button" data-act="right" class="act">Fyll høyre</button><button type="button" data-act="extend" class="act" id="xlExtend" aria-pressed="false">Merk område</button><button type="button" data-act="undo" class="act">Angre</button><button type="button" data-act="ok" class="act ok">Enter ↵</button></div></div>
+        <div class="xl-wrap" id="xlWrap" tabindex="0" role="grid" aria-label="Regneark"><table class="xl" id="xlGrid"></table></div>
+        <div class="xl-status" id="xlStatus" aria-live="polite"></div>
+      </div>
     </div>
   </section>
   <section id="viewProfile" class="view" hidden>
@@ -3881,6 +4032,381 @@ $("bkYes").addEventListener("click",()=>{
 });
 
 
+/* ================= HUSK: memory training for concepts and terms ================= */
+/* [kapittel, begrep, kort definisjon, huskeknagg (valgfri), ekstra godtatte svar (valgfri)] */
+const GLOSS=[
+  [1,"Bedriftsøkonomi","Fagområdet om å forvalte ressurser for å omforme produksjonsfaktorer til varer og tjenester. Har fire delområder: regnskap, bedriftsøkonomisk analyse, prosjektanalyse og finansiering, og budsjettering."],
+  [1,"Finansregnskap","Eksternt og lovregulert årsregnskap etter god regnskapsskikk. Informerer omverdenen om lønnsomhet, likviditet og soliditet.","Finans = for de utenfor: banken, staten og aksjonærene."],
+  [1,"Driftsregnskap","Internt og frivillig regnskap for beslutninger og kontroll. Hovedinstrumentet i økonomistyringen, og rapporteres normalt hver måned.","Drift = for de som driver bedriften innenfra."],
+  [1,"Skatteregnskap","Viser overgangen fra regnskapsmessig overskudd til skattemessig inntekt."],
+  [1,"Styringssløyfen","Sette mål, lage budsjett, gjennomføre, registrere og rapportere, analysere avvik og så begynne på nytt.","Som en termostat: mål, mål på nytt, juster."],
+  [1,"Avvik","Forskjellen mellom faktisk og planlagt: regnskap minus budsjett."],
+  [1,"Modell","Et forenklet bilde av virkeligheten. Kan være verbal, en tabell, grafisk eller matematisk."],
+  [1,"Klassisk syn på samfunnsansvar","Bedriftens eneste ansvar er å maksimere profitten for aksjonærene."],
+  [1,"Sosioøkonomisk syn på samfunnsansvar","Bedriften har også ansvar for samfunnet og miljøet den opererer i, med økonomiske, sosiale og miljømessige hensyn."],
+  [1,"Enkeltpersonforetak (ENK)","Én eier, ingen kapitalkrav og ubegrenset personlig ansvar for gjelden."],
+  [1,"Aksjeselskap (AS)","Én eller flere eiere og minst 30 000 kr i aksjekapital. Ansvaret er begrenset til innskutt kapital.","AS = ansvar stopper ved innskuddet."],
+  [1,"Ansvarlig selskap (ANS)","To eller flere eiere med ubegrenset og solidarisk ansvar, så hver eier kan måtte dekke all gjelden.","Solidarisk = alle for én: hver eier hefter for alt."],
+
+  [2,"Kostnad","Forbruk av ressurser i verdiskapingen, for eksempel råvarer som brukes i produksjonen.","Kostnad = forbruk. Kjøpe, bruke, betale: kostnad er å bruke."],
+  [2,"Utgift","Anskaffelse av en ressurs, som reduserer et aktivum eller øker gjelden. Eksempel: kjøp av maskin på faktura.","Utgift = anskaffelse, altså det du kjøper."],
+  [2,"Utbetaling","Kontanter som går ut av bedriften, for eksempel når en faktura eller et lån betales.","Utbetaling = penger ut av kassa."],
+  [2,"Inntekt","Den økonomiske verdien bedriften har opptjent ved å selge varer eller tjenester."],
+  [2,"Innbetaling","Kontanter som kommer inn i bedriften, for eksempel når kunden betaler fakturaen."],
+  [2,"Kreditt","Utsatt betaling, for eksempel 30 dagers betalingsfrist."],
+  [2,"Kostnadsart","Hvilken produksjonsfaktor som forbrukes, for eksempel varekostnad, lønnskostnad eller avskrivning.","Art = hva slags kostnad."],
+  [2,"Kostnadssted","Avdelingen, maskinen eller enheten der kostnaden oppstår, for eksempel resepsjon, bar eller vedlikehold.","Sted = hvor kostnaden oppstår."],
+  [2,"Direkte kostnad","Kostnad som kan henføres direkte til kostnadsobjektet, for eksempel direkte material og direkte lønn."],
+  [2,"Indirekte kostnad","Kostnad som ikke kan henføres direkte til ett produkt, for eksempel husleie, strøm og avskrivning på felles maskiner."],
+  [2,"Variabel kostnad","Kostnad som endrer seg med aktivitetsnivået. Kostnaden per enhet er den samme, for eksempel materialer.","Variabel = varierer med mengden."],
+  [2,"Fast kostnad","Kostnad som ikke endrer seg med aktivitetsnivået, for eksempel husleie, forsikring og lederlønn. Per enhet synker den når aktiviteten øker."],
+  [2,"Bruttofortjeneste","Salgsinntekt minus varekostnad: det bedriften tjener på salget før de indirekte kostnadene er dekket."],
+  [2,"Avanse","Påslaget på varekostnaden som skal dekke de indirekte kostnadene og gi fortjeneste. Avanseprosenten regnes av kostprisen.","Avanse = påslag på kost (nevner kostpris). BF % = andel av salg (nevner salgspris)."],
+  [2,"Arbeidsgiveravgift (AGA)","Avgift arbeidsgiveren betaler av utbetalt lønn inkludert feriepenger, mellom 8,2 og 14,1 %."],
+  [2,"Feriepenger","12 % av lønnen, som opptjenes i år og utbetales til neste år."],
+  [2,"Avskrivning","Systematisk fordeling av verdifallet på varige eiendeler over levetiden, på grunn av alder eller slitasje."],
+  [2,"Nedskrivning","Ekstraordinært verditap på en eiendel, ut over den vanlige avskrivningen."],
+  [2,"Utrangeringsverdi","Det eiendelen antas å være verdt ved slutten av levetiden, også kalt restverdi.",null,["restverdi"]],
+  [2,"Saldoavskrivning","En fast prosentsats ganger bokført verdi ved årets start, så beløpet blir mindre hvert år."],
+  [2,"Bruksavskrivning","Avskrivning etter faktisk bruk eller produksjon i stedet for tid."],
+  [2,"Merverdiavgift (mva.)","Indirekte skatt på forbruk som bedriftene krever inn for staten. Vanlig sats er 25 %.",null,["mva","moms"]],
+  [2,"Netto mva. til staten","Utgående mva. på salg minus inngående mva. på innkjøp."],
+
+  [3,"FEK","Faste enhetskostnader: FTK delt på mengde. Synker når mengden øker.","Fast kostnad smøres tynnere jo flere enheter.",["faste enhetskostnader"]],
+  [3,"VEK","Variable enhetskostnader: VTK delt på mengde.",null,["variable enhetskostnader"]],
+  [3,"SEK","Sum enhetskostnader: STK delt på mengde, altså FEK + VEK.",null,["sum enhetskostnader"]],
+  [3,"DEK","Differanseenhetskostnad: DK delt på mengdeendringen. Tilnærmet grensekostnad.",null,["differanseenhetskostnad"]],
+  [3,"Grensekostnad","Kostnadsøkningen ved å produsere én enhet til, også kalt marginalkostnad.",null,["marginalkostnad"]],
+  [3,"Kostnadsoptimum","Mengden der kostnaden per enhet (SEK) er lavest, der DEK = SEK.","Så lenge neste enhet er billigere enn snittet, trekker den snittet ned."],
+  [3,"Sprangvise faste kostnader","Faste kostnader som øker i sprang når kapasiteten må utvides, for eksempel en ny maskin eller et større bygg.","Trappetrinn: flate, så et hopp."],
+  [3,"Irreversible kostnader","Kostnader som ikke kan reverseres når aktiviteten går ned, for eksempel spesialutstyr eller reklame som allerede er betalt.","Ir-reversibel = kan ikke snus."],
+  [3,"Reversible kostnader","Kostnader som kan fjernes eller reduseres når aktiviteten går ned, for eksempel leie med kort oppsigelse."],
+  [3,"Proporsjonale kostnader","Variable kostnader som endres i samme takt som mengden, slik at VEK er konstant."],
+  [3,"Overproporsjonale kostnader","VTK øker mer enn mengden, så VEK og DEK stiger.","Over = kostnaden løper fra mengden."],
+  [3,"Underproporsjonale kostnader","VTK øker mindre enn mengden, så VEK og DEK synker. Typisk ved lav produksjon.","Under = stordriftsfordeler: hver ny enhet blir billigere."],
+
+  [4,"Etterspørsel","Markedets vilje og evne til å kjøpe en vare til en bestemt pris. Påvirkes av egen pris, prisen på andre varer, kvalitet, salgsinnsats og kjøpekraft og smak."],
+  [4,"Substitutter","Varer som konkurrerer og kan erstatte hverandre. Pris opp på den ene gir økt salg av den andre, for eksempel iPad og Android-nettbrett.","Substitutt = innbytter, som i fotball."],
+  [4,"Komplementære varer","Varer som brukes sammen, for eksempel ski og bindinger eller printer og blekkpatroner.","Komplement = komplett sammen."],
+  [4,"Bevegelse langs etterspørselskurven","Endring i etterspurt mengde som bare skyldes endring i varens egen pris."],
+  [4,"Skift i etterspørselskurven","Hele kurven flytter seg på grunn av andre faktorer enn egen pris, for eksempel reklame, kvalitet, kjøpekraft eller prisen på en substitutt."],
+  [4,"Grenseinntekt","Inntektsøkningen ved å selge én enhet til. DEI er en tilnærming. Ved fallende etterspørselskurve er den lavere enn prisen.",null,["marginalinntekt","dei"]],
+  [4,"Priselastisitet","Hvor mye etterspurt mengde reagerer på en prisendring: prosentvis mengdeendring delt på prosentvis prisendring.",null,["ep"]],
+  [4,"Elastisk etterspørsel","Priselastisitet over 1. Mengden reagerer kraftig, så en prisreduksjon gir høyere salgsinntekt, for eksempel flybilletter og kino.","Elastisk = strikk: mengden strekker seg langt når prisen endres."],
+  [4,"Uelastisk etterspørsel","Priselastisitet under 1. Mengden reagerer lite, så en prisreduksjon gir lavere salgsinntekt, for eksempel matvarer og bensin.","Nødvendighetsvarer kjøper vi uansett."],
+  [4,"Nøytralelastisk etterspørsel","Priselastisitet lik 1. En prisreduksjon gir uendret salgsinntekt, og DEI er null."],
+
+  [5,"Monopol","Én tilbyder som selv fastsetter prisen.","Mono = én."],
+  [5,"Oligopol","Få store tilbydere som er gjensidig avhengige, med høye etableringsbarrierer, for eksempel dagligvare og bensin.","Oligo = få."],
+  [5,"Monopolistisk konkurranse","Mange tilbydere med varer som dekker samme behov, men som ikke er like, for eksempel moteklær og tannleger."],
+  [5,"Fullkommen konkurranse","Mange små tilbydere og kjøpere, like (homogene) varer og full informasjon, for eksempel korn og råvarer. Bedriften er pristilpasser."],
+  [5,"Prisvariabel tilpasning","Bedriften er prissetter og møter en fallende etterspørselskurve, som i monopol, oligopol og monopolistisk konkurranse."],
+  [5,"Prisfast tilpasning","Prisen er gitt av markedet, så bedriften er pristilpasser. Den produserer til DEK = pris."],
+  [5,"VOM","Vinningsoptimal mengde: mengden som gir størst overskudd, der DEI = DEK.","Selg én enhet til så lenge den gir mer enn den koster.",["vinningsoptimal mengde"]],
+  [5,"VOP","Vinningsoptimal pris: prisen på etterspørselskurven som gir VOM.",null,["vinningsoptimal pris"]],
+  [5,"Dekningsbidrag","Salgsinntekt minus variable kostnader. Dekker først de faste kostnadene, og resten er overskudd.",null,["db"]],
+  [5,"Dekningspunkt","Mengden eller omsetningen der overskuddet er null, altså der pris = SEK. I en handelsbedrift: faste kostnader delt på dekningsgrad."],
+  [5,"Overskuddsområde","Mengdeintervallet mellom nedre og øvre dekningspunkt, der prisen er høyere enn SEK."],
+  [5,"Laveste akseptable pris på kort sikt","Laveste VEK, ved en midlertidig nedgang. Faste stillstandskostnader påløper uansett."],
+  [5,"Laveste akseptable pris på lang sikt","Laveste SEK (kostnadsoptimum), ved en varig nedgang. Alle kostnader må dekkes."],
+  [5,"Sunk cost","Kostnad som allerede er påløpt eller ikke kan unngås, som husleie på kort sikt. Skal ikke påvirke beslutningen.",null,["sunk costs","senket kostnad"]],
+  [5,"Prisdifferensiering","Samme produkt selges til ulike priser i ulike markeder. Forutsetter at noen vil betale mer, og at det ikke er lekkasje mellom markedene."],
+
+  [6,"Selvkost","Alle kostnader ved en vare eller ordre, både direkte og indirekte, faste og variable, før fortjeneste.",null,["fullkost"]],
+  [6,"Forkalkyle","Kalkyle laget før produksjonen ut fra erfaringstall, brukt til prissetting."],
+  [6,"Etterkalkyle","Kalkyle laget etterpå ut fra realiserte tall, som sammenlignes med forkalkylen for å finne avvik."],
+  [6,"Inntakskost","Innkjøpspris pluss frakt, forsikring og spedisjon. Den eneste direkte kostnaden i en handelsbedrift."],
+  [6,"Tilleggssats","Budsjetterte indirekte kostnader delt på budsjettert aktivitet. Brukes til å fordele indirekte kostnader på produktene."],
+  [6,"Tilvirkningskost","Direkte materialer + direkte lønn + indirekte tilvirkningskostnader.","Tilvirke = lage: alt det koster å lage produktet."],
+  [6,"Selvkostkalkyle","Kalkyle med både faste og variable kostnader (fullkost). Brukes til ordinær prising og langsiktige beslutninger.","Selv = alt med."],
+  [6,"Bidragskalkyle","Kalkyle med bare variable kostnader, som ender i minimumskost og dekningsbidrag. Brukes til tilbud, lavsesong og tilleggsordrer.","Bidrag = kort sikt: hva gir ordren ekstra?"],
+  [6,"Minimumskost","Sum variable kostnader i bidragskalkylen, også kalt salgsmerkost. Den laveste prisen på kort sikt.",null,["salgsmerkost"]],
+  [6,"Tilleggsordre","En ekstra ordre utenom den vanlige driften. Med ledig kapasitet godtas den hvis dekningsbidraget er positivt."],
+  [6,"Normal aktivitet","Aktivitetsnivået tilleggssatsene bør bygge på, fordi unormalt høy eller lav aktivitet gir feil satser."],
+  [6,"Kalkulatoriske kostnader","Kostnader som viser den faktiske ressursbruken i stedet for finansregnskapets tall, for eksempel kalkulatoriske avskrivninger, renter og eierlønn.","Kalkulert ressursbruk, ikke bokført."],
+  [6,"Gjenanskaffelseskost","Hva det koster å kjøpe eiendelen på nytt i dag. Brukes i kalkulatoriske avskrivninger for å ta hensyn til prisstigning."],
+
+  [7,"Hovedsted","Avdeling som fakturerer til kunde, for eksempel avdeling kjøtt og avdeling fisk.",null,["hovedavdeling"]],
+  [7,"Hjelpested","Avdeling som ikke fakturerer til kunde, men betjener hovedavdelingene, for eksempel bildrift. Kostnadene fordeles videre.","Hjelper hovedstedene og sender aldri faktura.",["hjelpeavdeling"]],
+  [7,"Fellessted","Kostnadssted med kostnader som deles av flere avdelinger, for eksempel administrasjon. Fakturerer ikke til kunde."],
+  [7,"Avdelingsspesifikk kostnad","Indirekte kostnad som bare gjelder én avdeling, for eksempel avdelingens lønn. Føres rett på avdelingen."],
+  [7,"Felleskostnad","Kostnad som gjelder flere avdelinger og fordeles med fordelingsnøkler etter ressursbruk.",null,["felleskostnader"]],
+  [7,"Fordelingsnøkkel","Forholdstall som fordeler en felleskostnad, for eksempel areal. Andel = kostnad × egen del / sum av delene.","Kakestykke: din del av hele kaka."],
+  [7,"Trinnvis kostnadsfordeling","Først fordeles alle kostnader på hoved- og hjelpeavdelinger. Så fordeles hjelpeavdelingens sum videre på hovedavdelingene."],
+  [7,"Varekostnad","Inngående beholdning + innkjøp − utgående beholdning, altså innkjøpsverdien av varene som er solgt.","IB + inn − UB: det som var der, pluss det som kom, minus det som er igjen."],
+  [7,"Svinn","Varer som forsvinner uten salgsinntekt, på grunn av tyveri, feil eller ødeleggelse. Reduserer bruttofortjenesten."],
+  [7,"Vareopptelling","Fullstendig opptelling av varelageret ved periodens slutt, som gir riktig beholdning og varekostnad."],
+  [7,"Dekningsgrad","Dekningsbidrag delt på salgsinntekt, altså hvor stor andel av hver salgskrone som er dekningsbidrag.",null,["dg"]],
+  [7,"Sikkerhetsmargin","Salgsinntekt minus dekningspunkt: hvor mye salget kan falle før bedriften går med tap."],
+  [7,"Budsjettkontroll","Sammenligning av regnskap og budsjett per avdeling for å finne og forklare avvik."],
+  [7,"Prisavvik","Avvik som skyldes at prisen per enhet ble en annen enn budsjettert."],
+  [7,"Mengdeavvik","Avvik som skyldes at mengden (solgt eller brukt) ble en annen enn budsjettert."]
+].map(([ch,t,d,k,alt])=>({ch,t,d,k:k||"",alt:alt||[],id:"g:"+t}));
+
+/* Begreper som lett forveksles: scenario → riktig begrep */
+const SKILL_SETS=[
+  {ch:2,name:"Kostnad, utgift eller utbetaling",opts:["Kostnad","Utgift","Utbetaling"],why:{Kostnad:"Kostnad = forbruk av ressurser.",Utgift:"Utgift = anskaffelsen (kjøpet).",Utbetaling:"Utbetaling = kontanter ut."},
+    items:[["Bedriften kjøper en maskin på faktura med 30 dagers kreditt.","Utgift"],["Fakturaen for maskinen betales 30 dager senere.","Utbetaling"],["Råvarer tas ut av lageret og brukes i produksjonen.","Kostnad"],["Maskinen slites ned i år (årets avskrivning).","Kostnad"],["Bedriften betaler ned 100 000 kr på et lån.","Utbetaling"],["Bedriften kjøper varer på kreditt til lageret.","Utgift"]]},
+  {ch:2,name:"Inntekt, innbetaling eller kreditt",opts:["Inntekt","Innbetaling","Kreditt"],why:{Inntekt:"Inntekt = verdi opptjent ved salg.",Innbetaling:"Innbetaling = kontanter inn.",Kreditt:"Kreditt = utsatt betaling."},
+    items:[["En tjeneste er levert og fakturert kunden.","Inntekt"],["Kunden betaler fakturaen.","Innbetaling"],["Kunden får 30 dagers betalingsfrist.","Kreditt"],["Kunden betaler forskudd før varen er levert.","Innbetaling"],["Varene er levert til kunden, men ennå ikke betalt.","Inntekt"]]},
+  {ch:2,name:"Direkte eller indirekte kostnad",opts:["Direkte kostnad","Indirekte kostnad"],why:{"Direkte kostnad":"Kan føres rett på produktet.","Indirekte kostnad":"Kan ikke føres rett på ett produkt, så den må fordeles."},
+    items:[["Treverk som går inn i hvert bord.","Direkte kostnad"],["Strøm til hele fabrikken.","Indirekte kostnad"],["Lønn til vakt og truckførere.","Indirekte kostnad"],["Lim og festemidler.","Indirekte kostnad"],["Avskrivning på en maskin som bare brukes til ett produkt.","Direkte kostnad"],["Lønn til en snekker for timene på én bestemt ordre.","Direkte kostnad"],["Husleie for produksjonslokalet.","Indirekte kostnad"]]},
+  {ch:2,name:"Fast eller variabel kostnad",opts:["Fast kostnad","Variabel kostnad"],why:{"Fast kostnad":"Endrer seg ikke med aktivitetsnivået.","Variabel kostnad":"Endrer seg med aktivitetsnivået."},
+    items:[["Husleie for lokalet.","Fast kostnad"],["Råvarer i hver produserte enhet.","Variabel kostnad"],["Forsikring av bygningen.","Fast kostnad"],["Akkordlønn per produsert enhet.","Variabel kostnad"],["Lønn til daglig leder.","Fast kostnad"],["Emballasje per solgte vare.","Variabel kostnad"],["Lineær avskrivning på maskiner.","Fast kostnad"]]},
+  {ch:3,name:"Proporsjonal, over- eller underproporsjonal",opts:["Proporsjonale kostnader","Overproporsjonale kostnader","Underproporsjonale kostnader"],why:{"Proporsjonale kostnader":"VTK endres i samme takt som mengden, så VEK er konstant.","Overproporsjonale kostnader":"VTK øker mer enn mengden, så VEK stiger.","Underproporsjonale kostnader":"VTK øker mindre enn mengden, så VEK synker."},
+    items:[["VEK er konstant.","Proporsjonale kostnader"],["VEK stiger når mengden øker.","Overproporsjonale kostnader"],["DEK synker når mengden øker.","Underproporsjonale kostnader"],["Mengden øker med 10 % og VTK med 20 %.","Overproporsjonale kostnader"],["Mengden øker med 10 % og VTK med 5 %.","Underproporsjonale kostnader"],["Mengden øker med 10 % og VTK med 10 %.","Proporsjonale kostnader"]]},
+  {ch:3,name:"Reversibel, irreversibel eller sprangvis",opts:["Reversible kostnader","Irreversible kostnader","Sprangvise faste kostnader"],why:{"Reversible kostnader":"Kan fjernes eller reduseres når aktiviteten går ned.","Irreversible kostnader":"Kan ikke reverseres når aktiviteten går ned.","Sprangvise faste kostnader":"Øker i sprang når kapasiteten utvides."},
+    items:[["Spesialutstyr som ikke kan selges videre.","Irreversible kostnader"],["Leie av lokaler med én måneds oppsigelse.","Reversible kostnader"],["En ny maskin må kjøpes fordi kapasiteten er nådd.","Sprangvise faste kostnader"],["Reklame som allerede er betalt.","Irreversible kostnader"],["Standardisert utstyr som lett kan selges.","Reversible kostnader"],["Bedriften må ansette en formann til når et nytt skift settes opp.","Sprangvise faste kostnader"]]},
+  {ch:4,name:"Substitutter eller komplementære varer",opts:["Substitutter","Komplementære varer"],why:{Substitutter:"Kan erstatte hverandre.","Komplementære varer":"Brukes sammen."},
+    items:[["iPad og Android-nettbrett.","Substitutter"],["Printer og blekkpatroner.","Komplementære varer"],["Ski og bindinger.","Komplementære varer"],["Smør og margarin.","Substitutter"],["Bil og bensin.","Komplementære varer"],["Buss og tog til jobben.","Substitutter"]]},
+  {ch:4,name:"Bevegelse langs kurven eller skift",opts:["Bevegelse langs etterspørselskurven","Skift i etterspørselskurven"],why:{"Bevegelse langs etterspørselskurven":"Bare varens egen pris endres.","Skift i etterspørselskurven":"En annen faktor enn egen pris endres."},
+    items:[["Bedriften setter ned prisen på sin egen vare.","Bevegelse langs etterspørselskurven"],["Bedriften øker reklamen kraftig.","Skift i etterspørselskurven"],["En konkurrerende vare (substitutt) blir dyrere.","Skift i etterspørselskurven"],["Kundene får lavere kjøpekraft.","Skift i etterspørselskurven"],["Kvaliteten på varen forbedres.","Skift i etterspørselskurven"],["Prisen økes fra 30 til 35 kr, og salget faller.","Bevegelse langs etterspørselskurven"]]},
+  {ch:4,name:"Elastisk, nøytralelastisk eller uelastisk",opts:["Elastisk etterspørsel","Nøytralelastisk etterspørsel","Uelastisk etterspørsel"],why:{"Elastisk etterspørsel":"ep > 1: prisreduksjon gir høyere salgsinntekt.","Nøytralelastisk etterspørsel":"ep = 1: prisreduksjon gir uendret salgsinntekt.","Uelastisk etterspørsel":"ep < 1: prisreduksjon gir lavere salgsinntekt."},
+    items:[["Priselastisiteten er 1,5.","Elastisk etterspørsel"],["Priselastisiteten er 0,4.","Uelastisk etterspørsel"],["En prisreduksjon gir uendret salgsinntekt.","Nøytralelastisk etterspørsel"],["Matvarer og bensin.","Uelastisk etterspørsel"],["Flybilletter og kino.","Elastisk etterspørsel"],["DEI er negativ etter en prisreduksjon.","Uelastisk etterspørsel"]]},
+  {ch:5,name:"Markedsformer",opts:["Monopol","Oligopol","Monopolistisk konkurranse","Fullkommen konkurranse"],why:{Monopol:"Én tilbyder.",Oligopol:"Få store, gjensidig avhengige tilbydere.","Monopolistisk konkurranse":"Mange tilbydere med varer som ligner, men ikke er like.","Fullkommen konkurranse":"Mange små aktører, like varer og full informasjon."},
+    items:[["Korn og andre råvarer.","Fullkommen konkurranse"],["Dagligvarekjeder og bensinselskaper.","Oligopol"],["Moteklær og tannleger.","Monopolistisk konkurranse"],["Enerett på å selge «Dovretrollet».","Monopol"],["Få store aktører og høye etableringsbarrierer.","Oligopol"],["Bedriften er pristilpasser og kan ikke påvirke prisen.","Fullkommen konkurranse"]]},
+  {ch:5,name:"Laveste akseptable pris",opts:["Laveste akseptable pris på kort sikt","Laveste akseptable pris på lang sikt"],why:{"Laveste akseptable pris på kort sikt":"Kort sikt: pris ≥ laveste VEK.","Laveste akseptable pris på lang sikt":"Lang sikt: pris ≥ laveste SEK."},
+    items:[["Etterspørselen faller midlertidig i en lavsesong.","Laveste akseptable pris på kort sikt"],["Etterspørselen faller varig.","Laveste akseptable pris på lang sikt"],["Husleien påløper uansett og kan ses på som sunk cost.","Laveste akseptable pris på kort sikt"],["Alle kostnader, også de faste, må dekkes.","Laveste akseptable pris på lang sikt"],["Grensen er laveste SEK, i kostnadsoptimum.","Laveste akseptable pris på lang sikt"]]},
+  {ch:6,name:"Selvkost- eller bidragskalkyle",opts:["Selvkostkalkyle","Bidragskalkyle"],why:{Selvkostkalkyle:"Tar med alle kostnader og brukes på lang sikt.",Bidragskalkyle:"Tar bare med variable kostnader og brukes på kort sikt."},
+    items:[["Ordinær prissetting av hovedproduktet.","Selvkostkalkyle"],["Tilleggsordre når det er ledig kapasitet.","Bidragskalkyle"],["Tilbud i lavsesongen.","Bidragskalkyle"],["Inkluderer både faste og variable kostnader.","Selvkostkalkyle"],["Ender i minimumskost og dekningsbidrag.","Bidragskalkyle"],["Ender i tilvirkningskost og deretter fullkost.","Selvkostkalkyle"]]},
+  {ch:7,name:"Hovedsted, hjelpested eller fellessted",opts:["Hovedsted","Hjelpested","Fellessted"],why:{Hovedsted:"Fakturerer til kunde.",Hjelpested:"Betjener hovedstedene og fordeles videre.",Fellessted:"Kostnader som deles av flere avdelinger."},
+    items:[["Avdeling fisk.","Hovedsted"],["Bildrift.","Hjelpested"],["Administrasjon.","Fellessted"],["Avdeling kjøtt.","Hovedsted"],["Avdelingen sender faktura til kundene.","Hovedsted"],["Kjører varer for avdelingene, og summen fordeles i forholdet 3 : 5.","Hjelpested"]]},
+  {ch:7,name:"Bruttofortjeneste, dekningsbidrag eller avanse",opts:["Bruttofortjeneste","Dekningsbidrag","Avanse"],why:{Bruttofortjeneste:"Salgsinntekt − bare varekostnaden.",Dekningsbidrag:"Salgsinntekt − alle variable kostnader.",Avanse:"Påslag i prosent av kostprisen."},
+    items:[["Salgsinntekt minus bare varekostnaden.","Bruttofortjeneste"],["Salgsinntekt minus alle variable kostnader.","Dekningsbidrag"],["Påslag i prosent av kostprisen.","Avanse"],["Brukes til å finne dekningsgraden og dekningspunktet.","Dekningsbidrag"],["Kostpris 350 kr og salgspris 500 kr gir 42,9 %.","Avanse"],["Kostpris 350 kr og salgspris 500 kr gir 30 %.","Bruttofortjeneste"]]},
+  {ch:7,name:"Positivt eller negativt avvik",opts:["Positivt avvik","Negativt avvik"],why:{"Positivt avvik":"Bedre for resultatet enn budsjettert.","Negativt avvik":"Dårligere for resultatet enn budsjettert."},
+    items:[["Salg: budsjett 450 000, regnskap 470 000.","Positivt avvik"],["Lønn: budsjett 35 000, regnskap 34 000.","Positivt avvik"],["Bildrift: budsjett 15 000, regnskap 20 000.","Negativt avvik"],["Varekostnad: budsjett 290 000, regnskap 300 000.","Negativt avvik"],["Salg: budsjett 450 000, regnskap 430 000.","Negativt avvik"],["Diverse kostnader: budsjett 14 000, regnskap 16 000.","Negativt avvik"]]}
+];
+
+BADGES.push(
+  ["husk","HUSK","Hukommelse","Fullfør 5 huskeøkter."],
+  ["kalib","KAL","Kalibrert","Ha rett på minst 90 % av svarene du var sikker på (minst 30 svar)."],
+  ["match","30s","Lynmatch","Match 6 par på under 30 sekunder uten feil."],
+  ["skill","10×","Skarp","Skill riktig mellom like begreper 10 ganger på rad."]
+);
+P.mem=P.mem||{}; P.cal=P.cal||{g:[0,0],t:[0,0],s:[0,0]}; P.memSessions=P.memSessions||0; P.matchBest=P.matchBest||{}; P.skillBest=P.skillBest||0;
+LEARN_SUB.push("huske","skill","match");
+
+/* ---------- helpers ---------- */
+const BOX_DAYS=[0,1,3,7,16,35];
+function memNorm(s){ return String(s||"").toLowerCase().normalize("NFC").replace(/[.,!?«»"']/g,"").replace(/\s+/g," ").trim(); }
+function memAnswers(g){ const a=[g.t], m=g.t.match(/^(.*?)\s*\((.*?)\)\s*$/); if(m){ a.push(m[1],m[2]); } return a.concat(g.alt).map(memNorm).filter(Boolean); }
+function lev(a,b){ if(a===b) return 0; const m=a.length,n=b.length; if(!m||!n) return m||n; let p=Array.from({length:n+1},(_,j)=>j); for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c; } return p[n]; }
+function memGrade(g,input){
+  const x=memNorm(input); if(!x) return "no";
+  const ans=memAnswers(g);
+  if(ans.includes(x)) return "ok";
+  for(const a of ans){ if(a.length>=5 && lev(a,x)<=Math.max(1,Math.floor(a.length*.18))) return "near"; }
+  return "no";
+}
+const MASK_SKIP=new Set(["kostnad","kostnader","etterspørsel","etterspørselen","kostnadene","akseptable","laveste","prisen","avdeling","inntekt"]);
+function memMask(g){
+  let d=g.d; const words=new Set(); memAnswers(g).forEach(a=>{ words.add(a); a.split(/[\s-]+/).forEach(w=>{ if(w.length>4 && !MASK_SKIP.has(w)) words.add(w); }); });
+  [...words].sort((a,b)=>b.length-a.length).forEach(w=>{ const re=new RegExp("(^|[^\\p{L}])("+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")"+(w.length>=5?"\\p{L}*":"(?=[^\\p{L}]|$)"),"giu"); d=d.replace(re,(m,p)=>p+"▁▁▁"); });
+  return d;
+}
+function memState(g){ return P.mem[g.id]||{b:0,due:0,n:0,ok:0}; }
+function memDue(list){ const now=Date.now(); return list.filter(g=>P.mem[g.id] && P.mem[g.id].due<=now); }
+function chipsHTML(sel,count){
+  return [[0,"Alle"]].concat(Object.keys(CH_NAME).map(c=>[+c,"Kap. "+c])).map(([c,l])=>`<button type="button" class="deck${c===sel?" on":""}" data-ch="${c}" aria-pressed="${c===sel}" style="--cc:${c?CH_COLOR[c]:"var(--accent)"}"><b>${l}</b><span>${count(c)}</span></button>`).join("");
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ================= 1. Huskeøkt ================= */
+let HK={ch:0,q:[],i:0,first:{},log:[],pick:null,done:false};
+function hkPool(){ return HK.ch?GLOSS.filter(g=>g.ch===HK.ch):GLOSS; }
+function hkRenderChips(){
+  $("hkDecks").innerHTML=chipsHTML(HK.ch,c=>{ const l=c?GLOSS.filter(g=>g.ch===c):GLOSS; const d=memDue(l).length, nw=l.filter(g=>!P.mem[g.id]).length; return l.length+" begreper"+(d?" · "+d+" klare":nw?" · "+nw+" nye":""); });
+  $("hkDecks").querySelectorAll(".deck").forEach(b=>b.addEventListener("click",()=>{ HK.ch=+b.dataset.ch; startHuske(); }));
+}
+function startHuske(){
+  const pool=hkPool(), now=Date.now();
+  const due=memDue(pool).sort((a,b)=>P.mem[a.id].due-P.mem[b.id].due);
+  const fresh=shuffle(pool.filter(g=>!P.mem[g.id]));
+  const weak=shuffle(pool.filter(g=>P.mem[g.id] && P.mem[g.id].due>now)).sort((a,b)=>memState(a).b-memState(b).b);
+  const pick=[]; [due,fresh,weak].forEach(src=>src.forEach(g=>{ if(pick.length<12 && !pick.includes(g)) pick.push(g); }));
+  // interleave chapters so neighbours rarely share a chapter
+  const by={}; pick.forEach(g=>(by[g.ch]=by[g.ch]||[]).push(g)); const order=[]; let left=true; while(left){ left=false; Object.keys(by).forEach(k=>{ if(by[k].length){ order.push(by[k].shift()); left=true; } }); }
+  HK={ch:HK.ch,q:order.map(g=>({g,fmt:hkFormat(g),retry:false})),i:0,first:{},log:[],pick:null,done:false};
+  hkRenderChips(); hkShow();
+}
+function hkFormat(g){ const b=memState(g).b; return b===0?"pick":b===1?"rev":"type"; }
+function hkDistractors(g,key){
+  const same=shuffle(GLOSS.filter(x=>x!==g && x.ch===g.ch)), other=shuffle(GLOSS.filter(x=>x.ch!==g.ch));
+  return shuffle([g,...same.slice(0,2),...other.slice(0,1)]);
+}
+function hkShow(){
+  const box=$("hkStage"), it=HK.q[HK.i];
+  const total=HK.q.length; $("hkPos").textContent=it?(Math.min(HK.i+1,total))+" av "+total:""; $("hkBar").style.width=(total?HK.i/total*100:0)+"%";
+  if(!it){ hkEnd(); return; }
+  const g=it.g, chip=`<span class="fc-ch" style="--cc:${CH_COLOR[g.ch]}">Kap. ${g.ch} · ${CH_NAME[g.ch]}${it.retry?" · nytt forsøk":""}</span>`;
+  HK.pick=null;
+  const conf=`<div class="hk-conf" id="hkConf" ${it.fmt==="type"?"":"hidden"}><span>Hvor sikker er du?</span><div class="hk-cbtn"><button type="button" data-c="g">Gjetter</button><button type="button" data-c="t">Tror det</button><button type="button" data-c="s">Sikker</button></div></div>`;
+  if(it.fmt==="type"){
+    box.innerHTML=`<div class="duel-q glass">${chip}<span class="hk-lbl">Hvilket begrep er dette?</span><span class="fc-def">${esc(memMask(g))}</span></div>
+      <label class="sr" for="hkIn">Ditt svar</label><input id="hkIn" class="hk-in glass" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Skriv begrepet">
+      <div class="hk-help"><button type="button" class="btn ghost sm" id="hkHint">Vis første bokstav</button><button type="button" class="btn ghost sm" id="hkDont">Vet ikke</button></div>${conf}`;
+    const inp=$("hkIn"); setTimeout(()=>inp.focus({preventScroll:true}),30);
+    let hint=0;
+    $("hkHint").addEventListener("click",()=>{ hint++; const t=g.t.replace(/\s*\(.*\)$/,""); inp.placeholder=t.slice(0,hint)+t.slice(hint).replace(/\p{L}/gu,"·"); it.hinted=true; inp.focus(); });
+    $("hkDont").addEventListener("click",()=>hkGrade("no","g",""));
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); if(inp.value.trim()) hkGrade(memGrade(g,inp.value),"t",inp.value); } });
+  } else {
+    const opts=hkDistractors(g);
+    box.innerHTML=it.fmt==="pick"
+      ? `<div class="duel-q glass">${chip}<span class="hk-lbl">Hvilket begrep passer?</span><span class="fc-def">${esc(memMask(g))}</span></div><div class="duel-opts">${opts.map(o=>`<button class="duel-o glass" type="button" data-id="${esc(o.id)}"><span>${esc(o.t)}</span></button>`).join("")}</div>${conf}`
+      : `<div class="duel-q glass">${chip}<span class="hk-lbl">Hva betyr</span><b class="fc-title">${esc(g.t)}</b></div><div class="duel-opts">${opts.map(o=>`<button class="duel-o glass" type="button" data-id="${esc(o.id)}"><span>${esc(memMask(o))}</span></button>`).join("")}</div>${conf}`;
+    box.querySelectorAll(".duel-o").forEach(b=>b.addEventListener("click",()=>{ if(HK.locked) return; HK.pick=b.dataset.id; box.querySelectorAll(".duel-o").forEach(x=>x.classList.toggle("picked",x===b)); $("hkConf").hidden=false; $("hkConf").scrollIntoView({block:"nearest",behavior:reduceMotion?"auto":"smooth"}); }));
+  }
+  HK.locked=false;
+  box.querySelectorAll("#hkConf [data-c]").forEach(b=>b.addEventListener("click",()=>{
+    if(HK.locked) return;
+    if(it.fmt==="type"){ const v=$("hkIn").value; if(!v.trim()){ toast("Skriv et svar, eller trykk Vet ikke"); $("hkIn").focus(); return; } hkGrade(memGrade(g,v),b.dataset.c,v); }
+    else { if(!HK.pick) return; hkGrade(HK.pick===g.id?"ok":"no",b.dataset.c,HK.pick); }
+  }));
+}
+function hkGrade(res,conf,given){
+  if(HK.locked) return; HK.locked=true;
+  const it=HK.q[HK.i], g=it.g, ok=res!=="no", box=$("hkStage");
+  box.querySelectorAll("button,input").forEach(x=>{ if(!x.closest(".hk-next")) x.disabled=true; });
+  if(it.fmt!=="type") box.querySelectorAll(".duel-o").forEach(x=>{ if(x.dataset.id===g.id) x.classList.add("right"); else if(x.dataset.id===given) x.classList.add("wrong"); });
+  else $("hkIn").classList.add(ok?"right":"wrong");
+  const firstTry=!(g.id in HK.first);
+  if(firstTry){
+    HK.first[g.id]=ok; P.cal[conf][1]++; if(ok) P.cal[conf][0]++;
+    const s=memState(g); s.n++;
+    if(ok){ s.ok++; s.b=Math.min(5,s.b+(it.hinted?0:1)); s.due=Date.now()+BOX_DAYS[s.b]*DAY+(s.b?0:10*MIN); award(3); }
+    else { s.b=0; s.due=Date.now()+10*MIN; }
+    P.mem[g.id]=s; HK.log.push({g,ok,conf});
+  }
+  if(!ok){ const at=Math.min(HK.q.length,HK.i+3); HK.q.splice(at,0,{g,fmt:it.fmt==="type"?"pick":it.fmt,retry:true}); }
+  saveP(); renderLevel();
+  const surprise=!ok && conf==="s";
+  const head=ok?(res==="near"?`Nesten riktig. Det skrives «${esc(g.t)}».`:"Riktig"):"Ikke riktig";
+  const fb=el("div",{class:"hk-fb glass "+(ok?"good":"bad")});
+  fb.innerHTML=`<b>${head}</b>${surprise?`<span class="hk-surp">Du var sikker, men tok feil. Slike feil er de du lærer mest av når du retter dem med en gang. Les forklaringen nøye.</span>`:""}
+    <span class="hk-term">${esc(g.t)}</span><span>${esc(g.d)}</span>${g.k?`<span class="hk-hook"><i>Huskeknagg</i>${esc(g.k)}</span>`:""}${!ok?`<span class="hk-again">Begrepet kommer tilbake om litt i denne økten.</span>`:""}`;
+  const nx=el("button",{class:"btn hk-next",type:"button"},HK.i>=HK.q.length-1?"Se resultat":"Neste");
+  nx.addEventListener("click",()=>{ HK.i++; hkShow(); window.scrollTo(0,0); });
+  box.append(fb,nx); nx.focus({preventScroll:true}); fb.scrollIntoView({block:"nearest",behavior:reduceMotion?"auto":"smooth"});
+}
+function hkEnd(){
+  const box=$("hkStage"); $("hkBar").style.width="100%";
+  if(!HK.log.length){
+    box.innerHTML=`<div class="fc-empty glass"><span class="tile t-green" aria-hidden="true">${IC_CHECK_BIG}</span><b>Ingen begreper her</b><span>Velg et annet kapittel.</span></div>`; return; }
+  const first=HK.log.filter(x=>x.ok).length, n=HK.log.length;
+  P.memSessions++; if(P.memSessions>=5) unlock("husk");
+  const c=P.cal, sure=c.s[1]?Math.round(c.s[0]/c.s[1]*100):null;
+  if(c.s[1]>=30 && c.s[0]/c.s[1]>=.9) unlock("kalib");
+  saveP(); renderLevel(); if(first===n) confetti();
+  const row=(k,l)=>{ const s=HK.log.filter(x=>x.conf===k), o=s.filter(x=>x.ok).length; return s.length?`<div class="hk-calrow"><span>${l}</span><i><span style="width:${o/s.length*100}%"></span></i><b>${o} av ${s.length}</b></div>`:""; };
+  const advice=sure==null?"":sure>=90?"Du vet godt når du kan noe. Det er et tegn på solid læring.":sure>=70?"Du er litt for sikker av og til. Vær ekstra nøye med begrepene du tror du kan.":"Du er ofte sikker på svar som er feil. Bruk huskeknaggene og repeter disse begrepene ekstra.";
+  box.innerHTML=`<div class="fc-empty glass"><span class="score-big">${first}<small>/${n}</small></span><b>${first===n?"Alt riktig på første forsøk":first>=n*.7?"Sterk økt":"Godt jobbet"}</b><span>Riktige på første forsøk. Alle begrepene er nå hentet frem riktig minst én gang, og de kommer tilbake med økende mellomrom: 1, 3, 7, 16 og 35 dager.</span>
+    <div class="hk-cal"><b>Hvor godt kjenner du deg selv?</b>${row("s","Sikker")}${row("t","Tror det")}${row("g","Gjetter")}<span class="modehint">${advice}${sure!=null?" Totalt har du hatt rett på "+sure+" % av svarene du var sikker på.":""}</span></div>
+    <div class="rowbtns"><button class="btn" type="button" id="hkAgain">Ny økt</button><button class="btn ghost" type="button" data-view="skill">Skill begrepene</button></div></div>`;
+  $("hkAgain").addEventListener("click",startHuske);
+}
+
+/* ================= 2. Skill begrepene (discrimination) ================= */
+let SK={ch:0,q:[],i:0,score:0,run:0};
+function skRenderChips(){
+  $("skDecks").innerHTML=chipsHTML(SK.ch,c=>{ const n=SKILL_SETS.filter(s=>!c||s.ch===c).length; return n?n+" sett":"ingen sett"; });
+  $("skDecks").querySelectorAll(".deck").forEach(b=>b.addEventListener("click",()=>{ const c=+b.dataset.ch; if(c && !SKILL_SETS.some(s=>s.ch===c)){ toast("Ingen sett for kapittel "+c+" ennå"); return; } SK.ch=c; startSkill(); }));
+}
+function startSkill(){
+  const sets=SKILL_SETS.filter(s=>!SK.ch||s.ch===SK.ch);
+  const all=[]; sets.forEach(s=>s.items.forEach(([txt,ans])=>all.push({s,txt,ans})));
+  // interleave sets, 12 rounds
+  const pool=shuffle(all); const q=[]; const used={};
+  while(q.length<Math.min(12,pool.length)){ const lastSet=q.length?q[q.length-1].s:null; let k=pool.findIndex((x,j)=>!used[j] && x.s!==lastSet); if(k<0) k=pool.findIndex((x,j)=>!used[j]); used[k]=1; q.push(pool[k]); }
+  SK={ch:SK.ch,q,i:0,score:0,run:0}; skRenderChips(); skShow();
+}
+function skShow(){
+  const box=$("skStage"), it=SK.q[SK.i];
+  $("skPos").textContent=it?(SK.i+1)+" av "+SK.q.length:""; $("skBar").style.width=(SK.i/SK.q.length*100)+"%";
+  if(!it){
+    const perfect=SK.score===SK.q.length; saveP(); renderLevel(); if(perfect) confetti();
+    box.innerHTML=`<div class="fc-empty glass"><span class="score-big">${SK.score}<small>/${SK.q.length}</small></span><b>${perfect?"Knivskarpt":SK.score>=SK.q.length*.75?"Sterkt":"Godt i gang"}</b><span>Å skille mellom begreper som ligner, er det som avgjør på prøven. Beste rekke: ${P.skillBest} på rad.</span><div class="rowbtns"><button class="btn" type="button" id="skAgain">Ny runde</button></div></div>`;
+    $("skAgain").addEventListener("click",startSkill); return;
+  }
+  const s=it.s;
+  box.innerHTML=`<div class="duel-q glass"><span class="fc-ch" style="--cc:${CH_COLOR[s.ch]}">${esc(s.name)}</span><b class="sk-txt">${esc(it.txt)}</b></div><div class="sk-opts">${s.opts.map(o=>`<button class="duel-o glass" type="button" data-o="${esc(o)}"><span>${esc(o)}</span></button>`).join("")}</div>`;
+  box.querySelectorAll(".duel-o").forEach(b=>b.addEventListener("click",()=>{
+    if(box.dataset.lock==="1") return; box.dataset.lock="1";
+    const ok=b.dataset.o===it.ans;
+    box.querySelectorAll(".duel-o").forEach(x=>{ x.disabled=true; if(x.dataset.o===it.ans) x.classList.add("right"); else if(x===b) x.classList.add("wrong"); });
+    if(ok){ SK.score++; SK.run++; award(3); if(SK.run>P.skillBest) P.skillBest=SK.run; if(SK.run>=10) unlock("skill"); } else SK.run=0;
+    const g=GLOSS.find(x=>x.t===it.ans);
+    const fb=el("div",{class:"hk-fb glass "+(ok?"good":"bad")});
+    fb.innerHTML=`<b>${ok?"Riktig":"Riktig svar: "+esc(it.ans)}</b><span>${esc(s.why[it.ans]||"")}</span>${!ok&&s.why[b.dataset.o]?`<span class="hk-again">${esc(b.dataset.o)}: ${esc(s.why[b.dataset.o])}</span>`:""}${g&&g.k?`<span class="hk-hook"><i>Huskeknagg</i>${esc(g.k)}</span>`:""}${SK.run>=3?`<span class="hk-run">${SK.run} på rad</span>`:""}`;
+    const nx=el("button",{class:"btn hk-next",type:"button"},SK.i>=SK.q.length-1?"Se resultat":"Neste");
+    nx.addEventListener("click",()=>{ SK.i++; box.dataset.lock="0"; skShow(); });
+    box.append(fb,nx); nx.focus({preventScroll:true}); saveP(); renderLevel();
+  }));
+  box.dataset.lock="0";
+}
+
+/* ================= 3. Begrepsmatch ================= */
+let MT={ch:0,pairs:[],sel:null,done:0,miss:0,t0:0,timer:null};
+function mtRenderChips(){
+  $("mtDecks").innerHTML=chipsHTML(MT.ch,c=>{ const b=P.matchBest[c]; return b?"Rekord "+(b/1000).toFixed(1)+" s":"6 par"; });
+  $("mtDecks").querySelectorAll(".deck").forEach(b=>b.addEventListener("click",()=>{ MT.ch=+b.dataset.ch; startMatch(); }));
+}
+function mtShort(g){ const d=memMask(g); const m=d.match(/^.+?[.:](?=\s|$)/), s=m?m[0]:d; return s.length>110?s.slice(0,107).replace(/\s\S*$/,"")+" …":s; }
+function startMatch(){
+  clearInterval(MT.timer);
+  const pool=shuffle((MT.ch?GLOSS.filter(g=>g.ch===MT.ch):GLOSS).slice());
+  // prefer terms the student is weak on
+  pool.sort((a,b)=>memState(a).b-memState(b).b+(Math.random()-.5)*2);
+  const pairs=pool.slice(0,6);
+  MT={ch:MT.ch,pairs,sel:null,done:0,miss:0,t0:0,timer:null};
+  mtRenderChips();
+  const L=shuffle(pairs.slice()), R=shuffle(pairs.slice());
+  $("mtStage").innerHTML=`<div class="mt-head"><span class="mono" id="mtTime">0,0 s</span><span id="mtMiss">0 feil</span></div>
+    <div class="mt-grid"><div class="mt-col" role="group" aria-label="Begreper">${L.map(g=>`<button type="button" class="mt-c glass mt-t" data-id="${esc(g.id)}">${esc(g.t)}</button>`).join("")}</div>
+    <div class="mt-col" role="group" aria-label="Forklaringer">${R.map(g=>`<button type="button" class="mt-c glass mt-d" data-id="${esc(g.id)}">${esc(mtShort(g))}</button>`).join("")}</div></div>
+    <p class="modehint">Trykk på et begrep og så på forklaringen som hører til. Klokka starter ved første trykk.</p>`;
+  $("mtStage").querySelectorAll(".mt-c").forEach(b=>b.addEventListener("click",()=>mtTap(b)));
+}
+function mtTap(b){
+  if(b.classList.contains("done")) return;
+  if(!MT.t0){ MT.t0=Date.now(); MT.timer=setInterval(()=>{ const t=$("mtTime"); if(t) t.textContent=((Date.now()-MT.t0)/1000).toFixed(1).replace(".",",")+" s"; else clearInterval(MT.timer); },100); }
+  const side=b.classList.contains("mt-t")?"t":"d";
+  if(!MT.sel || MT.sel.side===side){ $("mtStage").querySelectorAll(".mt-c.on").forEach(x=>x.classList.remove("on")); b.classList.add("on"); MT.sel={b,side}; return; }
+  const a=MT.sel.b; MT.sel=null; a.classList.remove("on");
+  if(a.dataset.id===b.dataset.id){
+    [a,b].forEach(x=>{ x.classList.add("done"); x.disabled=true; }); MT.done++;
+    if(MT.done===MT.pairs.length) mtEnd();
+  } else {
+    MT.miss++; $("mtMiss").textContent=MT.miss+" feil";
+    [a,b].forEach(x=>{ x.classList.remove("shake"); void x.offsetWidth; x.classList.add("shake"); });
+  }
+}
+function mtEnd(){
+  clearInterval(MT.timer); const ms=Date.now()-MT.t0, key=MT.ch, best=P.matchBest[key];
+  const rec=!MT.miss && (!best||ms<best); if(rec) P.matchBest[key]=ms;
+  if(!MT.miss && ms<30000) unlock("match");
+  award(MT.miss?5:10); saveP(); renderLevel(); if(rec) confetti();
+  const list=MT.pairs.map(g=>`<li><b>${esc(g.t)}</b> ${esc(g.d)}</li>`).join("");
+  $("mtStage").insertAdjacentHTML("beforeend",`<div class="fc-empty glass mt-end"><span class="score-big">${(ms/1000).toFixed(1).replace(".",",")}<small> s</small></span><b>${rec?"Ny rekord":MT.miss?MT.miss+" feil":"Feilfritt"}</b><span>${MT.miss?"Rekord teller bare uten feil. ":""}${best&&!rec?"Rekorden din er "+(best/1000).toFixed(1).replace(".",",")+" s.":""}</span><button class="btn" type="button" id="mtAgain">Nye par</button></div><details class="mt-review glass"><summary>Les gjennom begrepene</summary><ul>${list}</ul></details>`);
+  $("mtAgain").addEventListener("click",()=>{ startMatch(); window.scrollTo(0,0); });
+}
+
+/* ---------- hub card + routing ---------- */
+function memSummary(){ const d=memDue(GLOSS).length, seen=GLOSS.filter(g=>P.mem[g.id]).length, solid=GLOSS.filter(g=>memState(g).b>=3).length; return {d,seen,solid}; }
+const learnEnterMem=learnEnter;
+learnEnter=function(v){
+  learnEnterMem(v);
+  if(v!=="match") clearInterval(MT.timer);
+  if(v==="laer"){ const m=memSummary(), e=$("hkMeta"); if(e) e.textContent=(m.d?m.d+" begreper klare · ":"")+m.solid+" av "+GLOSS.length+" sitter"; }
+  if(v==="huske") startHuske();
+  if(v==="skill") startSkill();
+  if(v==="match") startMatch();
+};
+document.addEventListener("keydown",e=>{
+  if(!$("sheet").hidden) return; const t=document.activeElement; if(t && /INPUT|SELECT|TEXTAREA/.test(t.tagName)) return;
+  if(view==="huske"){ const conf=$("hkConf"); if(conf && !conf.hidden && ["1","2","3"].includes(e.key)){ const b=conf.querySelectorAll("[data-c]")[+e.key-1]; if(b && !b.disabled){ e.preventDefault(); b.click(); } } }
+});
+
 /* ================= REGNEARK: formula engine ================= */
 function XLErr(code){ this.code=code; }
 const xlColName=i=>{ let s=""; i++; while(i>0){ const m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); } return s; };
@@ -4109,6 +4635,8 @@ const IC_GRID='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" w
 const XL={t:null,raw:{},sel:{c:0,r:0},anc:{c:0,r:0},editing:false,undo:[],clip:null,ins:null,marks:{},extend:false,drag:false,confirmSol:false};
 const xlKey=id=>"hsm122-xl-"+id;
 const xlFx=()=>$("xlFx");
+const XLUI=Object.assign({zoom:innerWidth<640?.8:1,task:true},rd("hsm122-xlui",{}));
+function xlUiSave(){ wr("hsm122-xlui",XLUI); }
 const xlLocked=a=>XL.t && (a in XL.t.cells);
 function xlSave(){ const o={}; Object.entries(XL.raw).forEach(([a,v])=>{ if(!xlLocked(a) && v!=="" && v!=null) o[a]=v; }); wr(xlKey(XL.t.id),{raw:o}); }
 function xlPush(){ XL.undo.push(JSON.stringify(XL.raw)); if(XL.undo.length>60) XL.undo.shift(); }
@@ -4132,7 +4660,12 @@ function xlRenderList(){
       return `<button class="row" type="button" data-xl="${t.id}"><span class="tile t-xl" aria-hidden="true">${IC_GRID}</span><span class="rt"><b>${t.title}</b><span>${t.src} · ${Object.keys(t.targets).length} celler</span></span>${meta}${IC_CHEV}</button>`; }).join("")+`</div>`).join("");
   $("xlList").querySelectorAll("[data-xl]").forEach(b=>b.addEventListener("click",()=>xlOpen(b.dataset.xl)));
 }
-function xlShowList(){ XL.t=null; $("xlWork").hidden=true; $("xlList").hidden=false; $("xlTitle").textContent="Regneark"; xlRenderList(); window.scrollTo(0,0); }
+function xlHide(){
+  if(XL.t && XL.editing) xlCommit(0,0);
+  XL.t=null; $("xlWork").hidden=true; document.body.classList.remove("xl-full");
+  if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+}
+function xlShowList(){ xlHide(); $("xlList").hidden=false; $("xlTitle").textContent="Regneark"; xlRenderList(); window.scrollTo(0,0); }
 
 /* ---------- open & build ---------- */
 function xlOpen(id){
@@ -4141,14 +4674,15 @@ function xlOpen(id){
   XL.raw=Object.assign({},(saved&&saved.raw)||{},t.cells);
   const first=Object.keys(t.targets).map(xlParseRef).sort((a,b)=>a.r-b.r||a.c-b.c)[0]||{c:0,r:0};
   XL.sel={...first}; XL.anc={...first}; XL.undo=[]; XL.marks={}; XL.editing=false; XL.extend=false; XL.confirmSol=false;
-  $("xlList").hidden=true; $("xlWork").hidden=false; $("xlTitle").textContent=t.title;
-  $("xlTask").innerHTML=`<span class="fc-ch" style="--cc:${CH_COLOR[t.ch]}">Kap. ${t.ch} · ${t.src}</span><h2>${t.title}</h2><p>${t.intro}</p><ol>${t.steps.map(s=>`<li>${s}</li>`).join("")}</ol><p class="modehint">Grønn kant markerer cellene du skal fylle ut. Grå celler er gitt. På mobil: trykk på en celle for å velge den, og trykk én gang til for å skrive. Bruk semikolon mellom argumenter, for eksempel =AVRUND(B2;1). Både norske (SUMMER, HVIS, MAKS) og engelske (SUM, IF, MAX) funksjonsnavn virker.</p>`;
-  $("xlResult").hidden=true; $("xlSolution").textContent="Vis løsningsforslag";
-  xlBuild(); xlPaint(); window.scrollTo(0,0);
+  $("xlWork").hidden=false; document.body.classList.add("xl-full"); $("xlTtl").textContent=t.title;
+  $("xlTask").innerHTML=`<span class="fc-ch" style="--cc:${CH_COLOR[t.ch]}">Kap. ${t.ch} · ${t.src}</span><h2>${t.title}</h2><p>${t.intro}</p><ol>${t.steps.map(s=>`<li>${s}</li>`).join("")}</ol><p class="modehint">Grønn kant markerer cellene du skal fylle ut. Grå celler er gitt. Bruk semikolon mellom argumenter, for eksempel =AVRUND(B2;1). Både norske (SUMMER, HVIS, MAKS) og engelske (SUM, IF, MAX) funksjonsnavn virker.</p>`;
+  $("xlResult").hidden=true; $("xlSolution").textContent="Løsning"; XL.status=null;
+  xlApplyUi(); xlBuild(); xlPaint(); $("xlSide").scrollTop=0; $("xlWrap").scrollTo(0,0);
+  if(matchMedia("(pointer:fine)").matches) $("xlWrap").focus({preventScroll:true});
 }
 function xlBuild(){
   const t=XL.t, tbl=$("xlGrid");
-  let h=`<colgroup><col style="width:40px">${Array.from({length:t.cols},(_,c)=>`<col style="width:${t.widths[c]||96}px">`).join("")}</colgroup><thead><tr><th class="corner"></th>${Array.from({length:t.cols},(_,c)=>`<th scope="col">${xlColName(c)}</th>`).join("")}</tr></thead><tbody>`;
+  let h=`<colgroup><col style="width:${Math.round(40*XLUI.zoom)}px">${Array.from({length:t.cols},(_,c)=>`<col style="width:${Math.round((t.widths[c]||96)*XLUI.zoom*1.08)}px">`).join("")}</colgroup><thead><tr><th class="corner"></th>${Array.from({length:t.cols},(_,c)=>`<th scope="col">${xlColName(c)}</th>`).join("")}</tr></thead><tbody>`;
   for(let r=0;r<t.rows+2;r++){ h+=`<tr><th scope="row">${r+1}</th>`; for(let c=0;c<t.cols;c++){ const a=xlAddr(c,r); h+=`<td data-a="${a}" id="x-${a}"></td>`; } h+="</tr>"; }
   tbl.innerHTML=h+"</tbody>";
 }
@@ -4171,7 +4705,21 @@ function xlPaint(){
   $("xlName").textContent=(R.c1!==R.c2||R.r1!==R.r2)?xlAddr(R.c1,R.r1)+":"+xlAddr(R.c2,R.r2):sa;
   if(!XL.editing){ xlFx().value=XL.raw[sa]??""; xlFx().readOnly=xlLocked(sa); xlFx().placeholder=xlLocked(sa)?"Gitt i oppgaven":"Skriv et tall eller en formel, f.eks. =B2*C2"; }
   $("xlExtend").setAttribute("aria-pressed",String(XL.extend));
+  xlStatus(comp,R);
 }
+function xlStatus(comp,R){
+  const t=XL.t, keys=Object.keys(t.targets), filled=keys.filter(a=>(XL.raw[a]??"")!=="" || xlMatch(comp.get(a),t.targets[a])).length;
+  let sel="";
+  if(R.c1!==R.c2||R.r1!==R.r2){ let sum=0,n=0,cnt=0; for(let r=R.r1;r<=R.r2;r++) for(let c=R.c1;c<=R.c2;c++){ const v=comp.get(xlAddr(c,r)); if(v!=null&&v!=="") cnt++; if(typeof v==="number"){ sum+=v; n++; } }
+    sel=n?`<span>Gjennomsnitt <b>${xlFmt(sum/n)}</b></span><span>Antall <b>${cnt}</b></span><span>Sum <b>${xlFmt(sum)}</b></span>`:`<span>Antall <b>${cnt}</b></span>`; }
+  const st=XL.status?`<span class="${XL.status.ok?"st-ok":"st-bad"}"><b class="${XL.status.ok?"st-ok":"st-bad"}">${XL.status.txt}</b></span>`:"";
+  $("xlStatus").innerHTML=`<span class="st-prog">Fylt ut <b>${filled} av ${keys.length}</b><i><span style="width:${keys.length?filled/keys.length*100:0}%"></span></i></span>${st}<span class="st-right"></span>${sel}`;
+}
+function xlApplyUi(){
+  $("xlWork").classList.toggle("notask",!XLUI.task); $("xlTaskTgl").setAttribute("aria-pressed",String(XLUI.task));
+  $("xlZoomVal").textContent=Math.round(XLUI.zoom*100)+" %"; $("xlGrid").style.setProperty("--xlz",XLUI.zoom);
+}
+function xlZoom(d){ XLUI.zoom=clamp(Math.round((XLUI.zoom+d)*10)/10,.7,1.6); xlUiSave(); xlApplyUi(); if(XL.t){ xlBuild(); xlPaint(); xlScrollSel(); } }
 function xlScrollSel(){ const td=$("x-"+xlAddr(XL.sel.c,XL.sel.r)); if(td) td.scrollIntoView({block:"nearest",inline:"nearest"}); }
 
 /* ---------- editing ---------- */
@@ -4186,7 +4734,7 @@ function xlStartEdit(initial){
 function xlCommit(dr,dc){
   if(!XL.editing) return;
   const a=xlAddr(XL.sel.c,XL.sel.r), v=xlFx().value;
-  if((XL.raw[a]??"")!==v){ xlPush(); if(v==="") delete XL.raw[a]; else XL.raw[a]=v; XL.marks={}; xlSave(); }
+  if((XL.raw[a]??"")!==v){ xlPush(); if(v==="") delete XL.raw[a]; else XL.raw[a]=v; XL.marks={}; XL.status=null; xlSave(); }
   XL.editing=false; XL.ins=null;
   if(dr||dc) xlMove(dr,dc,false); else xlPaint();
 }
@@ -4215,7 +4763,7 @@ function xlInsertText(s){
 }
 
 /* ---------- range ops ---------- */
-function xlSetMany(fn){ xlPush(); let n=0; fn((a,v)=>{ if(xlLocked(a)) return; if(v===""||v==null) delete XL.raw[a]; else XL.raw[a]=v; n++; }); XL.marks={}; xlSave(); xlPaint(); return n; }
+function xlSetMany(fn){ xlPush(); let n=0; fn((a,v)=>{ if(xlLocked(a)) return; if(v===""||v==null) delete XL.raw[a]; else XL.raw[a]=v; n++; }); XL.marks={}; XL.status=null; xlSave(); xlPaint(); return n; }
 function xlFill(dir){
   if(XL.editing) xlCommit(0,0);
   let R=xlRect(); const t=XL.t;
@@ -4256,17 +4804,18 @@ function xlCheck(){
   const r=$("xlResult"); r.hidden=false; r.className="xl-result glass "+(all?"good":"");
   r.innerHTML=all?`<b>Alt riktig${bonus}</b><span>${n} av ${n} celler stemmer. ${st.help?"Du brukte løsningsforslaget, så denne gir ikke XP.":"Godt jobbet!"}</span>`
     :`<b>${ok} av ${n} riktige</b><span>Røde celler stemmer ikke ennå: ${miss.slice(0,8).join(", ")}${miss.length>8?" …":""}. Tomme celler teller som feil.</span>`;
-  xlPaint(); r.scrollIntoView({block:"nearest",behavior:reduceMotion?"auto":"smooth"});
+  XL.status={ok:all,txt:all?"Alt riktig":ok+" av "+n+" riktige"};
+  xlPaint(); if(XLUI.task) r.scrollIntoView({block:"nearest",behavior:reduceMotion?"auto":"smooth"}); else if(!all) toast(ok+" av "+n+" riktige. Røde celler stemmer ikke ennå.");
 }
 function xlSolution(){
   const b=$("xlSolution");
-  if(!XL.confirmSol){ XL.confirmSol=true; b.textContent="Trykk igjen for å fylle inn"; setTimeout(()=>{ XL.confirmSol=false; if(b) b.textContent="Vis løsningsforslag"; },3500); return; }
-  XL.confirmSol=false; b.textContent="Vis løsningsforslag";
+  if(!XL.confirmSol){ XL.confirmSol=true; b.textContent="Trykk igjen for å fylle inn"; setTimeout(()=>{ XL.confirmSol=false; if(b) b.textContent="Løsning"; },3500); return; }
+  XL.confirmSol=false; b.textContent="Løsning";
   const st=P.xl[XL.t.id]||{}; if(!st.solved){ st.help=true; P.xl[XL.t.id]=st; saveP(); }
   xlSetMany(set=>Object.entries(XL.t.solution).forEach(([a,v])=>set(a,v)));
   toast("Løsningsforslaget er fylt inn. Klikk på cellene for å se formlene."); xlCheck();
 }
-function xlReset(){ xlPush(); XL.raw=Object.assign({},XL.t.cells); XL.marks={}; xlSave(); $("xlResult").hidden=true; xlPaint(); toast("Arket er tømt. Angre for å få det tilbake."); }
+function xlReset(){ xlPush(); XL.raw=Object.assign({},XL.t.cells); XL.marks={}; XL.status=null; xlSave(); $("xlResult").hidden=true; xlPaint(); toast("Arket er tømt. Angre for å få det tilbake."); }
 
 /* ---------- wiring ---------- */
 (function(){
@@ -4322,12 +4871,21 @@ function xlReset(){ xlPush(); XL.raw=Object.assign({},XL.t.cells); XL.marks={}; 
   $("xlCheck").addEventListener("click",xlCheck);
   $("xlSolution").addEventListener("click",xlSolution);
   $("xlReset").addEventListener("click",xlReset);
-  $("xlBack").addEventListener("click",()=>{ if(XL.t){ if(XL.editing) xlCommit(0,0); xlShowList(); } else go("laer"); });
+  $("xlBack").addEventListener("click",()=>go("laer"));
+  $("xlClose").addEventListener("click",xlShowList);
+  $("xlTaskTgl").addEventListener("click",()=>{ XLUI.task=!XLUI.task; xlUiSave(); xlApplyUi(); });
+  $("xlZoomIn").addEventListener("click",()=>xlZoom(.1));
+  $("xlZoomOut").addEventListener("click",()=>xlZoom(-.1));
+  const fs=$("xlFs"), root=document.documentElement;
+  if(document.fullscreenEnabled && root.requestFullscreen){ fs.hidden=false;
+    fs.addEventListener("click",()=>{ if(document.fullscreenElement) document.exitFullscreen().catch(()=>{}); else root.requestFullscreen().catch(()=>toast("Fullskjerm er ikke tillatt her")); });
+    document.addEventListener("fullscreenchange",()=>{ fs.textContent=document.fullscreenElement?"Avslutt fullskjerm":"Fullskjerm"; fs.setAttribute("aria-pressed",String(!!document.fullscreenElement)); }); }
+  document.body.append($("xlWork"));
 })();
 
 LEARN_SUB.push("excel");
 const learnEnterBase=learnEnter;
-learnEnter=function(v){ learnEnterBase(v); if(v==="excel") xlShowList(); };
+learnEnter=function(v){ learnEnterBase(v); if(v==="excel") xlShowList(); else if(XL.t) xlHide(); };
 go((location.hash||"").slice(1)||"hjem",true);
 
 </script>
