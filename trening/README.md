@@ -57,6 +57,15 @@ Under bunnen av området to økter på rad gir 10 % ned. Deload-uker: ett sett f
 
 Startvektene i appen er anslag. Juster dem under Innstillinger → Arbeidsvekter tilbehør.
 
+## Kropp og kosthold
+
+Utgangspunkt: 72,5 kg, 173–174 cm, ~14 % fett (fettfri masse ~62 kg, FFMI ~20,7).
+100 kg i belte er 172,5 kg total last, 2,4× kroppsvekt. Det er elitenivå, og det krever mer muskelmasse.
+
+- Rolig oppbygging til ~78 kg, ca. 0,2 kg i uka (~6 mnd)
+- ~2900 kcal (vedlikehold ~2650 + 250) og ~145 g protein per dag
+- Oppdater kroppsvekten i appen hver 2.–4. uke, så regnes alle vekter om
+
 ## Realistisk tidslinje
 Estimert ~2–2,5 år. Rask fremgang tilbake til +60 kg, deretter ~2,5 kg per måned som gradvis avtar mot 100 kg.
 Prognosen i appen oppdateres fra det du logger.

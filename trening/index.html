@@ -105,6 +105,10 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
     <p class="muted small" style="margin:8px 0 0">Dobbel progresjon: når alle sett når toppen av rep-området, øker vekta neste økt. To økter under bunnen gir 10 % ned.</p>
   </div>
   <div class="card">
+    <h2>Kropp og kosthold</h2>
+    <div id="bodyInfo"></div>
+  </div>
+  <div class="card">
     <h2>Plan</h2>
     <div id="phaseInfo"></div>
   </div>
@@ -115,7 +119,7 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
       <li><b>Treningsmaks (TM)</b> = 95 % av estimert 1RM (total). Den justeres automatisk etter hver blokk basert på det du logger.</li>
       <li><b>Pullups:</b> dødt heng i bunn, haka over stanga, ingen kipping. <b>Dips:</b> skulder under albue i bunn, full lockout.</li>
       <li><b>Pause:</b> 3–5 min på tunge sett, 2 min på volum. Stopp 1–2 reps før teknikken ryker, unntatt på «+»-settet.</li>
-      <li>Hold kroppsvekten stabil eller øk sakte. Ett kilo kroppsvekt = ett kilo mindre i beltet ved samme totale styrke.</li>
+      <li><b>Oppdater kroppsvekten</b> i Innstillinger hver 2.–4. uke. Alle vekter regnes om automatisk.</li>
       <li><b>Tilbehør</b> (franskpress, single arm row, curls, smal benk osv.) bygger musklene som bærer de tunge løftene. Logg alle sett, så sier appen når vekta skal opp.</li>
       <li>Albue- og skuldersmerter er den vanligste bremsen. Gjør oppvarming og prehab, og ta deload på alvor.</li>
     </ul>
@@ -164,6 +168,9 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
     <h2>Deg</h2>
     <div class="grid2">
       <label>Kroppsvekt (kg)<input type="number" step="0.1" id="sBw" inputmode="decimal"></label>
+      <label>Høyde (cm)<input type="number" step="0.5" id="sHeight" inputmode="decimal"></label>
+      <label>Kroppsfett (%)<input type="number" step="0.5" id="sBf" inputmode="decimal"></label>
+      <label>Målvekt kropp (kg)<input type="number" step="0.5" id="sTargetBw" inputmode="decimal"></label>
       <label>Mål (kg i belte)<input type="number" step="2.5" id="sGoal" inputmode="decimal"></label>
       <label>Startdato program<input type="date" id="sStart"></label>
     </div>
@@ -220,9 +227,9 @@ const $ = id => document.getElementById(id);
 const e1rmTotal = (total, reps) => reps <= 1 ? total : total * 36 / (37 - Math.min(reps, 12));
 
 function defaults() {
-  const bw = 85;
+  const bw = 72.5;
   const s = {
-    bw, goal: 100, start: today(),
+    bw, height: 173.5, bf: 14, targetBw: 78, goal: 100, start: today(),
     base: { pu: { kg: 45, reps: 1, peak: 60 }, dip: { kg: 40, reps: 2, peak: 62.5 } },
     tm: {}, week: 1, logs: [], done: {}, blockStartWeek: 1
   };
@@ -235,7 +242,18 @@ function calcTm(s) {
   return out;
 }
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(defaults(), JSON.parse(raw)); } catch (e) {}
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // One-time fix: earlier versions used 85 kg as a placeholder bodyweight.
+      if (saved.height === undefined && saved.bw === 85) {
+        saved.bw = 72.5;
+        if (!(saved.logs || []).length && saved.base) saved.tm = calcTm(Object.assign(defaults(), saved));
+      }
+      return Object.assign(defaults(), saved);
+    }
+  } catch (e) {}
   return defaults();
 }
 let S = load();
@@ -538,14 +556,14 @@ $('lAdd').onclick = () => {
 
 /* ---------- Settings ---------- */
 function fillSettings() {
-  $('sBw').value = S.bw; $('sGoal').value = S.goal; $('sStart').value = S.start;
+  $('sBw').value = S.bw; $('sHeight').value = S.height; $('sBf').value = S.bf; $('sTargetBw').value = S.targetBw; $('sGoal').value = S.goal; $('sStart').value = S.start;
   $('sPuKg').value = S.base.pu.kg; $('sPuR').value = S.base.pu.reps; $('sPuPeak').value = S.base.pu.peak;
   $('sDipKg').value = S.base.dip.kg; $('sDipR').value = S.base.dip.reps; $('sDipPeak').value = S.base.dip.peak;
   $('sPuTm').value = S.tm.pu; $('sDipTm').value = S.tm.dip;
   $('exSettings').innerHTML = Object.keys(EX).map(id => `<label>${EX[id].name} (kg)<input type="number" step="0.5" min="0" id="x-${id}" value="${S.ex[id].kg}"></label>`).join('');
 }
 function readSettings() {
-  S.bw = +$('sBw').value || S.bw; S.goal = +$('sGoal').value || S.goal; S.start = $('sStart').value || S.start;
+  S.bw = +$('sBw').value || S.bw; S.height = +$('sHeight').value || S.height; S.bf = +$('sBf').value || S.bf; S.targetBw = +$('sTargetBw').value || S.targetBw; S.goal = +$('sGoal').value || S.goal; S.start = $('sStart').value || S.start;
   S.base.pu = { kg: +$('sPuKg').value, reps: +$('sPuR').value || 1, peak: +$('sPuPeak').value };
   S.base.dip = { kg: +$('sDipKg').value, reps: +$('sDipR').value || 1, peak: +$('sDipPeak').value };
   S.tm = { pu: +$('sPuTm').value, dip: +$('sDipTm').value };
@@ -580,7 +598,26 @@ function renderAccTable() {
       <td class="muted small">${last ? last.reps.join('/') : '–'}</td></tr>`;
   }).join('');
 }
-function renderAll() { renderAccTable(); renderOverview(); renderProgram(); renderLog(); fillSettings(); }
+function renderBody() {
+  const lbm = S.bw * (1 - S.bf / 100), h = S.height / 100, ffmi = lbm / (h * h);
+  const maint = Math.round((370 + 21.6 * lbm) * 1.55 / 50) * 50;
+  const bulking = S.bw < S.targetBw - 0.5;
+  const kcal = maint + (bulking ? 250 : 0);
+  const weeks = bulking ? Math.ceil((S.targetBw - S.bw) / 0.2) : 0;
+  const ratio = (S.bw + S.goal) / S.bw;
+  $('bodyInfo').innerHTML = `
+    <div class="grid2">
+      <div><div class="muted small">Fettfri masse</div><b>${fmt(Math.round(lbm * 10) / 10)} kg</b> <span class="muted small">FFMI ${fmt(Math.round(ffmi * 10) / 10)}</span></div>
+      <div><div class="muted small">Målet i total last</div><b>${fmt(S.bw + S.goal)} kg</b> <span class="muted small">${fmt(Math.round(ratio * 100) / 100)}× kroppsvekt</span></div>
+      <div><div class="muted small">Kalorier per dag</div><b>~${kcal} kcal</b> <span class="muted small">${bulking ? `vedlikehold ~${maint} + 250` : 'vedlikehold'}</span></div>
+      <div><div class="muted small">Protein per dag</div><b>${Math.round(S.bw * 2 / 5) * 5} g</b> <span class="muted small">2 g/kg</span></div>
+    </div>
+    <p class="small" style="margin:10px 0 0">${bulking
+      ? `Plan: rolig oppbygging fra ${fmt(S.bw)} til ${fmt(S.targetBw)} kg, ca. 0,2 kg i uka (~${Math.round(weeks / 4.33)} mnd). Hvis du går opp mer enn 0,3 kg i uka over tid, kutt 150 kcal.`
+      : `Du er på målvekta. Spis på vedlikehold og hold vekta stabil.`}</p>
+    <p class="muted small" style="margin:6px 0 0">Kaloriene er et anslag (Katch-McArdle × 1,55). Juster etter hva vekta faktisk gjør.</p>`;
+}
+function renderAll() { renderBody(); renderAccTable(); renderOverview(); renderProgram(); renderLog(); fillSettings(); }
 $('lDate').value = today();
 renderAll();
 </script>
