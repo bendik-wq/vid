@@ -57,6 +57,7 @@ label input,label select{margin-top:4px}
 .set .w{font-weight:700;min-width:96px}
 .set .meta{color:var(--muted);font-size:12px;flex:1}
 .set input.reps{width:56px;padding:6px}
+.accrow .w{min-width:0;flex:none;margin-right:4px}.accrow input.reps{flex:1;min-width:0;width:auto}.accrow .btn{flex:none;padding:8px 10px}
 .set.done .w{color:var(--good);text-decoration:line-through}
 .acc{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
 table{width:100%;border-collapse:collapse;font-size:14px}
@@ -99,6 +100,11 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
     </div>
   </div>
   <div class="card">
+    <h2>Tilbehør</h2>
+    <table><thead><tr><th>Øvelse</th><th>Start</th><th>Nå</th><th>Sist</th></tr></thead><tbody id="accBody"></tbody></table>
+    <p class="muted small" style="margin:8px 0 0">Dobbel progresjon: når alle sett når toppen av rep-området, øker vekta neste økt. To økter under bunnen gir 10 % ned.</p>
+  </div>
+  <div class="card">
     <h2>Plan</h2>
     <div id="phaseInfo"></div>
   </div>
@@ -110,6 +116,7 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
       <li><b>Pullups:</b> dødt heng i bunn, haka over stanga, ingen kipping. <b>Dips:</b> skulder under albue i bunn, full lockout.</li>
       <li><b>Pause:</b> 3–5 min på tunge sett, 2 min på volum. Stopp 1–2 reps før teknikken ryker, unntatt på «+»-settet.</li>
       <li>Hold kroppsvekten stabil eller øk sakte. Ett kilo kroppsvekt = ett kilo mindre i beltet ved samme totale styrke.</li>
+      <li><b>Tilbehør</b> (franskpress, single arm row, curls, smal benk osv.) bygger musklene som bærer de tunge løftene. Logg alle sett, så sier appen når vekta skal opp.</li>
       <li>Albue- og skuldersmerter er den vanligste bremsen. Gjør oppvarming og prehab, og ta deload på alvor.</li>
     </ul>
   </div>
@@ -173,6 +180,11 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
     </div>
   </div>
   <div class="card">
+    <h2>Arbeidsvekter tilbehør</h2>
+    <p class="muted small" style="margin-top:0">Startverdiene er anslag. Sett inn en vekt du klarer bunnen av rep-området med 2–3 reps i reserve.</p>
+    <div class="grid2" id="exSettings"></div>
+  </div>
+  <div class="card">
     <h2>Treningsmaks (total last)</h2>
     <div class="grid2">
       <label>Pullups TM (kg totalt)<input type="number" step="1.25" id="sPuTm"></label>
@@ -231,11 +243,26 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 1800); }
 
 /* ---------- Program ---------- */
-const ACC = {
-  A: ['Ringrader eller kabelrad 3×8', 'Hammercurl 3×10', 'Hollow hold 3×30 s'],
-  B: ['Skulderpress (manualer) 3×8', 'Face pulls 3×15', 'Triceps pushdown 3×12'],
-  C: ['Scapula pullups 2×10', 'Dødt heng 2×30–45 s', 'Ytre rotasjon med strikk 2×15']
+// Accessories use double progression: hit the top of the rep range on every set -> add `inc` kg.
+const EX = {
+  row:  { name: 'Single arm row (manual)', sets: 3, lo: 6, hi: 10, inc: 2, start: 30, why: 'Tykkere rygg og lats: motoren i pullups' },
+  fp:   { name: 'Franskpress (EZ-stang)', sets: 3, lo: 8, hi: 12, inc: 2.5, start: 25, why: 'Langt tricepshode: lockout i dips' },
+  hc:   { name: 'Hammercurl', sets: 3, lo: 8, hi: 12, inc: 2, start: 14, why: 'Brachialis: sterkere topp i pullups, friskere albuer' },
+  cgbp: { name: 'Smal benkpress', sets: 3, lo: 5, hi: 8, inc: 2.5, start: 70, why: 'Tung pressing for triceps og bryst: overfører til dips' },
+  ohp:  { name: 'Skulderpress (manualer)', sets: 3, lo: 6, hi: 10, inc: 2, start: 20, why: 'Fremre skulder og stabilitet i dips' },
+  ezc:  { name: 'Bicepscurl (EZ-stang)', sets: 3, lo: 6, hi: 10, inc: 2.5, start: 30, why: 'Biceps tåler tunge pullups bedre' },
+  fpul: { name: 'Face pulls', sets: 3, lo: 12, hi: 20, inc: 2.5, start: 20, why: 'Bakre skulder: balanserer all pressingen' },
+  scap: { name: 'Scapula pullups', sets: 2, lo: 8, hi: 15, inc: 2.5, start: 0, why: 'Skulderbladkontroll i bunnen av pullups' },
+  hang: { name: 'Dødt heng', sets: 2, lo: 30, hi: 60, inc: 5, start: 0, unit: 's', why: 'Grep og skulderhelse' },
+  er:   { name: 'Ytre rotasjon (kabel)', sets: 2, lo: 12, hi: 20, inc: 1, start: 5, why: 'Rotator cuff: forebygger skulderskader' },
+  hlr:  { name: 'Hengende beinhev', sets: 3, lo: 8, hi: 15, inc: 2, start: 0, why: 'Core: stabil kropp under tunge pullups' }
 };
+const ACC = { A: ['row', 'fp', 'hc'], B: ['cgbp', 'ohp', 'ezc', 'fpul'], C: ['scap', 'hang', 'er', 'hlr'] };
+function ensureEx() {
+  S.ex = S.ex || {}; S.exLogs = S.exLogs || [];
+  for (const id in EX) if (!S.ex[id]) S.ex[id] = { kg: EX[id].start, start: EX[id].start, fails: 0 };
+}
+ensureEx();
 const sets = (n, pct, reps, extra = {}) => Array.from({ length: n }, () => ({ pct, reps, ...extra }));
 
 function phaseOf(w) {
@@ -274,9 +301,9 @@ function buildWeek(w) {
     return {
       title: `Uke ${w}`, sub, tag: 'test', tagText: 'Testuke',
       days: [
-        { name: 'Dag A · Test pullups', acc: ['Ingen tilbehør. Full hvile 4–6 min mellom singler.'], items: [{ lift: 'pu', sets: heavy }] },
-        { name: 'Dag B · Lett', acc: ['Bare mobilitet og lett pump.'], items: [{ lift: 'dip', sets: sets(3, 70, 5) }, { lift: 'pu', sets: sets(3, 70, 5) }] },
-        { name: 'Dag C · Test dips', acc: ['Ingen tilbehør. Full hvile 4–6 min mellom singler.'], items: [{ lift: 'dip', sets: heavy }] }
+        { name: 'Dag A · Test pullups', acc: [], accNote: 'Ingen tilbehør. Full hvile 4–6 min mellom singler.', items: [{ lift: 'pu', sets: heavy }] },
+        { name: 'Dag B · Lett', acc: [], accNote: 'Bare mobilitet og lett pump.', items: [{ lift: 'dip', sets: sets(3, 70, 5) }, { lift: 'pu', sets: sets(3, 70, 5) }] },
+        { name: 'Dag C · Test dips', acc: [], accNote: 'Ingen tilbehør. Full hvile 4–6 min mellom singler.', items: [{ lift: 'dip', sets: heavy }] }
       ]
     };
   }
@@ -401,8 +428,40 @@ function renderProgram() {
               <button class="btn" data-log="${key}" data-lift="${it.lift}" data-kg="${kg}">Logg</button>` : ''}
           </div>`;
         }).join('')}</div>`).join('')}
-      <ul class="acc">${d.acc.map(a => `<li>${a}</li>`).join('')}</ul>
+      ${d.accNote ? `<p class="muted small">${d.accNote}</p>` : ''}
+      ${d.acc.length ? `<h3 style="margin-top:12px">Tilbehør${wk.tag === 'deload' ? ' · deload: ett sett færre, ingen progresjon' : ''}</h3>` : ''}
+      ${d.acc.map(id => renderAcc(id, di, wk.tag === 'deload')).join('')}
     </div>`).join('');
+}
+const exLoad = (id, kg) => kg <= 0 ? (id === 'er' ? 'Strikk' : 'Kroppsvekt') : `${fmt(kg)} kg`;
+function renderAcc(id, di, deload) {
+  const e = EX[id], st = S.ex[id], key = `${S.week}-${di}-acc-${id}`, n = e.sets - (deload ? 1 : 0);
+  const last = S.exLogs.filter(l => l.id === id).slice(-1)[0];
+  const u = e.unit === 's' ? ' s' : '';
+  return `<div class="ex ${S.done[key] ? 'done' : ''}">
+    <div class="row"><div class="name">${e.name}</div><span class="pill">${n} × ${e.lo}–${e.hi}${u}</span></div>
+    <div class="muted small">${e.why}</div>
+    <div class="set accrow">
+      <span class="w">${exLoad(id, st.kg)}</span>
+      ${Array.from({ length: n }, (_, i) => `<input class="reps" type="number" min="0" inputmode="numeric" placeholder="${e.hi}" data-accset="${key}" value="${S.done[key]?.[i] ?? ''}">`).join('')}
+      <button class="btn" data-acc="${id}" data-key="${key}" data-deload="${deload ? 1 : ''}">${S.done[key] ? '✓' : 'Lagre'}</button>
+    </div>
+    <div class="muted small">${last ? `Sist: ${last.reps.join('/')}${u} @ ${exLoad(id, last.kg)}` : 'Ingen logg enda'} · +${fmt(e.inc)} kg når alle sett når ${e.hi}${u}</div>
+  </div>`;
+}
+function logAcc(id, key, reps, deload) {
+  const e = EX[id], st = S.ex[id];
+  S.exLogs.push({ id, week: S.week, date: today(), kg: st.kg, reps });
+  S.done[key] = reps;
+  let msg;
+  if (deload) msg = 'Lagret (deload)';
+  else if (reps.every(r => r >= e.hi)) { st.kg = +(st.kg + e.inc).toFixed(2); st.fails = 0; msg = `Toppen nådd! Neste gang: ${exLoad(id, st.kg)}`; }
+  else if (Math.min(...reps) < e.lo) {
+    st.fails = (st.fails || 0) + 1;
+    if (st.fails >= 2) { st.kg = Math.max(0, Math.round(st.kg * 0.9 / e.inc) * e.inc); st.fails = 0; msg = `To økter under: ned til ${exLoad(id, st.kg)}`; }
+    else msg = 'Under rep-området. Samme vekt neste gang';
+  } else { st.fails = 0; msg = `Samme vekt. Jobb mot ${e.hi} på alle sett`; }
+  save(); renderAll(); toast(msg);
 }
 $('weekDays').addEventListener('change', e => {
   const k = e.target.dataset.key; if (!k) return;
@@ -411,6 +470,12 @@ $('weekDays').addEventListener('change', e => {
   save();
 });
 $('weekDays').addEventListener('click', e => {
+  const a = e.target.closest('[data-acc]');
+  if (a) {
+    const reps = [...document.querySelectorAll(`[data-accset="${a.dataset.key}"]`)].map(i => +i.value);
+    if (reps.some(r => !r)) { toast('Fyll inn reps for alle sett'); return; }
+    logAcc(a.dataset.acc, a.dataset.key, reps, !!a.dataset.deload); return;
+  }
   const b = e.target.closest('[data-log]'); if (!b) return;
   const reps = +$('r-' + b.dataset.log).value;
   if (!reps) { toast('Skriv inn antall reps'); return; }
@@ -477,16 +542,18 @@ function fillSettings() {
   $('sPuKg').value = S.base.pu.kg; $('sPuR').value = S.base.pu.reps; $('sPuPeak').value = S.base.pu.peak;
   $('sDipKg').value = S.base.dip.kg; $('sDipR').value = S.base.dip.reps; $('sDipPeak').value = S.base.dip.peak;
   $('sPuTm').value = S.tm.pu; $('sDipTm').value = S.tm.dip;
+  $('exSettings').innerHTML = Object.keys(EX).map(id => `<label>${EX[id].name} (kg)<input type="number" step="0.5" min="0" id="x-${id}" value="${S.ex[id].kg}"></label>`).join('');
 }
 function readSettings() {
   S.bw = +$('sBw').value || S.bw; S.goal = +$('sGoal').value || S.goal; S.start = $('sStart').value || S.start;
   S.base.pu = { kg: +$('sPuKg').value, reps: +$('sPuR').value || 1, peak: +$('sPuPeak').value };
   S.base.dip = { kg: +$('sDipKg').value, reps: +$('sDipR').value || 1, peak: +$('sDipPeak').value };
   S.tm = { pu: +$('sPuTm').value, dip: +$('sDipTm').value };
+  for (const id in EX) { const v = +$('x-' + id).value; if (v !== S.ex[id].kg) { S.ex[id].kg = v; S.ex[id].fails = 0; if (!S.exLogs.some(l => l.id === id)) S.ex[id].start = v; } }
 }
 $('sCalc').onclick = () => { readSettings(); S.tm = calcTm(S); fillSettings(); toast('TM regnet ut'); };
 $('sSave').onclick = () => { readSettings(); save(); renderAll(); toast('Lagret'); };
-$('sReset').onclick = () => { if (confirm('Slette all data og starte på nytt?')) { S = defaults(); save(); renderAll(); } };
+$('sReset').onclick = () => { if (confirm('Slette all data og starte på nytt?')) { S = defaults(); ensureEx(); save(); renderAll(); } };
 $('sExport').onclick = () => {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' }));
@@ -494,7 +561,7 @@ $('sExport').onclick = () => {
 };
 $('sImport').onclick = () => $('fileIn').click();
 $('fileIn').onchange = async e => {
-  try { S = Object.assign(defaults(), JSON.parse(await e.target.files[0].text())); save(); renderAll(); toast('Importert'); }
+  try { S = Object.assign(defaults(), JSON.parse(await e.target.files[0].text())); ensureEx(); save(); renderAll(); toast('Importert'); }
   catch (err) { toast('Ugyldig fil'); }
 };
 
@@ -505,7 +572,15 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   scrollTo(0, 0);
 });
 
-function renderAll() { renderOverview(); renderProgram(); renderLog(); fillSettings(); }
+function renderAccTable() {
+  $('accBody').innerHTML = Object.keys(EX).map(id => {
+    const st = S.ex[id], last = S.exLogs.filter(l => l.id === id).slice(-1)[0], up = st.kg - st.start;
+    return `<tr><td>${EX[id].name}</td><td class="muted">${exLoad(id, st.start)}</td>
+      <td><b>${exLoad(id, st.kg)}</b>${up > 0 ? ` <span style="color:var(--good)">+${fmt(up)}</span>` : ''}</td>
+      <td class="muted small">${last ? last.reps.join('/') : '–'}</td></tr>`;
+  }).join('');
+}
+function renderAll() { renderAccTable(); renderOverview(); renderProgram(); renderLog(); fillSettings(); }
 $('lDate').value = today();
 renderAll();
 </script>

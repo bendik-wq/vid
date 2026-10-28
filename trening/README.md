@@ -36,7 +36,26 @@ Uke 4 er deload. Uke 8 avsluttes med et AMRAP-sett som rekalibrerer TM.
 Hver 3. blokk er uke 4 en **testuke** (ramp opp til ny 1RM).
 Etter hver blokk settes ny TM til 95 % av beste estimerte 1RM du logget, maks ±5 kg per blokk. Uten logg: +2,5 kg.
 
-Tilbehør roterer: rader, curls, skulderpress, triceps, face pulls, scapula pulls, core.
+## Tilbehør med progresjon
+
+Dobbel progresjon: når **alle sett** når toppen av rep-området, går vekta opp neste økt.
+Under bunnen av området to økter på rad gir 10 % ned. Deload-uker: ett sett færre, ingen progresjon.
+
+| Dag | Øvelse | Sett × reps | Økning | Hvorfor |
+|---|---|---|---|---|
+| A | Single arm row (manual) | 3 × 6–10 | +2 kg | Rygg og lats til pullups |
+| A | Franskpress (EZ) | 3 × 8–12 | +2,5 kg | Langt tricepshode, lockout i dips |
+| A | Hammercurl | 3 × 8–12 | +2 kg | Brachialis, albuehelse |
+| B | Smal benkpress | 3 × 5–8 | +2,5 kg | Tung pressing til dips |
+| B | Skulderpress (manualer) | 3 × 6–10 | +2 kg | Fremre skulder, stabilitet |
+| B | Bicepscurl (EZ) | 3 × 6–10 | +2,5 kg | Biceps til tunge pullups |
+| B | Face pulls | 3 × 12–20 | +2,5 kg | Bakre skulder, balanse |
+| C | Scapula pullups | 2 × 8–15 | +2,5 kg | Skulderbladkontroll |
+| C | Dødt heng | 2 × 30–60 s | +5 kg | Grep og skulderhelse |
+| C | Ytre rotasjon (kabel) | 2 × 12–20 | +1 kg | Rotator cuff |
+| C | Hengende beinhev | 3 × 8–15 | +2 kg | Core |
+
+Startvektene i appen er anslag. Juster dem under Innstillinger → Arbeidsvekter tilbehør.
 
 ## Realistisk tidslinje
 Estimert ~2–2,5 år. Rask fremgang tilbake til +60 kg, deretter ~2,5 kg per måned som gradvis avtar mot 100 kg.
