@@ -681,18 +681,21 @@ function renderBody() {
       : `Du er på målvekta. Spis på vedlikehold og hold vekta stabil.`}</p>
     <p class="muted small" style="margin:6px 0 0">Kaloriene er et anslag (Katch-McArdle × 1,55). Juster etter hva vekta faktisk gjør.</p>`;
 }
-// Fixed portions of meat, bread and Nugatti; rice fills the rest of the calorie target.
+// Fixed portions of meat, eggs, milk, bread and Nugatti; rice fills the rest of the calorie target.
 const FOOD = {
   meat:  { name: 'Kjøttdeig 14 % (rå vekt)', kcal: 200, p: 19, c: 0, f: 14 },
   rice:  { name: 'Ris (ukokt vekt)', kcal: 355, p: 7, c: 79, f: 0.6 },
   bread: { name: 'Grovbrød', kcal: 240, p: 10, c: 40, f: 3.3 },
-  nug:   { name: 'Nugatti', kcal: 545, p: 6, c: 56, f: 32 }
+  nug:   { name: 'Nugatti', kcal: 545, p: 6, c: 56, f: 32 },
+  egg:   { name: 'Egg (ca. 60 g)', kcal: 140, p: 12.5, c: 0.8, f: 10 },
+  milk:  { name: 'Helmelk', kcal: 64, p: 3.4, c: 4.6, f: 3.5 }
 };
 function dietPlan() {
-  const meat = 600, bread = 160, nug = 80;
-  const fixed = (meat * FOOD.meat.kcal + bread * FOOD.bread.kcal + nug * FOOD.nug.kcal) / 100;
+  const fixedGrams = { meat: 450, bread: 160, nug: 80, egg: 180, milk: 600 };
+  let fixed = 0;
+  for (const k in fixedGrams) fixed += fixedGrams[k] * FOOD[k].kcal / 100;
   const rice = Math.max(0, Math.round((S.kcal - fixed) / FOOD.rice.kcal * 100 / 30) * 30);
-  const grams = { meat, rice, bread, nug };
+  const grams = { ...fixedGrams, rice };
   const tot = { kcal: 0, p: 0, c: 0, f: 0 };
   for (const k in grams) for (const m in tot) tot[m] += grams[k] * FOOD[k][m] / 100;
   return { grams, tot };
@@ -704,22 +707,23 @@ function renderDiet() {
     for (const [k, w] of gr) { t.kcal += w * FOOD[k].kcal / 100; t.p += w * FOOD[k].p / 100; }
     return `<tr><td><b>${n}</b><div class="muted small">${what}</div></td><td>${Math.round(t.kcal)}</td><td>${Math.round(t.p)} g</td></tr>`;
   };
-  const meal = [['meat', 200], ['rice', r3]];
+  const meal = [['meat', 150], ['rice', r3]];
   const toast2 = [['bread', 80], ['nug', 40]];
+  const glass = ['milk', 200];
   $('dietInfo').innerHTML = `
     <div style="overflow-x:auto"><table>
       <thead><tr><th>Måltid</th><th>kcal</th><th>Protein</th></tr></thead>
       <tbody>
-        ${m('Frokost', '2 skiver grovbrød med Nugatti (40 g)', toast2)}
-        ${m('Lunsj', `200 g kjøttdeig + ${r3} g ris`, meal)}
-        ${m('Middag', `200 g kjøttdeig + ${r3} g ris`, meal)}
-        ${m('Etter trening', `200 g kjøttdeig + ${r3} g ris`, meal)}
-        ${m('Kvelds', '2 skiver grovbrød med Nugatti (40 g)', toast2)}
+        ${m('Frokost', '3 egg + 2 skiver grovbrød med Nugatti (40 g) + 2 dl helmelk', [['egg', 180], ...toast2, glass])}
+        ${m('Lunsj', `150 g kjøttdeig + ${r3} g ris`, meal)}
+        ${m('Middag', `150 g kjøttdeig + ${r3} g ris`, meal)}
+        ${m('Etter trening', `150 g kjøttdeig + ${r3} g ris + 2 dl helmelk`, [...meal, glass])}
+        ${m('Kvelds', '2 skiver grovbrød med Nugatti (40 g) + 2 dl helmelk', [...toast2, glass])}
         <tr><td><b>Totalt</b></td><td><b>${Math.round(tot.kcal)}</b></td><td><b>${Math.round(tot.p)} g</b></td></tr>
       </tbody></table></div>
-    <p class="small" style="margin:10px 0 4px">Handleliste per dag: <b>${g.meat} g kjøttdeig</b>, <b>${g.rice} g ris</b> (ukokt), <b>4 skiver brød</b>, <b>${g.nug} g Nugatti</b>.
-      Karbo ${Math.round(tot.c)} g · fett ${Math.round(tot.f)} g. Ukeshandel: ${fmt(g.meat * 7 / 1000)} kg kjøttdeig, ${fmt(Math.round(g.rice * 7 / 100) / 10)} kg ris, ~${fmt(Math.ceil(g.nug * 7 / 500 * 2) / 2)} glass Nugatti (500 g).</p>
-    <p class="muted small" style="margin:0">Lag mat for 2–3 dager om gangen. Krydre kjøttdeigen fritt (taco, soya, salt, pepper). Kjøttdeig og ris gir lite fiber og vitaminer: ha i en pose frosne grønnsaker i kjøttdeigen og ta en multivitamin. Grønnsakene er ikke regnet med.</p>`;
+    <p class="small" style="margin:10px 0 4px">Handleliste per dag: <b>${g.meat} g kjøttdeig</b>, <b>${g.rice} g ris</b> (ukokt), <b>3 egg</b>, <b>${fmt(g.milk / 1000)} l helmelk</b>, <b>4 skiver brød</b>, <b>${g.nug} g Nugatti</b>.
+      Karbo ${Math.round(tot.c)} g · fett ${Math.round(tot.f)} g. Ukeshandel: ${fmt(g.meat * 7 / 1000)} kg kjøttdeig, ${fmt(Math.round(g.rice * 7 / 100) / 10)} kg ris, 21 egg, ${fmt(g.milk * 7 / 1000)} l melk, ~${fmt(Math.ceil(g.nug * 7 / 500 * 2) / 2)} glass Nugatti (500 g).</p>
+    <p class="muted small" style="margin:0">Lag mat for 2–3 dager om gangen. Krydre kjøttdeigen fritt (taco, soya, salt, pepper). Eggene kan stekes, kokes eller røres. Bytter du til lettmelk, gå opp 40 g ris. Kjøttdeig og ris gir lite fiber og vitaminer: ha i en pose frosne grønnsaker i kjøttdeigen og ta en multivitamin. Grønnsakene er ikke regnet med.</p>`;
 }
 function renderAll() { renderDiet(); renderBody(); renderAccTable(); renderOverview(); renderProgram(); renderLog(); fillSettings(); }
 $('lDate').value = today();
