@@ -62,8 +62,20 @@ Startvektene i appen er anslag. Juster dem under Innstillinger → Arbeidsvekter
 Utgangspunkt: 72,5 kg, 173–174 cm, ~14 % fett (fettfri masse ~62 kg, FFMI ~20,7).
 100 kg i belte er 172,5 kg total last, 2,4× kroppsvekt. Det er elitenivå, og det krever mer muskelmasse.
 
-- Rolig oppbygging til ~78 kg, ca. 0,2 kg i uka (~6 mnd)
-- ~2900 kcal (vedlikehold ~2650 + 250) og ~145 g protein per dag
+- Oppbygging til ~78 kg på 3500 kcal per dag (vedlikehold ~2650 + 850, ca. 0,8 kg i uka)
+
+### Diett: kjøttdeig, ris og Nugatti-skiver (3500 kcal)
+
+| Måltid | Innhold | kcal | Protein |
+|---|---|---|---|
+| Frokost | 2 skiver grovbrød med 40 g Nugatti | 410 | 10 g |
+| Lunsj | 200 g kjøttdeig 14 % + 140 g ris (ukokt) | 897 | 48 g |
+| Middag | 200 g kjøttdeig + 140 g ris | 897 | 48 g |
+| Etter trening | 200 g kjøttdeig + 140 g ris | 897 | 48 g |
+| Kvelds | 2 skiver grovbrød med 40 g Nugatti | 410 | 10 g |
+| **Totalt** | | **~3500** | **~164 g** |
+
+Per uke: 4,2 kg kjøttdeig, 2,9 kg ris, ~1,5 glass Nugatti. Ha i frosne grønnsaker og ta en multivitamin.
 - Oppdater kroppsvekten i appen hver 2.–4. uke, så regnes alle vekter om
 
 ## Realistisk tidslinje
