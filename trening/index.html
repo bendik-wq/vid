@@ -9,12 +9,12 @@
 :root{
   --bg:#0f1115; --card:#181b22; --card2:#20242d; --line:#2c313c;
   --text:#e8eaf0; --muted:#9aa2b1; --pu:#4ea1ff; --dip:#ff8a3d;
-  --good:#3ecf8e; --warn:#f5c04a; --bad:#ff5d5d; --radius:14px;
+  --good:#3ecf8e; --warn:#f5c04a; --bad:#ff5d5d; --radius:14px; color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);
   font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-header{position:sticky;top:0;z-index:5;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);padding:12px 16px 0}
 header h1{margin:0 0 8px;font-size:18px;letter-spacing:.3px}
 header h1 span{color:var(--muted);font-weight:400;font-size:13px;margin-left:6px}
@@ -70,6 +70,11 @@ svg text{fill:var(--muted);font-size:11px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
 .legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:5px;border-radius:2px}
 ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
+[hidden]{display:none!important}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal>div{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;max-width:420px;width:100%}
+.modal p{white-space:pre-line;margin:0 0 14px}
+.modal .row{justify-content:flex-end}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--good);color:#04140c;
   padding:10px 16px;border-radius:10px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none}
 .toast.on{opacity:1}
@@ -210,6 +215,7 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
 </section>
 </main>
 <div class="toast" id="toast"></div>
+<div class="modal" id="modal" hidden><div><p id="modalText"></p><div class="row"><button class="btn" id="modalNo">Avbryt</button><button class="btn pri" id="modalYes">OK</button></div></div></div>
 
 <script>
 const KEY = 'vektet100-v1';
@@ -257,7 +263,56 @@ function load() {
   return defaults();
 }
 let S = load();
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function saveLocal() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function save() { saveLocal(); scheduleCloud(); }
+
+// When opened as a Claude page, keep a private copy per user in the page database.
+let cloud = null, cloudTimer = null;
+const cloudLast = {};
+function splitState() {
+  const { logs, exLogs, done, ...state } = S;
+  return { state, logs: { logs, exLogs }, done: { done } };
+}
+function scheduleCloud() {
+  if (!cloud) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(async () => {
+    const parts = splitState();
+    for (const k in parts) {
+      const json = JSON.stringify(parts[k]);
+      if (json === cloudLast[k]) continue;
+      try { await cloud[k].set(parts[k]); cloudLast[k] = json; } catch (e) { toast('Kunne ikke lagre i skyen'); }
+    }
+  }, 800);
+}
+async function initCloud() {
+  if (!window.claude || !window.claude.use) return;
+  try {
+    const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (!db || !user) return;
+    const id = await user.id();
+    if (!id) return;
+    const col = db.collection('data/users/' + id);
+    const refs = { state: col.doc('state'), logs: col.doc('logs'), done: col.doc('done') };
+    const snaps = {};
+    for (const k in refs) snaps[k] = await refs[k].get();
+    cloud = refs;
+    if (snaps.state.exists) {
+      S = Object.assign(defaults(), snaps.state.data(), snaps.logs.data() || {}, snaps.done.data() || {});
+      ensureEx();
+      for (const k in refs) cloudLast[k] = JSON.stringify(splitState()[k]);
+      saveLocal(); renderAll();
+    } else scheduleCloud();
+  } catch (e) {}
+}
+
+function ask(text) {
+  return new Promise(res => {
+    $('modalText').textContent = text; $('modal').hidden = false;
+    const done = v => { $('modal').hidden = true; res(v); };
+    $('modalYes').onclick = () => done(true); $('modalNo').onclick = () => done(false);
+  });
+}
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 1800); }
 
 /* ---------- Program ---------- */
@@ -502,13 +557,13 @@ $('weekDays').addEventListener('click', e => {
 });
 $('prevW').onclick = () => { if (S.week > 1) { S.week--; save(); renderAll(); } };
 $('nextW').onclick = () => { S.week++; save(); renderAll(); };
-$('finishW').onclick = () => {
-  if (isBlockEnd(S.week)) recalibrate();
+$('finishW').onclick = async () => {
+  if (isBlockEnd(S.week)) await recalibrate();
   S.week++; save(); renderAll(); toast(`Uke ${S.week}`); scrollTo(0, 0);
 };
 
 // New TM = 95 % of best e1RM logged this block, limited to ±5 kg per block. No data -> +2.5 kg.
-function recalibrate() {
+async function recalibrate() {
   const from = S.blockStartWeek || 1, msg = [], next = {};
   for (const l in LIFTS) {
     const ls = S.logs.filter(z => z.lift === l && z.week >= from && z.week <= S.week);
@@ -521,7 +576,7 @@ function recalibrate() {
     next[l] = r125(n);
     msg.push(`${LIFTS[l]}: ${fmt(cur)} → ${fmt(next[l])} kg${ls.length ? '' : ' (ingen logg, standard +2,5)'}`);
   }
-  if (confirm(`Blokk ferdig. Ny treningsmaks (total last):\n\n${msg.join('\n')}\n\nBruke disse?`)) S.tm = next;
+  if (await ask(`Blokk ferdig. Ny treningsmaks (total last):\n\n${msg.join('\n')}\n\nBruke disse?`)) S.tm = next;
   S.blockStartWeek = S.week + 1;
 }
 
@@ -571,11 +626,14 @@ function readSettings() {
 }
 $('sCalc').onclick = () => { readSettings(); S.tm = calcTm(S); fillSettings(); toast('TM regnet ut'); };
 $('sSave').onclick = () => { readSettings(); save(); renderAll(); toast('Lagret'); };
-$('sReset').onclick = () => { if (confirm('Slette all data og starte på nytt?')) { S = defaults(); ensureEx(); save(); renderAll(); } };
-$('sExport').onclick = () => {
+$('sReset').onclick = async () => { if (await ask('Slette all data og starte på nytt?')) { S = defaults(); ensureEx(); save(); renderAll(); } };
+$('sExport').onclick = async () => {
+  const json = JSON.stringify(S, null, 2), filename = `vektet100-${today()}.json`;
+  const dl = window.claude && window.claude.use ? await claude.use('downloads') : null;
+  if (dl) { try { await dl.save({ filename, data: json }); } catch (e) {} return; }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' }));
-  a.download = `vektet100-${today()}.json`; a.click();
+  a.download = filename; a.click();
 };
 $('sImport').onclick = () => $('fileIn').click();
 $('fileIn').onchange = async e => {
@@ -620,6 +678,7 @@ function renderBody() {
 function renderAll() { renderBody(); renderAccTable(); renderOverview(); renderProgram(); renderLog(); fillSettings(); }
 $('lDate').value = today();
 renderAll();
+initCloud();
 </script>
 </body>
 </html>
