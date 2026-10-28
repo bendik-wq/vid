@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vektet 100</title>
+<meta name="theme-color" content="#0f1115">
+<style>
+:root{
+  --bg:#0f1115; --card:#181b22; --card2:#20242d; --line:#2c313c;
+  --text:#e8eaf0; --muted:#9aa2b1; --pu:#4ea1ff; --dip:#ff8a3d;
+  --good:#3ecf8e; --warn:#f5c04a; --bad:#ff5d5d; --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);padding:12px 16px 0}
+header h1{margin:0 0 8px;font-size:18px;letter-spacing:.3px}
+header h1 span{color:var(--muted);font-weight:400;font-size:13px;margin-left:6px}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav button{flex:1;background:none;border:0;color:var(--muted);padding:10px 8px;font:inherit;font-weight:600;
+  border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--text);border-color:var(--pu)}
+main{max-width:760px;margin:0 auto;padding:16px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:16px}
+.card h3{margin:0 0 6px;font-size:14px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.big{font-size:32px;font-weight:700;line-height:1.1}
+.muted{color:var(--muted)}.small{font-size:13px}
+.pu{color:var(--pu)}.dip{color:var(--dip)}
+.bar{position:relative;height:12px;background:var(--card2);border-radius:99px;margin:10px 0 4px;overflow:visible}
+.bar>i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}
+.bar>b{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--warn)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;background:var(--card2);color:var(--muted)}
+.pill.deload{background:#203a2e;color:var(--good)}.pill.test{background:#3b2f14;color:var(--warn)}
+button.btn{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:10px;
+  padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+button.btn.pri{background:var(--pu);border-color:var(--pu);color:#06111f}
+button.btn.danger{color:var(--bad)}
+button.btn:active{transform:scale(.98)}
+input,select{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:10px;
+  padding:9px 10px;font:inherit;width:100%}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:10px}
+label input,label select{margin-top:4px}
+.day{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.day:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.ex{background:var(--card2);border-radius:10px;padding:10px;margin:8px 0}
+.ex .name{font-weight:700;margin-bottom:6px}
+.set{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px dashed var(--line)}
+.set:first-of-type{border-top:0}
+.set input[type=checkbox]{width:22px;height:22px;flex:none;accent-color:var(--good)}
+.set .w{font-weight:700;min-width:96px}
+.set .meta{color:var(--muted);font-size:12px;flex:1}
+.set input.reps{width:56px;padding:6px}
+.set.done .w{color:var(--good);text-decoration:line-through}
+.acc{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px}
+.phases{display:flex;gap:4px;margin-top:8px}
+.phases div{flex:1;border-radius:8px;padding:8px;font-size:12px;background:var(--card2)}
+.phases div.now{outline:2px solid var(--pu)}
+svg text{fill:var(--muted);font-size:11px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:5px;border-radius:2px}
+ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--good);color:#04140c;
+  padding:10px 16px;border-radius:10px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <h1>Vektet 100 <span>pullups &amp; dips</span></h1>
+  <nav>
+    <button data-tab="oversikt" class="on">Oversikt</button>
+    <button data-tab="program">Program</button>
+    <button data-tab="logg">Logg</button>
+    <button data-tab="innst">Innstillinger</button>
+  </nav>
+</header>
+
+<main>
+<section id="oversikt" class="on">
+  <div class="grid2" id="liftCards"></div>
+  <div class="card">
+    <h2>Progresjon mot 100 kg</h2>
+    <div id="chart"></div>
+    <div class="legend">
+      <span><i style="background:var(--pu)"></i>Pullups e1RM</span>
+      <span><i style="background:var(--dip)"></i>Dips e1RM</span>
+      <span><i style="background:var(--muted);height:1px"></i>Stiplet = prognose</span>
+      <span><i style="background:var(--good)"></i>Mål</span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Plan</h2>
+    <div id="phaseInfo"></div>
+  </div>
+  <div class="card">
+    <h2>Prinsipper</h2>
+    <ul class="tips">
+      <li><b>All prosent regnes av total last</b> (kroppsvekt + vekt i belte). Det er riktig måte å periodisere vektede kroppsvektsøvelser på.</li>
+      <li><b>Treningsmaks (TM)</b> = 95 % av estimert 1RM (total). Den justeres automatisk etter hver blokk basert på det du logger.</li>
+      <li><b>Pullups:</b> dødt heng i bunn, haka over stanga, ingen kipping. <b>Dips:</b> skulder under albue i bunn, full lockout.</li>
+      <li><b>Pause:</b> 3–5 min på tunge sett, 2 min på volum. Stopp 1–2 reps før teknikken ryker, unntatt på «+»-settet.</li>
+      <li>Hold kroppsvekten stabil eller øk sakte. Ett kilo kroppsvekt = ett kilo mindre i beltet ved samme totale styrke.</li>
+      <li>Albue- og skuldersmerter er den vanligste bremsen. Gjør oppvarming og prehab, og ta deload på alvor.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="program">
+  <div class="card">
+    <div class="row">
+      <button class="btn" id="prevW">‹</button>
+      <div style="text-align:center">
+        <div class="big" id="wkTitle" style="font-size:22px"></div>
+        <div class="muted small" id="wkSub"></div>
+      </div>
+      <button class="btn" id="nextW">›</button>
+    </div>
+  </div>
+  <div class="card" id="weekDays"></div>
+  <div class="card">
+    <button class="btn pri" id="finishW" style="width:100%">Fullfør uke og gå videre</button>
+    <p class="muted small" style="margin:8px 0 0">På slutten av hver blokk regner appen ut ny treningsmaks fra «+»-settene og testene du har logget.</p>
+  </div>
+</section>
+
+<section id="logg">
+  <div class="card">
+    <h2>Logg et sett</h2>
+    <div class="grid2">
+      <label>Øvelse<select id="lLift"><option value="pu">Pullups</option><option value="dip">Dips</option></select></label>
+      <label>Dato<input type="date" id="lDate"></label>
+      <label>Vekt i belte (kg)<input type="number" step="0.25" id="lKg" inputmode="decimal"></label>
+      <label>Reps<input type="number" id="lReps" min="1" max="20" inputmode="numeric"></label>
+    </div>
+    <button class="btn pri" id="lAdd">Lagre</button>
+    <span class="muted small" id="lPrev" style="margin-left:10px"></span>
+  </div>
+  <div class="card">
+    <h2>Historikk</h2>
+    <table><thead><tr><th>Dato</th><th>Øvelse</th><th>Sett</th><th>e1RM</th><th></th></tr></thead>
+    <tbody id="logBody"></tbody></table>
+  </div>
+</section>
+
+<section id="innst">
+  <div class="card">
+    <h2>Deg</h2>
+    <div class="grid2">
+      <label>Kroppsvekt (kg)<input type="number" step="0.1" id="sBw" inputmode="decimal"></label>
+      <label>Mål (kg i belte)<input type="number" step="2.5" id="sGoal" inputmode="decimal"></label>
+      <label>Startdato program<input type="date" id="sStart"></label>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Utgangspunkt</h2>
+    <div class="grid2">
+      <label>Pullups nå: kg<input type="number" step="0.25" id="sPuKg"></label>
+      <label>Pullups nå: reps<input type="number" id="sPuR"></label>
+      <label>Dips nå: kg<input type="number" step="0.25" id="sDipKg"></label>
+      <label>Dips nå: reps<input type="number" id="sDipR"></label>
+      <label>Pullups tidligere toppløft (kg)<input type="number" step="0.25" id="sPuPeak"></label>
+      <label>Dips tidligere toppløft (kg)<input type="number" step="0.25" id="sDipPeak"></label>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Treningsmaks (total last)</h2>
+    <div class="grid2">
+      <label>Pullups TM (kg totalt)<input type="number" step="1.25" id="sPuTm"></label>
+      <label>Dips TM (kg totalt)<input type="number" step="1.25" id="sDipTm"></label>
+    </div>
+    <button class="btn" id="sCalc">Regn ut TM fra utgangspunktet</button>
+  </div>
+  <div class="card">
+    <button class="btn pri" id="sSave">Lagre innstillinger</button>
+    <button class="btn" id="sExport">Eksporter data</button>
+    <button class="btn" id="sImport">Importer</button>
+    <button class="btn danger" id="sReset">Nullstill alt</button>
+    <input type="file" id="fileIn" accept="application/json" hidden>
+    <p class="muted small">Data lagres bare i nettleseren på denne enheten. Eksporter jevnlig som backup.</p>
+  </div>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'vektet100-v1';
+const LIFTS = { pu: 'Pullups', dip: 'Dips' };
+const ROUND = 1.25;
+const PHASE1_WEEKS = 8;
+const BLOCK = 4;
+
+const r125 = x => Math.round(x / ROUND) * ROUND;
+const fmt = x => (Math.round(x * 100) / 100).toLocaleString('nb-NO');
+const today = () => new Date().toISOString().slice(0, 10);
+const $ = id => document.getElementById(id);
+
+// Brzycki on total load; reliable for low reps, which is what we log.
+const e1rmTotal = (total, reps) => reps <= 1 ? total : total * 36 / (37 - Math.min(reps, 12));
+
+function defaults() {
+  const bw = 85;
+  const s = {
+    bw, goal: 100, start: today(),
+    base: { pu: { kg: 45, reps: 1, peak: 60 }, dip: { kg: 40, reps: 2, peak: 62.5 } },
+    tm: {}, week: 1, logs: [], done: {}, blockStartWeek: 1
+  };
+  s.tm = calcTm(s);
+  return s;
+}
+function calcTm(s) {
+  const out = {};
+  for (const l in LIFTS) out[l] = r125(0.95 * e1rmTotal(s.bw + s.base[l].kg, s.base[l].reps));
+  return out;
+}
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(defaults(), JSON.parse(raw)); } catch (e) {}
+  return defaults();
+}
+let S = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 1800); }
+
+/* ---------- Program ---------- */
+const ACC = {
+  A: ['Ringrader eller kabelrad 3×8', 'Hammercurl 3×10', 'Hollow hold 3×30 s'],
+  B: ['Skulderpress (manualer) 3×8', 'Face pulls 3×15', 'Triceps pushdown 3×12'],
+  C: ['Scapula pullups 2×10', 'Dødt heng 2×30–45 s', 'Ytre rotasjon med strikk 2×15']
+};
+const sets = (n, pct, reps, extra = {}) => Array.from({ length: n }, () => ({ pct, reps, ...extra }));
+
+function phaseOf(w) {
+  if (w <= PHASE1_WEEKS) return { phase: 1, wk: w - 1 };
+  const b = Math.floor((w - PHASE1_WEEKS - 1) / BLOCK);
+  return { phase: 2, block: b, wk: (w - PHASE1_WEEKS - 1) % BLOCK };
+}
+function isTestWeek(w) { const p = phaseOf(w); return p.phase === 2 && p.wk === 3 && (p.block + 1) % 3 === 0; }
+function isBlockEnd(w) { return w === PHASE1_WEEKS || (w > PHASE1_WEEKS && (w - PHASE1_WEEKS) % BLOCK === 0); }
+
+function buildWeek(w) {
+  const p = phaseOf(w);
+  if (p.phase === 1) {
+    const i = p.wk, deload = i === 3, last = i === 7;
+    const A = [85, 87.5, 90, 75, 87.5, 90, 92.5, 90][i];
+    const B = [75, 77.5, 80, 67.5, 77.5, 80, 82.5, 70][i];
+    const C = [80, 82.5, 85, 70, 82.5, 85, 87.5, 70][i];
+    const heavy = last ? [...sets(2, A, 5), { pct: A, reps: 5, amrap: true }] : sets(deload ? 3 : 4, A, 5);
+    return {
+      title: `Uke ${w}`, sub: `Fase 1 · Gjenoppbygging · uke ${i + 1}/8`,
+      tag: deload ? 'deload' : last ? 'test' : '',
+      tagText: deload ? 'Deload' : last ? 'AMRAP-test' : '',
+      days: [
+        { name: 'Dag A · Tung', acc: ACC.A, items: [{ lift: 'pu', sets: heavy }, { lift: 'dip', sets: heavy }] },
+        { name: 'Dag B · Volum', acc: ACC.B, items: [{ lift: 'dip', sets: sets(deload || last ? 3 : 4, B, 8) }, { lift: 'pu', sets: sets(deload || last ? 3 : 4, B, 8) }] },
+        { name: 'Dag C · Fart', acc: ACC.C, items: [{ lift: 'pu', sets: sets(deload || last ? 4 : 6, C, 3, { note: 'eksplosivt' }) }, { lift: 'dip', sets: sets(deload || last ? 4 : 6, C, 3, { note: 'eksplosivt' }) }] }
+      ]
+    };
+  }
+  const { block, wk } = p;
+  const test = isTestWeek(w), deload = wk === 3 && !test;
+  const sub = `Fase 2 · Styrkeblokk ${block + 1} · uke ${wk + 1}/4`;
+  let heavy, vol, sing;
+  if (test) {
+    heavy = [{ pct: 75, reps: 3 }, { pct: 87.5, reps: 1 }, { pct: 95, reps: 1 }, { pct: 100, reps: 1 }, { pct: 105, reps: 1, amrap: true, note: 'PR-forsøk (≈ 1RM)' }];
+    return {
+      title: `Uke ${w}`, sub, tag: 'test', tagText: 'Testuke',
+      days: [
+        { name: 'Dag A · Test pullups', acc: ['Ingen tilbehør. Full hvile 4–6 min mellom singler.'], items: [{ lift: 'pu', sets: heavy }] },
+        { name: 'Dag B · Lett', acc: ['Bare mobilitet og lett pump.'], items: [{ lift: 'dip', sets: sets(3, 70, 5) }, { lift: 'pu', sets: sets(3, 70, 5) }] },
+        { name: 'Dag C · Test dips', acc: ['Ingen tilbehør. Full hvile 4–6 min mellom singler.'], items: [{ lift: 'dip', sets: heavy }] }
+      ]
+    };
+  }
+  if (deload) {
+    heavy = [{ pct: 65, reps: 5 }, { pct: 70, reps: 5 }, { pct: 75, reps: 5 }];
+    vol = sets(3, 70, 5); sing = sets(3, 70, 3);
+  } else {
+    const W = [[75, 5], [82.5, 5], [90, 5]], X = [[80, 3], [87.5, 3], [95, 3]], Y = [[82.5, 5], [92.5, 3], [100, 1]];
+    heavy = [W, X, Y][wk].map(([pct, reps], i) => ({ pct, reps, amrap: i === 2 }));
+    vol = sets(5, [77.5, 80, 82.5][wk], 5);
+    sing = sets(6, [87.5, 90, 92.5][wk], 1, { note: 'EMOM' });
+  }
+  return {
+    title: `Uke ${w}`, sub, tag: deload ? 'deload' : '', tagText: deload ? 'Deload' : '',
+    days: [
+      { name: 'Dag A · Tung (5/3/1)', acc: ACC.A, items: [{ lift: 'pu', sets: heavy }, { lift: 'dip', sets: heavy }] },
+      { name: 'Dag B · Volum 5×5', acc: ACC.B, items: [{ lift: 'dip', sets: vol }, { lift: 'pu', sets: vol }] },
+      { name: 'Dag C · Singler', acc: ACC.C, items: [{ lift: 'pu', sets: sing }, { lift: 'dip', sets: sing }] }
+    ]
+  };
+}
+const addedFor = (lift, pct) => r125(pct / 100 * S.tm[lift] - S.bw);
+const loadText = kg => kg <= 0 ? 'Kroppsvekt' : `+${fmt(kg)} kg`;
+
+/* ---------- Estimates & projection ---------- */
+function logE1(l) { return e1rmTotal(l.bw + l.kg, l.reps) - l.bw; }
+function currentE1(lift) {
+  const recent = S.logs.filter(l => l.lift === lift).sort((a, b) => b.week - a.week || b.date.localeCompare(a.date));
+  if (recent.length) {
+    const lastWeek = recent[0].week;
+    return Math.max(...recent.filter(l => l.week > lastWeek - BLOCK).map(logE1));
+  }
+  return e1rmTotal(S.bw + S.base[lift].kg, S.base[lift].reps) - S.bw;
+}
+function bestE1(lift) {
+  const ls = S.logs.filter(l => l.lift === lift).map(logE1);
+  return Math.max(currentE1(lift), ...ls);
+}
+// Weekly gain assumption: fast regain up to old peak (muscle memory), then slowing returns.
+function weeklyGain(e, peak) {
+  if (e < peak) return 1.25;
+  if (e < 70) return 0.625;
+  if (e < 85) return 0.45;
+  return 0.3;
+}
+function project(lift) {
+  let e = currentE1(lift), w = S.week;
+  const pts = [[w, e]];
+  while (e < S.goal && w < S.week + 300) { e += weeklyGain(e, S.base[lift].peak); w++; pts.push([w, Math.min(e, S.goal)]); }
+  return { pts, weeks: w - S.week, reached: e >= S.goal };
+}
+function weekDate(w) { const d = new Date(S.start); d.setDate(d.getDate() + (w - 1) * 7); return d; }
+const monthName = d => d.toLocaleDateString('nb-NO', { month: 'short', year: 'numeric' });
+
+/* ---------- Render: overview ---------- */
+function renderOverview() {
+  $('liftCards').innerHTML = Object.keys(LIFTS).map(l => {
+    const e = currentE1(l), pr = project(l), peak = S.base[l].peak;
+    const pct = Math.min(100, e / S.goal * 100), peakPct = Math.min(100, peak / S.goal * 100);
+    const color = l === 'pu' ? 'var(--pu)' : 'var(--dip)';
+    return `<div class="card">
+      <h3>${LIFTS[l]}</h3>
+      <div class="row"><div class="big ${l}">${fmt(r125(e))} kg</div><div class="muted small" style="text-align:right">estimert 1RM<br>i belte</div></div>
+      <div class="bar"><i style="width:${pct}%;background:${color}"></i><b style="left:${peakPct}%" title="Tidligere toppløft"></b></div>
+      <div class="row small muted"><span>0</span><span style="color:var(--warn)">topp ${fmt(peak)}</span><span>mål ${fmt(S.goal)}</span></div>
+      <div class="small" style="margin-top:10px">Igjen: <b>${fmt(Math.max(0, r125(S.goal - e)))} kg</b> · TM ${fmt(S.tm[l])} kg totalt</div>
+      <div class="small muted">Prognose: ${pr.reached ? `${monthName(weekDate(S.week + pr.weeks))} (~${Math.round(pr.weeks / 4.33)} mnd)` : 'over 5 år, juster planen'}</div>
+    </div>`;
+  }).join('');
+  renderChart();
+  const p = phaseOf(S.week);
+  const totalWeeks = Math.max(project('pu').weeks, project('dip').weeks) + S.week;
+  $('phaseInfo').innerHTML = `
+    <div class="small">Du er i <b>uke ${S.week}</b> (${p.phase === 1 ? 'Fase 1 · Gjenoppbygging' : `Fase 2 · Styrkeblokk ${p.block + 1}`}). 3 økter i uka, f.eks. man/ons/fre.</div>
+    <div class="phases">
+      <div class="${p.phase === 1 ? 'now' : ''}"><b>Fase 1</b><br>Uke 1–8<br><span class="muted">Tilbake til gammel topp. Volum og teknikk.</span></div>
+      <div class="${p.phase === 2 ? 'now' : ''}"><b>Fase 2</b><br>Uke 9–${totalWeeks}<br><span class="muted">4-ukers 5/3/1-blokker. Testuke hver 3. blokk.</span></div>
+      <div><b>Mål</b><br>${fmt(S.goal)} kg<br><span class="muted">${monthName(weekDate(totalWeeks))}</span></div>
+    </div>`;
+}
+
+function renderChart() {
+  const W = 420, H = 240, pad = { l: 30, r: 10, t: 10, b: 24 };
+  const proj = { pu: project('pu').pts, dip: project('dip').pts };
+  const maxW = Math.max(S.week + 4, ...proj.pu.map(p => p[0]), ...proj.dip.map(p => p[0]));
+  const minY = 20, maxY = Math.max(S.goal + 5, 105);
+  const x = w => pad.l + (w - 1) / (maxW - 1) * (W - pad.l - pad.r);
+  const y = v => pad.t + (1 - (v - minY) / (maxY - minY)) * (H - pad.t - pad.b);
+  let g = '';
+  for (let v = minY; v <= maxY; v += 20) g += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#2c313c"/><text x="4" y="${y(v) + 4}">${v}</text>`;
+  const step = Math.max(4, Math.ceil(maxW / 8 / 4) * 4);
+  for (let w = 1; w <= maxW; w += step) g += `<text x="${x(w)}" y="${H - 6}" text-anchor="middle">u${w}</text>`;
+  g += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(S.goal)}" y2="${y(S.goal)}" stroke="var(--good)" stroke-width="2"/>`;
+  g += `<line x1="${x(S.week)}" x2="${x(S.week)}" y1="${pad.t}" y2="${H - pad.b}" stroke="#555" stroke-dasharray="2 3"/>`;
+  for (const l of ['pu', 'dip']) {
+    const c = l === 'pu' ? 'var(--pu)' : 'var(--dip)';
+    g += `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-dasharray="5 5" opacity=".6" points="${proj[l].map(p => `${x(p[0])},${y(p[1])}`).join(' ')}"/>`;
+    const byWeek = {};
+    S.logs.filter(z => z.lift === l).forEach(z => { byWeek[z.week] = Math.max(byWeek[z.week] || 0, logE1(z)); });
+    const pts = Object.entries(byWeek).map(([w, v]) => [+w, v]).sort((a, b) => a[0] - b[0]);
+    if (pts.length > 1) g += `<polyline fill="none" stroke="${c}" stroke-width="2.5" points="${pts.map(p => `${x(p[0])},${y(p[1])}`).join(' ')}"/>`;
+    pts.forEach(p => g += `<circle cx="${x(p[0])}" cy="${y(p[1])}" r="3.5" fill="${c}"/>`);
+  }
+  $('chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Estimert 1RM over tid">${g}</svg>`;
+}
+
+/* ---------- Render: program ---------- */
+function renderProgram() {
+  const wk = buildWeek(S.week);
+  $('wkTitle').innerHTML = `${wk.title} ${wk.tagText ? `<span class="pill ${wk.tag}">${wk.tagText}</span>` : ''}`;
+  $('wkSub').textContent = `${wk.sub} · ${weekDate(S.week).toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' })}`;
+  $('weekDays').innerHTML = wk.days.map((d, di) => `
+    <div class="day"><h2>${d.name}</h2>
+      ${d.items.map((it, ii) => `<div class="ex"><div class="name ${it.lift}">${LIFTS[it.lift]}</div>
+        ${it.sets.map((s, si) => {
+          const key = `${S.week}-${di}-${ii}-${si}`, kg = addedFor(it.lift, s.pct), done = S.done[key];
+          return `<div class="set ${done ? 'done' : ''}">
+            <input type="checkbox" data-key="${key}" ${done ? 'checked' : ''}>
+            <span class="w">${s.reps}${s.amrap ? '+' : ''} × ${loadText(kg)}</span>
+            <span class="meta">${fmt(s.pct)} % TM${s.note ? ' · ' + s.note : ''}</span>
+            ${s.amrap ? `<input class="reps" type="number" min="0" inputmode="numeric" placeholder="reps" id="r-${key}">
+              <button class="btn" data-log="${key}" data-lift="${it.lift}" data-kg="${kg}">Logg</button>` : ''}
+          </div>`;
+        }).join('')}</div>`).join('')}
+      <ul class="acc">${d.acc.map(a => `<li>${a}</li>`).join('')}</ul>
+    </div>`).join('');
+}
+$('weekDays').addEventListener('change', e => {
+  const k = e.target.dataset.key; if (!k) return;
+  if (e.target.checked) S.done[k] = 1; else delete S.done[k];
+  e.target.closest('.set').classList.toggle('done', e.target.checked);
+  save();
+});
+$('weekDays').addEventListener('click', e => {
+  const b = e.target.closest('[data-log]'); if (!b) return;
+  const reps = +$('r-' + b.dataset.log).value;
+  if (!reps) { toast('Skriv inn antall reps'); return; }
+  addLog({ lift: b.dataset.lift, kg: Math.max(0, +b.dataset.kg), reps, date: today() });
+  S.done[b.dataset.log] = 1; save(); renderProgram();
+});
+$('prevW').onclick = () => { if (S.week > 1) { S.week--; save(); renderAll(); } };
+$('nextW').onclick = () => { S.week++; save(); renderAll(); };
+$('finishW').onclick = () => {
+  if (isBlockEnd(S.week)) recalibrate();
+  S.week++; save(); renderAll(); toast(`Uke ${S.week}`); scrollTo(0, 0);
+};
+
+// New TM = 95 % of best e1RM logged this block, limited to ±5 kg per block. No data -> +2.5 kg.
+function recalibrate() {
+  const from = S.blockStartWeek || 1, msg = [], next = {};
+  for (const l in LIFTS) {
+    const ls = S.logs.filter(z => z.lift === l && z.week >= from && z.week <= S.week);
+    const cur = S.tm[l];
+    let n = cur + 2.5;
+    if (ls.length) {
+      const best = Math.max(...ls.map(z => e1rmTotal(z.bw + z.kg, z.reps)));
+      n = Math.min(cur + 5, Math.max(cur - 5, 0.95 * best));
+    }
+    next[l] = r125(n);
+    msg.push(`${LIFTS[l]}: ${fmt(cur)} → ${fmt(next[l])} kg${ls.length ? '' : ' (ingen logg, standard +2,5)'}`);
+  }
+  if (confirm(`Blokk ferdig. Ny treningsmaks (total last):\n\n${msg.join('\n')}\n\nBruke disse?`)) S.tm = next;
+  S.blockStartWeek = S.week + 1;
+}
+
+/* ---------- Log ---------- */
+function addLog(l) {
+  S.logs.push({ id: Date.now() + Math.random(), bw: S.bw, week: S.week, ...l });
+  save(); toast(`Logget: e1RM ${fmt(r125(logE1(S.logs[S.logs.length - 1])))} kg`); renderAll();
+}
+function renderLog() {
+  const rows = [...S.logs].sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  $('logBody').innerHTML = rows.length ? rows.map(l => `<tr>
+    <td>${l.date.slice(5).split('-').reverse().join('.')}</td><td class="${l.lift}">${LIFTS[l.lift]}</td>
+    <td>${l.reps} × ${loadText(l.kg)}</td><td><b>${fmt(r125(logE1(l)))}</b></td>
+    <td><button class="btn danger" data-del="${l.id}" style="padding:4px 9px">×</button></td></tr>`).join('')
+    : '<tr><td colspan="5" class="muted">Ingen logger enda. Logg «+»-sett fra programmet eller her.</td></tr>';
+}
+$('logBody').addEventListener('click', e => {
+  const id = e.target.dataset.del; if (!id) return;
+  S.logs = S.logs.filter(l => String(l.id) !== id); save(); renderAll();
+});
+function updatePreview() {
+  const kg = +$('lKg').value, reps = +$('lReps').value;
+  $('lPrev').textContent = reps ? `≈ e1RM ${fmt(r125(e1rmTotal(S.bw + kg, reps) - S.bw))} kg` : '';
+}
+$('lKg').oninput = $('lReps').oninput = updatePreview;
+$('lAdd').onclick = () => {
+  const kg = +$('lKg').value, reps = +$('lReps').value;
+  if (!reps || isNaN(kg)) { toast('Fyll inn vekt og reps'); return; }
+  addLog({ lift: $('lLift').value, kg, reps, date: $('lDate').value || today() });
+  $('lKg').value = $('lReps').value = ''; updatePreview();
+};
+
+/* ---------- Settings ---------- */
+function fillSettings() {
+  $('sBw').value = S.bw; $('sGoal').value = S.goal; $('sStart').value = S.start;
+  $('sPuKg').value = S.base.pu.kg; $('sPuR').value = S.base.pu.reps; $('sPuPeak').value = S.base.pu.peak;
+  $('sDipKg').value = S.base.dip.kg; $('sDipR').value = S.base.dip.reps; $('sDipPeak').value = S.base.dip.peak;
+  $('sPuTm').value = S.tm.pu; $('sDipTm').value = S.tm.dip;
+}
+function readSettings() {
+  S.bw = +$('sBw').value || S.bw; S.goal = +$('sGoal').value || S.goal; S.start = $('sStart').value || S.start;
+  S.base.pu = { kg: +$('sPuKg').value, reps: +$('sPuR').value || 1, peak: +$('sPuPeak').value };
+  S.base.dip = { kg: +$('sDipKg').value, reps: +$('sDipR').value || 1, peak: +$('sDipPeak').value };
+  S.tm = { pu: +$('sPuTm').value, dip: +$('sDipTm').value };
+}
+$('sCalc').onclick = () => { readSettings(); S.tm = calcTm(S); fillSettings(); toast('TM regnet ut'); };
+$('sSave').onclick = () => { readSettings(); save(); renderAll(); toast('Lagret'); };
+$('sReset').onclick = () => { if (confirm('Slette all data og starte på nytt?')) { S = defaults(); save(); renderAll(); } };
+$('sExport').onclick = () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' }));
+  a.download = `vektet100-${today()}.json`; a.click();
+};
+$('sImport').onclick = () => $('fileIn').click();
+$('fileIn').onchange = async e => {
+  try { S = Object.assign(defaults(), JSON.parse(await e.target.files[0].text())); save(); renderAll(); toast('Importert'); }
+  catch (err) { toast('Ugyldig fil'); }
+};
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.tab));
+  scrollTo(0, 0);
+});
+
+function renderAll() { renderOverview(); renderProgram(); renderLog(); fillSettings(); }
+$('lDate').value = today();
+renderAll();
+</script>
+</body>
+</html>
