@@ -75,7 +75,18 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
 .modal>div{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;max-width:420px;width:100%}
 .modal p{white-space:pre-line;margin:0 0 14px}
 .modal .row{justify-content:flex-end}
-.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--good);color:#04140c;
+.timer{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--card);border-top:1px solid var(--line);
+  padding:10px max(16px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px}
+.timer .t{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;flex:1}
+.timer.end .t{color:var(--good)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips .btn{padding:6px 10px;font-size:13px}
+.warm{font-size:12px;color:var(--muted);margin:-2px 0 4px}
+.meal input{width:20px;height:20px;accent-color:var(--good)}
+tr.meal.done td{color:var(--muted)}
+.status{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+td,th{font-variant-numeric:tabular-nums}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--good);color:#04140c;
   padding:10px 16px;border-radius:10px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none}
 .toast.on{opacity:1}
 </style>
@@ -93,6 +104,7 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
 
 <main>
 <section id="oversikt" class="on">
+  <div class="card" id="nextCard"></div>
   <div class="grid2" id="liftCards"></div>
   <div class="card">
     <h2>Progresjon mot 100 kg</h2>
@@ -102,7 +114,10 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
       <span><i style="background:var(--dip)"></i>Dips e1RM</span>
       <span><i style="background:var(--muted);height:1px"></i>Stiplet = prognose</span>
       <span><i style="background:var(--good)"></i>Mål</span>
+      <span><i style="background:var(--muted);opacity:.4;height:8px"></i>Spenn (rask–treg)</span>
     </div>
+    <div id="milestones" style="margin-top:12px"></div>
+    <p class="muted small" style="margin:8px 0 0" id="projNote"></p>
   </div>
   <div class="card">
     <h2>Tilbehør</h2>
@@ -145,6 +160,9 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
       </div>
       <button class="btn" id="nextW">›</button>
     </div>
+    <div class="chips" style="margin-top:10px"><span class="muted small" style="align-self:center">Hviletimer:</span>
+      <button class="btn" data-rest="90">1:30</button><button class="btn" data-rest="120">2:00</button>
+      <button class="btn" data-rest="180">3:00</button><button class="btn" data-rest="240">4:00</button></div>
   </div>
   <div class="card" id="weekDays"></div>
   <div class="card">
@@ -215,11 +233,13 @@ ul.tips{margin:0;padding-left:18px}ul.tips li{margin-bottom:6px}
     <button class="btn" id="sImport">Importer</button>
     <button class="btn danger" id="sReset">Nullstill alt</button>
     <input type="file" id="fileIn" accept="application/json" hidden>
-    <p class="muted small">Data lagres bare i nettleseren på denne enheten. Eksporter jevnlig som backup.</p>
+    <p class="muted small">Som Claude-side lagres data på kontoen din. Som GitHub-side lagres data bare i denne nettleseren. Eksporter jevnlig som backup.</p>
   </div>
 </section>
 </main>
 <div class="toast" id="toast"></div>
+<div class="timer" id="timer" hidden><span class="t" id="timerT">0:00</span><span class="muted small" id="timerL">Hvile</span>
+  <button class="btn" id="timerAdd">+30 s</button><button class="btn" id="timerStop">Lukk</button></div>
 <div class="modal" id="modal" hidden><div><p id="modalText"></p><div class="row"><button class="btn" id="modalNo">Avbryt</button><button class="btn pri" id="modalYes">OK</button></div></div></div>
 
 <script>
@@ -242,7 +262,7 @@ function defaults() {
   const s = {
     bw, height: 173.5, bf: 14, targetBw: 78, kcal: 3500, goal: 100, start: today(),
     base: { pu: { kg: 45, reps: 1, peak: 60 }, dip: { kg: 40, reps: 2, peak: 62.5 } },
-    tm: {}, week: 1, logs: [], done: {}, blockStartWeek: 1
+    tm: {}, week: 1, logs: [], done: {}, blockStartWeek: 1, bwLog: [], meals: {}
   };
   s.tm = calcTm(s);
   return s;
@@ -275,8 +295,8 @@ function save() { saveLocal(); scheduleCloud(); }
 let cloud = null, cloudTimer = null;
 const cloudLast = {};
 function splitState() {
-  const { logs, exLogs, done, ...state } = S;
-  return { state, logs: { logs, exLogs }, done: { done } };
+  const { logs, exLogs, bwLog, meals, done, ...state } = S;
+  return { state, logs: { logs, exLogs, bwLog, meals }, done: { done } };
 }
 function scheduleCloud() {
   if (!cloud) return;
@@ -416,30 +436,103 @@ function currentE1(lift) {
   }
   return e1rmTotal(S.bw + S.base[lift].kg, S.base[lift].reps) - S.bw;
 }
-function bestE1(lift) {
-  const ls = S.logs.filter(l => l.lift === lift).map(logE1);
-  return Math.max(currentE1(lift), ...ls);
+/*
+ * Projection model.
+ * Strength in total load scales with bodyweight^(2/3) (allometric scaling), so we track a
+ * bodyweight-independent strength level Q = total / bw^(2/3) and project Q and bodyweight separately.
+ * Q grows fast until the old peak (muscle memory), then the weekly rate shrinks the further above
+ * the old peak you get. The rate is calibrated against your own logged trend once there is data.
+ */
+const ALLO = 2 / 3;
+const MILESTONES = [70, 80, 90, 100];
+const qOf = (total, bw) => total / Math.pow(bw, ALLO);
+function liftQs(lift) {
+  const by = {};
+  S.logs.filter(l => l.lift === lift).forEach(l => {
+    const q = qOf(e1rmTotal(l.bw + l.kg, l.reps), l.bw);
+    by[l.week] = Math.max(by[l.week] || 0, q);
+  });
+  return Object.entries(by).map(([w, q]) => [+w, q]).sort((a, b) => a[0] - b[0]);
 }
-// Weekly gain assumption: fast regain up to old peak (muscle memory), then slowing returns.
-function weeklyGain(e, peak) {
-  if (e < peak) return 1.25;
-  if (e < 70) return 0.625;
-  if (e < 85) return 0.45;
-  return 0.3;
+function currentQ(lift) {
+  const qs = liftQs(lift);
+  if (qs.length) { const last = qs[qs.length - 1][0]; return Math.max(...qs.filter(p => p[0] > last - BLOCK).map(p => p[1])); }
+  return qOf(e1rmTotal(S.bw + S.base[lift].kg, S.base[lift].reps), S.bw);
 }
-function project(lift) {
-  let e = currentE1(lift), w = S.week;
-  const pts = [[w, e]];
-  while (e < S.goal && w < S.week + 300) { e += weeklyGain(e, S.base[lift].peak); w++; pts.push([w, Math.min(e, S.goal)]); }
-  return { pts, weeks: w - S.week, reached: e >= S.goal };
+const peakQ = lift => qOf(S.base[lift].peak + S.bw, S.bw);
+const priorRate = (q, qp) => q < qp ? 0.01 : 0.0035 * Math.exp(-(q / qp - 1) / 0.3);
+function slope(pts) {
+  const n = pts.length, mx = pts.reduce((s, p) => s + p[0], 0) / n, my = pts.reduce((s, p) => s + p[1], 0) / n;
+  let num = 0, den = 0;
+  for (const [x, y] of pts) { num += (x - mx) * (y - my); den += (x - mx) ** 2; }
+  return { b: den ? num / den : 0, my };
+}
+// Blend your observed weekly rate (last 10 weeks) with the model. Max 60 % weight on your data.
+function calib(lift) {
+  const qs = liftQs(lift).filter(p => p[0] > S.week - 10);
+  if (qs.length < 3 || qs[qs.length - 1][0] - qs[0][0] < 3) return { m: 1, n: qs.length };
+  const { b, my } = slope(qs);
+  const f = Math.min(2, Math.max(0.4, (b / my) / priorRate(my, peakQ(lift))));
+  const w = Math.min(0.6, qs.length / 12);
+  return { m: 1 + w * (f - 1), n: qs.length };
+}
+function project(lift, mult = 1) {
+  const qp = peakQ(lift), cal = calib(lift).m * mult, rate = bwRate(), bw0 = S.bw;
+  const bwAt = i => rate > 0 && bw0 < S.targetBw ? Math.min(S.targetBw, bw0 + rate * i) : bw0;
+  const added = (q, i) => q * Math.pow(bwAt(i), ALLO) - bwAt(i);
+  let q = currentQ(lift), i = 0;
+  const pts = [[S.week, added(q, 0)]], ms = {};
+  while (i < 400) {
+    i++; q *= 1 + priorRate(q, qp) * cal;
+    const a = added(q, i);
+    pts.push([S.week + i, Math.min(a, S.goal)]);
+    for (const m of MILESTONES) if (!ms[m] && a >= m) ms[m] = S.week + i;
+    if (a >= S.goal) break;
+  }
+  return { pts, weeks: i, reached: pts[pts.length - 1][1] >= S.goal, ms, cal };
+}
+const PROJ_SPREAD = { opt: 1.3, cons: 0.7 };
+
+/* ---------- Bodyweight ---------- */
+function bwTrend() {
+  const cut = new Date(); cut.setDate(cut.getDate() - 21);
+  const pts = (S.bwLog || []).filter(e => new Date(e.date) >= cut).map(e => [new Date(e.date) / 864e5, e.kg]);
+  if (pts.length < 5 || pts[pts.length - 1][0] - pts[0][0] < 7) return null;
+  return { rate: slope(pts).b * 7, n: pts.length };
+}
+function maintEstimate() {
+  const lbm = S.bw * (1 - S.bf / 100);
+  return Math.round((370 + 21.6 * lbm) * 1.55 / 50) * 50;
+}
+function bwRate() {
+  const t = bwTrend();
+  return t ? t.rate : Math.max(0, (S.kcal - maintEstimate()) * 7 / 7700);
+}
+function avg7() {
+  const ls = (S.bwLog || []).slice(-7);
+  return ls.length ? Math.round(ls.reduce((s, e) => s + e.kg, 0) / ls.length * 10) / 10 : S.bw;
+}
+function logBw(kg) {
+  S.bwLog = (S.bwLog || []).filter(e => e.date !== today());
+  S.bwLog.push({ date: today(), kg });
+  S.bwLog.sort((a, b) => a.date.localeCompare(b.date));
+  S.bw = avg7();
+  save(); renderAll(); toast(`Vekt lagret. Snitt 7 dager: ${fmt(S.bw)} kg`);
 }
 function weekDate(w) { const d = new Date(S.start); d.setDate(d.getDate() + (w - 1) * 7); return d; }
 const monthName = d => d.toLocaleDateString('nb-NO', { month: 'short', year: 'numeric' });
 
 /* ---------- Render: overview ---------- */
+const projCache = {};
+function projections() {
+  for (const l in LIFTS) projCache[l] = { base: project(l), opt: project(l, PROJ_SPREAD.opt), cons: project(l, PROJ_SPREAD.cons) };
+}
+const whenText = p => p.reached ? monthName(weekDate(S.week + p.weeks)) : '5+ år';
 function renderOverview() {
+  projections();
+  renderNext();
   $('liftCards').innerHTML = Object.keys(LIFTS).map(l => {
-    const e = currentE1(l), pr = project(l), peak = S.base[l].peak;
+    const e = currentE1(l), P = projCache[l], pr = P.base, peak = S.base[l].peak;
     const pct = Math.min(100, e / S.goal * 100), peakPct = Math.min(100, peak / S.goal * 100);
     const color = l === 'pu' ? 'var(--pu)' : 'var(--dip)';
     return `<div class="card">
@@ -448,12 +541,14 @@ function renderOverview() {
       <div class="bar"><i style="width:${pct}%;background:${color}"></i><b style="left:${peakPct}%" title="Tidligere toppløft"></b></div>
       <div class="row small muted"><span>0</span><span style="color:var(--warn)">topp ${fmt(peak)}</span><span>mål ${fmt(S.goal)}</span></div>
       <div class="small" style="margin-top:10px">Igjen: <b>${fmt(Math.max(0, r125(S.goal - e)))} kg</b> · TM ${fmt(S.tm[l])} kg totalt</div>
-      <div class="small muted">Prognose: ${pr.reached ? `${monthName(weekDate(S.week + pr.weeks))} (~${Math.round(pr.weeks / 4.33)} mnd)` : 'over 5 år, juster planen'}</div>
+      <div class="small">Prognose 100 kg: <b>${whenText(pr)}</b>${pr.reached ? ` <span class="muted">(~${Math.round(pr.weeks / 4.33)} mnd)</span>` : ''}</div>
+      <div class="small muted">Spenn: ${whenText(P.opt)} – ${whenText(P.cons)}</div>
     </div>`;
   }).join('');
   renderChart();
+  renderMilestones();
   const p = phaseOf(S.week);
-  const totalWeeks = Math.max(project('pu').weeks, project('dip').weeks) + S.week;
+  const totalWeeks = Math.max(projCache.pu.base.weeks, projCache.dip.base.weeks) + S.week;
   $('phaseInfo').innerHTML = `
     <div class="small">Du er i <b>uke ${S.week}</b> (${p.phase === 1 ? 'Fase 1 · Gjenoppbygging' : `Fase 2 · Styrkeblokk ${p.block + 1}`}). 3 økter i uka, f.eks. man/ons/fre.</div>
     <div class="phases">
@@ -465,8 +560,9 @@ function renderOverview() {
 
 function renderChart() {
   const W = 420, H = 240, pad = { l: 30, r: 10, t: 10, b: 24 };
-  const proj = { pu: project('pu').pts, dip: project('dip').pts };
-  const maxW = Math.max(S.week + 4, ...proj.pu.map(p => p[0]), ...proj.dip.map(p => p[0]));
+  const proj = { pu: projCache.pu.base.pts, dip: projCache.dip.base.pts };
+  const maxW = Math.max(S.week + 4, ...proj.pu.map(p => p[0]), ...proj.dip.map(p => p[0]),
+    ...['pu', 'dip'].map(l => Math.min(S.week + 260, S.week + projCache[l].cons.weeks)));
   const minY = 20, maxY = Math.max(S.goal + 5, 105);
   const x = w => pad.l + (w - 1) / (maxW - 1) * (W - pad.l - pad.r);
   const y = v => pad.t + (1 - (v - minY) / (maxY - minY)) * (H - pad.t - pad.b);
@@ -478,7 +574,11 @@ function renderChart() {
   g += `<line x1="${x(S.week)}" x2="${x(S.week)}" y1="${pad.t}" y2="${H - pad.b}" stroke="#555" stroke-dasharray="2 3"/>`;
   for (const l of ['pu', 'dip']) {
     const c = l === 'pu' ? 'var(--pu)' : 'var(--dip)';
-    g += `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-dasharray="5 5" opacity=".6" points="${proj[l].map(p => `${x(p[0])},${y(p[1])}`).join(' ')}"/>`;
+    const clip = pts => pts.filter(p => p[0] <= maxW);
+    const hi = clip(projCache[l].opt.pts), lo = clip(projCache[l].cons.pts);
+    const hiFull = [...hi, ...(hi.length ? [[maxW, hi[hi.length - 1][1]]] : [])];
+    g += `<polygon fill="${c}" opacity=".12" points="${[...hiFull, ...lo.slice().reverse()].map(p => `${x(p[0])},${y(p[1])}`).join(' ')}"/>`;
+    g += `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-dasharray="5 5" opacity=".7" points="${proj[l].map(p => `${x(p[0])},${y(p[1])}`).join(' ')}"/>`;
     const byWeek = {};
     S.logs.filter(z => z.lift === l).forEach(z => { byWeek[z.week] = Math.max(byWeek[z.week] || 0, logE1(z)); });
     const pts = Object.entries(byWeek).map(([w, v]) => [+w, v]).sort((a, b) => a[0] - b[0]);
@@ -494,8 +594,8 @@ function renderProgram() {
   $('wkTitle').innerHTML = `${wk.title} ${wk.tagText ? `<span class="pill ${wk.tag}">${wk.tagText}</span>` : ''}`;
   $('wkSub').textContent = `${wk.sub} · ${weekDate(S.week).toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' })}`;
   $('weekDays').innerHTML = wk.days.map((d, di) => `
-    <div class="day"><h2>${d.name}</h2>
-      ${d.items.map((it, ii) => `<div class="ex"><div class="name ${it.lift}">${LIFTS[it.lift]}</div>
+    <div class="day" id="day-${di}"><h2>${d.name}</h2>
+      ${d.items.map((it, ii) => `<div class="ex"><div class="name ${it.lift}">${LIFTS[it.lift]}</div>${warmup(it)}
         ${it.sets.map((s, si) => {
           const key = `${S.week}-${di}-${ii}-${si}`, kg = addedFor(it.lift, s.pct), done = S.done[key];
           return `<div class="set ${done ? 'done' : ''}">
@@ -511,6 +611,79 @@ function renderProgram() {
       ${d.acc.map(id => renderAcc(id, di, wk.tag === 'deload')).join('')}
     </div>`).join('');
 }
+// Warm-up ramp toward the first work set: 55 / 75 / 90 % of its total load.
+function warmup(it) {
+  const s0 = it.sets[0];
+  if (s0.pct < 85) return '';
+  const work = s0.pct / 100 * S.tm[it.lift];
+  const steps = [[0.55, 5], [0.75, 3], [0.9, 1]].map(([f, r]) => `${r} × ${loadText(r125(work * f - S.bw))}`);
+  return `<div class="warm">Oppvarming: ${steps.join(' · ')}</div>`;
+}
+function setInfo(key) {
+  const [w, di, ii, si] = key.split('-').map(Number);
+  return buildWeek(w).days[di].items[ii].sets[si];
+}
+const restFor = s => s.amrap || (s.reps <= 3 && s.pct >= 90) ? 240 : s.reps <= 5 ? 180 : 120;
+function dayDone(w, di) {
+  return buildWeek(w).days[di].items.every((it, ii) => it.sets.every((_, si) => S.done[`${w}-${di}-${ii}-${si}`]));
+}
+function renderNext() {
+  const wk = buildWeek(S.week);
+  const di = wk.days.findIndex((_, i) => !dayDone(S.week, i));
+  if (di < 0) {
+    $('nextCard').innerHTML = `<h3>Neste økt</h3><div class="row"><b>Uke ${S.week} er ferdig</b><button class="btn pri" data-goto="program">Fullfør uka</button></div>`;
+    return;
+  }
+  const d = wk.days[di];
+  const lines = d.items.map(it => {
+    const top = it.sets.reduce((a, b) => b.pct > a.pct ? b : a);
+    return `<div class="small"><span class="${it.lift}"><b>${LIFTS[it.lift]}</b></span> ${it.sets.length} sett · tyngst ${top.reps}${top.amrap ? '+' : ''} × ${loadText(addedFor(it.lift, top.pct))}</div>`;
+  }).join('');
+  $('nextCard').innerHTML = `<h3>Neste økt · uke ${S.week}${wk.tagText ? ` · ${wk.tagText}` : ''}</h3>
+    <div class="row" style="align-items:flex-start"><div><div style="font-weight:700;font-size:17px;margin-bottom:4px">${d.name}</div>${lines}</div>
+    <button class="btn pri" data-goto="program" data-day="${di}">Start</button></div>`;
+}
+function renderMilestones() {
+  const cell = (l, m) => {
+    if (currentE1(l) >= m) return '<span style="color:var(--good)">✓ nådd</span>';
+    const w = projCache[l].base.ms[m];
+    return w ? monthName(weekDate(w)) : '–';
+  };
+  $('milestones').innerHTML = `<table><thead><tr><th>Milepæl</th><th class="pu">Pullups</th><th class="dip">Dips</th></tr></thead><tbody>
+    ${MILESTONES.filter(m => m <= S.goal).map(m => `<tr><td>+${m} kg</td><td>${cell('pu', m)}</td><td>${cell('dip', m)}</td></tr>`).join('')}</tbody></table>`;
+  const c = { pu: calib('pu'), dip: calib('dip') };
+  const calText = l => c[l].n >= 3 && Math.abs(c[l].m - 1) > 0.01 ? `${LIFTS[l]} ×${fmt(Math.round(c[l].m * 100) / 100)}` : null;
+  const cal = ['pu', 'dip'].map(calText).filter(Boolean);
+  $('projNote').textContent = `Modell: styrke skalerer med kroppsvekt^(2/3), så prognosen tar med vektøkningen din (${fmt(Math.round(bwRate() * 10) / 10)} kg/uke mot ${fmt(S.targetBw)} kg). Fremgangen går raskt tilbake til gammel topp og avtar jo nærmere taket du kommer. ` +
+    (cal.length ? `Kalibrert mot loggene dine: tempo ${cal.join(', ')}.` : 'Blir mer presis når du har logget «+»-sett i 3+ uker.');
+}
+
+/* ---------- Rest timer ---------- */
+let tEnd = 0, tInt = null;
+function startRest(sec, label = 'Hvile') {
+  tEnd = Date.now() + sec * 1000;
+  $('timer').hidden = false; $('timer').classList.remove('end'); $('timerL').textContent = label;
+  clearInterval(tInt); tick(); tInt = setInterval(tick, 250);
+}
+function tick() {
+  const left = Math.max(0, Math.round((tEnd - Date.now()) / 1000));
+  $('timerT').textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  if (left === 0) {
+    clearInterval(tInt); $('timer').classList.add('end'); $('timerT').textContent = 'Klar!';
+    try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) {}
+  }
+}
+$('timerAdd').onclick = () => { if (tEnd < Date.now()) startRest(30); else tEnd += 30000; tick(); };
+$('timerStop').onclick = () => { clearInterval(tInt); $('timer').hidden = true; };
+document.addEventListener('click', e => {
+  const r = e.target.closest('[data-rest]'); if (r) startRest(+r.dataset.rest);
+  const g = e.target.closest('[data-goto]');
+  if (g) {
+    showTab(g.dataset.goto);
+    if (g.dataset.day) setTimeout(() => $('day-' + g.dataset.day)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+});
+
 const exLoad = (id, kg) => kg <= 0 ? (id === 'er' ? 'Strikk' : 'Kroppsvekt') : `${fmt(kg)} kg`;
 function renderAcc(id, di, deload) {
   const e = EX[id], st = S.ex[id], key = `${S.week}-${di}-acc-${id}`, n = e.sets - (deload ? 1 : 0);
@@ -545,7 +718,8 @@ $('weekDays').addEventListener('change', e => {
   const k = e.target.dataset.key; if (!k) return;
   if (e.target.checked) S.done[k] = 1; else delete S.done[k];
   e.target.closest('.set').classList.toggle('done', e.target.checked);
-  save();
+  if (e.target.checked) { const si = setInfo(k); startRest(restFor(si), `Hvile før neste sett`); }
+  save(); renderNext();
 });
 $('weekDays').addEventListener('click', e => {
   const a = e.target.closest('[data-acc]');
@@ -647,11 +821,12 @@ $('fileIn').onchange = async e => {
 };
 
 /* ---------- Tabs ---------- */
-document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
-  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.tab));
+function showTab(name) {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x.dataset.tab === name));
+  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === name));
   scrollTo(0, 0);
-});
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
 
 function renderAccTable() {
   $('accBody').innerHTML = Object.keys(EX).map(id => {
@@ -663,24 +838,51 @@ function renderAccTable() {
 }
 function renderBody() {
   const lbm = S.bw * (1 - S.bf / 100), h = S.height / 100, ffmi = lbm / (h * h);
-  const maint = Math.round((370 + 21.6 * lbm) * 1.55 / 50) * 50;
-  const bulking = S.bw < S.targetBw - 0.5;
-  const kcal = S.kcal, surplus = kcal - maint;
-  const rate = Math.max(0, surplus * 7 / 7700);
+  const maint = maintEstimate(), trend = bwTrend();
+  const rate = bwRate(), bulking = S.bw < S.targetBw - 0.3;
   const weeks = bulking && rate > 0 ? Math.ceil((S.targetBw - S.bw) / rate) : 0;
   const ratio = (S.bw + S.goal) / S.bw;
+  const tdee = trend ? Math.round((S.kcal - trend.rate * 1100) / 50) * 50 : null;
+  let advice = '', sugg = null, tone = 'var(--good)';
+  if (!trend) advice = 'Vei deg hver morgen etter do, før mat. Etter en uke med 5+ veiinger regner appen ut trenden og ditt faktiske vedlikehold.';
+  else if (!bulking) { sugg = tdee; advice = `Du er ved målvekta. Gå ned til vedlikehold for å holde vekta.`; tone = 'var(--warn)'; }
+  else if (trend.rate > 1.0) { sugg = S.kcal - 300; advice = `Du går opp ${fmt(Math.round(trend.rate * 10) / 10)} kg i uka. Det er mye fett. Kutt 300 kcal.`; tone = 'var(--bad)'; }
+  else if (trend.rate < 0.25) { sugg = S.kcal + 250; advice = `Du går bare opp ${fmt(Math.round(trend.rate * 10) / 10)} kg i uka. Legg til 250 kcal.`; tone = 'var(--warn)'; }
+  else advice = `Du går opp ${fmt(Math.round(trend.rate * 10) / 10)} kg i uka. Det er innenfor planen.`;
+  const log = (S.bwLog || []).slice(-60);
+  let spark = '';
+  if (log.length > 1) {
+    const vals = log.map(e => e.kg), mn = Math.min(...vals, S.targetBw) - 0.5, mx = Math.max(...vals, S.targetBw) + 0.5;
+    const X = i => 4 + i / (log.length - 1) * 292, Y = v => 4 + (1 - (v - mn) / (mx - mn)) * 52;
+    spark = `<svg viewBox="0 0 300 60" width="100%" style="margin-top:8px" role="img" aria-label="Kroppsvekt over tid">
+      <line x1="0" x2="300" y1="${Y(S.targetBw)}" y2="${Y(S.targetBw)}" stroke="var(--good)" stroke-dasharray="3 3"/>
+      <polyline fill="none" stroke="var(--text)" stroke-width="2" points="${log.map((e, i) => `${X(i)},${Y(e.kg)}`).join(' ')}"/>
+      <circle cx="${X(log.length - 1)}" cy="${Y(vals[vals.length - 1])}" r="3.5" fill="var(--text)"/></svg>`;
+  }
   $('bodyInfo').innerHTML = `
+    <div class="row" style="gap:8px"><input type="number" step="0.1" inputmode="decimal" id="bwIn" placeholder="Vekt i dag (kg)" style="flex:1">
+      <button class="btn pri" id="bwAdd">Logg vekt</button></div>
+    <div class="small" style="margin-top:8px">Snitt 7 dager: <b>${fmt(S.bw)} kg</b>${trend ? ` · trend <b>${trend.rate >= 0 ? '+' : ''}${fmt(Math.round(trend.rate * 100) / 100)} kg/uke</b>` : ''} · mål ${fmt(S.targetBw)} kg</div>
+    ${spark}
+    <p class="small" style="margin:8px 0"><span class="status" style="background:${tone}"></span>${advice}
+      ${sugg && sugg !== S.kcal ? ` <button class="btn" data-kcal="${sugg}" style="padding:4px 10px">Bruk ${sugg} kcal</button>` : ''}</p>
     <div class="grid2">
+      <div><div class="muted small">Kalorier per dag</div><b>${S.kcal} kcal</b> <span class="muted small">${tdee ? `målt vedlikehold ~${tdee}` : `anslått vedlikehold ~${maint}`}</span></div>
+      <div><div class="muted small">Protein per dag</div><b>${Math.round(S.bw * 2 / 5) * 5} g</b> <span class="muted small">2 g/kg</span></div>
       <div><div class="muted small">Fettfri masse</div><b>${fmt(Math.round(lbm * 10) / 10)} kg</b> <span class="muted small">FFMI ${fmt(Math.round(ffmi * 10) / 10)}</span></div>
       <div><div class="muted small">Målet i total last</div><b>${fmt(S.bw + S.goal)} kg</b> <span class="muted small">${fmt(Math.round(ratio * 100) / 100)}× kroppsvekt</span></div>
-      <div><div class="muted small">Kalorier per dag</div><b>~${kcal} kcal</b> <span class="muted small">vedlikehold ~${maint} ${surplus >= 0 ? '+' : '−'} ${Math.abs(surplus)}</span></div>
-      <div><div class="muted small">Protein per dag</div><b>${Math.round(S.bw * 2 / 5) * 5} g</b> <span class="muted small">2 g/kg</span></div>
     </div>
-    <p class="small" style="margin:10px 0 0">${bulking
-      ? `Plan: fra ${fmt(S.bw)} til ${fmt(S.targetBw)} kg. Med ${kcal} kcal forventes ca. ${fmt(Math.round(rate * 10) / 10)} kg i uka (~${Math.max(1, Math.round(weeks / 4.33))} mnd). Vei deg hver morgen og se på snittet per uke. Raskere enn 0,5 kg i uka gir en del fett i tillegg til muskel. Går snittet over 1 kg i uka i 2–3 uker, kutt 300 kcal.`
-      : `Du er på målvekta. Spis på vedlikehold og hold vekta stabil.`}</p>
-    <p class="muted small" style="margin:6px 0 0">Kaloriene er et anslag (Katch-McArdle × 1,55). Juster etter hva vekta faktisk gjør.</p>`;
+    <p class="muted small" style="margin:8px 0 0">${bulking && rate > 0 ? `Med dette tempoet når du ${fmt(S.targetBw)} kg rundt ${monthName(new Date(Date.now() + weeks * 7 * 864e5))}. ` : ''}${tdee ? 'Vedlikehold er regnet ut fra kalorimålet og vekttrenden din, og forutsetter at du spiser etter planen.' : 'Vedlikehold er et anslag (Katch-McArdle × 1,55) til du har logget vekta i en uke.'}</p>`;
 }
+$('bodyInfo').addEventListener('click', e => {
+  if (e.target.id === 'bwAdd') {
+    const kg = +$('bwIn').value;
+    if (!(kg > 30 && kg < 250)) { toast('Skriv inn vekta i kg'); return; }
+    logBw(kg);
+  }
+  const k = e.target.closest('[data-kcal]');
+  if (k) { S.kcal = +k.dataset.kcal; save(); renderAll(); toast(`Kalorimål: ${S.kcal} kcal`); }
+});
 // Fixed portions of meat, eggs, milk, bread and Nugatti; rice fills the rest of the calorie target.
 const FOOD = {
   meat:  { name: 'Kjøttdeig 14 % (rå vekt)', kcal: 200, p: 19, c: 0, f: 14 },
@@ -702,29 +904,49 @@ function dietPlan() {
 }
 function renderDiet() {
   const { grams: g, tot } = dietPlan(), r3 = Math.round(g.rice / 3);
-  const m = (n, what, gr) => {
+  const meal = [['meat', 150], ['rice', r3]], toast2 = [['bread', 80], ['nug', 40]], glass = ['milk', 200];
+  const meals = [
+    ['Frokost', '3 egg + 2 skiver grovbrød med Nugatti (40 g) + 2 dl helmelk', [['egg', 180], ...toast2, glass]],
+    ['Lunsj', `150 g kjøttdeig + ${r3} g ris`, meal],
+    ['Middag', `150 g kjøttdeig + ${r3} g ris`, meal],
+    ['Etter trening', `150 g kjøttdeig + ${r3} g ris + 2 dl helmelk`, [...meal, glass]],
+    ['Kvelds', '2 skiver grovbrød med Nugatti (40 g) + 2 dl helmelk', [...toast2, glass]]
+  ].map(([n, what, gr]) => {
     const t = { kcal: 0, p: 0 };
     for (const [k, w] of gr) { t.kcal += w * FOOD[k].kcal / 100; t.p += w * FOOD[k].p / 100; }
-    return `<tr><td><b>${n}</b><div class="muted small">${what}</div></td><td>${Math.round(t.kcal)}</td><td>${Math.round(t.p)} g</td></tr>`;
-  };
-  const meal = [['meat', 150], ['rice', r3]];
-  const toast2 = [['bread', 80], ['nug', 40]];
-  const glass = ['milk', 200];
+    return { n, what, ...t };
+  });
+  const ticks = (S.meals || {})[today()] || [];
+  const eaten = meals.reduce((a, m, i) => a + (ticks[i] ? m.kcal : 0), 0);
+  const eatenP = meals.reduce((a, m, i) => a + (ticks[i] ? m.p : 0), 0);
+  let streak = 0;
+  for (let d = new Date(); ; d.setDate(d.getDate() - 1)) {
+    const t = (S.meals || {})[d.toISOString().slice(0, 10)] || [];
+    if (meals.every((_, i) => t[i])) streak++; else if (d.toISOString().slice(0, 10) !== today()) break;
+    if (streak > 3650) break;
+  }
+  const pct = Math.min(100, eaten / S.kcal * 100);
   $('dietInfo').innerHTML = `
+    <div class="row small"><span>I dag: <b>${Math.round(eaten)}</b> / ${S.kcal} kcal · ${Math.round(eatenP)} g protein</span><span class="muted">${streak ? `${streak} dager på rad` : ''}</span></div>
+    <div class="bar" style="margin:6px 0 10px"><i style="width:${pct}%;background:var(--good)"></i></div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th>Måltid</th><th>kcal</th><th>Protein</th></tr></thead>
+      <thead><tr><th></th><th>Måltid</th><th>kcal</th><th>Protein</th></tr></thead>
       <tbody>
-        ${m('Frokost', '3 egg + 2 skiver grovbrød med Nugatti (40 g) + 2 dl helmelk', [['egg', 180], ...toast2, glass])}
-        ${m('Lunsj', `150 g kjøttdeig + ${r3} g ris`, meal)}
-        ${m('Middag', `150 g kjøttdeig + ${r3} g ris`, meal)}
-        ${m('Etter trening', `150 g kjøttdeig + ${r3} g ris + 2 dl helmelk`, [...meal, glass])}
-        ${m('Kvelds', '2 skiver grovbrød med Nugatti (40 g) + 2 dl helmelk', [...toast2, glass])}
-        <tr><td><b>Totalt</b></td><td><b>${Math.round(tot.kcal)}</b></td><td><b>${Math.round(tot.p)} g</b></td></tr>
+        ${meals.map((m, i) => `<tr class="meal ${ticks[i] ? 'done' : ''}"><td><input type="checkbox" data-meal="${i}" ${ticks[i] ? 'checked' : ''} aria-label="${m.n} spist"></td>
+          <td><b>${m.n}</b><div class="muted small">${m.what}</div></td><td>${Math.round(m.kcal)}</td><td>${Math.round(m.p)} g</td></tr>`).join('')}
+        <tr><td></td><td><b>Totalt</b></td><td><b>${Math.round(tot.kcal)}</b></td><td><b>${Math.round(tot.p)} g</b></td></tr>
       </tbody></table></div>
     <p class="small" style="margin:10px 0 4px">Handleliste per dag: <b>${g.meat} g kjøttdeig</b>, <b>${g.rice} g ris</b> (ukokt), <b>3 egg</b>, <b>${fmt(g.milk / 1000)} l helmelk</b>, <b>4 skiver brød</b>, <b>${g.nug} g Nugatti</b>.
       Karbo ${Math.round(tot.c)} g · fett ${Math.round(tot.f)} g. Ukeshandel: ${fmt(g.meat * 7 / 1000)} kg kjøttdeig, ${fmt(Math.round(g.rice * 7 / 100) / 10)} kg ris, 21 egg, ${fmt(g.milk * 7 / 1000)} l melk, ~${fmt(Math.ceil(g.nug * 7 / 500 * 2) / 2)} glass Nugatti (500 g).</p>
     <p class="muted small" style="margin:0">Lag mat for 2–3 dager om gangen. Krydre kjøttdeigen fritt (taco, soya, salt, pepper). Eggene kan stekes, kokes eller røres. Bytter du til lettmelk, gå opp 40 g ris. Kjøttdeig og ris gir lite fiber og vitaminer: ha i en pose frosne grønnsaker i kjøttdeigen og ta en multivitamin. Grønnsakene er ikke regnet med.</p>`;
 }
+$('dietInfo').addEventListener('change', e => {
+  const i = e.target.dataset.meal; if (i === undefined) return;
+  S.meals = S.meals || {};
+  const t = S.meals[today()] = S.meals[today()] || [];
+  t[+i] = e.target.checked ? 1 : 0;
+  save(); renderDiet();
+});
 function renderAll() { renderDiet(); renderBody(); renderAccTable(); renderOverview(); renderProgram(); renderLog(); fillSettings(); }
 $('lDate').value = today();
 renderAll();

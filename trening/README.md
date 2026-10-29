@@ -77,6 +77,19 @@ Utgangspunkt: 72,5 kg, 173–174 cm, ~14 % fett (fettfri masse ~62 kg, FFMI ~20,
 
 Per uke: 3,15 kg kjøttdeig, 2,3 kg ris, 21 egg, 4,2 l helmelk, ~1,5 glass Nugatti. Ha i frosne grønnsaker og ta en multivitamin.
 
-## Realistisk tidslinje
-Estimert ~2–2,5 år. Rask fremgang tilbake til +60 kg, deretter ~2,5 kg per måned som gradvis avtar mot 100 kg.
-Prognosen i appen oppdateres fra det du logger.
+## Prognosemodell
+
+- Styrke skalerer med kroppsvekt^(2/3). Appen følger et vektuavhengig styrkenivå og projiserer styrke og kroppsvekt hver for seg, så vektøkningen er med i prognosen.
+- Rask fremgang tilbake til gammel topp (muskelminne), deretter avtar tempoet jo høyere over gammel topp du kommer.
+- Kalibreres mot dine egne logger etter 3+ uker med data (maks 60 % vekt på dine data).
+- Viser forventet dato, et spenn (rask–treg) og datoer for milepælene +70, +80, +90 og +100 kg.
+
+Dagens anslag: 100 kg rundt tidlig 2029, spenn fra sommer 2028 til tidlig 2030.
+
+## Andre funksjoner
+
+- Neste økt på forsiden, med snarvei rett til økta
+- Hviletimer som starter automatisk når du huker av et sett (2–4 min)
+- Oppvarmingssett regnet ut før tunge sett
+- Vektlogg med 7-dagers snitt, trend og målt vedlikeholdskalorier, pluss forslag til kalorijustering
+- Avkrysning av måltider med kcal og protein for dagen
