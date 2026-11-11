@@ -872,6 +872,31 @@ select,input,textarea{color:var(--fg)}
 .co-chips button{flex:none;border:0;border-radius:999px;padding:8px 14px;font-size:13.5px;color:var(--fg);background:rgba(40,43,50,.7);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 .co-form{display:flex;gap:8px;align-items:flex-end;border-radius:28px;padding:8px 8px 8px 18px;background:rgba(40,43,50,.78)}
 .co-form textarea{flex:1;border:0;background:transparent;resize:none;font:inherit;font-size:16px;color:var(--fg);padding:9px 0;max-height:140px;outline:none}
+
+/* ===== v11: svaralternativer med svart skrift på lys flate ===== */
+.opt,.duel-o,.mt-c,.pair select,.hk-cbtn button,.sk-opts .duel-o{background:#f7f6f2!important;color:#111!important;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 6px 16px -10px rgba(0,0,0,.45)!important;border:1.5px solid transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.opt span,.duel-o span,.duel-o .mono,.mt-c{color:#111!important}
+.opt:hover,.duel-o:hover:not(:disabled),.mt-c:hover:not(.done){background:#ffffff!important}
+.opt input{border-color:#5d5d5d!important;background-color:#fff}
+.opt:has(input:checked),.duel-o.picked,.mt-c.on{background:#fff3d1!important;border-color:#c99512!important}
+.opt input:checked{background-color:#c99512!important;border-color:#c99512!important}
+.opt.is-correct,.duel-o.right,.mt-c.done{background:#e2f5e9!important;border-color:#1f8a4c!important}
+.opt.is-wrong,.duel-o.wrong,.mt-c.shake{background:#fde4e0!important;border-color:#c8352a!important}
+.opt.is-correct input:checked{background-color:#1f8a4c!important;border-color:#1f8a4c!important}
+.opt.is-wrong input:checked{background-color:#c8352a!important;border-color:#c8352a!important}
+.mt-c.done{opacity:.55}
+.pair select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23333' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px!important}
+.pair.is-correct select{background-color:#e2f5e9!important;border-color:#1f8a4c!important}
+.pair.is-wrong select{background-color:#fde4e0!important;border-color:#c8352a!important}
+select option,select optgroup{color:#111;background:#fff}
+.hk-cbtn button[data-c="g"]{color:#555!important}
+.hk-cbtn button[data-c="s"]{background:#f4c451!important;color:#111!important}
+.numrow input,.hk-in{background:#f7f6f2!important;color:#111!important}
+.numrow input::placeholder,.hk-in::placeholder{color:#777}
+.hk-in.right{background:#e2f5e9!important}.hk-in.wrong{background:#fde4e0!important}
+.co-ctx{border-radius:20px;padding:12px 16px;font-size:14px}
+.co-ctx summary{cursor:pointer;font-weight:600}
+.co-ctx pre{white-space:pre-wrap;font-family:var(--f-body);font-size:13px;color:var(--muted);margin:10px 0 4px;max-height:320px;overflow:auto}
 </style>
 </head>
 <body>
@@ -1431,6 +1456,7 @@ select,input,textarea{color:var(--fg)}
   <section class="view" data-route="coach" hidden>
     <div class="subhead"><button class="navback" type="button" data-view="hjem"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Øving</button><h1>Coach</h1><button class="navback co-clear" type="button" id="coClear">Ny samtale</button></div>
     <p class="co-mode" id="coMode"></p>
+    <details class="co-ctx glass"><summary>Dette vet coachen om deg</summary><pre id="coCtx"></pre><p class="modehint">Dataene ligger bare i denne nettleseren. De sendes til Claude bare når du skriver til coachen i Claude-versjonen.</p></details>
     <div class="co-log" id="coLog" aria-live="polite"></div>
     <div class="co-dock">
       <div class="co-chips" id="coChips"><button type="button">Hva bør jeg øve på nå?</button><button type="button">Lag en plan frem til eksamen</button><button type="button">Hva er jeg svakest på, og hvorfor?</button><button type="button">Hvordan forbereder jeg meg til Excel-delen?</button></div>
@@ -6046,7 +6072,7 @@ function exDeliver(){
   const d1=exDel1(), tasks=s.del2.map(exTask);
   const p1=Math.max(0,d1.pts)/Math.max(1,d1.max)*100, p2=tasks.reduce((x,k)=>x+k.ok/k.n,0)/tasks.length*100, tot=(p1+p2)/2, g=exGrade(tot);
   s.done=true; s.result={at:Date.now(),p1,p2,tot,g,el:Date.now()-s.started}; exSave(s);
-  P.exams.push({at:Date.now(),g,tot:Math.round(tot)}); if(P.exams.length>30) P.exams.shift();
+  P.exams.push({at:Date.now(),g,tot:Math.round(tot),p1:Math.round(p1),p2:Math.round(p2),by:Object.fromEntries(Object.entries(d1.by).map(([c,b])=>[c,Math.round(Math.max(0,b[0])/b[1]*100)])),xl:tasks.map(k=>k.t.title+" "+k.ok+"/"+k.n)}); if(P.exams.length>30) P.exams.shift();
   unlock("eks"); if("AB".includes(g)) unlock("eksB"); award(Math.round(tot)); saveP(); renderLevel();
   if("ABC".includes(g)) confetti(); renderExam(); window.scrollTo(0,0);
 }
@@ -7020,7 +7046,33 @@ const COACH_URL="https://claude.ai/artifact/Qk8i3FKqLE43tsAH7UXoRG";
 LEARN_SUB.push("coach");
 const COACH_ROUTES={genall:"Generert prøve",gen17:"Generert kap. 1–7",gen811:"Generert kap. 7–11",eksamen:"Prøveeksamen",feil:"Feilbanken",svak:"Svake temaer",huske:"Huskeøkt",skill:"Skill begrepene",match:"Begrepsmatch",kort:"Flashkort",formel:"Formelduell",forklar:"Forklar det",excel:"Excel-oppgaver",formler:"Formler og begreper",kart:"Tankekart",lyn:"Lynrunde"};
 Object.keys(BASE).forEach(k=>COACH_ROUTES[k]=DISPLAY[k]?DISPLAY[k].t:k);
-let CO={turns:[],sample:undefined,ctl:null,busy:false};
+let CO={turns:rd("hsm122-coach",[]),sample:undefined,ctl:null,busy:false};
+function coSave(){ wr("hsm122-coach",CO.turns.slice(-24)); }
+const qTxt=h=>String(h??"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+function qAnsTxt(q,a){
+  if(a==null||a==="") return "tomt";
+  if(q.type==="mc") return qTxt(q.options[a]);
+  if(q.type==="multi") return (Array.isArray(a)?a:[]).map(j=>qTxt(q.options[j])).join(" + ")||"tomt";
+  if(q.type==="num") return String(a)+(q.unit?" "+q.unit:"");
+  const ch=q.type==="cat"?q.cats:q.choices; return q.items.map((it,j)=>it[0]+" → "+(a&&a[j]!=null?ch[a[j]]:"tomt")).join("; ");
+}
+function qRightTxt(q){
+  if(q.type==="mc") return qTxt(q.options[q.correct]);
+  if(q.type==="multi") return q.correct.map(j=>qTxt(q.options[j])).join(" + ");
+  if(q.type==="num") return (Math.round(q.answer*100)/100).toLocaleString("nb-NO")+(q.unit?" "+q.unit:"");
+  const ch=q.type==="cat"?q.cats:q.choices; return q.items.map(it=>it[0]+" → "+ch[it[1]]).join("; ");
+}
+const recordCoach=record;
+record=function(id,q,r){
+  recordCoach(id,q,r);
+  try{ const i=ids.indexOf(id); P.log=P.log||[];
+    P.log.push({ts:Date.now(),set:setKey,topic:q.topic,st:r.state,q:qTxt(q.prompt).slice(0,160),a:qAnsTxt(q,i>=0?ans[i]:null).slice(0,160),c:qRightTxt(q).slice(0,160)});
+    if(P.log.length>80) P.log.splice(0,P.log.length-80); }catch(e){}
+};
+const xlCheckCoach=xlCheck;
+xlCheck=function(){ xlCheckCoach(); coXlLog(); };
+function coXlLog(){ const t=XL.t; try{ if(t&&!t.scratch&&!XL.examMode){ const comp=xlCompute(XL.raw), keys=Object.keys(t.targets), ok=keys.filter(a=>xlMatch(comp.get(a),t.targets[a])).length; P.xlLog=P.xlLog||[]; P.xlLog.push({ts:Date.now(),title:t.title,ch:t.ch,ok,n:keys.length,help:!!(P.xl[t.id]&&P.xl[t.id].help)}); if(P.xlLog.length>30) P.xlLog.shift(); saveP(); } }catch(e){} }
+$("xlCheck").addEventListener("click",coXlLog);
 
 function coachContext(){
   const days=Math.max(0,Math.ceil((EXAM_DATE-Date.now())/864e5));
@@ -7047,8 +7099,23 @@ function coachContext(){
     `Begreper: ${m.solid} av ${GLOSS.length} sitter godt, ${m.d} klare til repetisjon i dag. Begreper bommet på nylig: ${memWeak.length?memWeak.join(", "):"ingen"}.`,
     `Bestått prøver: ${passed.length?passed.join(", "):"ingen ennå"}.`,
     `Prøveeksamener: ${exams.length?exams.join("; "):"ingen tatt ennå"}.`,
-    `Excel-oppgaver løst: ${xlSolved.length?xlSolved.join(", "):"ingen"}. Ikke løst ennå: ${xlOpen.join("; ")}.`
-  ].join("\n");
+    `Excel-oppgaver løst: ${xlSolved.length?xlSolved.join(", "):"ingen"}. Ikke løst ennå: ${xlOpen.join("; ")}.`,
+    coachExtra()
+  ].filter(Boolean).join("\n");
+}
+function coachExtra(){
+  const L=P.log||[], out=[];
+  if(L.length>=6){ const last=L.slice(-20), prev=L.slice(-40,-20); const acc=a=>a.length?Math.round(a.filter(x=>x.st==="ok").length/a.length*100):null;
+    out.push(`Trend: ${acc(last)} % riktig på de siste ${last.length} svarene${prev.length?`, mot ${acc(prev)} % på de ${prev.length} før`:""}.`); }
+  const wrong=L.filter(x=>x.st!=="ok").slice(-8);
+  if(wrong.length) out.push("Siste feil (oppgave | studentens svar | riktig svar):\n"+wrong.map(x=>`- [${x.topic}] ${x.q} | svarte: ${x.a} | riktig: ${x.c}`).join("\n"));
+  const recent=L.slice(-6).map(x=>`${x.topic}: ${x.st==="ok"?"riktig":x.st==="part"?"delvis":"feil"}`);
+  if(recent.length) out.push(`Siste svar: ${recent.join("; ")}.`);
+  const c=P.cal||{}; if(c.s&&c.s[1]>=5) out.push(`Selvinnsikt i huskeøkter: riktig på ${Math.round(c.s[0]/c.s[1]*100)} % av svarene studenten var sikker på (${c.s[1]} svar), ${c.g&&c.g[1]?Math.round(c.g[0]/c.g[1]*100)+" % når hen gjettet":""}.`);
+  const X=(P.xlLog||[]).slice(-6); if(X.length) out.push(`Siste Excel-forsøk: ${X.map(x=>`${x.title} ${x.ok}/${x.n}${x.help?" (brukte løsningsforslag)":""}`).join("; ")}.`);
+  const E=(P.exams||[]).slice(-2).filter(e=>e.by); if(E.length) out.push(`Prøveeksamen per del: ${E.map(e=>`del 1 ${e.p1} %, del 2 ${e.p2} %; kapitler ${Object.entries(e.by).map(([k,v])=>k+": "+v+" %").join(", ")}; Excel ${e.xl?e.xl.join(", "):""}`).join(" | ")}.`);
+  if(P.matchBest&&Object.keys(P.matchBest).length) out.push(`Begrepsmatch rekord: ${(Math.min(...Object.values(P.matchBest))/1000).toFixed(1)} s.`);
+  return out.join("\n");
 }
 function coachRules(){
   return `Du er en vennlig og konkret studiecoach i appen «Øvingsprøve HSM122» (Innføring i bedriftsøkonomi, NLA Høgskolen). Svar alltid på norsk bokmål, kort og konkret, med korte avsnitt eller punktlister. Ikke bruk emojier eller overskrifter med #.
@@ -7092,6 +7159,8 @@ function coachLocalPlan(){
   if(xlDone<6) tips.push(`Del 2 er Excel, og du har løst ${xlDone} Excel-oppgaver. Ta én generert Excel-oppgave om dagen [[excel|Excel-oppgaver]]`);
   if(!ex && days<=10) tips.push(`Ta en full prøveeksamen på tid denne uka, så du kjenner formatet [[eksamen|Prøveeksamen]]`);
   else if(ex) tips.push(`Siste prøveeksamen ga ${ex.g} (${ex.tot} %). Ta en ny om et par dager for å se fremgangen [[eksamen|Prøveeksamen]]`);
+  const lw=(P.log||[]).filter(x=>x.st!=="ok").slice(-1)[0];
+  if(lw) tips.push(`Siste feil var i **${lw.topic.replace(/^[\d.]+\s*/,"")}**: du svarte ${lw.a}, riktig var ${lw.c}. Les formelen og ta en ny variant [[formler|Formler og begreper]]`);
   if(!tips.length) tips.push(`Du ligger godt an. Hold det ved like med en generert prøve hver dag [[genall|Generert prøve]]`);
   return L.concat(tips.map((t,i)=>`${i+1}. ${t}`)).join("\n");
 }
@@ -7108,7 +7177,7 @@ async function coachSend(text){
   try{
     const turns=[{role:"user",content:coachRules()},...CO.turns.slice(-12)];
     const {text:ans,truncated}=await CO.sample(turns,{cache:false,signal:CO.ctl.signal,onText:({text})=>{ bub.innerHTML=coachFmt(text); }});
-    CO.turns.push({role:"assistant",content:ans});
+    CO.turns.push({role:"assistant",content:ans}); coSave();
     if(truncated) bub.insertAdjacentHTML("beforeend",'<p class="co-note">Svaret ble kuttet. Spør om én ting om gangen.</p>');
   }catch(e){
     CO.turns.pop();
@@ -7122,7 +7191,9 @@ function renderCoach(){
   const log=$("coLog");
   if(!log.children.length){
     coachBubble("ai",coachFmt(`Hei! Jeg ser fremgangen din i appen og hjelper deg å prioritere frem mot eksamen 20. november. Spør meg om hva du bør øve på, be om en plan, eller be meg forklare noe fra pensum.`));
+    CO.turns.forEach(t=>coachBubble(t.role==="user"?"me":"ai",coachFmt(t.content)));
   }
+  $("coCtx").textContent=coachContext();
   $("coMode").textContent=CO.sample?"Svarer med Claude · bruker fremgangen din i denne nettleseren":CO.sample===null?"Innebygd coach · full AI-chat finnes i Claude-versjonen":"Kobler til …";
 }
 (async()=>{
@@ -7133,7 +7204,7 @@ $("coForm").addEventListener("submit",e=>{ e.preventDefault(); coachSend($("coIn
 $("coIn").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); coachSend($("coIn").value); } });
 $("coStop").addEventListener("click",()=>CO.ctl&&CO.ctl.abort());
 $("coChips").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) coachSend(b.textContent); });
-$("coClear").addEventListener("click",()=>{ CO.turns=[]; $("coLog").innerHTML=""; renderCoach(); });
+$("coClear").addEventListener("click",()=>{ CO.turns=[]; coSave(); $("coLog").innerHTML=""; renderCoach(); });
 const learnEnterCoach=learnEnter;
 learnEnter=function(v){ learnEnterCoach(v); if(v==="coach") renderCoach(); };
 
