@@ -7168,8 +7168,7 @@ async function coachSend(text){
   text=(text||"").trim(); if(!text||CO.busy) return;
   $("coIn").value=""; coachBubble("me",coachFmt(text));
   if(!CO.sample){
-    const reply=/plan|øve|jobbe|svak|hva bør|start/i.test(text)?coachLocalPlan():coachLocalPlan()+`\n\nFrie spørsmål og forklaringer får du i Claude-versjonen av appen, der coachen svarer med Claude.`;
-    coachBubble("ai",coachFmt(reply)+(text&&!/plan|øve|jobbe|svak|hva bør|start/i.test(text)?`<p><a href="${COACH_URL}" target="_blank" rel="noopener">Åpne Claude-versjonen</a></p>`:"")); return;
+    coachBubble("ai",coachFmt(coachLocalReply(text))); return;
   }
   CO.turns.push({role:"user",content:text});
   const bub=coachBubble("ai",'<p class="co-think">Tenker …</p>');
@@ -7207,6 +7206,108 @@ $("coChips").addEventListener("click",e=>{ const b=e.target.closest("button"); i
 $("coClear").addEventListener("click",()=>{ CO.turns=[]; coSave(); $("coLog").innerHTML=""; renderCoach(); });
 const learnEnterCoach=learnEnter;
 learnEnter=function(v){ learnEnterCoach(v); if(v==="coach") renderCoach(); };
+
+/* ================= Coach 2: les ALLE svar (også ikke levert) + smartere innebygd coach ================= */
+COACH_ROUTES.profil="Profil";
+function setStates(){
+  const out=[];
+  Object.entries(SETS).forEach(([k,S])=>{
+    const s=rd(S.key,null); if(!s||!s.ans) return;
+    let list; if(Array.isArray(s.ids)&&s.ids.length) list=s.ids; else if(S.base) list=BASE[S.base].map((_,i)=>S.base+":"+i); else return;
+    const items=[]; Object.keys(s.ans).forEach(i=>{ const id=list[+i]; let q=null; try{ q=getQ(id); }catch(e){} if(!q) return; const r=scoreQ(q,s.ans[i]); if(r.state==="blank") return; items.push({i:+i,id,q,r,checked:!!(s.checked&&s.checked[i])}); });
+    if(items.length) out.push({k,label:(DISPLAY[k]&&DISPLAY[k].t)||k,graded:!!s.graded,total:list.length,items,pts:items.reduce((a,x)=>a+x.r.pts,0)});
+  });
+  return out;
+}
+/* P.topics + svar som verken er levert eller sjekket ennå */
+function liveTopics(){
+  const T={}; Object.entries(P.topics||{}).forEach(([k,d])=>T[k]=[d[0],d[1]]);
+  setStates().forEach(st=>{ if(st.graded) return; st.items.forEach(x=>{ if(x.checked) return; const k=tk(x.q.topic), d=T[k]||[0,0]; d[0]+=x.r.state==="ok"?1:(x.r.state==="part"?.5:0); d[1]++; T[k]=d; }); });
+  return T;
+}
+chapterStats=function(){ const ch={}; Object.entries(liveTopics()).forEach(([k,d])=>{ const m=k.match(/^(\d+)/); if(!m) return; const x=ch[m[1]]||[0,0]; x[0]+=d[0]; x[1]+=d[1]; ch[m[1]]=x; }); return ch; };
+weakTopics=function(n){ return Object.entries(liveTopics()).filter(([k,d])=>d[1]>=2 && d[0]/d[1]<.8).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]).slice(0,n); };
+
+function coachActivity(){
+  const st=setStates();
+  if(!st.length) return "Prøver: ingen besvarte oppgaver funnet i denne nettleseren.";
+  return "Prøver med svar (levert eller ikke):\n"+st.map(s=>{ const ok=s.items.filter(x=>x.r.state==="ok").length; return `- ${s.label}: ${s.items.length} av ${s.total} besvart, ${ok} helt riktige, ${fmt(s.pts)} poeng${s.graded?" (levert)":" (ikke levert ennå)"}`; }).join("\n");
+}
+function coachMistakesFromStates(ch){
+  const out=[]; setStates().forEach(s=>s.items.forEach(x=>{ if(x.r.state==="ok") return; if(ch&&parseInt(x.q.topic)!==ch) return; out.push({topic:x.q.topic,q:qTxt(x.q.prompt).slice(0,150),a:qAnsTxt(x.q,rd(SETS[s.k].key,{}).ans[x.i]).slice(0,150),c:qRightTxt(x.q).slice(0,150),set:s.label,graded:s.graded}); }));
+  return out;
+}
+const coachContextBase=coachContext;
+coachContext=function(){
+  const base=coachContextBase(); const st=setStates();
+  const mis=coachMistakesFromStates().slice(-10);
+  const empty=!st.length && !(P.log||[]).length && !Object.keys(P.topics||{}).length;
+  return [base, coachActivity(),
+    mis.length?"Feil og delvis riktige svar i prøvene (oppgave | svarte | riktig):\n"+mis.map(x=>`- [${x.topic}] ${x.q} | svarte: ${x.a} | riktig: ${x.c}`).join("\n"):"",
+    empty?"MERK: Ingen data i denne nettleseren. Studenten kan ha øvd i en annen nettleser eller i den andre versjonen av appen (GitHub-siden og Claude-versjonen lagrer hver for seg). Fremgang flyttes med fremgangskoden under Profil.":""
+  ].filter(Boolean).join("\n");
+};
+const coachRulesBase=coachRules;
+coachRules=function(){ return coachRulesBase().replace("Oppgaven din:","Viktigst: svar ut fra studentens egne data. Start svaret med 1–2 konkrete observasjoner fra dataene (tall, kapittel, en konkret feil og hva misforståelsen trolig er), før du gir råd. Når studenten spør om et kapittel, bruk tallene og feilene for akkurat det kapittelet. Hvis dataene er tomme, si det rett ut og forklar at fremgang lagres per nettleser og per versjon av appen.\n\nOppgaven din:"); };
+
+/* ---------- innebygd coach: forstår hva du spør om ---------- */
+const PICK={1:"ak1",2:"ak1",3:"p3",4:"p5",5:"kap56",6:"p4",7:"p7",8:"p11",9:"p12",10:"p13",11:"p14"};
+function coachLocalReply(text){
+  const t=text.toLowerCase(), days=Math.max(0,Math.ceil((EXAM_DATE-Date.now())/864e5));
+  const ch=chapterStats(), st=setStates(), T=liveTopics();
+  const empty=!st.length && !Object.keys(P.topics||{}).length;
+  const emptyNote="Jeg finner ingen besvarte oppgaver i denne nettleseren. Fremgangen lagres per nettleser, og GitHub-siden og Claude-versjonen lagrer hver for seg. Har du øvd et annet sted, kopier fremgangskoden under Profil der og lim den inn her [[profil|Profil]]";
+  const pct=c=>ch[c]?Math.round(ch[c][0]/ch[c][1]*100):null;
+  // forklar et begrep
+  const isStatus=/status|fremgang|hva har jeg|oversikt|hvordan går det|hvordan gikk/.test(t);
+  const ex=!isStatus && !/kap(?:ittel|\.)?\s*\d/.test(t) && t.match(/(?:forklar|hva er|hva betyr|hva menes med|definer)\s+(.+?)\??$/);
+  if(ex){ const w=ex[1].replace(/^(en|et|ei|begrepet)\s+/,"").trim();
+    const g=GLOSS.find(x=>x.t.toLowerCase()===w)||GLOSS.find(x=>x.t.toLowerCase().includes(w)||w.includes(x.t.toLowerCase().replace(/\s*\(.*\)/,"")));
+    const f=FORMULAS.find(x=>x[1].toLowerCase().includes(w));
+    if(g||f){ const parts=[]; if(g) parts.push(`**${g.t}** (kap. ${g.ch}): ${g.d}`+(g.k?`\nHuskeknagg: ${g.k}`:"")); if(f) parts.push(`Formel: **${f[1]}** = ${f[2]}`);
+      const myT=Object.entries(T).filter(([k])=>g&&parseInt(k)===g.ch);
+      if(g&&pct(g.ch)!=null) parts.push(`Du har ${pct(g.ch)} % riktig i kap. ${g.ch} så langt.`);
+      parts.push(`[[formler|Les mer i Formler og begreper]] [[huske|Øv begrepene]]`); return parts.join("\n"); }
+    return `Jeg fant ikke «${w}» i begrepslisten. Søk i Formler og begreper, eller spør i Claude-versjonen for en full forklaring [[formler|Formler og begreper]]`;
+  }
+  if(empty) return emptyNote;
+  // et bestemt kapittel
+  const km=t.match(/kap(?:ittel|\.)?\s*(\d{1,2})/);
+  if(km){ const c=+km[1]; if(!CH_NAME[c]) return "Pensum har kapittel 1–11.";
+    const p=pct(c), n=ch[c]?ch[c][1]:0;
+    const tops=Object.entries(T).filter(([k])=>parseInt(k)===c).map(([k,d])=>[k.replace(/^[\d.]+\s*/,""),Math.round(d[0]/d[1]*100),d[1]]).sort((a,b)=>a[1]-b[1]);
+    const sets=st.filter(s=>s.items.some(x=>parseInt(x.q.topic)===c)).map(s=>{ const its=s.items.filter(x=>parseInt(x.q.topic)===c); return `${s.label}: ${its.length} besvart, ${its.filter(x=>x.r.state==="ok").length} riktige${s.graded?"":" (ikke levert)"}`; });
+    const mis=coachMistakesFromStates(c).slice(-3);
+    const L=[`**Kap. ${c} ${CH_NAME[c]}**`];
+    if(!n) L.push(`Du har ikke besvart noen oppgaver fra kap. ${c} ennå. Start med [[${PICK[c]}|${DISPLAY[PICK[c]].t}]]`);
+    else { L.push(`Du har svart på ${n} oppgaver, og ${p} % er riktige.`);
+      if(sets.length) L.push("Hvor:\n"+sets.map(x=>"- "+x).join("\n"));
+      if(tops.length) L.push("Per tema: "+tops.map(x=>`${x[0]} ${x[1]} % (${x[2]})`).join(", ")+".");
+      if(mis.length) L.push("Feil å se på:\n"+mis.map(x=>`- ${x.q} Du svarte «${x.a}», riktig er «${x.c}».`).join("\n"));
+      L.push(p>=80?`Det sitter godt. Hold det ved like med nye tall [[genall|Generert prøve]]`:`Les sammendraget for kapittelet og øv videre [[formler|Formler og begreper]] [[svak|Svake temaer]]`); }
+    return L.join("\n");
+  }
+  if(isStatus||/gjort/.test(t)){
+    const L=[`Her er det jeg finner (${days} dager til eksamen):`, coachActivity().replace(/^Prøver med svar \(levert eller ikke\):\n/,"")];
+    const chs=Object.keys(CH_NAME).filter(c=>ch[c]).map(c=>`kap. ${c}: ${pct(c)} %`); if(chs.length) L.push("Treffprosent per kapittel: "+chs.join(", ")+".");
+    const nd=st.filter(s=>!s.graded); if(nd.length) L.push(`Du har ${nd.length} prøve(r) som ikke er levert. Lever dem for å få fasit og poeng.`);
+    return L.join("\n");
+  }
+  if(/excel|regneark|del 2/.test(t)){
+    const done=XL_TASKS.filter(x=>P.xl[x.id]&&P.xl[x.id].solved), X=(P.xlLog||[]).slice(-3);
+    return [`Del 2 er Excel med hjelpemidler. Du har løst ${done.length} av ${XL_TASKS.length} faste Excel-oppgaver.`, X.length?"Siste forsøk: "+X.map(x=>`${x.title} ${x.ok}/${x.n}`).join(", ")+".":"", "Tips: lag formler med cellereferanser, bruk $ for faste celler og Fyll ned, og sjekk fortegn på avvik. Ta en generert oppgave med nye tall hver dag [[excel|Excel-oppgaver]] [[eksamen|Prøveeksamen]]"].filter(Boolean).join("\n");
+  }
+  if(/plan|uke|dager|eksamen|forbered/.test(t)){
+    const chs=Object.keys(CH_NAME).map(Number), order=chs.map(c=>[c,pct(c)]).sort((a,b)=>(a[1]??-1)-(b[1]??-1));
+    const L=[`Plan for de ${days} dagene som er igjen. Svakeste og uøvde kapitler kommer først:`];
+    for(let d=0; d<Math.min(days,8); d++){ const a=order[(d*2)%order.length], b=order[(d*2+1)%order.length];
+      L.push(`${d+1}. Dag ${d+1}: kap. ${a[0]} ${CH_NAME[a[0]]}${a[1]==null?" (ikke øvd)":" ("+a[1]+" %)"} og kap. ${b[0]} ${CH_NAME[b[0]]}${b[1]==null?" (ikke øvd)":" ("+b[1]+" %)"}. Avslutt med én Excel-oppgave og en huskeøkt.`); }
+    if(days>=2) L.push(`Ta en full prøveeksamen 2–3 dager før eksamen [[eksamen|Prøveeksamen]] [[${PICK[order[0][0]]}|Start med kap. ${order[0][0]}]]`);
+    return L.join("\n");
+  }
+  return coachLocalPlan();
+}
+coachLocalPlan=(function(base){ return function(){ const st=setStates(); if(!st.length && !Object.keys(P.topics||{}).length) return "Jeg finner ingen besvarte oppgaver i denne nettleseren. Fremgangen lagres per nettleser, og GitHub-siden og Claude-versjonen lagrer hver for seg. Har du øvd et annet sted, kopier fremgangskoden under Profil der og lim den inn her [[profil|Profil]]"; const nd=st.filter(s=>!s.graded); return base()+(nd.length?`\n\nMerk: ${nd.map(s=>s.label).join(", ")} er ikke levert. Svarene er tatt med her, men du får fasit først når du leverer.`:""); }; })(coachLocalPlan);
 
 go((location.hash||"").slice(1)||"hjem",true);
 
