@@ -851,28 +851,6 @@ select,input,textarea{color:var(--fg)}
 .dcta:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),inset -2px -2px 0 #f4c451,0 20px 40px -18px rgba(0,0,0,.6)}
 .dcard:hover .darr{transform:translate(2px,-2px)} .darr{transition:transform .2s}
 
-/* ===== v10: coach chat ===== */
-.tabbar{width:min(520px,calc(100vw - 24px))}
-.co-mode{margin:-6px 4px 0;font-size:13px;color:var(--muted);text-align:center}
-.co-clear{justify-self:end;font-size:15px}
-.co-log{display:grid;gap:12px;padding-bottom:190px}
-.co-msg{max-width:88%;border-radius:24px;padding:14px 18px;font-size:15.5px;line-height:1.55}
-.co-msg p{margin:0 0 8px}.co-msg p:last-child{margin-bottom:0}
-.co-msg ul,.co-msg ol{margin:4px 0 8px;padding-left:20px;display:grid;gap:5px}
-.co-msg.ai{justify-self:start;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.04));box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px)}
-.co-msg.me{justify-self:end;background:rgba(244,196,81,.16);box-shadow:inset 0 0 0 1px rgba(244,196,81,.45)}
-.co-think{color:var(--muted);animation:coPulse 1.4s ease-in-out infinite}
-@keyframes coPulse{50%{opacity:.4}}
-.co-note{color:var(--muted);font-size:13.5px}
-.co-go{display:inline-flex;align-items:center;margin:6px 6px 0 0;border:0;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;color:var(--fg);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),inset -1.5px -1.5px 0 rgba(244,196,81,.8)}
-.co-go::after{content:"↗";margin-left:6px;color:var(--accent)}
-.co-dock{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(760px,calc(100vw - 24px));display:grid;gap:8px;z-index:12}
-.co-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}
-.co-chips::-webkit-scrollbar{display:none}
-.co-chips button{flex:none;border:0;border-radius:999px;padding:8px 14px;font-size:13.5px;color:var(--fg);background:rgba(40,43,50,.7);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-.co-form{display:flex;gap:8px;align-items:flex-end;border-radius:28px;padding:8px 8px 8px 18px;background:rgba(40,43,50,.78)}
-.co-form textarea{flex:1;border:0;background:transparent;resize:none;font:inherit;font-size:16px;color:var(--fg);padding:9px 0;max-height:140px;outline:none}
-
 /* ===== v11: svaralternativer med svart skrift på lys flate ===== */
 .opt,.duel-o,.mt-c,.pair select,.hk-cbtn button,.sk-opts .duel-o{background:#f7f6f2!important;color:#111!important;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 6px 16px -10px rgba(0,0,0,.45)!important;border:1.5px solid transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .opt span,.duel-o span,.duel-o .mono,.mt-c{color:#111!important}
@@ -894,9 +872,6 @@ select option,select optgroup{color:#111;background:#fff}
 .numrow input,.hk-in{background:#f7f6f2!important;color:#111!important}
 .numrow input::placeholder,.hk-in::placeholder{color:#777}
 .hk-in.right{background:#e2f5e9!important}.hk-in.wrong{background:#fde4e0!important}
-.co-ctx{border-radius:20px;padding:12px 16px;font-size:14px}
-.co-ctx summary{cursor:pointer;font-weight:600}
-.co-ctx pre{white-space:pre-wrap;font-family:var(--f-body);font-size:13px;color:var(--muted);margin:10px 0 4px;max-height:320px;overflow:auto}
 </style>
 </head>
 <body>
@@ -1382,7 +1357,6 @@ select option,select optgroup{color:#111;background:#fff}
     <header class="largetitle"><span class="eyebrow">Metoder fra læringsforskningen</span><h1>Lær</h1></header>
     <div class="learn-hero glass" id="learnHero"></div>
     <div class="modes">
-      <button class="mode glass mode-wide" type="button" data-view="coach" style="--mc:#f4c451"><span class="tile t-gold" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><b>Coach</b><span>Chat som ser fremgangen din og forteller hva du bør jobbe med nå, og hvorfor. Spør også om forklaringer fra pensum.</span><em>Personlig tilbakemelding og planlegging (metakognisjon) gir bedre studievaner.</em></button>
       <button class="mode glass mode-wide" type="button" data-view="huske" style="--mc:#af52de"><span class="tile t-purple" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a5.5 5.5 0 0 0-5.5 5.5c0 1.9 1 3.3 2.2 4.4.8.7 1.3 1.6 1.3 2.6v.5h4v-.5c0-1 .5-1.9 1.3-2.6 1.2-1.1 2.2-2.5 2.2-4.4A5.5 5.5 0 0 0 12 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19.5h4M10.5 22h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Huskeøkt</b><span>12 begreper fra kap. 1–11 på ulike måter: kjenn igjen, forstå og skriv selv. Feil kommer tilbake til du har dem, og du trener på å vite hva du kan.</span><span class="mode-meta" id="hkMeta"></span><em>Hentetrening, gjentatt gjenlæring (Rawson og Dunlosky, 2011), Leitner-bokser og sikkerhetsvurdering med hyperkorreksjon (Butterfield og Metcalfe, 2001).</em></button>
       <button class="mode glass" type="button" data-view="skill" style="--mc:#ff3b30"><span class="tile t-red" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7l-3 6h6zM19 7l-3 6h6zM5 7h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Skill begrepene</b><span>Kostnad eller utgift? Hjelpested eller fellessted? Korte situasjoner der du velger mellom begreper som lett blandes.</span><em>Diskrimineringstrening: å sammenligne like begreper side om side gir skarpere forståelse (Kang og Pashler, 2012).</em></button>
       <button class="mode glass" type="button" data-view="match" style="--mc:#ffcc00"><span class="tile t-yellow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="7" height="6" rx="1.8" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="6" rx="1.8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 7h2.5a2 2 0 0 1 2 2v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Begrepsmatch</b><span>Match 6 begreper med forklaringen på tid. Slå din egen rekord.</span><em>Flyt: når du henter frem raskt, frigjøres kapasitet til selve oppgaveløsningen.</em></button>
@@ -1453,17 +1427,6 @@ select option,select optgroup{color:#111;background:#fff}
     <div class="stage" id="exStage"></div>
   </section>
 
-  <section class="view" data-route="coach" hidden>
-    <div class="subhead"><button class="navback" type="button" data-view="hjem"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Øving</button><h1>Coach</h1><button class="navback co-clear" type="button" id="coClear">Ny samtale</button></div>
-    <p class="co-mode" id="coMode"></p>
-    <details class="co-ctx glass"><summary>Dette vet coachen om deg</summary><pre id="coCtx"></pre><p class="modehint">Dataene ligger bare i denne nettleseren. De sendes til Claude bare når du skriver til coachen i Claude-versjonen.</p></details>
-    <div class="co-log" id="coLog" aria-live="polite"></div>
-    <div class="co-dock">
-      <div class="co-chips" id="coChips"><button type="button">Hva bør jeg øve på nå?</button><button type="button">Lag en plan frem til eksamen</button><button type="button">Hva er jeg svakest på, og hvorfor?</button><button type="button">Hvordan forbereder jeg meg til Excel-delen?</button></div>
-      <form class="co-form glass" id="coForm"><label class="sr" for="coIn">Melding til coachen</label><textarea id="coIn" rows="1" placeholder="Spør coachen …"></textarea><button class="btn" type="submit" id="coSend">Send</button><button class="btn ghost" type="button" id="coStop" hidden>Stopp</button></form>
-    </div>
-  </section>
-
   <section class="view" data-route="excel" hidden>
     <div class="subhead"><button class="navback" type="button" id="xlBack"><svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Tilbake</button><h1 id="xlTitle">Regneark</h1><span></span></div>
     <div id="xlList" class="view"></div>
@@ -1523,7 +1486,6 @@ select option,select optgroup{color:#111;background:#fff}
   <button type="button" data-view="hjem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z" fill="currentColor"/></svg>Øving</button>
   <button type="button" data-view="laer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7.2 4.5 4 4.8v13.4c3.2-.3 6 .2 8 1.7 2-1.5 4.8-2 8-1.7V4.8c-3.2-.3-6 .2-8 1.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.5v13.4" stroke="currentColor" stroke-width="2"/></svg>Lær</button>
   <button type="button" data-view="formler"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 4H7l6 8-6 8h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Formler</button>
-  <button type="button" data-view="coach"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 7.3l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor"/></svg>Coach</button>
   <button type="button" data-view="profil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.2" fill="currentColor"/><path d="M4 20.5c.8-4 4-6.2 8-6.2s7.2 2.2 8 6.2z" fill="currentColor"/></svg>Profil</button>
 </nav>
 <div class="pager glass" id="pager" hidden>
@@ -7041,174 +7003,7 @@ function renderDash(){
 const renderHomeDash=renderHome;
 renderHome=function(){ renderHomeDash(); renderDash(); };
 
-/* ================= Coach: chat som bruker brukerens egen fremgang ================= */
-const COACH_URL="https://claude.ai/artifact/Qk8i3FKqLE43tsAH7UXoRG";
-LEARN_SUB.push("coach");
-const COACH_ROUTES={genall:"Generert prøve",gen17:"Generert kap. 1–7",gen811:"Generert kap. 7–11",eksamen:"Prøveeksamen",feil:"Feilbanken",svak:"Svake temaer",huske:"Huskeøkt",skill:"Skill begrepene",match:"Begrepsmatch",kort:"Flashkort",formel:"Formelduell",forklar:"Forklar det",excel:"Excel-oppgaver",formler:"Formler og begreper",kart:"Tankekart",lyn:"Lynrunde"};
-Object.keys(BASE).forEach(k=>COACH_ROUTES[k]=DISPLAY[k]?DISPLAY[k].t:k);
-let CO={turns:rd("hsm122-coach",[]),sample:undefined,ctl:null,busy:false};
-function coSave(){ wr("hsm122-coach",CO.turns.slice(-24)); }
-const qTxt=h=>String(h??"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
-function qAnsTxt(q,a){
-  if(a==null||a==="") return "tomt";
-  if(q.type==="mc") return qTxt(q.options[a]);
-  if(q.type==="multi") return (Array.isArray(a)?a:[]).map(j=>qTxt(q.options[j])).join(" + ")||"tomt";
-  if(q.type==="num") return String(a)+(q.unit?" "+q.unit:"");
-  const ch=q.type==="cat"?q.cats:q.choices; return q.items.map((it,j)=>it[0]+" → "+(a&&a[j]!=null?ch[a[j]]:"tomt")).join("; ");
-}
-function qRightTxt(q){
-  if(q.type==="mc") return qTxt(q.options[q.correct]);
-  if(q.type==="multi") return q.correct.map(j=>qTxt(q.options[j])).join(" + ");
-  if(q.type==="num") return (Math.round(q.answer*100)/100).toLocaleString("nb-NO")+(q.unit?" "+q.unit:"");
-  const ch=q.type==="cat"?q.cats:q.choices; return q.items.map(it=>it[0]+" → "+ch[it[1]]).join("; ");
-}
-const recordCoach=record;
-record=function(id,q,r){
-  recordCoach(id,q,r);
-  try{ const i=ids.indexOf(id); P.log=P.log||[];
-    P.log.push({ts:Date.now(),set:setKey,topic:q.topic,st:r.state,q:qTxt(q.prompt).slice(0,160),a:qAnsTxt(q,i>=0?ans[i]:null).slice(0,160),c:qRightTxt(q).slice(0,160)});
-    if(P.log.length>80) P.log.splice(0,P.log.length-80); }catch(e){}
-};
-const xlCheckCoach=xlCheck;
-xlCheck=function(){ xlCheckCoach(); coXlLog(); };
-function coXlLog(){ const t=XL.t; try{ if(t&&!t.scratch&&!XL.examMode){ const comp=xlCompute(XL.raw), keys=Object.keys(t.targets), ok=keys.filter(a=>xlMatch(comp.get(a),t.targets[a])).length; P.xlLog=P.xlLog||[]; P.xlLog.push({ts:Date.now(),title:t.title,ch:t.ch,ok,n:keys.length,help:!!(P.xl[t.id]&&P.xl[t.id].help)}); if(P.xlLog.length>30) P.xlLog.shift(); saveP(); } }catch(e){} }
-$("xlCheck").addEventListener("click",coXlLog);
-
-function coachContext(){
-  const days=Math.max(0,Math.ceil((EXAM_DATE-Date.now())/864e5));
-  const ch=chapterStats();
-  const chLines=Object.keys(CH_NAME).map(c=>{ const d=ch[c]; return `Kap. ${c} ${CH_NAME[c]}: ${d?Math.round(d[0]/d[1]*100)+" % riktig av "+d[1]+" oppgaver":"ikke øvd"}`; });
-  const topics=Object.entries(P.topics||{}).filter(([k,d])=>d[1]>=1).map(([k,d])=>[k,Math.round(d[0]/d[1]*100),d[1]]).sort((a,b)=>a[1]-b[1]);
-  const weak=topics.filter(t=>t[1]<75).slice(0,10).map(t=>`${t[0]}: ${t[1]} % (${t[2]} forsøk)`);
-  const strong=topics.filter(t=>t[1]>=85&&t[2]>=2).slice(-6).map(t=>t[0]);
-  const wrongTopics={}; Object.keys(P.wrong||{}).forEach(id=>{ try{ const q=getQ(id); if(q) wrongTopics[q.topic]=(wrongTopics[q.topic]||0)+1; }catch(e){} });
-  const memWeak=GLOSS.filter(g=>P.mem[g.id] && P.mem[g.id].b<=1 && P.mem[g.id].n>0).slice(0,10).map(g=>g.t);
-  const m=memSummary();
-  const xlSolved=Object.keys(P.xl||{}).filter(k=>P.xl[k].solved).map(k=>{ const t=xlTaskById(k); return t?t.title:k; });
-  const xlOpen=XL_TASKS.filter(t=>!(P.xl[t.id]&&P.xl[t.id].solved)).map(t=>`kap. ${t.ch}: ${t.title}`).slice(0,12);
-  const exams=(P.exams||[]).slice(-4).map(e=>`${new Date(e.at).toLocaleDateString("nb-NO")}: ${e.g} (${e.tot} %)`);
-  const passed=Object.keys(P.passed||{}).filter(k=>BASE[k]).map(k=>DISPLAY[k].t);
-  const daily=P.daily||{}; const last7=Array.from({length:7},(_,i)=>{ const d=new Date(Date.now()-i*864e5); const k=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); return daily[k]||0; }).reverse();
-  return [
-    `Dato: ${new Date().toLocaleDateString("nb-NO",{weekday:"long",day:"numeric",month:"long"})}. Eksamen i HSM122: fredag 20. november 2026, 4 timer, del 1 uten hjelpemidler og del 2 med Excel. Dager igjen: ${days}.`,
-    `Nivå ${levelOf(P.xp)+1} (${P.xp} XP). Besvarte oppgaver totalt: ${P.answered}, helt riktige: ${P.correct}. Oppgaver per dag siste 7 dager: ${last7.join(", ")}.`,
-    `Mestring per kapittel:\n- ${chLines.join("\n- ")}`,
-    `Svakeste temaer: ${weak.length?weak.join("; "):"ingen data ennå"}.`,
-    `Sterke temaer: ${strong.length?strong.join(", "):"ingen ennå"}.`,
-    `Feilbanken: ${Object.keys(P.wrong||{}).length} oppgaver${Object.keys(wrongTopics).length?" ("+Object.entries(wrongTopics).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([t,n])=>t+" ×"+n).join(", ")+")":""}.`,
-    `Begreper: ${m.solid} av ${GLOSS.length} sitter godt, ${m.d} klare til repetisjon i dag. Begreper bommet på nylig: ${memWeak.length?memWeak.join(", "):"ingen"}.`,
-    `Bestått prøver: ${passed.length?passed.join(", "):"ingen ennå"}.`,
-    `Prøveeksamener: ${exams.length?exams.join("; "):"ingen tatt ennå"}.`,
-    `Excel-oppgaver løst: ${xlSolved.length?xlSolved.join(", "):"ingen"}. Ikke løst ennå: ${xlOpen.join("; ")}.`,
-    coachExtra()
-  ].filter(Boolean).join("\n");
-}
-function coachExtra(){
-  const L=P.log||[], out=[];
-  if(L.length>=6){ const last=L.slice(-20), prev=L.slice(-40,-20); const acc=a=>a.length?Math.round(a.filter(x=>x.st==="ok").length/a.length*100):null;
-    out.push(`Trend: ${acc(last)} % riktig på de siste ${last.length} svarene${prev.length?`, mot ${acc(prev)} % på de ${prev.length} før`:""}.`); }
-  const wrong=L.filter(x=>x.st!=="ok").slice(-8);
-  if(wrong.length) out.push("Siste feil (oppgave | studentens svar | riktig svar):\n"+wrong.map(x=>`- [${x.topic}] ${x.q} | svarte: ${x.a} | riktig: ${x.c}`).join("\n"));
-  const recent=L.slice(-6).map(x=>`${x.topic}: ${x.st==="ok"?"riktig":x.st==="part"?"delvis":"feil"}`);
-  if(recent.length) out.push(`Siste svar: ${recent.join("; ")}.`);
-  const c=P.cal||{}; if(c.s&&c.s[1]>=5) out.push(`Selvinnsikt i huskeøkter: riktig på ${Math.round(c.s[0]/c.s[1]*100)} % av svarene studenten var sikker på (${c.s[1]} svar), ${c.g&&c.g[1]?Math.round(c.g[0]/c.g[1]*100)+" % når hen gjettet":""}.`);
-  const X=(P.xlLog||[]).slice(-6); if(X.length) out.push(`Siste Excel-forsøk: ${X.map(x=>`${x.title} ${x.ok}/${x.n}${x.help?" (brukte løsningsforslag)":""}`).join("; ")}.`);
-  const E=(P.exams||[]).slice(-2).filter(e=>e.by); if(E.length) out.push(`Prøveeksamen per del: ${E.map(e=>`del 1 ${e.p1} %, del 2 ${e.p2} %; kapitler ${Object.entries(e.by).map(([k,v])=>k+": "+v+" %").join(", ")}; Excel ${e.xl?e.xl.join(", "):""}`).join(" | ")}.`);
-  if(P.matchBest&&Object.keys(P.matchBest).length) out.push(`Begrepsmatch rekord: ${(Math.min(...Object.values(P.matchBest))/1000).toFixed(1)} s.`);
-  return out.join("\n");
-}
-function coachRules(){
-  return `Du er en vennlig og konkret studiecoach i appen «Øvingsprøve HSM122» (Innføring i bedriftsøkonomi, NLA Høgskolen). Svar alltid på norsk bokmål, kort og konkret, med korte avsnitt eller punktlister. Ikke bruk emojier eller overskrifter med #.
-
-Oppgaven din: bruk studentens data under til å gi en tydelig pekepinn på hva hen bør jobbe med nå, og hvorfor. Prioriter svake kapitler og temaer som veier tungt på eksamen, tiden som er igjen, feilbanken, og Excel-delen (del 2). Når studenten spør om fag, forklar kort med formler og et lite regneeksempel, og si fra hvis noe kan variere fra foreleserens fremstilling. Ikke finn på tall om studenten som ikke står i dataene.
-
-Pensum: kap. 1 introduksjon, 2 inntekts- og kostnadsbegreper, 3 kostnadsforløpet, 4 etterspørsel, 5 markedstilpasning, 6 kalkulasjon, 7 driftsregnskap (inkl. normalkost, dekningsdifferanse, beskjeftigelsesavvik), 8 KRV-analyser, 9 produktvalg og beslutninger, 10 aktivitetsbasert kalkulasjon, 11 fleksibelt budsjett og standardkost.
-
-Du kan foreslå øvinger i appen som knapper. Skriv en knapp slik: [[rute|Knappetekst]]. Bruk bare disse rutene: ${Object.entries(COACH_ROUTES).map(([k,v])=>k+" ("+v+")").join(", ")}. Gi 1–3 knapper når det passer, helst til slutt.
-
-Studentens data akkurat nå:
-${coachContext()}`;
-}
-function coachFmt(t){
-  const e=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-  let h=e(t);
-  h=h.replace(/\[\[([\w]+)\|([^\]]+)\]\]/g,(m,r,l)=>COACH_ROUTES[r]?`<button class="co-go" type="button" data-view="${r}">${l}</button>`:l);
-  h=h.replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>");
-  const lines=h.split("\n"); let out="", list=null;
-  lines.forEach(L=>{ const m=L.match(/^\s*(?:[-•]|\d+[.)])\s+(.*)$/); if(m){ if(!list){ list=/^\s*\d/.test(L)?"ol":"ul"; out+=`<${list}>`; } out+=`<li>${m[1]}</li>`; } else { if(list){ out+=`</${list}>`; list=null; } if(L.trim()) out+=`<p>${L}</p>`; } });
-  if(list) out+=`</${list}>`; return out;
-}
-function coachBubble(role,html){
-  const d=el("div",{class:"co-msg "+role}); d.innerHTML=html; $("coLog").append(d); d.scrollIntoView({block:"end",behavior:reduceMotion?"auto":"smooth"}); return d;
-}
-/* Innebygd coach uten AI (GitHub Pages): plan fra dataene */
-function coachLocalPlan(){
-  const days=Math.max(0,Math.ceil((EXAM_DATE-Date.now())/864e5)), ch=chapterStats();
-  const chs=Object.keys(CH_NAME).map(Number), unseen=chs.filter(c=>!ch[c]);
-  const ranked=chs.filter(c=>ch[c]).map(c=>[c,Math.round(ch[c][0]/ch[c][1]*100)]).sort((a,b)=>a[1]-b[1]);
-  const weakT=weakTopics(3), wn=Object.keys(P.wrong||{}).length, m=memSummary(), ex=(P.exams||[]).slice(-1)[0];
-  const xlDone=XL_TASKS.filter(t=>P.xl[t.id]&&P.xl[t.id].solved).length;
-  const pick={1:"ak1",2:"ak1",3:"p3",4:"p5",5:"kap56",6:"p4",7:"p7",8:"p11",9:"p12",10:"p13",11:"p14"};
-  const L=[`Det er **${days} dager** til eksamen. Dette er planen min ut fra fremgangen din:`];
-  const tips=[];
-  if(unseen.length) tips.push(`Du har ikke øvd på **kap. ${unseen.join(", ")}** ennå. Start med ${CH_NAME[unseen[0]].toLowerCase()} [[${pick[unseen[0]]}|${DISPLAY[pick[unseen[0]]].t}]]`);
-  if(ranked.length && ranked[0][1]<75) tips.push(`Svakest er **kap. ${ranked[0][0]} ${CH_NAME[ranked[0][0]]}** med ${ranked[0][1]} % riktig. Les sammendraget og ta en generert prøve [[formler|Formler og begreper]]`);
-  if(weakT.length) tips.push(`Temaer du bommer mest på: ${weakT.map(([k,d])=>`${k.replace(/^[\d.]+\s*/,"")} (${Math.round(d[0]/d[1]*100)} %)`).join(", ")} [[svak|Øv på svake temaer]]`);
-  if(wn) tips.push(`Du har **${wn} oppgaver i feilbanken**. Ta dem til de sitter [[feil|Feilbanken]]`);
-  if(m.d) tips.push(`${m.d} begreper er klare for repetisjon i dag [[huske|Huskeøkt]]`);
-  if(xlDone<6) tips.push(`Del 2 er Excel, og du har løst ${xlDone} Excel-oppgaver. Ta én generert Excel-oppgave om dagen [[excel|Excel-oppgaver]]`);
-  if(!ex && days<=10) tips.push(`Ta en full prøveeksamen på tid denne uka, så du kjenner formatet [[eksamen|Prøveeksamen]]`);
-  else if(ex) tips.push(`Siste prøveeksamen ga ${ex.g} (${ex.tot} %). Ta en ny om et par dager for å se fremgangen [[eksamen|Prøveeksamen]]`);
-  const lw=(P.log||[]).filter(x=>x.st!=="ok").slice(-1)[0];
-  if(lw) tips.push(`Siste feil var i **${lw.topic.replace(/^[\d.]+\s*/,"")}**: du svarte ${lw.a}, riktig var ${lw.c}. Les formelen og ta en ny variant [[formler|Formler og begreper]]`);
-  if(!tips.length) tips.push(`Du ligger godt an. Hold det ved like med en generert prøve hver dag [[genall|Generert prøve]]`);
-  return L.concat(tips.map((t,i)=>`${i+1}. ${t}`)).join("\n");
-}
-async function coachSend(text){
-  text=(text||"").trim(); if(!text||CO.busy) return;
-  $("coIn").value=""; coachBubble("me",coachFmt(text));
-  if(!CO.sample){
-    coachBubble("ai",coachFmt(coachLocalReply(text))); return;
-  }
-  CO.turns.push({role:"user",content:text});
-  const bub=coachBubble("ai",'<p class="co-think">Tenker …</p>');
-  CO.busy=true; CO.ctl=new AbortController(); $("coSend").hidden=true; $("coStop").hidden=false;
-  try{
-    const turns=[{role:"user",content:coachRules()},...CO.turns.slice(-12)];
-    const {text:ans,truncated}=await CO.sample(turns,{cache:false,signal:CO.ctl.signal,onText:({text})=>{ bub.innerHTML=coachFmt(text); }});
-    CO.turns.push({role:"assistant",content:ans}); coSave();
-    if(truncated) bub.insertAdjacentHTML("beforeend",'<p class="co-note">Svaret ble kuttet. Spør om én ting om gangen.</p>');
-  }catch(e){
-    CO.turns.pop();
-    const keep=e&&e.text; bub.innerHTML=keep?coachFmt(keep):"";
-    const msg={not_granted:"Du har ikke gitt appen lov til å bruke Claude. Her er planen fra den innebygde coachen i stedet.",sampling_disabled:"Claude er ikke tilgjengelig for denne kontoen. Her er den innebygde planen.",rate_limited:"For mange spørsmål akkurat nå. Prøv igjen om litt.",session_expired:"Du må logge inn på nytt.",refused:"Det spørsmålet kunne ikke besvares. Prøv å formulere det annerledes.",cancelled:""}[e&&e.code];
-    if(e&&(e.code==="not_granted"||e.code==="sampling_disabled"||e.code==="not_declared")){ CO.sample=null; bub.innerHTML=coachFmt(msg+"\n\n"+coachLocalPlan()); }
-    else if(msg!==""){ bub.insertAdjacentHTML("beforeend",`<p class="co-note">${msg||"Noe gikk galt. Prøv igjen."}</p>`); }
-  }finally{ CO.busy=false; $("coSend").hidden=false; $("coStop").hidden=true; }
-}
-function renderCoach(){
-  const log=$("coLog");
-  if(!log.children.length){
-    coachBubble("ai",coachFmt(`Hei! Jeg ser fremgangen din i appen og hjelper deg å prioritere frem mot eksamen 20. november. Spør meg om hva du bør øve på, be om en plan, eller be meg forklare noe fra pensum.`));
-    CO.turns.forEach(t=>coachBubble(t.role==="user"?"me":"ai",coachFmt(t.content)));
-  }
-  $("coCtx").textContent=coachContext();
-  $("coMode").textContent=CO.sample?"Svarer med Claude · bruker fremgangen din i denne nettleseren":CO.sample===null?"Innebygd coach · full AI-chat finnes i Claude-versjonen":"Kobler til …";
-}
-(async()=>{
-  try{ CO.sample=(window.claude&&window.claude.use)?await window.claude.use("sample"):null; }catch(e){ CO.sample=null; }
-  if(view==="coach") renderCoach();
-})();
-$("coForm").addEventListener("submit",e=>{ e.preventDefault(); coachSend($("coIn").value); });
-$("coIn").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); coachSend($("coIn").value); } });
-$("coStop").addEventListener("click",()=>CO.ctl&&CO.ctl.abort());
-$("coChips").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) coachSend(b.textContent); });
-$("coClear").addEventListener("click",()=>{ CO.turns=[]; coSave(); $("coLog").innerHTML=""; renderCoach(); });
-const learnEnterCoach=learnEnter;
-learnEnter=function(v){ learnEnterCoach(v); if(v==="coach") renderCoach(); };
-
-/* ================= Coach 2: les ALLE svar (også ikke levert) + smartere innebygd coach ================= */
-COACH_ROUTES.profil="Profil";
+/* ================= Mestring: tell også svar i prøver som ikke er levert ================= */
 function setStates(){
   const out=[];
   Object.entries(SETS).forEach(([k,S])=>{
@@ -7228,86 +7023,6 @@ function liveTopics(){
 chapterStats=function(){ const ch={}; Object.entries(liveTopics()).forEach(([k,d])=>{ const m=k.match(/^(\d+)/); if(!m) return; const x=ch[m[1]]||[0,0]; x[0]+=d[0]; x[1]+=d[1]; ch[m[1]]=x; }); return ch; };
 weakTopics=function(n){ return Object.entries(liveTopics()).filter(([k,d])=>d[1]>=2 && d[0]/d[1]<.8).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]).slice(0,n); };
 
-function coachActivity(){
-  const st=setStates();
-  if(!st.length) return "Prøver: ingen besvarte oppgaver funnet i denne nettleseren.";
-  return "Prøver med svar (levert eller ikke):\n"+st.map(s=>{ const ok=s.items.filter(x=>x.r.state==="ok").length; return `- ${s.label}: ${s.items.length} av ${s.total} besvart, ${ok} helt riktige, ${fmt(s.pts)} poeng${s.graded?" (levert)":" (ikke levert ennå)"}`; }).join("\n");
-}
-function coachMistakesFromStates(ch){
-  const out=[]; setStates().forEach(s=>s.items.forEach(x=>{ if(x.r.state==="ok") return; if(ch&&parseInt(x.q.topic)!==ch) return; out.push({topic:x.q.topic,q:qTxt(x.q.prompt).slice(0,150),a:qAnsTxt(x.q,rd(SETS[s.k].key,{}).ans[x.i]).slice(0,150),c:qRightTxt(x.q).slice(0,150),set:s.label,graded:s.graded}); }));
-  return out;
-}
-const coachContextBase=coachContext;
-coachContext=function(){
-  const base=coachContextBase(); const st=setStates();
-  const mis=coachMistakesFromStates().slice(-10);
-  const empty=!st.length && !(P.log||[]).length && !Object.keys(P.topics||{}).length;
-  return [base, coachActivity(),
-    mis.length?"Feil og delvis riktige svar i prøvene (oppgave | svarte | riktig):\n"+mis.map(x=>`- [${x.topic}] ${x.q} | svarte: ${x.a} | riktig: ${x.c}`).join("\n"):"",
-    empty?"MERK: Ingen data i denne nettleseren. Studenten kan ha øvd i en annen nettleser eller i den andre versjonen av appen (GitHub-siden og Claude-versjonen lagrer hver for seg). Fremgang flyttes med fremgangskoden under Profil.":""
-  ].filter(Boolean).join("\n");
-};
-const coachRulesBase=coachRules;
-coachRules=function(){ return coachRulesBase().replace("Oppgaven din:","Viktigst: svar ut fra studentens egne data. Start svaret med 1–2 konkrete observasjoner fra dataene (tall, kapittel, en konkret feil og hva misforståelsen trolig er), før du gir råd. Når studenten spør om et kapittel, bruk tallene og feilene for akkurat det kapittelet. Hvis dataene er tomme, si det rett ut og forklar at fremgang lagres per nettleser og per versjon av appen.\n\nOppgaven din:"); };
-
-/* ---------- innebygd coach: forstår hva du spør om ---------- */
-const PICK={1:"ak1",2:"ak1",3:"p3",4:"p5",5:"kap56",6:"p4",7:"p7",8:"p11",9:"p12",10:"p13",11:"p14"};
-function coachLocalReply(text){
-  const t=text.toLowerCase(), days=Math.max(0,Math.ceil((EXAM_DATE-Date.now())/864e5));
-  const ch=chapterStats(), st=setStates(), T=liveTopics();
-  const empty=!st.length && !Object.keys(P.topics||{}).length;
-  const emptyNote="Jeg finner ingen besvarte oppgaver i denne nettleseren. Fremgangen lagres per nettleser, og GitHub-siden og Claude-versjonen lagrer hver for seg. Har du øvd et annet sted, kopier fremgangskoden under Profil der og lim den inn her [[profil|Profil]]";
-  const pct=c=>ch[c]?Math.round(ch[c][0]/ch[c][1]*100):null;
-  // forklar et begrep
-  const isStatus=/status|fremgang|hva har jeg|oversikt|hvordan går det|hvordan gikk/.test(t);
-  const ex=!isStatus && !/kap(?:ittel|\.)?\s*\d/.test(t) && t.match(/(?:forklar|hva er|hva betyr|hva menes med|definer)\s+(.+?)\??$/);
-  if(ex){ const w=ex[1].replace(/^(en|et|ei|begrepet)\s+/,"").trim();
-    const g=GLOSS.find(x=>x.t.toLowerCase()===w)||GLOSS.find(x=>x.t.toLowerCase().includes(w)||w.includes(x.t.toLowerCase().replace(/\s*\(.*\)/,"")));
-    const f=FORMULAS.find(x=>x[1].toLowerCase().includes(w));
-    if(g||f){ const parts=[]; if(g) parts.push(`**${g.t}** (kap. ${g.ch}): ${g.d}`+(g.k?`\nHuskeknagg: ${g.k}`:"")); if(f) parts.push(`Formel: **${f[1]}** = ${f[2]}`);
-      const myT=Object.entries(T).filter(([k])=>g&&parseInt(k)===g.ch);
-      if(g&&pct(g.ch)!=null) parts.push(`Du har ${pct(g.ch)} % riktig i kap. ${g.ch} så langt.`);
-      parts.push(`[[formler|Les mer i Formler og begreper]] [[huske|Øv begrepene]]`); return parts.join("\n"); }
-    return `Jeg fant ikke «${w}» i begrepslisten. Søk i Formler og begreper, eller spør i Claude-versjonen for en full forklaring [[formler|Formler og begreper]]`;
-  }
-  if(empty) return emptyNote;
-  // et bestemt kapittel
-  const km=t.match(/kap(?:ittel|\.)?\s*(\d{1,2})/);
-  if(km){ const c=+km[1]; if(!CH_NAME[c]) return "Pensum har kapittel 1–11.";
-    const p=pct(c), n=ch[c]?ch[c][1]:0;
-    const tops=Object.entries(T).filter(([k])=>parseInt(k)===c).map(([k,d])=>[k.replace(/^[\d.]+\s*/,""),Math.round(d[0]/d[1]*100),d[1]]).sort((a,b)=>a[1]-b[1]);
-    const sets=st.filter(s=>s.items.some(x=>parseInt(x.q.topic)===c)).map(s=>{ const its=s.items.filter(x=>parseInt(x.q.topic)===c); return `${s.label}: ${its.length} besvart, ${its.filter(x=>x.r.state==="ok").length} riktige${s.graded?"":" (ikke levert)"}`; });
-    const mis=coachMistakesFromStates(c).slice(-3);
-    const L=[`**Kap. ${c} ${CH_NAME[c]}**`];
-    if(!n) L.push(`Du har ikke besvart noen oppgaver fra kap. ${c} ennå. Start med [[${PICK[c]}|${DISPLAY[PICK[c]].t}]]`);
-    else { L.push(`Du har svart på ${n} oppgaver, og ${p} % er riktige.`);
-      if(sets.length) L.push("Hvor:\n"+sets.map(x=>"- "+x).join("\n"));
-      if(tops.length) L.push("Per tema: "+tops.map(x=>`${x[0]} ${x[1]} % (${x[2]})`).join(", ")+".");
-      if(mis.length) L.push("Feil å se på:\n"+mis.map(x=>`- ${x.q} Du svarte «${x.a}», riktig er «${x.c}».`).join("\n"));
-      L.push(p>=80?`Det sitter godt. Hold det ved like med nye tall [[genall|Generert prøve]]`:`Les sammendraget for kapittelet og øv videre [[formler|Formler og begreper]] [[svak|Svake temaer]]`); }
-    return L.join("\n");
-  }
-  if(isStatus||/gjort/.test(t)){
-    const L=[`Her er det jeg finner (${days} dager til eksamen):`, coachActivity().replace(/^Prøver med svar \(levert eller ikke\):\n/,"")];
-    const chs=Object.keys(CH_NAME).filter(c=>ch[c]).map(c=>`kap. ${c}: ${pct(c)} %`); if(chs.length) L.push("Treffprosent per kapittel: "+chs.join(", ")+".");
-    const nd=st.filter(s=>!s.graded); if(nd.length) L.push(`Du har ${nd.length} prøve(r) som ikke er levert. Lever dem for å få fasit og poeng.`);
-    return L.join("\n");
-  }
-  if(/excel|regneark|del 2/.test(t)){
-    const done=XL_TASKS.filter(x=>P.xl[x.id]&&P.xl[x.id].solved), X=(P.xlLog||[]).slice(-3);
-    return [`Del 2 er Excel med hjelpemidler. Du har løst ${done.length} av ${XL_TASKS.length} faste Excel-oppgaver.`, X.length?"Siste forsøk: "+X.map(x=>`${x.title} ${x.ok}/${x.n}`).join(", ")+".":"", "Tips: lag formler med cellereferanser, bruk $ for faste celler og Fyll ned, og sjekk fortegn på avvik. Ta en generert oppgave med nye tall hver dag [[excel|Excel-oppgaver]] [[eksamen|Prøveeksamen]]"].filter(Boolean).join("\n");
-  }
-  if(/plan|uke|dager|eksamen|forbered/.test(t)){
-    const chs=Object.keys(CH_NAME).map(Number), order=chs.map(c=>[c,pct(c)]).sort((a,b)=>(a[1]??-1)-(b[1]??-1));
-    const L=[`Plan for de ${days} dagene som er igjen. Svakeste og uøvde kapitler kommer først:`];
-    for(let d=0; d<Math.min(days,8); d++){ const a=order[(d*2)%order.length], b=order[(d*2+1)%order.length];
-      L.push(`${d+1}. Dag ${d+1}: kap. ${a[0]} ${CH_NAME[a[0]]}${a[1]==null?" (ikke øvd)":" ("+a[1]+" %)"} og kap. ${b[0]} ${CH_NAME[b[0]]}${b[1]==null?" (ikke øvd)":" ("+b[1]+" %)"}. Avslutt med én Excel-oppgave og en huskeøkt.`); }
-    if(days>=2) L.push(`Ta en full prøveeksamen 2–3 dager før eksamen [[eksamen|Prøveeksamen]] [[${PICK[order[0][0]]}|Start med kap. ${order[0][0]}]]`);
-    return L.join("\n");
-  }
-  return coachLocalPlan();
-}
-coachLocalPlan=(function(base){ return function(){ const st=setStates(); if(!st.length && !Object.keys(P.topics||{}).length) return "Jeg finner ingen besvarte oppgaver i denne nettleseren. Fremgangen lagres per nettleser, og GitHub-siden og Claude-versjonen lagrer hver for seg. Har du øvd et annet sted, kopier fremgangskoden under Profil der og lim den inn her [[profil|Profil]]"; const nd=st.filter(s=>!s.graded); return base()+(nd.length?`\n\nMerk: ${nd.map(s=>s.label).join(", ")} er ikke levert. Svarene er tatt med her, men du får fasit først når du leverer.`:""); }; })(coachLocalPlan);
 
 go((location.hash||"").slice(1)||"hjem",true);
 
