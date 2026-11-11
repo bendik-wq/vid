@@ -855,7 +855,7 @@ body.xl-full .wrap,body.xl-full .tabbar{display:none}
       <span class="stat" id="drillStat"></span>
     </div>
     <nav class="sum-nav" aria-label="Kapitler">
-      <a href="#k1">1 Introduksjon</a><a href="#k2">2 Inntekter og kostnader</a><a href="#k3">3 Kostnadsforløpet</a><a href="#k4">4 Etterspørsel</a><a href="#k5">5 Markedstilpasning</a><a href="#k6">6 Kalkulasjon</a><a href="#k7">7 Driftsregnskap</a><a href="#kfork">Forkortelser</a>
+      <a href="#k1">1 Introduksjon</a><a href="#k2">2 Inntekter og kostnader</a><a href="#k3">3 Kostnadsforløpet</a><a href="#k4">4 Etterspørsel</a><a href="#k5">5 Markedstilpasning</a><a href="#k6">6 Kalkulasjon</a><a href="#k7">7 Driftsregnskap</a><a href="#k8">8 KRV-analyser</a><a href="#k9">9 Produktvalg</a><a href="#k10">10 ABC</a><a href="#k11">11 Standardkost</a><a href="#kfork">Forkortelser</a>
     </nav>
   </header>
 
@@ -1130,6 +1130,114 @@ body.xl-full .wrap,body.xl-full .tabbar{display:none}
     <p>Positiv dekningsdifferanse er <b>overdekning</b> (mer innkalkulert enn påløpt), negativ er <b>underdekning</b>. For de faste kostnadene er dekningsdifferanse = beskjeftigelsesavvik + kostnadsavvik. Beskjeftigelsesavviket skyldes at aktiviteten avviker fra normal, og kostnadsavviket at de faste kostnadene ble andre enn budsjettert. Virkelig resultat = resultat med innkalkulerte kostnader + dekningsdifferanse.</p>
     <p>Eksempel: normal aktivitet 2 000 maskintimer, budsjetterte faste 300 000 gir 150 kr/t. Virkelig 1 800 timer og 310 000 i faste kostnader: innkalkulert 270 000, dekningsdifferanse −40 000 (underdekning) = beskjeftigelsesavvik −30 000 + kostnadsavvik −10 000.</p></article>
 
+  <h2 class="sum-h" id="k8">8 KRV-analyser</h2>
+
+  <article class="concept"><h3>Nullpunktanalyse</h3>
+    <p>KRV-analyser (kostnad, resultat og volum) viser hvordan resultatet avhenger av pris, variable og faste kostnader og mengde. Nullpunktet (dekningspunktet) er omsetningen som verken gir overskudd eller underskudd: dekningsbidraget dekker akkurat de faste kostnadene.</p>
+    <div class="formula">DB per enhet = pris − VEK<br>Nullpunkt i enheter = FK / DB per enhet<br>Nullpunkt i kr = FK / DG</div>
+    <p>Eksempel: pris 400, VEK 240 og FK 480 000 gir DB 160 kr og DG 40 %. Nullpunkt = 480 000 / 160 = 3 000 stk, eller 480 000 / 0,40 = 1 200 000 kr.</p></article>
+
+  <article class="concept"><h3>Sikkerhetsmargin og målsatt resultat</h3>
+    <p>Sikkerhetsmarginen viser hvor mye salget kan falle før bedriften går med tap. Sikkerhetsgraden er den samme avstanden i prosent av salgsinntekten. Målsatt salg er salget som gir et ønsket resultat.</p>
+    <div class="formula">Sikkerhetsmargin (kr) = salgsinntekt − nullpunktomsetning<br>Sikkerhetsmargin (enheter) = solgte enheter − nullpunkt i enheter<br>Sikkerhetsgrad = sikkerhetsmargin / salgsinntekt<br>Målsatt salg i kr = (FK + målsatt resultat) / DG<br>Målsatt salg i enheter = (FK + målsatt resultat) / DB per enhet</div>
+    <p>Eksempel: budsjett 4 500 stk à 400 = 1 800 000 kr og nullpunkt 1 200 000 kr gir sikkerhetsmargin 600 000 kr (1 500 stk) og sikkerhetsgrad 33,3 %. Målsatt resultat 200 000 krever (480 000 + 200 000) / 160 = 4 250 stk.</p></article>
+
+  <article class="concept"><h3>Dekningsdiagram</h3>
+    <p>Dekningsdiagrammet har mengde på x-aksen og kroner på y-aksen. Linjen for faste kostnader er vannrett. Totalkostnadslinjen starter i FK og stiger med VEK, og salgsinntektslinjen starter i origo og stiger med prisen.</p>
+    <div class="formula">Nullpunkt: der salgsinntekt = totale kostnader<br>Overskudd = avstanden mellom linjene til høyre for nullpunktet</div>
+    <p>Jo brattere inntektslinjen er i forhold til kostnadslinjen (høy DB per enhet), jo raskere når bedriften nullpunktet. I Excel lages diagrammet som et linje- eller punktdiagram med kolonnene mengde, salgsinntekt, FK og totale kostnader.</p></article>
+
+  <article class="concept"><h3>Kritiske verdier og endringsanalyse</h3>
+    <p>En kritisk verdi er verdien på én faktor som gir resultat lik null når de andre holdes på budsjett. I Excel finnes de med Målsøking: sett resultatcellen til 0 ved å endre pris, VEK, FK eller mengde.</p>
+    <div class="formula">Kritisk pris = VEK + FK / x<br>Kritisk VEK = pris − FK / x<br>Kritiske FK = DB per enhet × x<br>Kritisk mengde = nullpunkt i enheter</div>
+    <p>Endringsanalyse: høyere FK eller lavere DB per enhet øker nullpunktet. 10 % høyere FK gir 10 % høyere nullpunkt. En prisreduksjon slår hardt ut fordi hele reduksjonen går av dekningsbidraget: fra 400 til 380 kr gir DB 140 og nullpunkt 3 429 stk mot 3 000.</p></article>
+
+  <article class="concept"><h3>Flervareproduksjon og forutsetninger</h3>
+    <p>Når bedriften selger flere produkter, brukes en vektet dekningsgrad. Vektene er hvert produkts andel av salgsinntekten (salgsmiksen).</p>
+    <div class="formula">Vektet DG = Σ (andel av salgsinntekt × DG) = samlet DB / samlet salgsinntekt<br>Nullpunkt i kr = FK / vektet DG</div>
+    <p>Eksempel: A har DG 40 % og 60 % av salget, B har DG 30 % og 40 %. Vektet DG = 36 %, og med FK 540 000 er nullpunktet 1 500 000 kr. Vris salget mot B, synker DG og nullpunktet øker.</p>
+    <p>Forutsetninger og svakheter: konstant pris og VEK (lineære sammenhenger), faste kostnader innenfor et relevant område, konstant salgsmiks og ingen lagerendring. Analysen er derfor best egnet for små endringer rundt budsjettet.</p></article>
+
+  <h2 class="sum-h" id="k9">9 Produktvalg og beslutninger</h2>
+  <article class="concept"><h3>Relevante kostnader og alternativkostnad</h3>
+    <div class="formula">Relevant = fremtidig og forskjellig mellom alternativene<br>Irrelevant = sunk cost og kostnader som er like i alle alternativene<br>Alternativkostnad = beste inntekt eller fordel man gir opp</div>
+    <p>Beslutninger tas med en <b>differansebetraktning</b>: se bare på inntekter og kostnader som endres. Særkostnader hører til ett produkt eller én avdeling. Felleskostnader deles og består selv om ett produkt tas ut. Unngåelige kostnader faller bort med beslutningen og er relevante. Uunngåelige kostnader er irrelevante.</p>
+    <p>Eksempel: et eid lokale kan leies ut for 8 000 kr per måned. Bruker bedriften det selv, er alternativkostnaden 96 000 kr per år, selv om ingenting betales.</p></article>
+
+  <article class="concept"><h3>Produktvalg med knapp faktor</h3>
+    <div class="formula">Ingen flaskehals: lag alle produkter med positivt DB<br>Én knapp faktor: ranger etter DB per enhet av den knappe faktoren<br>DB per maskintime = DB per stk / maskintimer per stk<br>Flere knappe faktorer: grafisk løsning eller lineær programmering</div>
+    <p>Når man har ledig kapasitet i alle ledd, har man ikke noe produktprioriteringsproblem. Med én flaskehals lages produktet med høyest DB per time først, opp til etterspørselen, så neste, til kapasiteten er brukt opp. Å rangere etter DB per stk er den vanligste feilen.</p>
+    <p>Eksempel: 3 000 maskintimer. B gir 125 kr/t, A 100 kr/t og C 90 kr/t. Plan: 500 B (1 000 t), 400 A (1 200 t) og 160 C (800 t). DB = 317 000 kr.</p></article>
+
+  <article class="concept"><h3>Tilleggsordre: ledig eller full kapasitet</h3>
+    <div class="formula">Ledig kapasitet: ta ordren hvis DB − særkostnader &gt; 0, laveste pris = VEK<br>Full kapasitet: laveste pris = VEK + tapt DB per enhet</div>
+    <p>Faste kostnader som påløper uansett skal ikke tas med. Fortrenger ordren vanlig salg, er det tapte dekningsbidraget en alternativkostnad. Vurder også om lav pris kan smitte over på vanlige kunder.</p>
+    <p>Eksempel: pris 400, VEK 250, ordre på 1 000 stk à 300 med et verktøy til 20 000 kr og ledig kapasitet: 1 000 × 50 − 20 000 = +30 000 kr. Ved full kapasitet må prisen være minst 400 kr.</p></article>
+
+  <article class="concept"><h3>Tilvirke selv eller kjøpe</h3>
+    <div class="formula">Relevant kostnad ved egenproduksjon = variable kostnader + unngåelige faste kostnader<br>Kjøp hvis innkjøpspris &lt; relevant kostnad + DB fra alternativ bruk av kapasiteten (per enhet)</div>
+    <p>Sammenlign aldri innkjøpsprisen med full selvkost, fordi fordelte faste kostnader som påløper uansett ikke forsvinner. Ta også med kvalitative forhold: kvalitet, leveringssikkerhet og avhengighet av leverandøren.</p>
+    <p>Eksempel: DM 80 + DL 60 + variable indirekte 20 + unngåelige faste 10 = 170 kr mot innkjøp 175 kr. Kjøp koster 25 000 kr mer for 5 000 stk, men frigjort kapasitet som gir 40 000 kr i DB gjør kjøp 15 000 kr bedre.</p></article>
+
+  <article class="concept"><h3>Nedleggelse av produkt eller avdeling</h3>
+    <div class="formula">Resultatendring ved nedleggelse = − tapt DB + sparte særkostnader<br>Behold så lenge DB &gt; særkostnader (bidrag til felleskostnadene)</div>
+    <p>En avdeling som viser underskudd etter fordelte felleskostnader kan likevel være lønnsom å beholde, fordi felleskostnadene ikke forsvinner. Vurder også om arealet eller kapasiteten kan brukes til noe som gir mer.</p>
+    <p>Eksempel: DB 240 000, særkostnader 150 000 og fordelte felleskostnader 120 000 gir −30 000. Nedleggelse gir −240 000 + 150 000 = −90 000 kr for bedriften totalt.</p></article>
+
+
+  <h2 class="sum-h" id="k10">10 Aktivitetsbasert kalkulasjon</h2>
+  <article class="concept"><h3>Svakheter ved tradisjonell kalkulasjon</h3>
+    <div class="formula">Tradisjonell sats = sum indirekte kostnader / volumbasert nøkkel (direkte lønn, maskintimer)</div>
+    <p>Når alle indirekte kostnader fordeles med én volumbasert nøkkel, havner kostnader som skyldes omstillinger, ordrer, kontroller og produktvarianter på produktene med høyt volum. Produkter med lavt volum og høy kompleksitet blir <b>underkalkulert</b>, og høyvolumprodukter subsidierer dem (<b>kryssubsidiering</b>). Feilen blir større jo høyere andelen indirekte kostnader er.</p>
+    <p>Eksempel: 1 200 000 kr fordelt på 10 000 maskintimer gir 120 kr/t. Luksus (2 000 timer, 5 000 esker) får 48 kr per eske, men med ABC blir det 104 kr fordi Luksus krever mange omstillinger og kontroller.</p></article>
+
+  <article class="concept"><h3>Ressurser, aktiviteter og kostnadsobjekter</h3>
+    <div class="formula">Ressurser → (ressursdrivere) → aktiviteter → (aktivitetsdrivere) → kostnadsobjekter</div>
+    <p>Grunntanken i ABC: produktene forbruker aktiviteter, og aktivitetene forbruker ressurser. <b>Ressursdrivere</b> (tidsbruk, areal, kWh) fordeler ressursene på aktivitetene. <b>Aktivitetsdrivere</b> eller kostnadsdrivere (antall omstillinger, ordrer, kontroller, maskintimer) fordeler aktivitetskostnadene på kostnadsobjektene: produkter, kunder eller ordrer.</p>
+    <p>Eksempel: lønn i kvalitetsavdelingen 900 000 kr, 30 % av tiden går til mottakskontroll. Aktiviteten får 270 000 kr, og med 450 kontroller blir satsen 600 kr per kontroll.</p></article>
+
+  <article class="concept"><h3>Aktivitetshierarkiet</h3>
+    <div class="formula">Enhetsnivå → serienivå → produktnivå → kundenivå → bedriftsnivå</div>
+    <p><b>Enhetsnivå</b>: øker med hver enhet (maskintimer, direkte lønn). <b>Serienivå</b>: skjer per serie eller batch (omstillinger, innkjøpsordrer). <b>Produktnivå</b>: holder et produkt i sortimentet (produktutvikling, spesifikasjoner). <b>Kundenivå</b>: knyttet til en bestemt kunde (salgsbesøk, kundeservice). <b>Bedriftsnivå</b> (kapasitetsopprettholdende): daglig leders lønn, husleie. Den siste gruppen har ingen naturlig driver og fordeles skjønnsmessig eller holdes utenfor produktkalkylen.</p>
+    <p>Eksempel: en omstilling koster det samme enten serien er 100 eller 10 000 enheter, så den er en serienivåkostnad og bør fordeles etter antall omstillinger, ikke etter antall enheter.</p></article>
+
+  <article class="concept"><h3>Aktivitetssats og ABC-kalkyle</h3>
+    <div class="formula">Aktivitetssats = aktivitetskostnad / samlet volum av kostnadsdriveren<br>Produktets andel = aktivitetssats × produktets volum av driveren<br>Indirekte per enhet = sum av produktets andeler / produsert mengde</div>
+    <p>Fremgangsmåte: (1) finn aktivitetene og kostnaden i hver, (2) velg en kostnadsdriver per aktivitet, (3) regn ut aktivitetssatsene, (4) belast hvert produkt etter hvor mye det bruker av hver aktivitet, (5) del på produsert mengde. Summen av fordelte kostnader er den samme som før, bare fordelt mer riktig.</p>
+    <p>Eksempel: omstillinger 300 000 kr og 60 omstillinger gir 5 000 kr per omstilling. Luksus med 40 omstillinger får 200 000 kr. Totalt får Luksus 520 000 kr, eller 104 kr per eske.</p></article>
+
+  <article class="concept"><h3>Fordeler og ulemper med ABC</h3>
+    <div class="formula">Fordel: mer riktige produkt- og kundekostnader · Ulempe: dyrt og datakrevende</div>
+    <p><b>Fordeler</b>: mer nøyaktige kostnader, bedre grunnlag for prising, produktvalg og kundelønnsomhet, og innsikt i hva som driver kostnadene. Med <b>aktivitetsbasert styring (ABM)</b> brukes informasjonen til å fjerne eller effektivisere aktiviteter som ikke skaper verdi. <b>Ulemper</b>: dyrt og tidkrevende å bygge opp og vedlikeholde, krever mye data, og bedriftsnivåkostnader må fortsatt fordeles skjønnsmessig. ABC gir mest i bedrifter med mange ulike produkter og en stor andel indirekte kostnader.</p>
+    <p>Eksempel: når ABC viser at Luksus koster 104 kr per eske i indirekte kostnader og ikke 48, kan bedriften heve prisen, kjøre større serier for å få færre omstillinger, eller vurdere å fjerne produktet.</p></article>
+
+  <h2 class="sum-h" id="k11">11 Fleksibelt budsjett og standardkost</h2>
+  <article class="concept"><h3>Statisk og fleksibelt budsjett</h3>
+    <p>Det <b>statiske</b> budsjettet står fast på den aktiviteten som ble planlagt. Det <b>fleksible</b> budsjettet justeres til den faktiske aktiviteten: variable kostnader følger volumet, faste kostnader står som budsjettert. Avvik mot det fleksible budsjettet viser om kostnadene var for høye <i>for det man faktisk produserte</i>.</p>
+    <div class="formula">Fleksibelt budsjett = variabel kostnad per enhet × faktisk volum + budsjetterte faste kostnader<br>Avvik (kostnad) = fleksibelt budsjett − regnskap (minus = ugunstig)</div>
+    <p>Eksempel: budsjett 8 000 enheter, variable 45 kr/enhet, faste 200 000. Faktisk 7 000 enheter og 525 000 i kostnader. Statisk budsjett 560 000 gir et «gunstig» avvik på 35 000, men fleksibelt budsjett 515 000 viser et ugunstig avvik på −10 000.</p></article>
+
+  <article class="concept"><h3>Standardkost per enhet</h3>
+    <p>En standardkost er det en enhet <i>skal</i> koste ved normal effektivitet: standard mengde × standard pris for materialer, standard tid × standard sats for lønn, pluss variable og faste indirekte kostnader etter standardsatser. Avvikene måles mot standard mengde (SM) og standard tid (ST) for <b>faktisk</b> produksjon, ikke budsjettert.</p>
+    <div class="formula">Standardkost per enhet = standard mengde × standard pris + standard tid × standard sats + indirekte satser<br>SM = standard mengde per enhet × faktisk produksjon<br>ST = standard tid per enhet × faktisk produksjon</div>
+    <p>Eksempel: 2 kg à 40 kr, 1,5 t à 300 kr og 60 kr per time i variable indirekte gir 80 + 450 + 90 = 620 kr per enhet. Med 1 000 enheter er SM = 2 000 kg og ST = 1 500 timer.</p></article>
+
+  <article class="concept"><h3>Materialavvik</h3>
+    <p>Materialavviket deles i et <b>prisavvik</b> (innkjøp betalte mer eller mindre enn standard) og et <b>forbruksavvik</b> (produksjonen brukte mer eller mindre enn standard). Prisavviket regnes på faktisk mengde, forbruksavviket verdsettes til standardpris.</p>
+    <div class="formula">Materialprisavvik = (SP − FP) × FM<br>Materialforbruksavvik = (SM − FM) × SP<br>Sum = SM × SP − FM × FP</div>
+    <p>Eksempel: SP 40, FP 42, FM 2 100 kg, SM 2 000 kg. Prisavvik (40 − 42) × 2 100 = −4 200. Forbruksavvik (2 000 − 2 100) × 40 = −4 000. Sum −8 200 = 80 000 − 88 200.</p></article>
+
+  <article class="concept"><h3>Lønnsavvik</h3>
+    <p>Lønnsavviket deles i et <b>lønnssatsavvik</b> (betalt mer eller mindre per time enn standard, for eksempel overtidstillegg eller ny tariff) og et <b>effektivitetsavvik</b> (brukt flere eller færre timer enn standard for faktisk produksjon).</p>
+    <div class="formula">Lønnssatsavvik = (standard sats − faktisk sats) × faktiske timer<br>Effektivitetsavvik = (ST − FT) × standard sats</div>
+    <p>Eksempel: standard 300 kr/t, faktisk 310 kr/t og 1 450 timer, ST 1 500. Satsavvik (300 − 310) × 1 450 = −14 500. Effektivitetsavvik (1 500 − 1 450) × 300 = +15 000. Sum +500.</p></article>
+
+  <article class="concept"><h3>Indirekte kostnader, salgsavvik og ansvar</h3>
+    <p>Variable indirekte kostnader får et <b>forbruksavvik</b> og et <b>effektivitetsavvik</b> (samme timer som lønn). Faste indirekte kostnader får et <b>budsjettavvik</b> (tilsvarer kostnadsavviket i kap. 7) og et <b>volumavvik</b> (tilsvarer beskjeftigelsesavviket). Salgsavvik deles i pris- og volumavvik. Innkjøp har normalt ansvar for prisavvik, produksjon for forbruks- og effektivitetsavvik.</p>
+    <div class="formula">Variabel indirekte, forbruksavvik = standard sats × faktiske timer − faktiske kostnader<br>Budsjettavvik = budsjetterte − faktiske faste kostnader<br>Volumavvik = (faktisk − normal produksjon) × fast sats per enhet<br>Salgsprisavvik = (faktisk − budsjettert pris) × faktisk mengde</div>
+    <p>Eksempel: faste 360 000 ved normal 1 200 enheter gir 300 kr per enhet. Faktisk 1 000 enheter og 372 000 i faste kostnader: budsjettavvik −12 000, volumavvik (1 000 − 1 200) × 300 = −60 000.</p></article>
+
+
   <h2 class="sum-h" id="kfork">Forkortelser</h2>
   <article class="concept"><h3>Forkortelser</h3>
     <div class="tblwrap"><table><tr><th>Kort</th><th>Betyr</th><th>Kort</th><th>Betyr</th></tr>
@@ -1153,7 +1261,7 @@ body.xl-full .wrap,body.xl-full .tabbar{display:none}
     <header class="largetitle"><span class="eyebrow">Metoder fra læringsforskningen</span><h1>Lær</h1></header>
     <div class="learn-hero glass" id="learnHero"></div>
     <div class="modes">
-      <button class="mode glass mode-wide" type="button" data-view="huske" style="--mc:#af52de"><span class="tile t-purple" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a5.5 5.5 0 0 0-5.5 5.5c0 1.9 1 3.3 2.2 4.4.8.7 1.3 1.6 1.3 2.6v.5h4v-.5c0-1 .5-1.9 1.3-2.6 1.2-1.1 2.2-2.5 2.2-4.4A5.5 5.5 0 0 0 12 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19.5h4M10.5 22h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Huskeøkt</b><span>12 begreper fra kap. 1–7 på ulike måter: kjenn igjen, forstå og skriv selv. Feil kommer tilbake til du har dem, og du trener på å vite hva du kan.</span><span class="mode-meta" id="hkMeta"></span><em>Hentetrening, gjentatt gjenlæring (Rawson og Dunlosky, 2011), Leitner-bokser og sikkerhetsvurdering med hyperkorreksjon (Butterfield og Metcalfe, 2001).</em></button>
+      <button class="mode glass mode-wide" type="button" data-view="huske" style="--mc:#af52de"><span class="tile t-purple" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a5.5 5.5 0 0 0-5.5 5.5c0 1.9 1 3.3 2.2 4.4.8.7 1.3 1.6 1.3 2.6v.5h4v-.5c0-1 .5-1.9 1.3-2.6 1.2-1.1 2.2-2.5 2.2-4.4A5.5 5.5 0 0 0 12 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19.5h4M10.5 22h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Huskeøkt</b><span>12 begreper fra kap. 1–11 på ulike måter: kjenn igjen, forstå og skriv selv. Feil kommer tilbake til du har dem, og du trener på å vite hva du kan.</span><span class="mode-meta" id="hkMeta"></span><em>Hentetrening, gjentatt gjenlæring (Rawson og Dunlosky, 2011), Leitner-bokser og sikkerhetsvurdering med hyperkorreksjon (Butterfield og Metcalfe, 2001).</em></button>
       <button class="mode glass" type="button" data-view="skill" style="--mc:#ff3b30"><span class="tile t-red" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7l-3 6h6zM19 7l-3 6h6zM5 7h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Skill begrepene</b><span>Kostnad eller utgift? Hjelpested eller fellessted? Korte situasjoner der du velger mellom begreper som lett blandes.</span><em>Diskrimineringstrening: å sammenligne like begreper side om side gir skarpere forståelse (Kang og Pashler, 2012).</em></button>
       <button class="mode glass" type="button" data-view="match" style="--mc:#ffcc00"><span class="tile t-yellow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="7" height="6" rx="1.8" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="6" rx="1.8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 7h2.5a2 2 0 0 1 2 2v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><b>Begrepsmatch</b><span>Match 6 begreper med forklaringen på tid. Slå din egen rekord.</span><em>Flyt: når du henter frem raskt, frigjøres kapasitet til selve oppgaveløsningen.</em></button>
       <button class="mode glass" type="button" data-view="excel" style="--mc:#107c41"><span class="tile t-xl" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 9.3h17M3.5 14.7h17M9.3 4v16" stroke="currentColor" stroke-width="2"/></svg></span><b>Regneark</b><span>Excel-oppgavene fra foilene i et regneark med formler, Fyll ned og automatisk retting.</span><em>Del 2 av eksamen er Excel. Øvingen er lagt opp som på eksamen: du bygger formlene selv.</em></button>
@@ -3236,13 +3344,531 @@ const Q_P10 = [
  explain:"240 000 / 900 = <b>266,67 kr per maskintime</b>. Merk at det er normal aktivitet (900) som brukes, selv om bedriften i enkelte måneder bruker flere eller færre timer."}
 ];
 
+const Q_P11 = [
+/* ---------- Case: Turutstyr AS ---------- */
+{topic:"8 Nullpunkt", type:"num",
+ case:"<p>Turutstyr AS selger hodelykter for 400 kr per stk. Variable kostnader er 240 kr per stk, og faste kostnader er 480 000 kr per år. Budsjettert salg er 4 500 stk.</p>",
+ prompt:"Hvor mange hodelykter må Turutstyr selge for å gå i null (nullpunkt i enheter)?",
+ answer:3000, tol:0.5, unit:"stk",
+ explain:"DB per enhet = 400 − 240 = 160 kr. Nullpunkt = FK / DB per enhet = 480 000 / 160 = <b>3 000 stk</b>. En vanlig feil er å dele på prisen (480 000 / 400 = 1 200), men hver solgt enhet bidrar bare med dekningsbidraget til å dekke de faste kostnadene."},
+
+{topic:"8 Nullpunkt", type:"num",
+ case:"<p>Turutstyr AS: pris 400 kr, VEK 240 kr, faste kostnader 480 000 kr.</p>",
+ prompt:"Hva er dekningsgraden i prosent?",
+ answer:40, tol:0.01, unit:"%",
+ explain:"DG = DB per enhet / pris = 160 / 400 = 0,40 = <b>40 %</b>. Hver salgskrone gir 40 øre i dekningsbidrag."},
+
+{topic:"8 Nullpunkt", type:"num",
+ case:"<p>Turutstyr AS: pris 400 kr, VEK 240 kr, faste kostnader 480 000 kr, dekningsgrad 40 %.</p>",
+ prompt:"Hva er nullpunktomsetningen i kroner?",
+ answer:1200000, tol:0.5, unit:"kr",
+ explain:"Nullpunkt i kr = FK / DG = 480 000 / 0,40 = <b>1 200 000 kr</b>. Kontroll: 3 000 stk × 400 kr = 1 200 000 kr."},
+
+{topic:"8 Sikkerhetsmargin", type:"num",
+ case:"<p>Turutstyr AS budsjetterer salg av 4 500 hodelykter à 400 kr. Nullpunktomsetningen er 1 200 000 kr.</p>",
+ prompt:"Hva er sikkerhetsmarginen i kroner?",
+ answer:600000, tol:0.5, unit:"kr",
+ explain:"Budsjettert salgsinntekt = 4 500 × 400 = 1 800 000. Sikkerhetsmargin = salgsinntekt − nullpunktomsetning = 1 800 000 − 1 200 000 = <b>600 000 kr</b>. I enheter er den 4 500 − 3 000 = 1 500 stk."},
+
+{topic:"8 Sikkerhetsmargin", type:"num",
+ case:"<p>Turutstyr AS: budsjettert salgsinntekt 1 800 000 kr, sikkerhetsmargin 600 000 kr.</p>",
+ prompt:"Hva er sikkerhetsgraden i prosent? Rund av til to desimaler.",
+ answer:33.33, tol:0.01, unit:"%",
+ explain:"Sikkerhetsgrad = sikkerhetsmargin / salgsinntekt = 600 000 / 1 800 000 = <b>33,33 %</b>. Salget kan altså falle med en tredjedel før bedriften går med tap. Feilen er ofte å dele på nullpunktomsetningen i stedet for budsjettert salgsinntekt."},
+
+{topic:"8 Målsatt resultat", type:"num",
+ case:"<p>Turutstyr AS: DB per enhet 160 kr, faste kostnader 480 000 kr. Ledelsen vil ha et resultat på 200 000 kr.</p>",
+ prompt:"Hvor mange hodelykter må selges for å nå målet?",
+ answer:4250, tol:0.5, unit:"stk",
+ explain:"Målsatt salg i enheter = (FK + målsatt resultat) / DB per enhet = (480 000 + 200 000) / 160 = <b>4 250 stk</b>. Det målsatte resultatet må dekkes av dekningsbidraget på samme måte som de faste kostnadene."},
+
+{topic:"8 Kritiske verdier", type:"num",
+ case:"<p>Turutstyr AS: VEK 240 kr, faste kostnader 480 000 kr, budsjettert salg 4 500 stk.</p>",
+ prompt:"Hva er kritisk pris, altså den laveste prisen som gir resultat lik null ved budsjettert mengde? Rund av til to desimaler.",
+ answer:346.67, tol:0.01, unit:"kr",
+ explain:"Resultat = (p − VEK) × x − FK = 0 gir p = VEK + FK / x = 240 + 480 000 / 4 500 = 240 + 106,67 = <b>346,67 kr</b>. Prisen kan falle med 53,33 kr (13,3 %) før bedriften går i null."},
+
+{topic:"8 Kritiske verdier", type:"mc",
+ case:"<p>Turutstyr AS: pris 400 kr, VEK 240 kr, faste kostnader 480 000 kr, budsjettert salg 4 500 stk.</p>",
+ prompt:"Hva er kritisk VEK, altså hvor høye de variable kostnadene per enhet kan bli før resultatet er null?",
+ options:["240,00 kr","293,33 kr","346,67 kr","160,00 kr"],
+ correct:1,
+ explain:"Kritisk VEK = pris − FK / x = 400 − 480 000 / 4 500 = 400 − 106,67 = <b>293,33 kr</b>. VEK kan altså øke med 53,33 kr. 346,67 kr er kritisk pris, ikke kritisk VEK."},
+
+{topic:"8 Kritiske verdier", type:"num",
+ case:"<p>Turutstyr AS: DB per enhet 160 kr, budsjettert salg 4 500 stk, faste kostnader i dag 480 000 kr.</p>",
+ prompt:"Hvor høye kan de faste kostnadene bli før resultatet blir null (kritiske faste kostnader)?",
+ answer:720000, tol:0.5, unit:"kr",
+ explain:"Kritiske FK = samlet dekningsbidrag = 160 × 4 500 = <b>720 000 kr</b>. De faste kostnadene kan øke med 240 000 kr, som er det samme som budsjettert resultat."},
+
+{topic:"8 Endringsanalyse", type:"mc",
+ case:"<p>Turutstyr AS har nullpunkt på 3 000 stk (FK 480 000 kr, DB per enhet 160 kr). Husleien øker, slik at de faste kostnadene blir 10 % høyere.</p>",
+ prompt:"Hva skjer med nullpunktet?",
+ options:["Det øker med 10 % til 3 300 stk","Det er uendret, fordi DB per enhet er uendret","Det synker til 2 700 stk","Det øker til 3 480 stk"],
+ correct:0,
+ explain:"Nytt nullpunkt = 528 000 / 160 = <b>3 300 stk</b>. Nullpunktet er proporsjonalt med de faste kostnadene: 10 % høyere FK gir 10 % høyere nullpunkt når DB per enhet er uendret."},
+
+{topic:"8 Endringsanalyse", type:"num",
+ case:"<p>Turutstyr AS vurderer å sette ned prisen fra 400 kr til 380 kr. VEK er 240 kr og faste kostnader 480 000 kr.</p>",
+ prompt:"Hva blir nytt nullpunkt i enheter? Rund opp til hele stk.",
+ answer:3429, tol:0.5, unit:"stk",
+ explain:"Ny DB per enhet = 380 − 240 = 140 kr. Nytt nullpunkt = 480 000 / 140 = 3 428,6 ≈ <b>3 429 stk</b>. En prisreduksjon på 5 % gir 12,5 % lavere DB per enhet og øker nullpunktet med over 400 stk, fordi hele prisreduksjonen går ut over dekningsbidraget."},
+
+/* ---------- Flervareproduksjon ---------- */
+{topic:"8 Flervareproduksjon", type:"num",
+ case:"<p>Kaffebrenneriet AS selger to produkter. Kaffe A har pris 150 kr og VEK 90 kr. Kaffe B har pris 250 kr og VEK 175 kr. Kaffe A står for 60 % av salgsinntekten og kaffe B for 40 %.</p>",
+ prompt:"Hva er den vektede (gjennomsnittlige) dekningsgraden i prosent?",
+ answer:36, tol:0.01, unit:"%",
+ explain:"DG A = 60 / 150 = 40 %. DG B = 75 / 250 = 30 %. Vektet DG = 0,6 × 40 % + 0,4 × 30 % = <b>36 %</b>. Vektene er andelene av <b>salgsinntekten</b>, ikke av antall solgte enheter."},
+
+{topic:"8 Flervareproduksjon", type:"num",
+ case:"<p>Kaffebrenneriet AS har en vektet dekningsgrad på 36 % og faste kostnader på 540 000 kr per år.</p>",
+ prompt:"Hva er nullpunktomsetningen i kroner?",
+ answer:1500000, tol:0.5, unit:"kr",
+ explain:"Nullpunkt i kr = FK / vektet DG = 540 000 / 0,36 = <b>1 500 000 kr</b>. Med salgsmiksen 60/40 betyr det 900 000 kr i salg av kaffe A og 600 000 kr av kaffe B."},
+
+{topic:"8 Flervareproduksjon", type:"mc",
+ case:"<p>Kaffebrenneriet AS (DG kaffe A 40 %, DG kaffe B 30 %) får flere storkunder som kjøper kaffe B. Andelen av salgsinntekten fra B øker fra 40 % til 60 %. Priser og kostnader er uendret.</p>",
+ prompt:"Hva skjer med nullpunktomsetningen?",
+ options:["Den synker, fordi salget øker","Den øker, fordi den vektede dekningsgraden synker","Den er uendret, fordi prisene og kostnadene er uendret","Den synker, fordi B har høyest pris"],
+ correct:1,
+ explain:"Ny vektet DG = 0,4 × 40 % + 0,6 × 30 % = 34 %. Nullpunkt = 540 000 / 0,34 ≈ 1 588 235 kr, altså <b>høyere</b>. Når salgsmiksen vris mot produkter med lav dekningsgrad, trengs det mer omsetning for å dekke de faste kostnadene. KRV-analysen forutsetter konstant salgsmiks."},
+
+/* ---------- Dekningsdiagram ---------- */
+{topic:"8 Dekningsdiagram", type:"mc",
+ prompt:"I et dekningsdiagram (mengde på x-aksen og kroner på y-aksen), hvor finner du nullpunktet?",
+ options:["Der linjen for faste kostnader krysser y-aksen","Der salgsinntektslinjen krysser linjen for totale kostnader","Der linjen for variable kostnader er brattest","Der salgsinntektslinjen krysser x-aksen"],
+ correct:1,
+ explain:"Nullpunktet er mengden der <b>salgsinntekt = totale kostnader</b>, altså der de to linjene krysser hverandre. Til høyre for krysningspunktet er avstanden mellom linjene overskudd, og til venstre er den underskudd. Totalkostnadslinjen starter i FK på y-aksen og stiger med VEK, mens inntektslinjen starter i origo og stiger med prisen."},
+
+{topic:"8 Nullpunkt", type:"match",
+ prompt:"Koble hver størrelse til riktig formel.",
+ items:[["Nullpunkt i enheter",0],["Nullpunkt i kroner",1],["Sikkerhetsmargin",2],["Sikkerhetsgrad",3],["Målsatt salg i enheter",4]],
+ choices:["FK / DB per enhet","FK / dekningsgrad","Salgsinntekt − nullpunktomsetning","Sikkerhetsmargin / salgsinntekt","(FK + målsatt resultat) / DB per enhet"],
+ explain:"Nullpunkt i enheter deler FK på DB per enhet, i kroner på dekningsgraden. Sikkerhetsmarginen er avstanden fra budsjettert salg ned til nullpunktet, og sikkerhetsgraden er den samme avstanden i prosent av salgsinntekten. Målsatt salg legger ønsket resultat til de faste kostnadene."},
+
+{topic:"8 Endringsanalyse", type:"cat",
+ prompt:"Hva skjer med nullpunktet (i enheter) når én faktor endres og resten er uendret?",
+ cats:["Nullpunktet øker","Nullpunktet synker"],
+ items:[["De faste kostnadene øker",0],["Salgsprisen økes",1],["VEK øker",0],["VEK reduseres",1],["Salgsprisen settes ned",0],["De faste kostnadene reduseres",1]],
+ explain:"Nullpunkt = FK / (pris − VEK). Høyere FK eller lavere DB per enhet (lavere pris eller høyere VEK) gir <b>høyere</b> nullpunkt. Lavere FK eller høyere DB per enhet gir <b>lavere</b> nullpunkt. Merk at budsjettert salgsmengde ikke påvirker nullpunktet, bare sikkerhetsmarginen."},
+
+{topic:"8 Forutsetninger", type:"multi",
+ prompt:"Hvilke forutsetninger bygger en tradisjonell KRV-analyse på? Velg alle som passer.",
+ options:["Inntekter og variable kostnader er lineære (konstant pris og VEK)","Salgsmiksen er konstant når flere produkter selges","Produsert mengde er lik solgt mengde (ingen lagerendring)","De faste kostnadene øker sprangvis med mengden innenfor analysen","Prisen synker når solgt mengde øker"],
+ correct:[0,1,2],
+ explain:"KRV-analysen forutsetter <b>lineære</b> sammenhenger (konstant pris og VEK), at FK er konstante innenfor et relevant område, konstant salgsmiks og ingen lagerendring. Sprangvise faste kostnader og fallende pris bryter med forutsetningene. Det er en svakhet ved modellen, så resultatene må brukes innenfor et begrenset mengdeintervall."},
+
+{topic:"8 Kritiske verdier", type:"multi",
+ prompt:"Hva kan du bruke Målsøking i Excel til i en KRV-analyse? Velg alle som passer.",
+ options:["Finne prisen som gir resultat lik null (kritisk pris)","Finne hvor høy VEK kan bli før resultatet er null","Finne mengden som gir et målsatt resultat","Beregne avskrivningsplanen for maskinene","Fordele faste kostnader på avdelinger"],
+ correct:[0,1,2],
+ explain:"Målsøking endrer én inputcelle til en formelcelle (resultatet) får en bestemt verdi, for eksempel 0 eller et målsatt resultat. Det er nettopp slik kritiske verdier finnes: kritisk pris, kritisk VEK, kritiske faste kostnader og kritisk mengde."},
+
+{topic:"8 Kritiske verdier", type:"cat",
+ prompt:"Hvilken kritisk verdi svarer på spørsmålet?",
+ cats:["Kritisk pris","Kritisk VEK","Kritiske faste kostnader","Kritisk mengde"],
+ items:[["Hvor langt kan prisen falle før vi går med tap?",0],["Hvor mye kan råvarekostnaden per enhet øke før resultatet er null?",1],["Hvor mye kan husleie og lønn til administrasjonen øke før vi går i null?",2],["Hvor mange enheter må vi minst selge?",3],["Hva er den laveste salgsprisen ved budsjettert volum?",0]],
+ explain:"En kritisk verdi er verdien på én faktor som gir resultat lik null når de andre faktorene holdes på budsjett. Kritisk mengde er det samme som nullpunktet i enheter."}
+];
+
+const Q_P12 = [
+/* ---------- Relevante kostnader ---------- */
+{topic:"9 Relevante kostnader", type:"mc",
+ prompt:"Hva kjennetegner en <b>relevant</b> kostnad i en beslutning?",
+ options:["Den er allerede betalt og står i regnskapet","Den ligger i fremtiden og blir forskjellig mellom alternativene","Den er en fast kostnad som er fordelt på produktet","Den er alltid en variabel kostnad"],
+ correct:1,
+ explain:"En relevant kostnad er <b>fremtidig</b> og <b>forskjellig</b> mellom alternativene. Kostnader som allerede er påløpt (sunk cost), og kostnader som blir like store uansett valg, påvirker ikke beslutningen. Faste kostnader kan også være relevante hvis de faller bort eller kommer i tillegg med ett av alternativene."},
+
+{topic:"9 Relevante kostnader", type:"cat",
+ case:"<p>Trykkeri Kyst AS vurderer å erstatte en gammel trykkmaskin med en ny som bruker mindre blekk og strøm. Den gamle maskinen ble kjøpt for 400 000 kr for tre år siden.</p>",
+ prompt:"Er kostnaden <b>relevant</b> eller <b>irrelevant</b> for beslutningen?",
+ cats:["Relevant","Irrelevant"],
+ items:[["Kjøpesummen for den nye maskinen",0],["Det den gamle maskinen kostet for tre år siden",1],["Det den gamle maskinen kan selges for i dag",0],["Sparte blekk- og strømkostnader med den nye maskinen",0],["Husleien for trykkerilokalet, som er den samme uansett",1],["Lønnen til daglig leder, som ikke endres",1]],
+ explain:"Relevant er det som ligger i fremtiden og er forskjellig mellom alternativene: ny maskin, salgsverdien av den gamle og sparte driftskostnader. Den opprinnelige kjøpesummen er <b>sunk cost</b>, og husleie og ledelønn er like store i begge alternativene."},
+
+{topic:"9 Relevante kostnader", type:"num",
+ case:"<p>Bakeriet Solsiden AS eier et lagerlokale som står tomt. Det kan leies ut for 8 000 kr per måned. Bakeriet vurderer i stedet å bruke lokalet selv til en ny catering-avdeling.</p>",
+ prompt:"Hva er <b>alternativkostnaden</b> per år ved å bruke lokalet selv?",
+ answer:96000, tol:0.5, unit:"kr",
+ explain:"Alternativkostnaden er den beste inntekten du gir opp: 8 000 × 12 = <b>96 000 kr per år</b>. Selv om bakeriet ikke betaler noe for lokalet, «koster» det dem den tapte leieinntekten. En vanlig feil er å sette kostnaden til 0 fordi lokalet allerede er eid."},
+
+/* ---------- Produktvalg ---------- */
+{topic:"9 Produktvalg", type:"multi",
+ prompt:"Bedriften har <b>ledig kapasitet i alle ledd</b>. Hvilke påstander stemmer? Velg alle som passer.",
+ options:["Alle produkter med positivt dekningsbidrag bør produseres så langt etterspørselen rekker","Bedriften har ikke noe produktprioriteringsproblem","Produktet med høyest DB per maskintime skal produseres først, og de andre bare hvis det er kapasitet igjen","Et produkt med negativt overskudd etter fordelte faste kostnader bør alltid tas ut","Faste kostnader som påløper uansett er irrelevante for valget"],
+ correct:[0,1,4],
+ explain:"Med ledig kapasitet overalt er det <b>ikke</b> noe prioriteringsproblem: alle produkter med positivt DB øker resultatet, så alle produseres opp til etterspørselen. Rangering etter DB per knapp faktor trengs bare når det finnes en flaskehals. Et produkt som går i minus etter fordelte faste kostnader kan likevel gi positivt bidrag, fordi de faste kostnadene påløper uansett."},
+
+{topic:"9 Produktvalg", type:"num",
+ case:"<p>Møbelsnekker Fjord AS lager tre produkter på samme CNC-maskin, som har 3 000 maskintimer per kvartal.</p><div class=\"tblwrap\"><table><tr><th>Produkt</th><th>Pris</th><th>VEK</th><th>Maskintimer per stk</th><th>Maks etterspørsel</th></tr><tr><td>A Spisebord</td><td>900</td><td>600</td><td>3</td><td>400 stk</td></tr><tr><td>B Benk</td><td>700</td><td>450</td><td>2</td><td>500 stk</td></tr><tr><td>C Skap</td><td>1 200</td><td>750</td><td>5</td><td>300 stk</td></tr></table></div>",
+ prompt:"Hva er dekningsbidraget <b>per maskintime</b> for produkt B?",
+ answer:125, tol:0.5, unit:"kr/t",
+ explain:"DB per stk for B = 700 − 450 = 250 kr. DB per maskintime = 250 / 2 = <b>125 kr</b>. Til sammenligning gir A 300 / 3 = 100 kr per time og C 450 / 5 = 90 kr per time."},
+
+{topic:"9 Produktvalg", type:"mc",
+ case:"<p>Møbelsnekker Fjord AS (tallene fra forrige oppgave). Hvis alle produktene lages opp til etterspørselen, trengs 1 200 + 1 000 + 1 500 = 3 700 maskintimer, men bare 3 000 er tilgjengelig.</p>",
+ prompt:"Hvilket produkt skal prioriteres <b>først</b>?",
+ options:["C, fordi det har høyest dekningsbidrag per stk (450 kr)","B, fordi det har høyest dekningsbidrag per maskintime (125 kr)","A, fordi det har høyest pris i forhold til VEK","Alle produktene skal reduseres like mye"],
+ correct:1,
+ explain:"Når maskintimene er den knappe faktoren, skal produktene rangeres etter <b>DB per maskintime</b>: B (125) før A (100) før C (90). C har høyest DB per stk, men bruker så mange timer at hver time gir minst. Dette er den klassiske fellen."},
+
+{topic:"9 Produktvalg", type:"num",
+ case:"<p>Møbelsnekker Fjord AS: rangering B, A, C etter DB per maskintime. Kapasitet 3 000 maskintimer. B: 2 t per stk, maks 500. A: 3 t per stk, maks 400. C: 5 t per stk, maks 300.</p>",
+ prompt:"Hvor mange skap (produkt C) blir det produsert i den optimale planen?",
+ answer:160, tol:0.5, unit:"stk",
+ explain:"B: 500 stk × 2 t = 1 000 t. A: 400 stk × 3 t = 1 200 t. Igjen: 3 000 − 2 200 = 800 t. C: 800 / 5 = <b>160 stk</b>."},
+
+{topic:"9 Produktvalg", type:"num",
+ case:"<p>Møbelsnekker Fjord AS: optimal plan er 500 benker (DB 250), 400 spisebord (DB 300) og 160 skap (DB 450).</p>",
+ prompt:"Hva blir samlet dekningsbidrag i den optimale planen?",
+ answer:317000, tol:0.5, unit:"kr",
+ explain:"500 × 250 + 400 × 300 + 160 × 450 = 125 000 + 120 000 + 72 000 = <b>317 000 kr</b>. Rangerer man feilaktig etter DB per stk (C, A, B), blir planen 300 skap, 400 bord og 150 benker, med DB 292 500 kr, altså 24 500 kr dårligere."},
+
+{topic:"9 Produktvalg", type:"num",
+ case:"<p>Møbelsnekker Fjord AS (3 000 maskintimer). En medarbeider foreslår å prioritere etter <b>DB per stk</b>: først skap C (DB 450, 5 t, maks 300), så spisebord A (DB 300, 3 t, maks 400), og resten benker B (DB 250, 2 t, maks 500). Den optimale planen gir 317 000 kr.</p>",
+ prompt:"Hvor mye <b>lavere</b> blir samlet dekningsbidrag med medarbeiderens plan enn med den optimale?",
+ answer:24500, tol:0.5, unit:"kr",
+ explain:"C: 300 stk = 1 500 t, DB 135 000. A: 400 stk = 1 200 t, DB 120 000. Igjen 300 t gir 150 benker, DB 37 500. Sum 292 500 kr. Forskjell: 317 000 − 292 500 = <b>24 500 kr</b>. Når det finnes en flaskehals, er det DB per time som teller."},
+
+{topic:"9 Produktvalg", type:"mc",
+ prompt:"En bedrift har <b>to eller flere</b> knappe faktorer samtidig, for eksempel både maskintimer og arbeidstimer. Hvordan finner man best produktkombinasjon?",
+ options:["Ved å rangere etter DB per enhet","Ved å rangere etter DB per time på den første flaskehalsen","Med grafisk løsning eller lineær programmering, der man ser på alle begrensningene samtidig","Ved å produsere like mye av alle produktene"],
+ correct:2,
+ explain:"Med én knapp faktor holder det å rangere etter DB per enhet av den knappe faktoren. Med flere knappe faktorer kan rangeringene peke i ulike retninger, og man må løse problemet <b>grafisk</b> (to produkter) eller med <b>lineær programmering</b> (for eksempel Problemløser i Excel)."},
+
+/* ---------- Tilleggsordre ---------- */
+{topic:"9 Tilleggsordre", type:"num",
+ case:"<p>Lysverk AS selger lamper for 400 kr. VEK er 250 kr. En hotellkjede vil kjøpe 1 000 lamper for 300 kr per stk. Bedriften har ledig kapasitet, men ordren krever et eget verktøy til 20 000 kr. Ordren påvirker ikke det vanlige salget.</p>",
+ prompt:"Hvor mye endres resultatet hvis Lysverk tar ordren?",
+ answer:30000, tol:0.5, unit:"kr",
+ explain:"DB fra ordren = 1 000 × (300 − 250) = 50 000. Minus særkostnaden for verktøyet: 50 000 − 20 000 = <b>+30 000 kr</b>. De vanlige faste kostnadene er irrelevante fordi de påløper uansett. Feil: å sammenligne 300 kr med selvkost per lampe."},
+
+{topic:"9 Tilleggsordre", type:"num",
+ case:"<p>Lysverk AS (pris 400 kr, VEK 250 kr) har nå <b>full kapasitet</b>. Hver lampe som lages til en ny ordre, fortrenger én lampe til vanlig pris.</p>",
+ prompt:"Hva er den laveste prisen per stk Lysverk kan akseptere for en ny ordre (uten særkostnader)?",
+ answer:400, tol:0.5, unit:"kr",
+ explain:"Ved full kapasitet må ordren dekke VEK + tapt dekningsbidrag: 250 + (400 − 250) = <b>400 kr</b>. Det tapte DB-et er en alternativkostnad. Med ledig kapasitet ville grensen vært VEK = 250 kr."},
+
+{topic:"9 Tilleggsordre", type:"mc",
+ prompt:"Bedriften har <b>ledig kapasitet</b>, og en tilleggsordre påvirker ikke det ordinære salget. Når er ordren lønnsom?",
+ options:["Når prisen dekker selvkost per enhet","Når dekningsbidraget fra ordren er større enn eventuelle særkostnader ved ordren","Når prisen er høyere enn den vanlige prisen","Når ordren dekker sin andel av de faste kostnadene"],
+ correct:1,
+ explain:"Med ledig kapasitet påløper de faste kostnadene uansett. Ordren er lønnsom når <b>DB − særkostnader &gt; 0</b>. Selvkost er feil grunnlag her, fordi den inneholder faste kostnader som ikke endres."},
+
+/* ---------- Tilvirke eller kjøpe ---------- */
+{topic:"9 Tilvirke eller kjøpe", type:"num",
+ case:"<p>Sykkelfabrikken Nord AS lager 5 000 tannhjul i året selv. Kalkylen per stk: direkte materialer 80 kr, direkte lønn 60 kr, variable indirekte kostnader 20 kr og fordelte faste indirekte kostnader 50 kr (selvkost 210 kr). Av de faste kostnadene er 10 kr per stk unngåelige hvis produksjonen legges ned. En leverandør tilbyr tannhjulene for 175 kr per stk.</p>",
+ prompt:"Hvor mye <b>dyrere</b> per år blir det å kjøpe tannhjulene enn å lage dem selv?",
+ answer:25000, tol:0.5, unit:"kr",
+ explain:"Relevant kostnad ved å lage selv = 80 + 60 + 20 + 10 (unngåelig fast) = 170 kr per stk. Kjøp koster 175 kr. Forskjell 5 kr × 5 000 = <b>25 000 kr</b> dyrere å kjøpe. Fellen er å sammenligne med selvkost på 210 kr, som gir inntrykk av at kjøp sparer 35 kr per stk. 40 kr av de faste kostnadene påløper uansett."},
+
+{topic:"9 Tilvirke eller kjøpe", type:"num",
+ case:"<p>Sykkelfabrikken Nord AS (forrige oppgave): det er 25 000 kr dyrere per år å kjøpe tannhjulene. Men hvis produksjonen av tannhjul stopper, kan maskinene brukes til å lage sykkelstativ som gir et dekningsbidrag på 40 000 kr per år.</p>",
+ prompt:"Hvor mye <b>bedre</b> blir resultatet per år hvis bedriften kjøper tannhjulene og lager sykkelstativ?",
+ answer:15000, tol:0.5, unit:"kr",
+ explain:"Alternativ bruk av kapasiteten gir 40 000 kr. Netto: 40 000 − 25 000 = <b>15 000 kr</b> bedre å kjøpe. Det tapte DB-et på 40 000 kr er en alternativkostnad ved å fortsette å lage tannhjulene selv."},
+
+{topic:"9 Tilvirke eller kjøpe", type:"multi",
+ prompt:"Bedriften vurderer å kjøpe en komponent i stedet for å lage den selv. Hvilke forhold er <b>relevante</b>? Velg alle som passer.",
+ options:["Innkjøpsprisen fra leverandøren","Variable tilvirkningskostnader som faller bort","Faste kostnader som faller bort hvis egenproduksjonen stopper","Fordelte felleskostnader som påløper uansett","Hva den frigjorte kapasiteten kan brukes til","Kvalitet og leveringssikkerhet hos leverandøren"],
+ correct:[0,1,2,4,5],
+ explain:"Relevant: innkjøpsprisen, de <b>unngåelige</b> kostnadene (variable og unngåelige faste), alternativ bruk av kapasiteten, og kvalitative forhold som kvalitet og leveringssikkerhet. Fordelte felleskostnader som påløper uansett er irrelevante."},
+
+/* ---------- Nedleggelse ---------- */
+{topic:"9 Nedleggelse", type:"num",
+ case:"<p>Varehuset Midtbyen AS har en lekeavdeling med salg på 800 000 kr, variable kostnader 560 000 kr, avdelingens egne faste kostnader (særkostnader som forsvinner ved nedleggelse) 150 000 kr og fordelte felleskostnader 120 000 kr. Avdelingen viser altså et underskudd på 30 000 kr.</p>",
+ prompt:"Hvor mye endres <b>varehusets samlede resultat</b> hvis lekeavdelingen legges ned? Oppgi nedgang med minus.",
+ answer:-90000, tol:0.5, unit:"kr",
+ explain:"Bortfall av DB: 800 000 − 560 000 = 240 000. Sparte særkostnader: 150 000. Endring = −240 000 + 150 000 = <b>−90 000 kr</b>. Felleskostnadene på 120 000 forsvinner ikke, men må bæres av de andre avdelingene."},
+
+{topic:"9 Nedleggelse", type:"mc",
+ case:"<p>Lekeavdelingen i Varehuset Midtbyen AS viser −30 000 kr etter fordelte felleskostnader, men gir 90 000 kr i bidrag til felleskostnadene (DB minus særkostnader).</p>",
+ prompt:"Hva er den beste anbefalingen ut fra tallene?",
+ options:["Legg ned avdelingen, fordi den går med underskudd","Behold avdelingen, fordi den bidrar med 90 000 kr til å dekke felleskostnadene","Legg ned avdelingen, fordi felleskostnadene da forsvinner","Det spiller ingen rolle for samlet resultat"],
+ correct:1,
+ explain:"Så lenge DB er større enn særkostnadene, bidrar avdelingen til felleskostnadene. Nedleggelse gjør samlet resultat <b>90 000 kr dårligere</b>. Underskuddet på 30 000 kommer bare av fordelte felleskostnader, som består uansett. Vurder likevel alternativ bruk av arealet."},
+
+/* ---------- Begreper ---------- */
+{topic:"9 Relevante kostnader", type:"match",
+ prompt:"Koble hvert begrep til riktig beskrivelse.",
+ items:[["Alternativkostnad",3],["Sunk cost",0],["Særkostnad",4],["Felleskostnad",1],["Unngåelig kostnad",2]],
+ choices:["Kostnad som allerede har påløpt og ikke kan endres","Kostnad som deles av flere produkter eller avdelinger og består selv om ett av dem tas ut","Kostnad som faller bort hvis et alternativ velges bort","Den beste inntekten eller fordelen man gir opp ved å velge et alternativ","Kostnad som bare gjelder ett bestemt produkt eller én avdeling"],
+ explain:"Alternativkostnad = tapt beste alternativ. Sunk cost = allerede påløpt og irrelevant. Særkostnad = hører til ett produkt eller én avdeling. Felleskostnad = deles og består. Unngåelig kostnad = faller bort med beslutningen, og er derfor relevant."},
+
+{topic:"9 Nedleggelse", type:"cat",
+ case:"<p>Sportskjeden Topp AS vurderer å legge ned sykkelverkstedet i én av butikkene.</p>",
+ prompt:"Er kostnaden en <b>særkostnad</b> for verkstedet eller en <b>felleskostnad</b> for butikken?",
+ cats:["Særkostnad","Felleskostnad"],
+ items:[["Lønn til sykkelmekanikeren",0],["Leasing av verkstedsutstyr som kan sies opp",0],["Lønn til butikksjefen",1],["Husleie for hele butikklokalet",1],["Reservedeler og verktøy til verkstedet",0],["Felles markedsføring for kjeden",1]],
+ explain:"Særkostnader forsvinner hvis verkstedet legges ned: mekanikerlønn, utstyrsleasing og deler. Felleskostnader påløper uansett og er derfor ikke relevante for nedleggelsen, selv om de er fordelt på verkstedet i regnskapet."}
+];
+
+const Q_P13 = [
+/* ---------- Tradisjonell kalkulasjon og ABC ---------- */
+{topic:"10 Tradisjonell eller ABC", type:"multi",
+ prompt:"Hvilke svakheter har tradisjonell tilleggskalkulasjon med én volumbasert fordelingsnøkkel? Velg alle som passer.",
+ options:["Alle indirekte kostnader fordeles etter volum, selv om mange av dem skyldes for eksempel omstillinger eller produktvariasjon","Produkter med lavt volum og høy kompleksitet blir ofte underkalkulert","Produkter med høyt volum kan komme til å subsidiere andre produkter (kryssubsidiering)","Metoden tar ikke med direkte materialer i kalkylen","Metoden gir alltid for høy selvkost for alle produkter"],
+ correct:[0,1,2],
+ explain:"Tradisjonell tilleggskalkulasjon fordeler alle indirekte kostnader med en volumbasert nøkkel (direkte lønn, maskintimer). Kostnader som skyldes omstillinger, ordrer eller produktvariasjon havner da på produktene med høyt volum. Lavvolum- og kompleksprodukter blir underkalkulert, og høyvolumprodukter subsidierer dem. Direkte materialer er med i begge metoder, og summen av fordelte kostnader er den samme, så ikke alle produkter blir dyrere."},
+
+{topic:"10 ABC-modellen", type:"mc",
+ prompt:"Hvordan flyter kostnadene i aktivitetsbasert kalkulasjon (ABC)?",
+ options:["Kostnadsobjekter → aktiviteter → ressurser","Ressurser → aktiviteter → kostnadsobjekter","Ressurser → kostnadsobjekter → aktiviteter","Aktiviteter → ressurser → kostnadsobjekter"],
+ correct:1,
+ explain:"Grunntanken i ABC: <b>produktene forbruker aktiviteter, og aktivitetene forbruker ressurser</b>. Ressurskostnadene fordeles først på aktiviteter med ressursdrivere, og aktivitetskostnadene fordeles så på kostnadsobjektene (produkter, kunder, ordrer) med aktivitetsdrivere."},
+
+{topic:"10 Kostnadsdrivere", type:"mc",
+ prompt:"Hva er en <b>aktivitetsdriver</b> (kostnadsdriver)?",
+ options:["Den personen som er ansvarlig for en aktivitet","Et mål på hvor mye et kostnadsobjekt bruker av en aktivitet, for eksempel antall omstillinger","Kostnaden per produsert enhet","Et mål på hvor mye av en ressurs en aktivitet bruker, for eksempel andel av arbeidstiden"],
+ correct:1,
+ explain:"En aktivitetsdriver måler hvor mye hvert produkt (kostnadsobjekt) bruker av aktiviteten: antall omstillinger, antall ordrer, antall kontroller. Det siste alternativet beskriver en <b>ressursdriver</b>, som fordeler ressurser på aktiviteter."},
+
+{topic:"10 Ressursdrivere", type:"cat",
+ prompt:"Er dette en <b>ressursdriver</b> eller en <b>aktivitetsdriver</b>?",
+ cats:["Ressursdriver","Aktivitetsdriver"],
+ items:[["Andel av arbeidstiden de ansatte bruker på aktiviteten",0],["Antall kvadratmeter aktiviteten bruker av lokalene",0],["Antall omstillinger av produksjonslinjen per produkt",1],["Antall kundeordrer per produkt",1],["Antall kWh aktiviteten bruker",0],["Antall kvalitetskontroller per produkt",1]],
+ explain:"<b>Ressursdrivere</b> fordeler ressursene (lønn, husleie, strøm) på aktivitetene, for eksempel etter tidsbruk eller areal. <b>Aktivitetsdrivere</b> fordeler aktivitetskostnadene videre på produktene, etter hvor mye hvert produkt bruker av aktiviteten."},
+
+{topic:"10 Aktivitetshierarki", type:"cat",
+ case:"<p>Plastindustri Vest AS skal sette opp aktivitetshierarkiet for sin produksjon.</p>",
+ prompt:"Plasser hver aktivitet eller kostnad på riktig nivå i aktivitetshierarkiet.",
+ cats:["Enhetsnivå","Serienivå","Produktnivå","Kundenivå","Bedriftsnivå"],
+ items:[["Maskinkjøring som øker med antall produserte enheter",0],["Omstilling av maskinen før hver ny produksjonsserie",1],["Innkjøpsordre for råvarer til hver serie",1],["Vedlikehold av produktspesifikasjoner og tegninger",2],["Salgsbesøk og kundeservice for en bestemt storkunde",3],["Daglig leders lønn",4],["Husleie for fabrikkbygget",4]],
+ explain:"<b>Enhetsnivå</b>: øker med antall enheter. <b>Serienivå</b>: skjer per serie (batch) uavhengig av hvor mange enheter serien har. <b>Produktnivå</b>: holder et produkt i sortimentet. <b>Kundenivå</b>: knyttet til en bestemt kunde. <b>Bedriftsnivå</b> (kapasitetsopprettholdende): holder virksomheten i gang og kan ikke knyttes til enkeltprodukter."},
+
+{topic:"10 ABC-modellen", type:"match",
+ prompt:"Koble hvert begrep til riktig beskrivelse.",
+ items:[["Ressursdriver",3],["Aktivitetsdriver",0],["Aktivitetssats",4],["Kostnadsobjekt",1],["Kryssubsidiering",2]],
+ choices:["Mål på hvor mye et produkt bruker av en aktivitet","Det vi ønsker å finne kostnaden for, for eksempel et produkt, en kunde eller en ordre","Når ett produkt bærer kostnader som egentlig skyldes andre produkter","Mål på hvor mye av en ressurs en aktivitet bruker","Aktivitetskostnad delt på volumet av kostnadsdriveren"],
+ explain:"Ressursdrivere fordeler ressurser på aktiviteter. Aktivitetsdrivere fordeler aktivitetene på kostnadsobjektene. Aktivitetssats = aktivitetskostnad / volum av driveren. Kryssubsidiering er typisk ved tradisjonell kalkulasjon med én volumbasert nøkkel."},
+
+/* ---------- Case: Sjokoladefabrikken Fjell ---------- */
+{topic:"10 Aktivitetssats", type:"num",
+ case:"<p>Sjokoladefabrikken Fjell AS lager <b>Standard</b> (40 000 esker) og <b>Luksus</b> (5 000 esker). De indirekte kostnadene er 1 200 000 kr:</p><table><tr><th>Aktivitet</th><th>Kostnad</th><th>Driver</th><th>Standard</th><th>Luksus</th></tr><tr><td>Maskinkjøring</td><td>600 000</td><td>maskintimer</td><td>8 000</td><td>2 000</td></tr><tr><td>Omstillinger</td><td>300 000</td><td>antall omstillinger</td><td>20</td><td>40</td></tr><tr><td>Kvalitetskontroll</td><td>200 000</td><td>antall kontroller</td><td>50</td><td>150</td></tr><tr><td>Produktadministrasjon</td><td>100 000</td><td>antall endringsordrer</td><td>10</td><td>10</td></tr></table>",
+ prompt:"Hva er aktivitetssatsen for <b>omstillinger</b>?",
+ answer:5000, tol:0.5, unit:"kr per omstilling",
+ explain:"Aktivitetssats = aktivitetskostnad / samlet volum av driveren = 300 000 / (20 + 40) = <b>5 000 kr per omstilling</b>. En vanlig feil er å dele på bare ett av produktenes volum."},
+
+{topic:"10 Aktivitetssats", type:"num",
+ case:"<p>Bruk tallene for Sjokoladefabrikken Fjell AS i forrige oppgave.</p>",
+ prompt:"Hva er aktivitetssatsen for <b>maskinkjøring</b>?",
+ answer:60, tol:0.5, unit:"kr per maskintime",
+ explain:"600 000 / (8 000 + 2 000) = <b>60 kr per maskintime</b>."},
+
+{topic:"10 ABC-kalkyle", type:"num",
+ case:"<p>Bruk tallene for Sjokoladefabrikken Fjell AS. Aktivitetssatsene er 60 kr per maskintime, 5 000 kr per omstilling, 1 000 kr per kontroll og 5 000 kr per endringsordre.</p>",
+ prompt:"Hvor store indirekte kostnader får <b>Luksus</b> totalt med ABC?",
+ answer:520000, tol:0.5, unit:"kr",
+ explain:"Luksus: 2 000 × 60 + 40 × 5 000 + 150 × 1 000 + 10 × 5 000 = 120 000 + 200 000 + 150 000 + 50 000 = <b>520 000 kr</b>. Standard får 680 000 kr, og summen er 1 200 000 kr som før."},
+
+{topic:"10 ABC-kalkyle", type:"num",
+ case:"<p>Sjokoladefabrikken Fjell AS: med ABC får Luksus 520 000 kr i indirekte kostnader, og det produseres 5 000 esker Luksus.</p>",
+ prompt:"Hva blir de indirekte kostnadene per eske Luksus med ABC?",
+ answer:104, tol:0.5, unit:"kr per eske",
+ explain:"520 000 / 5 000 = <b>104 kr per eske</b>."},
+
+{topic:"10 ABC-kalkyle", type:"num",
+ case:"<p>Sjokoladefabrikken Fjell AS: med ABC får Standard 680 000 kr i indirekte kostnader, og det produseres 40 000 esker Standard.</p>",
+ prompt:"Hva blir de indirekte kostnadene per eske Standard med ABC?",
+ answer:17, tol:0.5, unit:"kr per eske",
+ explain:"680 000 / 40 000 = <b>17 kr per eske</b>."},
+
+{topic:"10 Tradisjonell eller ABC", type:"num",
+ case:"<p>Sjokoladefabrikken Fjell AS fordelte tidligere alle de indirekte kostnadene på 1 200 000 kr etter maskintimer (Standard 8 000 og Luksus 2 000 timer). Det produseres 5 000 esker Luksus.</p>",
+ prompt:"Hva ble de indirekte kostnadene per eske <b>Luksus</b> med den tradisjonelle metoden?",
+ answer:48, tol:0.5, unit:"kr per eske",
+ explain:"Sats = 1 200 000 / 10 000 maskintimer = 120 kr per time. Luksus: 120 × 2 000 = 240 000 kr, og 240 000 / 5 000 = <b>48 kr per eske</b>. Med ABC ble det 104 kr, så den tradisjonelle metoden underkalkulerte Luksus med 56 kr per eske."},
+
+{topic:"10 Tradisjonell eller ABC", type:"num",
+ case:"<p>Sjokoladefabrikken Fjell AS fordelte de indirekte kostnadene på 1 200 000 kr etter maskintimer: 120 kr per maskintime. Standard brukte 8 000 maskintimer, og det produseres 40 000 esker Standard.</p>",
+ prompt:"Hva ble de indirekte kostnadene per eske <b>Standard</b> med den tradisjonelle metoden?",
+ answer:24, tol:0.5, unit:"kr per eske",
+ explain:"120 × 8 000 = 960 000 kr, og 960 000 / 40 000 = <b>24 kr per eske</b>. Med ABC blir det 17 kr, så Standard var overkalkulert med 7 kr per eske."},
+
+{topic:"10 Tradisjonell eller ABC", type:"mc",
+ case:"<p>For Sjokoladefabrikken Fjell AS gir den tradisjonelle metoden 24 kr per eske Standard og 48 kr per eske Luksus i indirekte kostnader. ABC gir 17 kr for Standard og 104 kr for Luksus.</p>",
+ prompt:"Hvilken forklaring er riktig?",
+ options:["ABC gir høyere indirekte kostnader totalt enn den tradisjonelle metoden","Luksus bruker mange omstillinger og kontroller i forhold til volumet, så med maskintimer som nøkkel subsidierte Standard Luksus","Den tradisjonelle metoden er mest riktig, fordi maskintimer er en objektiv nøkkel","Forskjellen skyldes at ABC tar med direkte materialer"],
+ correct:1,
+ explain:"Begge metodene fordeler de samme 1 200 000 kr. Luksus står for 2/3 av omstillingene og 3/4 av kontrollene, men bare 1/5 av maskintimene. Med maskintimer som eneste nøkkel bar Standard derfor en del av Luksus sine kostnader: <b>kryssubsidiering</b>. Prisen på Luksus kan ha vært satt for lavt."},
+
+/* ---------- Ordrekalkyle ---------- */
+{topic:"10 ABC-kalkyle", type:"num",
+ case:"<p>Trykkeriet Bergen AS bruker ABC med disse aktivitetssatsene: ordremottak 800 kr per ordre, klargjøring 2 500 kr per oppsett, trykking 450 kr per maskintime og pakking 15 kr per eske. En kundeordre krever 3 oppsett, 12 maskintimer og 40 esker.</p>",
+ prompt:"Hvor store indirekte kostnader belastes ordren med ABC?",
+ answer:14300, tol:0.5, unit:"kr",
+ explain:"1 × 800 + 3 × 2 500 + 12 × 450 + 40 × 15 = 800 + 7 500 + 5 400 + 600 = <b>14 300 kr</b>. Husk ordremottaket: det skjer én gang per ordre."},
+
+{topic:"10 Ressursdrivere", type:"num",
+ case:"<p>Lønnskostnadene i kvalitetsavdelingen til Mekaniske Nord AS er 900 000 kr per år. De ansatte bruker 30 % av tiden på mottakskontroll av innkjøpte deler. I året ble det gjennomført 450 mottakskontroller.</p>",
+ prompt:"Hva blir aktivitetssatsen for mottakskontroll?",
+ answer:600, tol:0.5, unit:"kr per kontroll",
+ explain:"Først fordeles ressursen med ressursdriveren (tidsbruk): 900 000 × 30 % = 270 000 kr til mottakskontroll. Deretter aktivitetssatsen: 270 000 / 450 = <b>600 kr per kontroll</b>."},
+
+{topic:"10 Aktivitetssats", type:"num",
+ case:"<p>Møbelfabrikken Sør AS har kostnader til innkjøpsaktiviteten på 360 000 kr per år. Kostnadsdriveren er antall innkjøpsordrer: produkt Stol har 300 ordrer og produkt Bord 150 ordrer.</p>",
+ prompt:"Hvor mye av innkjøpskostnadene belastes produkt Bord?",
+ answer:120000, tol:0.5, unit:"kr",
+ explain:"Aktivitetssats = 360 000 / (300 + 150) = 800 kr per ordre. Bord: 150 × 800 = <b>120 000 kr</b>."},
+
+/* ---------- Bruk, fordeler og ulemper ---------- */
+{topic:"10 Bruk av ABC", type:"mc",
+ prompt:"I hvilken bedrift gir det <b>mest</b> å innføre ABC?",
+ options:["En bedrift med ett produkt og lave indirekte kostnader","En bedrift med mange produkter med svært ulikt volum og ulik kompleksitet, og en stor andel indirekte kostnader","En bedrift der nesten alle kostnader er direkte materialer","En bedrift som bare lager standardvarer i store serier"],
+ correct:1,
+ explain:"ABC gir mest når de indirekte kostnadene er store og produktene bruker aktivitetene svært ulikt (volum, serier, varianter). Da blir feilen ved én volumbasert nøkkel stor. Med ett produkt eller små indirekte kostnader gir ABC lite ekstra informasjon i forhold til kostnaden."},
+
+{topic:"10 Fordeler og ulemper", type:"multi",
+ prompt:"Hvilke er <b>ulemper</b> eller begrensninger ved ABC? Velg alle som passer.",
+ options:["Systemet er dyrt og tidkrevende å bygge opp og vedlikeholde","Det krever mye data om aktiviteter og drivere","Kostnader på bedriftsnivå må fortsatt fordeles skjønnsmessig eller holdes utenfor","ABC gir mindre nøyaktige produktkostnader enn tradisjonell kalkulasjon","ABC kan bare brukes i industribedrifter"],
+ correct:[0,1,2],
+ explain:"ABC gir som regel <b>mer</b> nøyaktige produktkostnader, og kan brukes i både industri, handel og tjenesteyting (for eksempel bank og sykehus). Ulempene er kostnadene ved å etablere og drifte systemet, datamengden, og at bedriftsnivåkostnader som daglig leders lønn ikke har noen naturlig driver."},
+
+{topic:"10 Fordeler og ulemper", type:"mc",
+ prompt:"Hva menes med <b>aktivitetsbasert styring</b> (ABM)?",
+ options:["Å bruke aktivitetsinformasjonen til å forbedre prosesser, redusere unødvendige aktiviteter og styre kostnadsdriverne","Å fordele alle kostnader etter direkte lønn","Å budsjettere med faste kostnader","Å la hver avdeling sette egne priser"],
+ correct:0,
+ explain:"ABM bruker ABC-informasjonen til styring: hvilke aktiviteter skaper verdi, hvilke kan fjernes eller effektiviseres, og hvordan antall omstillinger, ordrer og kontroller kan reduseres. Det går ut over å bare kalkulere produktkostnader."}
+];
+
+const Q_P14 = [
+/* ---------- Statisk og fleksibelt budsjett ---------- */
+{topic:"11 Fleksibelt budsjett", type:"mc",
+ prompt:"Hva er et <b>fleksibelt budsjett</b>?",
+ options:["Et budsjett som revideres hver måned når ledelsen ønsker det","Et budsjett der de variable kostnadene justeres til den faktiske aktiviteten, mens de faste kostnadene står som budsjettert","Et budsjett som bare inneholder faste kostnader","Et budsjett der både faste og variable kostnader holdes på det opprinnelige aktivitetsnivået"],
+ correct:1,
+ explain:"Et fleksibelt budsjett viser hva kostnadene <b>burde ha vært</b> ved den aktiviteten man faktisk fikk: variable kostnader per enhet × faktisk volum + budsjetterte faste kostnader. Det statiske budsjettet står fast på det opprinnelige (budsjetterte) aktivitetsnivået."},
+
+{topic:"11 Fleksibelt budsjett", type:"num",
+ case:"<p>Verkstedet Fjell AS budsjetterte med 8 000 enheter. Variable kostnader er budsjettert til 45 kr per enhet, og faste kostnader til 200 000 kr. Faktisk produksjon ble 7 000 enheter, og de faktiske kostnadene ble 525 000 kr.</p>",
+ prompt:"Hva blir kostnadene i det <b>fleksible budsjettet</b>?",
+ answer:515000, tol:0.5, unit:"kr",
+ explain:"Fleksibelt budsjett = 45 × 7 000 + 200 000 = 315 000 + 200 000 = <b>515 000 kr</b>. Det statiske budsjettet er 45 × 8 000 + 200 000 = 560 000 kr. Faste kostnader justeres ikke for aktivitet."},
+
+{topic:"11 Fleksibelt budsjett", type:"num",
+ case:"<p>Verkstedet Fjell AS: fleksibelt budsjett 515 000 kr, faktiske kostnader 525 000 kr.</p>",
+ prompt:"Hva er avviket mot det fleksible budsjettet? Oppgi ugunstig avvik med minus.",
+ answer:-10000, tol:0.5, unit:"kr",
+ explain:"Kostnadsavvik som effekt på resultatet = budsjett − regnskap = 515 000 − 525 000 = <b>−10 000 kr</b> (ugunstig). Avdelingen brukte mer enn den burde ved 7 000 enheter."},
+
+{topic:"11 Fleksibelt budsjett", type:"mc",
+ case:"<p>Verkstedet Fjell AS: statisk budsjett 560 000 kr, fleksibelt budsjett 515 000 kr, faktiske kostnader 525 000 kr.</p>",
+ prompt:"Sammenlignet med det statiske budsjettet ser avviket ut til å være +35 000 kr. Hvorfor er det misvisende?",
+ options:["Fordi det statiske budsjettet har feil faste kostnader","Fordi kostnadene er lave bare fordi aktiviteten ble lavere; ved 7 000 enheter skulle kostnadene vært 515 000, så avdelingen brukte 10 000 kr for mye","Fordi faktiske kostnader alltid skal sammenlignes med fjorårets regnskap","Det er ikke misvisende: avdelingen har spart 35 000 kr"],
+ correct:1,
+ explain:"Det statiske budsjettet gjelder 8 000 enheter. Lavere produksjon gir automatisk lavere variable kostnader, og det er ingen prestasjon. Det fleksible budsjettet sammenligner likt med likt og avslører et <b>ugunstig</b> avvik på 10 000 kr."},
+
+/* ---------- Standardkost ---------- */
+{topic:"11 Standardkost", type:"num",
+ case:"<p>Fabrikken Nordlys AS har denne standarden per enhet: 2 kg materialer à 40 kr, 1,5 direkte arbeidstimer à 300 kr og variable indirekte kostnader 60 kr per direkte arbeidstime.</p>",
+ prompt:"Hva er den <b>variable standardkosten</b> per enhet?",
+ answer:620, tol:0.5, unit:"kr",
+ explain:"Material 2 × 40 = 80, lønn 1,5 × 300 = 450, variable indirekte 1,5 × 60 = 90. Sum = <b>620 kr per enhet</b>."},
+
+{topic:"11 Standardkost", type:"num",
+ case:"<p>Fabrikken Nordlys AS har standard 2 kg materialer per enhet. Budsjettert produksjon var 1 200 enheter, men faktisk produksjon ble 1 000 enheter.</p>",
+ prompt:"Hva er <b>standard mengde (SM)</b> materialer som avvikene skal måles mot?",
+ answer:2000, tol:0.5, unit:"kg",
+ explain:"SM = standard per enhet × <b>faktisk</b> produksjon = 2 × 1 000 = <b>2 000 kg</b>. Vanlig felle: å bruke budsjettert produksjon (2 × 1 200 = 2 400 kg). Avvikene skal vise hvor effektivt man produserte det man faktisk produserte."},
+
+{topic:"11 Standardkost", type:"mc",
+ prompt:"Hvorfor regnes standard mengde (SM) og standard tid (ST) ut fra <b>faktisk</b> produksjon og ikke budsjettert produksjon?",
+ options:["Fordi budsjettert produksjon alltid er feil","For at forbruks- og effektivitetsavvikene bare skal vise om ressursene ble brukt effektivt, ikke at produksjonen ble større eller mindre enn planlagt","Fordi faktisk produksjon gir de minste avvikene","Fordi loven krever det"],
+ correct:1,
+ explain:"Hvis man målte mot budsjettert produksjon, ville lavere produksjon automatisk se ut som «sparte» kilo og timer. Med SM og ST for faktisk produksjon sammenligner man likt med likt. Effekten av at volumet avviker fra plan vises i stedet som <b>volumavvik</b>."},
+
+/* ---------- Materialavvik ---------- */
+{topic:"11 Materialavvik", type:"num",
+ case:"<p>Fabrikken Nordlys AS: standard materialpris 40 kr per kg. Faktisk ble det kjøpt og brukt 2 100 kg til 42 kr per kg.</p>",
+ prompt:"Hva er <b>materialprisavviket</b>? Oppgi ugunstig avvik med minus.",
+ answer:-4200, tol:0.5, unit:"kr",
+ explain:"Materialprisavvik = (SP − FP) × FM = (40 − 42) × 2 100 = <b>−4 200 kr</b> (ugunstig). Prisavviket regnes på <b>faktisk</b> mengde. Ansvaret ligger normalt hos innkjøp."},
+
+{topic:"11 Materialavvik", type:"num",
+ case:"<p>Fabrikken Nordlys AS: standard mengde for faktisk produksjon er 2 000 kg, faktisk forbruk 2 100 kg, standardpris 40 kr per kg.</p>",
+ prompt:"Hva er <b>materialforbruksavviket</b>? Oppgi ugunstig avvik med minus.",
+ answer:-4000, tol:0.5, unit:"kr",
+ explain:"Materialforbruksavvik = (SM − FM) × SP = (2 000 − 2 100) × 40 = <b>−4 000 kr</b> (ugunstig). Det verdsettes til <b>standardpris</b>, så prisavviket ikke telles to ganger. Kontroll: −4 200 − 4 000 = −8 200 = standardkost 80 000 − faktisk 88 200."},
+
+{topic:"11 Materialavvik", type:"multi",
+ prompt:"Hvilke forhold kan forklare et <b>ugunstig materialforbruksavvik</b>? Velg alle som passer.",
+ options:["Dårlig kvalitet på råvarene ga mer svinn","Uerfarne arbeidere ødela mer materiale","Leverandøren økte prisen per kg","Maskiner som var dårlig justert ga flere feilproduserte enheter","Bedriften produserte færre enheter enn budsjettert"],
+ correct:[0,1,3],
+ explain:"Forbruksavviket handler om <b>mengden</b> brukt per enhet: svinn, kvalitet, feil og ineffektivitet. Prisøkning gir et prisavvik, ikke forbruksavvik. Lavere produksjon enn budsjettert påvirker ikke forbruksavviket, fordi SM regnes av faktisk produksjon."},
+
+/* ---------- Lønnsavvik ---------- */
+{topic:"11 Lønnsavvik", type:"num",
+ case:"<p>Fabrikken Nordlys AS: standard lønnssats 300 kr per time. Faktisk ble det brukt 1 450 timer til 310 kr per time.</p>",
+ prompt:"Hva er <b>lønnssatsavviket</b>? Oppgi ugunstig avvik med minus.",
+ answer:-14500, tol:0.5, unit:"kr",
+ explain:"Lønnssatsavvik = (standard sats − faktisk sats) × faktiske timer = (300 − 310) × 1 450 = <b>−14 500 kr</b> (ugunstig)."},
+
+{topic:"11 Lønnsavvik", type:"num",
+ case:"<p>Fabrikken Nordlys AS: standard 1,5 timer per enhet, faktisk produksjon 1 000 enheter, faktisk brukt 1 450 timer, standard sats 300 kr per time.</p>",
+ prompt:"Hva er <b>effektivitetsavviket</b> (tidsavviket) for lønn? Oppgi ugunstig avvik med minus.",
+ answer:15000, tol:0.5, unit:"kr",
+ explain:"ST = 1,5 × 1 000 = 1 500 timer. Effektivitetsavvik = (ST − FT) × standard sats = (1 500 − 1 450) × 300 = <b>+15 000 kr</b> (gunstig). Sammen med satsavviket på −14 500 blir lønnsavviket totalt +500 kr = 450 000 − 449 500."},
+
+/* ---------- Indirekte avvik ---------- */
+{topic:"11 Indirekte avvik", type:"num",
+ case:"<p>Fabrikken Nordlys AS: variable indirekte kostnader har standard 60 kr per direkte arbeidstime. Det ble brukt 1 450 timer, og de faktiske variable indirekte kostnadene ble 92 000 kr.</p>",
+ prompt:"Hva er <b>forbruksavviket</b> for variable indirekte kostnader? Oppgi ugunstig avvik med minus.",
+ answer:-5000, tol:0.5, unit:"kr",
+ explain:"Forbruksavvik = standard sats × faktiske timer − faktiske kostnader = 60 × 1 450 − 92 000 = 87 000 − 92 000 = <b>−5 000 kr</b>. I tillegg kommer et effektivitetsavvik på (1 500 − 1 450) × 60 = +3 000. Totalt 90 000 − 92 000 = −2 000."},
+
+{topic:"11 Indirekte avvik", type:"num",
+ case:"<p>Fabrikken Nordlys AS budsjetterte faste indirekte kostnader på 360 000 kr ved en normal produksjon på 1 200 enheter. Faktisk produksjon ble 1 000 enheter, og de faktiske faste kostnadene ble 372 000 kr.</p>",
+ prompt:"Hva er <b>volumavviket</b> for de faste kostnadene? Oppgi ugunstig avvik med minus.",
+ answer:-60000, tol:0.5, unit:"kr",
+ explain:"Fast sats = 360 000 / 1 200 = 300 kr per enhet. Volumavvik = (faktisk − normal produksjon) × fast sats = (1 000 − 1 200) × 300 = <b>−60 000 kr</b>. Det tilsvarer beskjeftigelsesavviket i normalkost (kap. 7): ledig kapasitet som ikke ble utnyttet."},
+
+{topic:"11 Indirekte avvik", type:"num",
+ case:"<p>Fabrikken Nordlys AS: budsjetterte faste indirekte kostnader 360 000 kr, faktiske faste kostnader 372 000 kr.</p>",
+ prompt:"Hva er <b>budsjettavviket</b> (kostnadsavviket) for de faste kostnadene? Oppgi ugunstig avvik med minus.",
+ answer:-12000, tol:0.5, unit:"kr",
+ explain:"Budsjettavvik = budsjetterte − faktiske faste kostnader = 360 000 − 372 000 = <b>−12 000 kr</b>. Sammen med volumavviket (−60 000) er de faste kostnadene underdekket med 72 000 kr: innkalkulert 300 × 1 000 = 300 000 mot faktisk 372 000."},
+
+{topic:"11 Indirekte avvik", type:"mc",
+ prompt:"Hvilket avvik i standardkostregnskapet tilsvarer <b>beskjeftigelsesavviket</b> i normalkostregnskapet?",
+ options:["Materialprisavviket","Effektivitetsavviket for lønn","Volumavviket for faste kostnader","Lønnssatsavviket"],
+ correct:2,
+ explain:"Begge viser effekten av at aktiviteten avviker fra normal aktivitet: (faktisk − normal) × fast sats. I standardkost kalles det gjerne <b>volumavvik</b>, i normalkost <b>beskjeftigelsesavvik</b>. Budsjettavviket tilsvarer kostnadsavviket."},
+
+/* ---------- Salgsavvik ---------- */
+{topic:"11 Salgsavvik", type:"num",
+ case:"<p>Sportsvarer Vest AS budsjetterte å selge 5 000 enheter til 200 kr. Faktisk solgte de 5 400 enheter til 195 kr.</p>",
+ prompt:"Hva er <b>salgsprisavviket</b>? Oppgi ugunstig avvik med minus.",
+ answer:-27000, tol:0.5, unit:"kr",
+ explain:"Salgsprisavvik = (faktisk pris − budsjettert pris) × faktisk mengde = (195 − 200) × 5 400 = <b>−27 000 kr</b>. For inntekter er avviket regnskap − budsjett, fordi høyere pris er gunstig."},
+
+/* ---------- Avviksanalyse og ansvar ---------- */
+{topic:"11 Avviksanalyse", type:"match",
+ prompt:"Koble hvert avvik til riktig formel (positivt = gunstig).",
+ items:[["Materialprisavvik",3],["Materialforbruksavvik",0],["Lønnssatsavvik",4],["Effektivitetsavvik (lønn)",1],["Volumavvik",2]],
+ choices:["(SM − FM) × SP","(ST − FT) × standard sats","(faktisk − normal produksjon) × fast sats","(SP − FP) × FM","(standard sats − faktisk sats) × faktiske timer"],
+ explain:"Prisavvik regnes på <b>faktisk</b> mengde eller tid, forbruks- og effektivitetsavvik på <b>standardpris</b> eller <b>standardsats</b>. SM og ST gjelder faktisk produksjon. Volumavviket måler kapasitetsutnyttelsen."},
+
+{topic:"11 Avviksanalyse", type:"cat",
+ prompt:"Hvem har normalt ansvaret for avviket?",
+ cats:["Innkjøp","Produksjon"],
+ items:[["Materialprisavvik",0],["Materialforbruksavvik",1],["Effektivitetsavvik for lønn",1],["Leverandøren ble byttet til en dyrere",0],["Mer svinn i produksjonen",1],["Kvantumsrabatten falt bort",0]],
+ explain:"<b>Innkjøp</b> påvirker prisen per kg (prisavvik). <b>Produksjon</b> påvirker hvor mye materiale og tid som går med per enhet (forbruks- og effektivitetsavvik). Avvikene kan henge sammen: billige, dårlige råvarer kan gi gunstig prisavvik men ugunstig forbruksavvik."},
+
+{topic:"11 Avviksanalyse", type:"multi",
+ prompt:"Hvilke avvik er <b>gunstige</b>? Velg alle som passer.",
+ options:["Faktisk materialpris 38 kr mot standard 40 kr","Brukt 1 450 timer mot standard 1 500 timer for faktisk produksjon","Faste kostnader 372 000 mot budsjett 360 000","Produksjon 1 300 enheter mot normal 1 200 (volumavvik)","Faktisk lønnssats 310 kr mot standard 300 kr"],
+ correct:[0,1,3],
+ explain:"Gunstig betyr bedre for resultatet: lavere pris, færre timer enn standard, og produksjon over normal (positivt volumavvik). Høyere faste kostnader og høyere lønnssats er ugunstig."}
+];
+
 /* ---------- sets ---------- */
 const EB14="HSM122 · Kap. 1 Introduksjon · 2 Inntekts- og kostnadsbegreper · 3 Kostnadsforløpet · 4 Etterspørsel";
 const EB56="HSM122 · Markedstilpasning 5.1–5.2 · Kalkulasjon 6.1–6.3";
 const EB7="HSM122 · Kap. 7 Driftsregnskap";
-const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6,p7:Q_P7,p8:Q_P8,p9:Q_P9,p10:Q_P10};
-const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6",p7:"Prøve 7",p8:"Prøve 8",p9:"Prøve 9",p10:"Prøve 10"};
-const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"], CH7=["p7","p8","p9","p10"], ALL=CH14.concat(CH56,CH7);
+const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6,p7:Q_P7,p8:Q_P8,p9:Q_P9,p10:Q_P10,p11:Q_P11,p12:Q_P12,p13:Q_P13,p14:Q_P14};
+const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6",p7:"Prøve 7",p8:"Prøve 8",p9:"Prøve 9",p10:"Prøve 10",p11:"Prøve 11",p12:"Prøve 12",p13:"Prøve 13",p14:"Prøve 14"};
+const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"], CH7=["p7","p8","p9","p10"], CH811=["p11","p12","p13","p14"], ALL=CH14.concat(CH56,CH7,CH811);
 const LINK_RE=/forrige oppgave|Fortsett med|Samme (tall|maskin|ordre)|Bruk tabellen for/;
 function getQ(id){ const [k,i]=id.split(":"); return BASE[k][+i]; }
 function groupsOf(keys){
@@ -3280,9 +3906,14 @@ const SETS = {
   p8:{base:"p8", key:"hsm122-ovingsprove-p8", group:"Kap. 7", label:"Prøve 8", eyebrow:EB7},
   p9:{base:"p9", key:"hsm122-ovingsprove-p9", group:"Kap. 7", label:"Prøve 9", eyebrow:EB7+" · vanskeligere"},
   p10:{base:"p10", key:"hsm122-ovingsprove-p10", group:"Kap. 7", label:"Prøve 10", eyebrow:"HSM122 · Normalkost og avvik (kap. 7.3 / bok 2 kap. 3.7)"},
+  p11:{base:"p11", key:"hsm122-ovingsprove-p11", group:"Kap. 8–11", label:"Prøve 11", eyebrow:"HSM122 · Kap. 8 KRV-analyser"},
+  p12:{base:"p12", key:"hsm122-ovingsprove-p12", group:"Kap. 8–11", label:"Prøve 12", eyebrow:"HSM122 · Kap. 9 Produktvalg og spesielle beslutningsproblemer"},
+  p13:{base:"p13", key:"hsm122-ovingsprove-p13", group:"Kap. 8–11", label:"Prøve 13", eyebrow:"HSM122 · Kap. 10 Aktivitetsbasert kalkulasjon (bok 2 kap. 7)"},
+  p14:{base:"p14", key:"hsm122-ovingsprove-p14", group:"Kap. 8–11", label:"Prøve 14", eyebrow:"HSM122 · Kap. 11 Fleksibelt budsjett og standardkost (bok 2 kap. 5)"},
+  mix811:{random:CH811, n:30, key:"hsm122-mix811", group:"Blandet", label:"Kap. 8–11 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 11–14"},
   mix14:{random:CH14, n:30, key:"hsm122-mix14", group:"Blandet", label:"Kap. 1–4 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 1, 3 og 5"},
   mix56:{random:CH56, n:30, key:"hsm122-mix56", group:"Blandet", label:"Kap. 5–6 · 30 tilfeldige", eyebrow:"Tilfeldig trekning fra prøve 2, 4 og 6"},
-  mixall:{random:ALL, n:1e9, key:"hsm122-mixall", group:"Blandet", label:"Alle oppgaver · tilfeldig rekkefølge", eyebrow:"Alle oppgavene fra prøve 1–10 i tilfeldig rekkefølge"},
+  mixall:{random:ALL, n:1e9, key:"hsm122-mixall", group:"Blandet", label:"Alle oppgaver · tilfeldig rekkefølge", eyebrow:"Alle oppgavene fra prøve 1–14 i tilfeldig rekkefølge"},
   feil:{dyn:"wrong", n:20, practice:true, key:"hsm122-feil", group:"Din øving", label:"Feilbank", eyebrow:"Oppgaver du har svart feil på. En oppgave forsvinner fra feilbanken når du har svart riktig på den to ganger på rad."},
   svak:{dyn:"weak", n:10, practice:true, key:"hsm122-svak", group:"Din øving", label:"Svake temaer", eyebrow:"10 oppgaver fra temaene der du har lavest treffprosent"},
   lyn:{random:ALL, n:10, practice:true, key:"hsm122-lyn", group:"Blandet", label:"Lynrunde · 10", eyebrow:"10 tilfeldige oppgaver fra hele pensum, med svar etter hver oppgave"}
@@ -3305,6 +3936,11 @@ const DISPLAY={
   p8:{t:"Prøve 8",s:"30 oppgaver",tile:"t-teal",ic:"8"},
   p9:{t:"Prøve 9",s:"20 oppgaver · vanskeligere",tile:"t-teal",ic:"9"},
   p10:{t:"Prøve 10 · Normalkost",s:"20 oppgaver · dekningsdifferanse og avvik",tile:"t-teal",ic:"10"},
+  p11:{t:"Prøve 11 · KRV-analyser",s:"20 oppgaver · nullpunkt, sikkerhetsmargin, kritiske verdier",tile:"t-orange",ic:"11"},
+  p12:{t:"Prøve 12 · Produktvalg",s:"20 oppgaver · flaskehals, tilleggsordre, tilvirke eller kjøpe",tile:"t-orange",ic:"12"},
+  p13:{t:"Prøve 13 · ABC",s:"20 oppgaver · aktiviteter, kostnadsdrivere og satser",tile:"t-orange",ic:"13"},
+  p14:{t:"Prøve 14 · Standardkost",s:"20 oppgaver · fleksibelt budsjett og avviksanalyse",tile:"t-orange",ic:"14"},
+  mix811:{t:"30 tilfeldige · kap. 8–11",s:"Ny trekning hver gang",tile:"t-orange",ic:IC_SHUFFLE},
   mix14:{t:"30 tilfeldige · kap. 1–4",s:"Ny trekning hver gang",tile:"t-orange",ic:IC_SHUFFLE},
   mix56:{t:"30 tilfeldige · kap. 5–6",s:"Ny trekning hver gang",tile:"t-orange",ic:IC_SHUFFLE},
   mixall:{t:"Alle "+TOTAL_Q+" oppgaver",s:"Tilfeldig rekkefølge",tile:"t-pink",ic:IC_SHUFFLE},
@@ -3318,7 +3954,8 @@ const GROUPS=[
   ["Kap. 1–4","Introduksjon, inntekter og kostnader, kostnadsforløp, etterspørsel",["ak1","p3","p5"]],
   ["Kap. 5–6","Markedstilpasning og kalkulasjon",["kap56","p4","p6"]],
   ["Kap. 7","Driftsregnskap, normalkost og avvik",["p7","p8","p9","p10"]],
-  ["Blandet","Tilfeldige trekninger fra hele pensum",["mix14","mix56","mixall","lyn"]]
+  ["Kap. 8–11","KRV-analyser, produktvalg, ABC og standardkost",["p11","p12","p13","p14"]],
+  ["Blandet","Tilfeldige trekninger fra hele pensum",["mix14","mix56","mix811","mixall","lyn"]]
 ];
 
 /* ---------- storage ---------- */
@@ -3718,7 +4355,7 @@ function renderHome(){
       return `<button class="row" type="button" data-view="${k}">${tileHTML(k)}<span class="rt"><b>${d.t}</b><span>${d.s}${best}</span></span>${meta||"<span></span>"}${IC_CHEV}</button>`;
     }).join("")+`</div>`).join("");
 }
-function chapterStats(){ const ch={}; Object.entries(P.topics||{}).forEach(([k,d])=>{ const m=k.match(/^(\d)/); if(!m) return; const x=ch[m[1]]||[0,0]; x[0]+=d[0]; x[1]+=d[1]; ch[m[1]]=x; }); return ch; }
+function chapterStats(){ const ch={}; Object.entries(P.topics||{}).forEach(([k,d])=>{ const m=k.match(/^(\d+)/); if(!m) return; const x=ch[m[1]]||[0,0]; x[0]+=d[0]; x[1]+=d[1]; ch[m[1]]=x; }); return ch; }
 function weakTopics(n){ return Object.entries(P.topics||{}).filter(([k,d])=>d[1]>=2 && d[0]/d[1]<.8).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]).slice(0,n); }
 function pctClass(p){ return p<50?"lo":p<75?"mid":"hi"; }
 function masteryHTML(){
@@ -3867,7 +4504,7 @@ const CONCEPTS=[];
 (function(){
   let ch=null;
   [...sumBody.children].forEach(n=>{
-    if(n.classList.contains("sum-h")){ const m=(n.id||"").match(/^k(\d)$/); ch=m?+m[1]:null; return; }
+    if(n.classList.contains("sum-h")){ const m=(n.id||"").match(/^k(\d+)$/); ch=m?+m[1]:null; return; }
     if(n.classList.contains("concept") && ch){ const t=n.querySelector("h3").textContent; CONCEPTS.push({id:"c:"+t,title:t,ch,el:n}); }
   });
 })();
@@ -4877,7 +5514,7 @@ function xlRenderList(){
   const byCh={}; XL_TASKS.forEach(t=>(byCh[t.ch]=byCh[t.ch]||[]).push(t));
   const solved=XL_TASKS.filter(t=>P.xl[t.id]&&P.xl[t.id].solved).length;
   $("xlList").innerHTML=`<div class="xl-hero glass"><span class="tile t-xl" aria-hidden="true">${IC_GRID}</span><div><b>Excel-oppgaver</b><span>Del 2 av eksamen er Excel. Løs oppgavene fra foilene i et regneark som retter deg. ${solved} av ${XL_TASKS.length} løst.</span></div></div>`+
-    Object.keys(byCh).sort().map(ch=>`<h2 class="sec-h">Kap. ${ch} · ${CH_NAME[ch]}</h2><div class="group glass">`+byCh[ch].map(t=>{
+    Object.keys(byCh).sort((a,b)=>a-b).map(ch=>`<h2 class="sec-h">Kap. ${ch} · ${CH_NAME[ch]}</h2><div class="group glass">`+byCh[ch].map(t=>{
       const st=P.xl[t.id]||{}, saved=rd(xlKey(t.id),null), started=saved&&saved.raw&&Object.keys(saved.raw).length;
       const meta=st.solved?IC_CHECK:started?`<span class="rmeta">Påbegynt</span>`:"<span></span>";
       return `<button class="row" type="button" data-xl="${t.id}"><span class="tile t-xl" aria-hidden="true">${IC_GRID}</span><span class="rt"><b>${t.title}</b><span>${t.src} · ${Object.keys(t.targets).length} celler</span></span>${meta}${IC_CHEV}</button>`; }).join("")+`</div>`).join("");
@@ -5258,13 +5895,13 @@ BADGES.push(["eks","EKS","Prøveeksamen","Lever en full prøveeksamen."],["eksB"
 P.exams=P.exams||[];
 function drawStrat(chs,per,total){
   const gs=shuffle(groupsOf(ALL)), out=[];
-  chs.forEach(ch=>{ let n=0; for(const g of gs){ if(n>=per) break; if(getQ(g[0]).topic[0]!==String(ch) || g.some(id=>out.includes(id))) continue; if(n+g.length>per+1) continue; out.push(...g); n+=g.length; } });
+  chs.forEach(ch=>{ let n=0; for(const g of gs){ if(n>=per) break; if(parseInt(getQ(g[0]).topic)!==ch || g.some(id=>out.includes(id))) continue; if(n+g.length>per+1) continue; out.push(...g); n+=g.length; } });
   return out.slice(0,total);
 }
 SETS.ak2={gen:()=>drawStrat([5,6,7],10,30),n:30,exam:true,key:"hsm122-ak2",group:"Eksamenstrening",label:"AK2-simulering",eyebrow:"Arbeidskrav 2 · kap. 5–7 · uten hjelpemidler · krav 41 %"};
-SETS.eks1={gen:()=>drawStrat([1,2,3,4,5,6,7],3,21),n:21,exam:true,back:"eksamen",key:"hsm122-eks1",group:"Eksamen",label:"Prøveeksamen del 1",eyebrow:"Prøveeksamen · del 1 · uten hjelpemidler · kap. 1–7"};
+SETS.eks1={gen:()=>drawStrat([1,2,3,4,5,6,7,8,9,10,11],2,22),n:22,exam:true,back:"eksamen",key:"hsm122-eks1",group:"Eksamen",label:"Prøveeksamen del 1",eyebrow:"Prøveeksamen · del 1 · uten hjelpemidler · kap. 1–7"};
 DISPLAY.ak2={t:"AK2-simulering",s:"30 oppgaver fra kap. 5–7, som arbeidskrav 2",tile:"t-purple",ic:"AK2"};
-DISPLAY.eks1={t:"Prøveeksamen · del 1",s:"21 oppgaver fra kap. 1–7",tile:"t-red",ic:"E1"};
+DISPLAY.eks1={t:"Prøveeksamen · del 1",s:"22 oppgaver fra kap. 1–11",tile:"t-red",ic:"E1"};
 GROUPS.splice(1,0,["Eksamenstrening","Simuleringer av arbeidskrav og eksamen",["ak2"]]);
 LEARN_SUB.push("eksamen");
 const isPracticeBase=isPractice; isPractice=function(){ return SETS[setKey].exam?false:isPracticeBase(); };
@@ -5276,8 +5913,8 @@ function exState(){ return rd(EX_KEY,null); }
 function exSave(s){ wr(EX_KEY,s); }
 function exNew(){
   const pick=a=>a[Math.floor(Math.random()*a.length)];
-  const tpls=[pick(["avskr","kost","elast","pris"]),pick(["vom","selvkost","normal"]),pick(["fordel","budk","dekn","svinn"])];
-  if(tpls[1]!=="normal" && Math.random()<.35) tpls[2]="normal";
+  const P1=GEN_ORDER.filter(k=>GEN[k].ch<=6), P2=GEN_ORDER.filter(k=>GEN[k].ch===7), P3=GEN_ORDER.filter(k=>GEN[k].ch>=8);
+  const tpls=[pick(P1),pick(P2),pick(P3.length?P3:P2)];
   const del2=tpls.map(t=>"g-"+t+"-"+newSeed());
   try{ localStorage.removeItem(SETS.eks1.key); }catch(e){}
   exSave({started:Date.now(),del2,done:false}); renderExam();
@@ -5285,7 +5922,7 @@ function exNew(){
 function exDel1(){
   const s=rd(SETS.eks1.key,null)||{}; const ids1=Array.isArray(s.ids)?s.ids:[]; const a=s.ans||{};
   const Qs=ids1.map(getQ); let pts=0, by={};
-  Qs.forEach((q,i)=>{ const r=scoreQ(q,a[i]); pts+=r.pts; const c=q.topic[0]; const b=by[c]||[0,0]; b[0]+=r.pts; b[1]+=3; by[c]=b; });
+  Qs.forEach((q,i)=>{ const r=scoreQ(q,a[i]); pts+=r.pts; const c=parseInt(q.topic); const b=by[c]||[0,0]; b[0]+=r.pts; b[1]+=3; by[c]=b; });
   return {n:Qs.length,answered:Qs.filter((q,i)=>isAnswered(q,a[i])).length,pts,max:Qs.length*3,by,graded:!!s.graded};
 }
 function exTask(id){
@@ -5312,7 +5949,7 @@ function renderExam(){
     const hist=P.exams.slice(-6).reverse();
     box.innerHTML=`<div class="ex-hero glass"><span class="eyebrow">HSM122 · Prøveeksamen</span><b>Øv under eksamenslike forhold</b><span>Eksamen er en todelt skoleeksamen på 4 timer: del 1 uten hjelpemidler og del 2 med hjelpemidler (Excel). Generatoren lager en ny eksamen hver gang.</span></div>
       <div class="ex-opts">
-        <button class="mode glass" type="button" id="exStart" style="--mc:#ff3b30"><span class="tile t-red" aria-hidden="true">4t</span><b>Full prøveeksamen</b><span>Del 1: 21 oppgaver fra kap. 1–7. Del 2: 3 Excel-oppgaver med nye tall. 4 timer, ingen fasit underveis, veiledende karakter til slutt.</span><em>Gjennomfør den i ett strekk, slik som på eksamensdagen.</em></button>
+        <button class="mode glass" type="button" id="exStart" style="--mc:#ff3b30"><span class="tile t-red" aria-hidden="true">4t</span><b>Full prøveeksamen</b><span>Del 1: 22 oppgaver fra kap. 1–11. Del 2: 3 Excel-oppgaver med nye tall. 4 timer, ingen fasit underveis, veiledende karakter til slutt.</span><em>Gjennomfør den i ett strekk, slik som på eksamensdagen.</em></button>
         <button class="mode glass" type="button" data-view="ak2" style="--mc:#af52de"><span class="tile t-purple" aria-hidden="true">AK2</span><b>AK2-simulering</b><span>30 oppgaver fra kap. 5–7 uten fasit underveis, med kravet på 41 %. Ny trekning hver gang.</span><em>Arbeidskrav 2 er tirsdag 3. november.</em></button>
       </div>
       ${hist.length?`<h2 class="sec-h">Tidligere prøveeksamener</h2><div class="group glass">${hist.map(h=>`<div class="row"><span class="tile t-red ex-g" aria-hidden="true">${h.g}</span><span class="rt"><b>${h.tot} %</b><span>${new Date(h.at).toLocaleDateString("nb-NO",{day:"numeric",month:"long"})}</span></span><span></span><span></span></div>`).join("")}</div>`:""}
@@ -5335,7 +5972,7 @@ function renderExam(){
   }
   const left=()=>s.started+EX_MS-Date.now();
   box.innerHTML=`<div class="ex-clock glass"><span>Gjenstående tid</span><b class="mono" id="exLeft"></b><span class="ex-tip">Forslag: del 1 ca. 1 t 15 min, del 2 ca. 2 t 45 min.</span></div>
-    <div class="ex-part glass"><b>Del 1 · uten hjelpemidler</b><span>${d1.n?d1.answered+" av "+d1.n+" besvart":"21 oppgaver fra kap. 1–7"}. Flervalg og tallsvar, feil svar kan gi minuspoeng.</span><button class="btn" type="button" data-view="eks1">${d1.n?"Fortsett del 1":"Start del 1"}</button></div>
+    <div class="ex-part glass"><b>Del 1 · uten hjelpemidler</b><span>${d1.n?d1.answered+" av "+d1.n+" besvart":"22 oppgaver fra kap. 1–11"}. Flervalg og tallsvar, feil svar kan gi minuspoeng.</span><button class="btn" type="button" data-view="eks1">${d1.n?"Fortsett del 1":"Start del 1"}</button></div>
     <div class="ex-part glass"><b>Del 2 · med hjelpemidler (Excel)</b><span>Løs oppgavene i regnearket. Svarene rettes først når du leverer.</span>${tasks.map((k,i)=>`<button class="row" type="button" data-x="${i}"><span class="tile t-xl" aria-hidden="true">${i+1}</span><span class="rt"><b>${k.t.title}</b><span>Kap. ${k.t.ch} · ${k.filled} av ${k.n} celler fylt ut</span></span><span></span>${IC_CHEV}</button>`).join("")}</div>
     <div class="rowbtns"><button class="btn" type="button" id="exDeliver">Lever eksamen</button><button class="btn ghost" type="button" id="exQuit">Avbryt</button></div>
     <div class="confirm" id="exConfirm" hidden><span id="exConfMsg"></span><button class="btn danger sm" type="button" id="exYes">Lever</button><button class="btn ghost sm" type="button" id="exNo">Fortsett å jobbe</button></div>`;
@@ -5343,7 +5980,7 @@ function renderExam(){
   upd(); exTimer=setInterval(upd,1000);
   box.querySelectorAll("[data-x]").forEach(b=>b.addEventListener("click",()=>xlOpen(s.del2[+b.dataset.x],true)));
   let quit=false;
-  $("exDeliver").addEventListener("click",()=>{ const miss=(d1.n-d1.answered)+(d1.n?0:21), empty=tasks.filter(k=>k.filled<k.n).length; $("exConfMsg").textContent=(miss||empty)?`Du har ${miss} ubesvarte oppgaver i del 1 og ${empty} Excel-oppgaver som ikke er ferdige. Lever likevel?`:"Lever eksamen og se resultatet?"; quit=false; $("exYes").textContent="Lever"; $("exConfirm").hidden=false; });
+  $("exDeliver").addEventListener("click",()=>{ const miss=(d1.n-d1.answered)+(d1.n?0:22), empty=tasks.filter(k=>k.filled<k.n).length; $("exConfMsg").textContent=(miss||empty)?`Du har ${miss} ubesvarte oppgaver i del 1 og ${empty} Excel-oppgaver som ikke er ferdige. Lever likevel?`:"Lever eksamen og se resultatet?"; quit=false; $("exYes").textContent="Lever"; $("exConfirm").hidden=false; });
   $("exQuit").addEventListener("click",()=>{ $("exConfMsg").textContent="Avbryte prøveeksamenen? Svarene slettes."; quit=true; $("exYes").textContent="Avbryt eksamen"; $("exConfirm").hidden=false; });
   $("exNo").addEventListener("click",()=>{ $("exConfirm").hidden=true; });
   $("exYes").addEventListener("click",()=>{ if(quit){ try{ localStorage.removeItem(EX_KEY); localStorage.removeItem(SETS.eks1.key); }catch(e){} renderExam(); } else exDeliver(); });
@@ -5353,6 +5990,266 @@ learnEnter=function(v){ learnEnterExam(v); if(v==="eksamen") renderExam(); else 
 
 const renderHomeBase=renderHome;
 renderHome=function(){ renderHomeBase(); const st=exState(); $("homeQuick").insertAdjacentHTML("beforeend",`<button class="qcard glass wide" type="button" data-view="eksamen"><span class="tile t-red" aria-hidden="true">4t</span><span class="qw"><b>Prøveeksamen</b><span>${st&&!st.done?"Pågår · trykk for å fortsette":"Ny eksamen med del 1 og Excel-del, eller AK2-simulering"}</span></span>${IC_CHEV}</button>`); };
+
+
+const GLOSS_8=[
+  [8,"KRV-analyse","Kostnad-, resultat- og volumanalyse: hvordan resultatet påvirkes av pris, variable og faste kostnader og mengde.",null,["krv","kostnad-, resultat- og volumanalyse"]],
+  [8,"Nullpunkt","Mengden eller omsetningen der resultatet er null fordi dekningsbidraget akkurat dekker de faste kostnadene. I enheter: FK / DB per enhet.","Null i resultat, ikke null i salg.",["nullpunkt i enheter","break-even"]],
+  [8,"Nullpunktomsetning","Salgsinntekten i kroner som gir resultat lik null: faste kostnader delt på dekningsgrad.",null,["nullpunkt i kroner","nullpunkt i kr"]],
+  [8,"Sikkerhetsgrad","Sikkerhetsmarginen i prosent av salgsinntekten: hvor mange prosent salget kan falle før bedriften går med tap.",null,["sikkerhetsmargin i prosent"]],
+  [8,"Målsatt salg","Salget som gir et ønsket resultat: (FK + målsatt resultat) delt på DB per enhet eller på dekningsgrad.",null,["målsatt omsetning"]],
+  [8,"Kritisk verdi","Verdien på én faktor (pris, VEK, FK eller mengde) som gir resultat lik null når resten holdes på budsjett.","Hvor langt kan vi strekke strikken før det ryker?",["kritiske verdier"]],
+  [8,"Kritisk pris","Laveste pris som gir resultat lik null ved budsjettert mengde: VEK + FK / mengde."],
+  [8,"Kritisk VEK","Høyeste variable kostnad per enhet som gir resultat lik null ved budsjettert mengde: pris − FK / mengde."],
+  [8,"Dekningsdiagram","Diagram med mengde på x-aksen og kroner på y-aksen. Nullpunktet er der salgsinntektslinjen krysser totalkostnadslinjen."],
+  [8,"Vektet dekningsgrad","Gjennomsnittlig dekningsgrad for flere produkter, vektet med hvert produkts andel av salgsinntekten.","Salgsmiksen bestemmer vektene.",["gjennomsnittlig dekningsgrad"]],
+  [8,"Salgsmiks","Fordelingen av salget på bedriftens produkter. KRV-analysen forutsetter at den er konstant.",null,["produktmiks"]]
+];
+const SKILL_8=[
+  {ch:8,name:"Øker eller synker nullpunktet?",opts:["Nullpunktet øker","Nullpunktet synker","Nullpunktet er uendret"],why:{"Nullpunktet øker":"Høyere FK eller lavere DB per enhet krever flere solgte enheter.","Nullpunktet synker":"Lavere FK eller høyere DB per enhet gir færre nødvendige enheter.","Nullpunktet er uendret":"Nullpunktet avhenger bare av FK og DB per enhet, ikke av hvor mye man budsjetterer å selge."},
+    items:[["De faste kostnadene øker med 50 000 kr.","Nullpunktet øker"],["Salgsprisen økes og VEK er uendret.","Nullpunktet synker"],["Råvareprisen stiger, så VEK øker.","Nullpunktet øker"],["Budsjettert salgsmengde økes fra 4 000 til 5 000 stk.","Nullpunktet er uendret"],["Salgsmiksen vris mot produkter med høyere dekningsgrad.","Nullpunktet synker"],["Bedriften sier opp et leieforhold, så FK synker.","Nullpunktet synker"]]},
+  {ch:8,name:"Hvilken kritisk verdi?",opts:["Kritisk pris","Kritisk VEK","Kritiske faste kostnader","Kritisk mengde"],why:{"Kritisk pris":"VEK + FK / mengde: den laveste prisen.","Kritisk VEK":"Pris − FK / mengde: den høyeste VEK.","Kritiske faste kostnader":"DB per enhet × mengde: de høyeste faste kostnadene.","Kritisk mengde":"FK / DB per enhet: nullpunktet i enheter."},
+    items:[["Hvor lavt kan vi sette prisen ved budsjettert volum?","Kritisk pris"],["Hvor mye kan leverandøren øke prisen per enhet før vi går i null?","Kritisk VEK"],["Hvor mye kan lønn til administrasjonen og husleie øke?","Kritiske faste kostnader"],["Hvor mange enheter må vi minst selge?","Kritisk mengde"],["Regnes som DB per enhet × budsjettert mengde.","Kritiske faste kostnader"]]}
+];
+const FORM_8=[
+  [8,"Nullpunkt i enheter","FK / DB per enhet"],
+  [8,"Nullpunkt i kroner","FK / dekningsgrad"],
+  [8,"Sikkerhetsgrad","sikkerhetsmargin / salgsinntekt"],
+  [8,"Målsatt salg i enheter","(FK + målsatt resultat) / DB per enhet"],
+  [8,"Kritisk pris","VEK + FK / mengde"],
+  [8,"Kritisk VEK","pris − FK / mengde"],
+  [8,"Vektet dekningsgrad","samlet DB / samlet salgsinntekt"]
+];
+const CMAP_8=[
+  [/^8 Nullpunkt/,"Nullpunktanalyse"],
+  [/^8 (Sikkerhetsmargin|Målsatt)/,"Sikkerhetsmargin og målsatt resultat"],
+  [/^8 Dekningsdiagram/,"Dekningsdiagram"],
+  [/^8 (Kritiske verdier|Endringsanalyse)/,"Kritiske verdier og endringsanalyse"],
+  [/^8 (Flervareproduksjon|Forutsetninger)/,"Flervareproduksjon og forutsetninger"]
+];
+
+const GEN_8={
+  krvmiks:{ch:8,title:"Nullpunkt og sikkerhetsmargin med flere produkter",make({ri,pick}){
+    const N=pick([["Basis","Pluss","Premium"],["Liten","Medium","Stor"],["Lys","Mørk","Krydret"]]);
+    const cells={A1:"Produkt",B1:"Pris",C1:"VEK",D1:"Budsjettert mengde",E1:"Salgsinntekt",F1:"DB totalt",G1:"DG (%)",A5:"Sum / vektet",A7:"Faste kostnader",A8:"Målsatt resultat",A10:"Nullpunktomsetning (kr)",A11:"Sikkerhetsmargin (kr)",A12:"Sikkerhetsgrad (%)",A13:"Budsjettert resultat",A14:"Målsatt salgsinntekt (kr)"};
+    let db=0; const sol={};
+    for(let i=0;i<3;i++){ const r=2+i, p=ri(10,50)*10, v=Math.round(p*ri(45,75)/100), q=ri(5,40)*100; cells["A"+r]=N[i]; cells["B"+r]=p; cells["C"+r]=v; cells["D"+r]=q; db+=(p-v)*q;
+      sol["E"+r]=`=B${r}*D${r}`; sol["F"+r]=`=(B${r}-C${r})*D${r}`; sol["G"+r]=`=F${r}/E${r}*100`; }
+    const fk=Math.max(10000,Math.round(db*ri(55,85)/100/10000)*10000);
+    cells.B7=fk; cells.B8=ri(1,5)*25000;
+    Object.assign(sol,{E5:"=SUMMER(E2:E4)",F5:"=SUMMER(F2:F4)",G5:"=F5/E5*100",B10:"=B7/(G5/100)",B11:"=E5-B10",B12:"=B11/E5*100",B13:"=F5-B7",B14:"=(B7+B8)/(G5/100)"});
+    return {intro:`En bedrift selger tre produkter (${N.join(", ").toLowerCase()}). Finn vektet dekningsgrad, nullpunktomsetning, sikkerhetsmargin og hvor mye som må selges for å nå målsatt resultat, forutsatt uendret salgsmiks.`,
+      steps:["Salgsinntekt = pris × mengde, DB totalt = (pris − VEK) × mengde, DG = DB / salgsinntekt × 100","Rad 5: summer salgsinntekt og DB. Vektet DG = samlet DB / samlet salgsinntekt × 100","Nullpunktomsetning = FK / vektet DG (husk /100), sikkerhetsmargin = salgsinntekt − nullpunkt","Sikkerhetsgrad = sikkerhetsmargin / salgsinntekt × 100. Målsatt salg = (FK + målsatt resultat) / vektet DG"],
+      cols:7,rows:14,widths:[230,90,90,140,120,120,90],cells,solution:sol,pct:["G2","G3","G4","G5","B12"]};}},
+  krvkrit:{ch:8,title:"Kritiske verdier og endringsanalyse",make({ri}){
+    const p=ri(20,80)*10, v=Math.round(p*ri(40,65)/100/10)*10, x=ri(20,80)*100, fk=Math.max(10000,Math.round(x*(p-v)*ri(55,85)/100/10000)*10000), np=p-ri(1,3)*10, nfk=Math.round(fk*(1+ri(5,20)/100)/1000)*1000;
+    return {intro:`Et produkt selges for ${p} kr per enhet med VEK ${v} kr. Faste kostnader er ${kr(fk)} kr, og budsjettert salg er ${kr(x)} enheter. Finn de kritiske verdiene, og analyser hva en prisreduksjon og en økning i de faste kostnadene gjør med nullpunktet.`,
+      steps:["DB per enhet = pris − VEK. Budsjettert resultat = DB × mengde − FK","Kritisk pris = VEK + FK / mengde, kritisk VEK = pris − FK / mengde","Kritiske FK = DB per enhet × mengde, kritisk mengde (nullpunkt) = FK / DB per enhet","Nytt nullpunkt = FK / (ny pris − VEK), og med nye faste kostnader: ny FK / DB per enhet"],
+      cols:2,rows:17,widths:[340,130],
+      cells:{A1:"Salgspris per enhet",B1:p,A2:"Variable kostnader per enhet (VEK)",B2:v,A3:"Faste kostnader",B3:fk,A4:"Budsjettert mengde",B4:x,A5:"Ny pris (prisreduksjon)",B5:np,A6:"Nye faste kostnader",B6:nfk,
+        A8:"DB per enhet",A9:"Budsjettert resultat",A10:"Nullpunkt (enheter)",A11:"Kritisk pris",A12:"Kritisk VEK",A13:"Kritiske faste kostnader",A14:"Maks prisnedgang i % før null",A15:"Nullpunkt med ny pris (enheter)",A16:"Nullpunkt med nye faste kostnader (enheter)",A17:"Sikkerhetsmargin i enheter (i dag)"},
+      solution:{B8:"=B1-B2",B9:"=B8*B4-B3",B10:"=B3/B8",B11:"=B2+B3/B4",B12:"=B1-B3/B4",B13:"=B8*B4",B14:"=(B1-B11)/B1*100",B15:"=B3/(B5-B2)",B16:"=B6/B8",B17:"=B4-B10"},pct:["B14"]};}}
+};
+
+const GLOSS_9=[
+  [9,"Relevant kostnad","Fremtidig kostnad som er forskjellig mellom alternativene i en beslutning.","Fremtidig + forskjellig = relevant.",["relevante kostnader"]],
+  [9,"Irrelevant kostnad","Kostnad som ikke påvirker valget: allerede påløpt (sunk cost) eller lik i alle alternativene.",null,["irrelevante kostnader"]],
+  [9,"Alternativkostnad","Den beste inntekten eller fordelen man gir opp ved å velge et alternativ, for eksempel tapt leieinntekt.","Prisen på det du sier nei til.",["alternativ kostnad","offerkostnad"]],
+  [9,"Særkostnad","Kostnad som bare gjelder ett bestemt produkt eller én avdeling, og som faller bort hvis den tas ut.","Sær = særskilt for ett objekt.",["særkostnader"]],
+  [9,"Unngåelig kostnad","Kostnad som faller bort hvis et alternativ velges bort. Er relevant i beslutningen.",null,["unngåelige kostnader"]],
+  [9,"Uunngåelig kostnad","Kostnad som påløper uansett hva man velger, for eksempel fordelte felleskostnader. Er irrelevant.",null,["uunngåelige kostnader"]],
+  [9,"Knapp faktor","Ressursen som begrenser produksjonen, for eksempel maskintimer eller arbeidstimer. Også kalt flaskehals.","Flaskehalsen bestemmer hvor mye som kommer ut.",["flaskehals","begrensende faktor"]],
+  [9,"DB per knapp faktor","Dekningsbidrag per enhet delt på forbruket av den knappe faktoren. Brukes til å rangere produktene når det er én flaskehals.","Hvem tjener mest per flaskehals-time?",["db per maskintime"]],
+  [9,"Tilvirke eller kjøpe","Beslutning om å lage en komponent selv eller kjøpe den. Innkjøpsprisen sammenlignes med de unngåelige kostnadene pluss alternativ bruk av kapasiteten.",null,["make or buy"]],
+  [9,"Differansebetraktning","Beslutningsmetode der man bare ser på inntekter og kostnader som endres mellom alternativene.",null,["differansekalkyle"]]
+];
+const SKILL_9=[
+  {ch:9,name:"Relevant eller irrelevant kostnad",opts:["Relevant kostnad","Irrelevant kostnad"],why:{"Relevant kostnad":"Fremtidig og forskjellig mellom alternativene.","Irrelevant kostnad":"Allerede påløpt eller lik i alle alternativene."},
+    items:[["Det en gammel maskin kostet for tre år siden.","Irrelevant kostnad"],["Det den gamle maskinen kan selges for i dag.","Relevant kostnad"],["Tapt leieinntekt hvis lokalet brukes selv.","Relevant kostnad"],["Fordelte felleskostnader som påløper uansett.","Irrelevant kostnad"],["Ekstra verktøy som må kjøpes for en tilleggsordre.","Relevant kostnad"],["Markedsundersøkelse som allerede er betalt.","Irrelevant kostnad"]]},
+  {ch:9,name:"Særkostnad eller felleskostnad",opts:["Særkostnad","Felleskostnad"],why:{"Særkostnad":"Gjelder bare ett produkt eller én avdeling og faller bort med den.","Felleskostnad":"Deles av flere og består selv om én tas ut."},
+    items:[["Lønn til sykkelmekanikeren i verkstedet.","Særkostnad"],["Husleie for hele butikklokalet.","Felleskostnad"],["Lønn til daglig leder.","Felleskostnad"],["Leasing av utstyr som bare brukes i én avdeling.","Særkostnad"],["Felles regnskapsfunksjon.","Felleskostnad"],["Emballasje som bare brukes til ett produkt.","Særkostnad"]]}
+];
+const FORM_9=[
+  [9,"DB per knapp faktor","DB per enhet / forbruk av knapp faktor per enhet"],
+  [9,"Tilleggsordre, ledig kapasitet","lønnsom hvis DB − særkostnader > 0"],
+  [9,"Laveste pris, full kapasitet","VEK + tapt DB per enhet"],
+  [9,"Relevant kostnad, tilvirke selv","variable kostnader + unngåelige faste kostnader"],
+  [9,"Resultatendring ved nedleggelse","− tapt DB + sparte særkostnader"]
+];
+const CMAP_9=[
+  [/^9 Relevante/,"Relevante kostnader og alternativkostnad"],
+  [/^9 Produktvalg/,"Produktvalg med knapp faktor"],
+  [/^9 Tilleggsordre/,"Tilleggsordre: ledig eller full kapasitet"],
+  [/^9 Tilvirke/,"Tilvirke selv eller kjøpe"],
+  [/^9 Nedleggelse/,"Nedleggelse av produkt eller avdeling"]
+];
+
+const GEN_9={
+  flaske:{ch:9,title:"Produktvalg med én flaskehals",make({ri,pick}){
+    for(let tries=0;tries<200;tries++){
+      const names=pick([["Bord","Benk","Skap"],["Jakke","Bukse","Lue"],["Sofa","Stol","Puff"]]);
+      const pr=[0,1,2].map(i=>{ const h=ri(1,6), dbt=ri(6,30)*5, p=ri(30,120)*10, db=dbt*h; return {n:names[i],p,v:p-db,h,db,dbt,m:ri(10,60)*10}; });
+      if(pr.some(x=>x.v<=0)) continue;
+      const s=[...pr].sort((a,b)=>b.dbt-a.dbt);
+      if(s[0].dbt-s[1].dbt<10||s[1].dbt-s[2].dbt<10) continue;
+      const t3=s[2];
+      const k=ri(1,Math.max(1,t3.m-1)); if(k>=t3.m) continue;
+      const cap=s[0].h*s[0].m+s[1].h*s[1].m+t3.h*k;
+      const q={}; s.forEach((x,i)=>q[x.n]=i<2?x.m:k);
+      const cells={A1:"Produkt",B1:"Pris",C1:"VEK",D1:"Timer per stk",E1:"Maks etterspørsel",F1:"DB per stk",G1:"DB per time",H1:"Produsert",I1:"Timer brukt",J1:"DB totalt",A5:"Sum",A7:"Tilgjengelige maskintimer",D7:cap};
+      const sol={};
+      pr.forEach((x,i)=>{ const r=2+i; cells["A"+r]=x.n; cells["B"+r]=x.p; cells["C"+r]=x.v; cells["D"+r]=x.h; cells["E"+r]=x.m;
+        sol["F"+r]=`=B${r}-C${r}`; sol["G"+r]=`=F${r}/D${r}`; sol["H"+r]=String(q[x.n]); sol["I"+r]=`=D${r}*H${r}`; sol["J"+r]=`=F${r}*H${r}`; });
+      sol.I5="=SUMMER(I2:I4)"; sol.J5="=SUMMER(J2:J4)";
+      return {intro:`Tre produkter lages på samme maskin, som har ${cap.toLocaleString("nb-NO")} maskintimer i perioden. Det er ikke nok til å dekke hele etterspørselen. Finn produksjonsplanen som gir høyest samlet dekningsbidrag.`,
+        steps:["DB per stk = pris − VEK, DB per time = DB per stk / timer per stk","Ranger produktene etter DB per time (ikke DB per stk)","Produser det beste produktet opp til etterspørselen, så det neste, og bruk restkapasiteten på det siste. Skriv inn mengdene i kolonne H","Timer brukt = timer per stk × produsert, DB totalt = DB per stk × produsert. Summer i rad 5 og sjekk at timene ikke overstiger kapasiteten"],
+        cols:10,rows:7,widths:[160,80,80,100,120,90,90,90,100,110],cells,solution:sol};
+    } throw new Error("flaske");}},
+  kjop:{ch:9,title:"Tilvirke selv eller kjøpe",make({ri}){
+    const dm=ri(20,120,5), dl=ri(20,100,5), vi=ri(5,40,5), ff=ri(20,80,5), fu=ri(1,Math.floor(ff/5))*5, n=ri(2,20)*1000;
+    const rel=dm+dl+vi+fu, buy=rel+ri(-15,15,1)*1+ (ri(0,1)?3:-3), alt=ri(1,8)*10000;
+    return {intro:`En bedrift lager ${n.toLocaleString("nb-NO")} komponenter i året selv. En leverandør tilbyr dem for ${buy} kr per stk. Av de fordelte faste kostnadene er ${fu} kr per stk unngåelige hvis egenproduksjonen stopper. Den frigjorte kapasiteten kan gi et dekningsbidrag på ${alt.toLocaleString("nb-NO")} kr per år.`,
+      steps:["Relevant kostnad per stk ved å lage selv = DM + DL + variable indirekte + unngåelige faste","Full selvkost per stk tar med alle fordelte faste kostnader, men er ikke riktig beslutningsgrunnlag","Merkostnad ved kjøp = (innkjøpspris − relevant kostnad) × mengde","Netto fordel ved kjøp = DB fra alternativ bruk − merkostnad ved kjøp. Skriv 1 i B16 hvis bedriften bør kjøpe, ellers 0 (bruk HVIS)"],
+      cols:2,rows:16,widths:[380,130],
+      cells:{A1:"Direkte materialer per stk",B1:dm,A2:"Direkte lønn per stk",B2:dl,A3:"Variable indirekte kostnader per stk",B3:vi,A4:"Fordelte faste kostnader per stk",B4:ff,A5:"Herav unngåelige faste kostnader per stk",B5:fu,A6:"Innkjøpspris per stk",B6:buy,A7:"Mengde per år",B7:n,A8:"DB fra alternativ bruk av kapasiteten",B8:alt,
+        A10:"Full selvkost per stk",A11:"Relevant kostnad per stk, lage selv",A12:"Relevant kostnad per år, lage selv",A13:"Kostnad per år, kjøpe",A14:"Merkostnad ved kjøp (minus = kjøp er billigere)",A15:"Netto fordel ved kjøp inkl. alternativ bruk",A16:"Bør bedriften kjøpe? (1 = ja, 0 = nei)"},
+      solution:{B10:"=B1+B2+B3+B4",B11:"=B1+B2+B3+B5",B12:"=B11*B7",B13:"=B6*B7",B14:"=B13-B12",B15:"=B8-B14",B16:"=HVIS(B15>0;1;0)"}};}}
+};
+
+const GLOSS_10=[
+  [10,"Aktivitetsbasert kalkulasjon (ABC)","Kalkulasjonsmetode der indirekte kostnader først fordeles på aktiviteter og deretter på produktene etter hvor mye de bruker av hver aktivitet.","Produktene bruker aktiviteter, aktivitetene bruker ressurser.",["abc","aktivitetsbasert kalkulasjon"]],
+  [10,"Aktivitet","En arbeidsoperasjon eller prosess som forbruker ressurser, for eksempel omstilling, innkjøp eller kvalitetskontroll."],
+  [10,"Ressursdriver","Mål på hvor mye av en ressurs en aktivitet bruker, for eksempel andel av arbeidstiden eller antall kvadratmeter. Fordeler ressurser på aktiviteter.",null],
+  [10,"Aktivitetsdriver","Mål på hvor mye et produkt bruker av en aktivitet, for eksempel antall omstillinger eller ordrer. Fordeler aktivitetskostnader på produktene. Kalles også kostnadsdriver.",null,["kostnadsdriver"]],
+  [10,"Aktivitetssats","Aktivitetskostnad delt på samlet volum av kostnadsdriveren, for eksempel kroner per omstilling.","Kostnaden per «gang» aktiviteten utføres."],
+  [10,"Kostnadsobjekt","Det man vil finne kostnaden for, for eksempel et produkt, en kunde eller en ordre."],
+  [10,"Kryssubsidiering","Når ett produkt bærer kostnader som egentlig skyldes andre produkter, typisk ved én volumbasert fordelingsnøkkel.","Store volumprodukter betaler for de små og kompliserte."],
+  [10,"Aktivitetshierarki","Inndeling av aktiviteter etter nivå: enhetsnivå, serienivå, produktnivå, kundenivå og bedriftsnivå.","E-S-P-K-B: enhet, serie, produkt, kunde, bedrift."],
+  [10,"Serienivåaktivitet","Aktivitet som utføres én gang per serie eller batch uansett hvor mange enheter serien har, for eksempel omstilling.",null,["batchnivå","serienivå"]],
+  [10,"Aktivitetsbasert styring (ABM)","Bruk av aktivitetsinformasjon til å forbedre prosesser og fjerne eller effektivisere aktiviteter som ikke skaper verdi.",null,["abm"]]
+];
+const SKILL_10=[
+  {ch:10,name:"Nivå i aktivitetshierarkiet",opts:["Enhetsnivå","Serienivå","Produktnivå","Bedriftsnivå"],why:{"Enhetsnivå":"Øker med hver produsert enhet.","Serienivå":"Skjer én gang per serie eller batch.","Produktnivå":"Holder et produkt i sortimentet.","Bedriftsnivå":"Holder bedriften i gang og kan ikke knyttes til enkeltprodukter."},
+    items:[["Maskintimer i produksjonen.","Enhetsnivå"],["Omstilling av maskinen før en ny serie.","Serienivå"],["Oppdatering av tegninger og spesifikasjoner for et produkt.","Produktnivå"],["Daglig leders lønn.","Bedriftsnivå"],["Innkjøpsordre for råvarer til hver serie.","Serienivå"],["Husleie for fabrikkbygget.","Bedriftsnivå"]]},
+  {ch:10,name:"Ressursdriver eller aktivitetsdriver",opts:["Ressursdriver","Aktivitetsdriver"],why:{Ressursdriver:"Fordeler ressurser (lønn, husleie, strøm) på aktivitetene.",Aktivitetsdriver:"Fordeler aktivitetskostnadene på produktene."},
+    items:[["Andel av arbeidstiden som brukes på aktiviteten.","Ressursdriver"],["Antall omstillinger per produkt.","Aktivitetsdriver"],["Kvadratmeter aktiviteten bruker.","Ressursdriver"],["Antall kundeordrer per produkt.","Aktivitetsdriver"],["Antall kWh aktiviteten bruker.","Ressursdriver"],["Antall kvalitetskontroller per produkt.","Aktivitetsdriver"]]}
+];
+const FORM_10=[
+  [10,"Aktivitetssats","aktivitetskostnad / samlet volum av kostnadsdriveren"],
+  [10,"Produktets andel av en aktivitet","aktivitetssats × produktets volum av driveren"],
+  [10,"Indirekte kostnad per enhet (ABC)","sum av produktets aktivitetskostnader / produsert mengde"],
+  [10,"Tradisjonell tilleggssats","sum indirekte kostnader / volumbasert nøkkel"]
+];
+const CMAP_10=[
+  [/^10 (Tradisjonell|Kryssubsid)/,"Svakheter ved tradisjonell kalkulasjon"],
+  [/^10 (Ressurs|Kostnadsdriver|ABC-modellen)/,"Ressurser, aktiviteter og kostnadsobjekter"],
+  [/^10 Aktivitetshierarki/,"Aktivitetshierarkiet"],
+  [/^10 (Aktivitetssats|ABC-kalkyle)/,"Aktivitetssats og ABC-kalkyle"],
+  [/^10 (Fordeler|Bruk av ABC)/,"Fordeler og ulemper med ABC"]
+];
+
+function gen10Base({ri}){
+  const qA=ri(5,20)*1000, qB=ri(5,30)*100;
+  const acts=[["Maskinkjøring","maskintimer",ri(40,120,5),ri(20,80)*100,ri(6,30)*50],
+              ["Omstillinger","antall omstillinger",ri(4,16)*500,ri(5,20),ri(15,60)],
+              ["Innkjøp","antall innkjøpsordrer",ri(5,20)*100,ri(10,40),ri(20,80)],
+              ["Kvalitetskontroll","antall kontroller",ri(6,30)*50,ri(20,80),ri(40,160)]];
+  const cells={A1:"Aktivitet",B1:"Kostnad",C1:"Kostnadsdriver",D1:"Volum A",E1:"Volum B",F1:"Sum volum",G1:"Aktivitetssats",H1:"Kostnad A",I1:"Kostnad B",A6:"Sum indirekte kostnader",A8:"Produsert mengde",A9:"Direkte kostnader per enhet",A10:"Indirekte per enhet (ABC)",A11:"Selvkost per enhet (ABC)"};
+  const sol={};
+  acts.forEach(([n,d,rate,vA,vB],i)=>{ const r=2+i; cells["A"+r]=n; cells["B"+r]=rate*(vA+vB); cells["C"+r]=d; cells["D"+r]=vA; cells["E"+r]=vB;
+    sol["F"+r]=`=D${r}+E${r}`; sol["G"+r]=`=B${r}/F${r}`; sol["H"+r]=`=G${r}*D${r}`; sol["I"+r]=`=G${r}*E${r}`; });
+  cells.H8=qA; cells.I8=qB; cells.H9=ri(50,150); cells.I9=ri(80,250);
+  Object.assign(sol,{B6:"=SUMMER(B2:B5)",H6:"=SUMMER(H2:H5)",I6:"=SUMMER(I2:I5)",H10:"=H6/H8",I10:"=I6/I8",H11:"=H9+H10",I11:"=I9+I10"});
+  return {qA,qB,cells,sol};
+}
+const GEN_10={
+  abc:{ch:10,title:"Aktivitetssatser og ABC-kalkyle",make(R){
+    const b=gen10Base(R);
+    return {intro:`En bedrift lager produkt A (${b.qA.toLocaleString("nb-NO")} enheter, høyt volum) og produkt B (${b.qB.toLocaleString("nb-NO")} enheter, lavt volum). De indirekte kostnadene er samlet i fire aktiviteter. Finn aktivitetssatsene og de indirekte kostnadene per produkt med ABC.`,
+      steps:["Sum volum = volum A + volum B","Aktivitetssats = aktivitetskostnad / sum volum","Kostnad A = aktivitetssats × volum A (tilsvarende for B), og summer i rad 6","Indirekte per enhet = sum indirekte / produsert mengde. Selvkost = direkte + indirekte per enhet"],
+      cols:9,rows:11,widths:[230,100,170,90,90,90,110,110,110],cells:b.cells,solution:b.sol};}},
+  abctrad:{ch:10,title:"Tradisjonell kalkyle mot ABC",make(R){
+    const b=gen10Base(R);
+    Object.assign(b.cells,{A13:"Tradisjonell sats (per maskintime)",A14:"Indirekte per enhet (tradisjonell)",A15:"Differanse per enhet (ABC − tradisjonell)"});
+    Object.assign(b.sol,{B13:"=B6/F2",H14:"=$B$13*D2/H8",I14:"=$B$13*E2/I8",H15:"=H10-H14",I15:"=I10-I14"});
+    return {intro:`Bedriften har til nå fordelt alle indirekte kostnader etter maskintimer. Regn ut ABC-kalkylen for produkt A (${b.qA.toLocaleString("nb-NO")} enheter) og B (${b.qB.toLocaleString("nb-NO")} enheter), og sammenlign med den tradisjonelle kalkylen.`,
+      steps:["ABC: sum volum, aktivitetssats = kostnad / sum volum, og kostnad per produkt = sats × volum","Indirekte per enhet med ABC = sum indirekte for produktet / produsert mengde","Tradisjonell sats = sum indirekte kostnader / sum maskintimer (B6/F2). Per enhet = sats × produktets maskintimer / mengde","Differanse = ABC − tradisjonell. Positiv differanse betyr at produktet var underkalkulert"],
+      cols:9,rows:15,widths:[290,100,170,90,90,90,110,110,110],cells:b.cells,solution:b.sol};}}
+};
+
+const GLOSS_11=[
+  [11,"Statisk budsjett","Budsjett satt opp for den planlagte aktiviteten, som ikke justeres når aktiviteten blir en annen.","Statisk = står stille."],
+  [11,"Fleksibelt budsjett","Budsjett justert til faktisk aktivitet: variable kostnader per enhet × faktisk volum + budsjetterte faste kostnader.","Fleksibelt = bøyer seg etter volumet."],
+  [11,"Standardkost","Det en enhet skal koste ved normal effektivitet: standard mengde × standard pris for materialer og standard tid × standard sats for lønn, pluss indirekte satser."],
+  [11,"Standard mengde (SM)","Standard materialforbruk per enhet ganget med faktisk produksjon. Avvikene måles mot denne, ikke mot budsjettert produksjon.","Faktisk produksjon, ikke budsjett.",["standard mengde","sm"]],
+  [11,"Materialprisavvik","(Standardpris − faktisk pris) × faktisk mengde. Viser om innkjøp betalte mer eller mindre enn standard."],
+  [11,"Materialforbruksavvik","(Standard mengde − faktisk mengde) × standardpris. Viser om produksjonen brukte mer eller mindre materiale enn standard.",null,["forbruksavvik"]],
+  [11,"Lønnssatsavvik","(Standard sats − faktisk sats) × faktiske timer. Viser om timelønnen ble høyere eller lavere enn standard, for eksempel ved overtid.",null,["satsavvik"]],
+  [11,"Effektivitetsavvik","(Standard tid − faktisk tid) × standard sats. Viser om det ble brukt flere eller færre timer enn standard for faktisk produksjon.","Effektiv = færre timer per enhet.",["tidsavvik"]],
+  [11,"Volumavvik","(Faktisk − normal produksjon) × fast sats per enhet. Viser hvor mye faste kostnader som er over- eller underdekket fordi volumet avvek fra normal. Tilsvarer beskjeftigelsesavviket i normalkost."],
+  [11,"Gunstig avvik","Avvik som gir bedre resultat enn standard eller budsjett, for eksempel lavere pris eller færre timer. Fortegnet er positivt.",null,["positivt avvik"]]
+];
+const SKILL_11=[
+  {ch:11,name:"Hvilket avvik?",opts:["Materialprisavvik","Materialforbruksavvik","Lønnssatsavvik","Effektivitetsavvik"],why:{Materialprisavvik:"Prisen per kg avviker fra standard.",Materialforbruksavvik:"Mengden materiale per enhet avviker fra standard.",Lønnssatsavvik:"Timelønnen avviker fra standard.",Effektivitetsavvik:"Antall timer avviker fra standard tid."},
+    items:[["Innkjøp betalte 42 kr per kg mot standard 40 kr.","Materialprisavvik"],["Produksjonen brukte 2 100 kg mot 2 000 kg standard for faktisk produksjon.","Materialforbruksavvik"],["En ny tariffavtale økte timelønnen.","Lønnssatsavvik"],["Arbeiderne brukte færre timer per enhet enn standard.","Effektivitetsavvik"],["Dårlige råvarer ga mer svinn i produksjonen.","Materialforbruksavvik"],["Overtid med tillegg ga høyere betalt sats per time.","Lønnssatsavvik"]]},
+  {ch:11,name:"Gunstig eller ugunstig",opts:["Gunstig avvik","Ugunstig avvik"],why:{"Gunstig avvik":"Bedre for resultatet enn standard eller budsjett.","Ugunstig avvik":"Dårligere for resultatet enn standard eller budsjett."},
+    items:[["Faktisk materialpris 38 kr mot standard 40 kr.","Gunstig avvik"],["Brukt 1 450 timer mot standard 1 500 timer.","Gunstig avvik"],["Faste kostnader 372 000 mot budsjett 360 000.","Ugunstig avvik"],["Produksjon 1 000 enheter mot normal 1 200 (volumavvik).","Ugunstig avvik"],["Salgspris 195 kr mot budsjettert 200 kr.","Ugunstig avvik"],["Faktiske kostnader 525 000 mot fleksibelt budsjett 515 000.","Ugunstig avvik"]]}
+];
+const FORM_11=[
+  [11,"Fleksibelt budsjett","variabel kostnad per enhet × faktisk volum + budsjetterte faste kostnader"],
+  [11,"Standard mengde (SM)","standard mengde per enhet × faktisk produksjon"],
+  [11,"Materialprisavvik","(SP − FP) × FM"],
+  [11,"Materialforbruksavvik","(SM − FM) × SP"],
+  [11,"Lønnssatsavvik","(standard sats − faktisk sats) × faktiske timer"],
+  [11,"Effektivitetsavvik","(ST − FT) × standard sats"],
+  [11,"Volumavvik","(faktisk − normal produksjon) × fast sats per enhet"]
+];
+const CMAP_11=[
+  [/^11 (Fleksibelt|Statisk)/,"Statisk og fleksibelt budsjett"],
+  [/^11 Standardkost/,"Standardkost per enhet"],
+  [/^11 Material/,"Materialavvik"],
+  [/^11 Lønn/,"Lønnsavvik"],
+  [/^11 (Indirekte|Salg|Avviksanalyse)/,"Indirekte kostnader, salgsavvik og ansvar"]
+];
+
+const GEN_11={
+  stdavvik:{ch:11,title:"Standardkost: material- og lønnsavvik",make({ri,pick}){
+    const sk=pick([1.5,2,2.5,3,4]), sp=ri(20,90), st=pick([0.5,0.75,1,1.5,2]), ss=ri(25,40)*10, prod=ri(8,30)*100;
+    const fm=Math.round(sk*prod*(1+ri(-8,10)/100)), fp=sp+ri(-6,6)/2, ft=Math.round(st*prod*(1+ri(-10,10)/100)), fs=ss+ri(-3,4)*5;
+    const d=x=>String(x).replace(".",",");
+    return {intro:`Standarden per enhet er ${d(sk)} kg materialer à ${sp} kr og ${d(st)} direkte arbeidstimer à ${ss} kr. I perioden ble det produsert ${prod.toLocaleString("nb-NO")} enheter. Faktisk forbruk og priser står i B6:B9. Finn standard mengde og tid, og del avvikene i pris-, forbruks-, sats- og effektivitetsavvik (positivt = gunstig).`,
+      steps:["SM = standard kg per enhet × faktisk produksjon, ST = standard timer per enhet × faktisk produksjon","Materialprisavvik = (SP − FP) × FM, materialforbruksavvik = (SM − FM) × SP","Lønnssatsavvik = (SS − FS) × FT, effektivitetsavvik = (ST − FT) × SS","Kontroll: sum avvik = standardkost for faktisk produksjon − faktiske kostnader"],
+      cols:2,rows:22,widths:[360,130],
+      cells:{A1:"Standard kg per enhet",B1:d(sk),A2:"Standardpris per kg (SP)",B2:sp,A3:"Standard timer per enhet",B3:d(st),A4:"Standard lønnssats per time (SS)",B4:ss,A5:"Faktisk produksjon (enheter)",B5:prod,A6:"Faktisk materialforbruk, kg (FM)",B6:fm,A7:"Faktisk pris per kg (FP)",B7:d(fp),A8:"Faktiske timer (FT)",B8:ft,A9:"Faktisk lønnssats per time (FS)",B9:fs,
+        A11:"Standard mengde (SM)",A12:"Standard tid (ST)",A13:"Materialprisavvik",A14:"Materialforbruksavvik",A15:"Sum materialavvik",A16:"Lønnssatsavvik",A17:"Effektivitetsavvik",A18:"Sum lønnsavvik",A19:"Standardkost for faktisk produksjon (material + lønn)",A20:"Faktiske kostnader (material + lønn)",A21:"Sum avvik",A22:"Kontroll: standardkost − faktiske kostnader"},
+      solution:{B11:"=B1*B5",B12:"=B3*B5",B13:"=(B2-B7)*B6",B14:"=(B11-B6)*B2",B15:"=B13+B14",B16:"=(B4-B9)*B8",B17:"=(B12-B8)*B4",B18:"=B16+B17",B19:"=B11*B2+B12*B4",B20:"=B6*B7+B8*B9",B21:"=B15+B18",B22:"=B19-B20"}};}},
+  flexbud:{ch:11,title:"Statisk og fleksibelt budsjett",make({ri,pick}){
+    const bv=ri(40,120)*100, fv=Math.round(bv*(1+ri(-20,20)/100)/10)*10;
+    const rates=[ri(20,60),ri(30,90),ri(5,20)], fast=ri(10,40)*10000;
+    const reg=rates.map(r=>Math.round(r*fv*(1+ri(-8,8)/100)/100)*100), regF=Math.round(fast*(1+ri(-6,6)/100)/1000)*1000;
+    const cells={A1:"Budsjettert volum (enheter)",B1:bv,A2:"Faktisk volum (enheter)",B2:fv,A4:"Kostnad",B4:"Per enhet",C4:"Statisk budsjett",D4:"Fleksibelt budsjett",E4:"Regnskap",F4:"Avvik fleksibelt",G4:"Avvik statisk",A5:"Direkte materialer",A6:"Direkte lønn",A7:"Andre variable kostnader",A8:"Faste kostnader",C8:fast,E8:regF,A9:"Sum kostnader"};
+    const sol={};
+    [5,6,7].forEach((r,i)=>{ cells["B"+r]=rates[i]; cells["E"+r]=reg[i]; sol["C"+r]=`=B${r}*$B$1`; sol["D"+r]=`=B${r}*$B$2`; sol["F"+r]=`=D${r}-E${r}`; sol["G"+r]=`=C${r}-E${r}`; });
+    sol.D8="=C8"; sol.F8="=D8-E8"; sol.G8="=C8-E8";
+    ["C","D","E"].forEach(c=>sol[c+"9"]=`=SUMMER(${c}5:${c}8)`); sol.F9="=D9-E9"; sol.G9="=C9-E9";
+    return {intro:`Avdelingen budsjetterte med ${bv.toLocaleString("nb-NO")} enheter, men produserte ${fv.toLocaleString("nb-NO")}. Sett opp statisk og fleksibelt budsjett og sammenlign med regnskapet. Hvilket avvik sier mest om hvordan avdelingen har styrt kostnadene?`,
+      steps:["Statisk budsjett: variabel kostnad per enhet × budsjettert volum","Fleksibelt budsjett: variabel kostnad per enhet × faktisk volum. Faste kostnader er like i begge budsjettene","Avvik som effekt på resultatet: budsjett − regnskap (minus = ugunstig)","Sum med SUMMER, og avvik for summen"],
+      cols:7,rows:9,widths:[230,100,130,140,120,130,120],cells,solution:sol};}}
+};
+
+/* ================= Kap. 8–11: glue ================= */
+Object.assign(CH_NAME,{8:"KRV-analyser",9:"Produktvalg og beslutninger",10:"Aktivitetsbasert kalkulasjon",11:"Fleksibelt budsjett og standardkost"});
+Object.assign(CH_COLOR,{8:"#ff6b2c",9:"#a2845e",10:"#00a3a3",11:"#7d5fff"});
+[[8,"GLOSS_8","SKILL_8","FORM_8","CMAP_8","GEN_8"],[9,"GLOSS_9","SKILL_9","FORM_9","CMAP_9","GEN_9"],[10,"GLOSS_10","SKILL_10","FORM_10","CMAP_10","GEN_10"],[11,"GLOSS_11","SKILL_11","FORM_11","CMAP_11","GEN_11"]].forEach(([ch,g,sk,f,cm,gen])=>{
+  const get=n=>{ try{ return eval(n); }catch(e){ return null; } };
+  const G=get(g), S=get(sk), Fm=get(f), C=get(cm), X=get(gen);
+  if(G) G.forEach(([c,t,d,k,alt])=>{ if(!GLOSS.some(x=>x.t===t)) GLOSS.push({ch:c,t,d,k:k||"",alt:alt||[],id:"g:"+t}); });
+  if(S) SKILL_SETS.push(...S);
+  if(Fm) FORMULAS.push(...Fm);
+  if(C) CONCEPT_MAP.unshift(...C);
+  if(X){ Object.assign(GEN,X); GEN_ORDER.push(...Object.keys(X)); }
+});
+
 go((location.hash||"").slice(1)||"hjem",true);
 
 </script>
