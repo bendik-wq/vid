@@ -6,7 +6,7 @@
 <meta name="description" content="240 casebaserte øvingsoppgaver i HSM122 (kap. 1–7) med Excel-oppgaver i nettleseren, tankekart, flashkort, formelduell, blandede prøver, XP og merker.">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <title>Øvingsprøve HSM122</title>
-<meta name="theme-color" content="#eef1f8">
+<meta name="theme-color" content="#2a2e35">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -776,6 +776,80 @@ body.xl-full .wrap,body.xl-full .tabbar{display:none}
 .ex-grade.g-C,.ex-grade.g-D{background:linear-gradient(180deg,#ffb340,#ff9500)}
 .ex-grade.g-E,.ex-grade.g-F{background:linear-gradient(180deg,#ff5a50,#ff3b30)}
 .ex-res .ex-grade{color:#fff}
+
+/* ===== v9: premium dark glass (reference: frosted dashboard cards) ===== */
+:root:root:root{
+  --bg:#2a2e35; --fg:#f5f4f0; --muted:rgba(236,234,228,.62); --line:rgba(255,255,255,.12);
+  --glass:rgba(255,255,255,.07); --glass-strong:rgba(255,255,255,.13); --glass-border:rgba(255,255,255,.2); --hi:rgba(255,255,255,.22);
+  --fill:rgba(255,255,255,.09); --fill-2:rgba(255,255,255,.05);
+  --accent:#f4c451; --accent-soft:rgba(244,196,81,.18); --on-accent:#17181b; --paper:#23262c;
+  --ok:#62d394; --ok-soft:rgba(98,211,148,.16); --bad:#ff7a6b; --bad-soft:rgba(255,122,107,.16);
+  --warn:#ffb54c; --warn-soft:rgba(255,181,76,.16); --gold:#f4c451; --gold-soft:rgba(244,196,81,.16);
+  --b1:#6f8299; --b2:#b0782f; --b3:#3f5568; --b4:#8a5a2b; --blob-o:.55;
+  --shadow:0 30px 60px -20px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.04);
+  --sheen:rgba(255,255,255,.07); --edge:inset 0 0 0 1px rgba(255,255,255,.16);
+  --bar:rgba(38,41,48,.72);
+  --xl:#62d394; --xl-soft:rgba(98,211,148,.14); --xl-head:#2b2f37; --xl-cell:#20232a;
+  --r-lg:34px; --r-md:24px;
+  color-scheme:dark;
+}
+body{background:var(--bg);letter-spacing:-.005em}
+.bg{background:radial-gradient(120% 80% at 50% 110%,#4a3523 0%,transparent 60%),radial-gradient(90% 70% at 10% -10%,#55647a 0%,transparent 60%),linear-gradient(180deg,#3a4049 0%,#272a30 55%,#221f1e 100%)}
+.bg i{filter:blur(110px)}
+.bg .b4{display:block}
+.glass,.q,.concept,.card,.qcard,.surface{background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.035));-webkit-backdrop-filter:blur(40px) saturate(140%);backdrop-filter:blur(40px) saturate(140%);border:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.17),inset 0 1px 0 rgba(255,255,255,.18),var(--shadow)}
+.q,.concept,.card{border-radius:var(--r-lg)}
+.eyebrow,.sec-h,.ex-clock>span:first-child,.hk-lbl{text-transform:uppercase;letter-spacing:.07em;font-weight:500;font-size:12.5px;color:var(--muted)}
+.largetitle h1,.subhead h1{font-weight:600;letter-spacing:-.035em}
+.btn{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));color:var(--fg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),inset -1.5px -1.5px 0 rgba(244,196,81,.85),0 10px 24px -12px rgba(0,0,0,.5);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.btn:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),inset -1.5px -1.5px 0 rgba(244,196,81,1),0 12px 28px -12px rgba(0,0,0,.55)}
+.btn.ghost{background:var(--fill);color:var(--fg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.btn.danger{background:var(--bad);color:#1b1010;box-shadow:none}
+.btn.xl-go{background:var(--xl);color:#0d1f15;box-shadow:none}
+.tabbar{background:rgba(40,43,50,.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 20px 40px -10px rgba(0,0,0,.5)}
+.tabbar button[aria-current="page"]{color:var(--accent);background:rgba(255,255,255,.1)}
+.navback,a{color:var(--accent)}
+.lprog,.xpbar,.pbar,.mbar{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.lprog span,.xpbar div{background:linear-gradient(90deg,#4fa776,#7fdca6)}
+.tile{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.t-gold{background:linear-gradient(180deg,#f7d277,#d9a42c);color:#211a08}
+.deck{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.deck.on{background:rgba(244,196,81,.16);box-shadow:inset 0 0 0 1px rgba(244,196,81,.6)}
+.duel-o.picked,.mt-c.on{box-shadow:inset 0 0 0 2px var(--accent)}
+select,input,textarea{color:var(--fg)}
+.hk-cbtn button[data-c="s"]{background:var(--accent);color:var(--on-accent)}
+.qtools{display:flex;flex-wrap:wrap;gap:8px;margin:-2px 0 4px}
+.qtool{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:7px 14px 7px 10px;font-size:13.5px;font-weight:600;color:var(--fg);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.qtool svg{width:17px;height:17px;color:var(--accent)}
+.qtool:hover{background:rgba(255,255,255,.13)}
+
+/* home dashboard */
+.dash{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:640px){.dash{grid-template-columns:1fr}}
+.dcard{position:relative;border:0;text-align:left;color:var(--fg);border-radius:34px;padding:24px 26px 22px;display:grid;gap:14px;align-content:start;min-height:210px}
+.dcard .dl{font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,244,240,.8)}
+.dcard .dv{font-family:var(--f-display);font-size:clamp(34px,5.6vw,50px);font-weight:600;letter-spacing:-.035em;line-height:1.02}
+.dcard .dv small{font-size:.5em;font-weight:500;color:var(--muted);letter-spacing:-.01em}
+.dcard .darr{position:absolute;right:22px;top:22px;width:22px;height:22px;color:var(--accent)}
+.dbars{display:flex;align-items:flex-end;gap:7px;height:92px}
+.dbars i{flex:1;max-width:9px;border-radius:5px;background:linear-gradient(180deg,#f4c451,rgba(244,196,81,.25));min-height:6px}
+.dbars i.empty{background:rgba(255,255,255,.14)}
+.dpill{position:relative;display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:14px;padding:11px 16px;font-size:14.5px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);background:rgba(255,255,255,.05)}
+.dpill::before{content:"";position:absolute;inset:0;width:var(--p,50%);background:linear-gradient(90deg,rgba(98,211,148,.55),rgba(98,211,148,.12));z-index:0}
+.dpill.gold::before{background:linear-gradient(90deg,rgba(244,196,81,.45),rgba(244,196,81,.08))}
+.dpill span{position:relative;z-index:1}
+.dticks{display:flex;align-items:center;gap:12px}
+.dticks .tk{flex:1;height:30px;background:repeating-linear-gradient(90deg,var(--tc,rgba(255,255,255,.28)) 0 3px,transparent 3px 7px);-webkit-mask:linear-gradient(90deg,#000 var(--p,0%),rgba(0,0,0,.35) var(--p,0%));mask:linear-gradient(90deg,#000 var(--p,0%),rgba(0,0,0,.35) var(--p,0%));--tc:#a8b6ff}
+.dticks .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.dticks .ic svg{width:22px;height:22px}
+.dchip{justify-self:start;display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 18px;font-size:14.5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);color:rgba(245,244,240,.85)}
+.dchip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dc,#62d394)}
+.dbadges{display:flex}
+.dbadges span{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;margin-left:-8px;background:linear-gradient(180deg,#3b4049,#2a2d33);box-shadow:0 0 0 2px #2c3037,inset 0 0 0 1px rgba(255,255,255,.18);color:var(--accent)}
+.dbadges span:first-child{margin-left:0}
+.dcta{grid-column:1/-1;border:0;border-radius:999px;padding:20px;font-size:18px;font-weight:500;color:var(--fg);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),inset -2px -2px 0 rgba(244,196,81,.9),0 20px 40px -18px rgba(0,0,0,.6);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px)}
+.dcta:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),inset -2px -2px 0 #f4c451,0 20px 40px -18px rgba(0,0,0,.6)}
+.dcard:hover .darr{transform:translate(2px,-2px)} .darr{transition:transform .2s}
 </style>
 </head>
 <body>
@@ -3870,7 +3944,7 @@ const BASE={ak1:Q14,p3:Q_P3,p5:Q_P5,kap56:Q56,p4:Q_P4,p6:Q_P6,p7:Q_P7,p8:Q_P8,p9
 const BASE_LABEL={ak1:"Prøve 1",p3:"Prøve 3",p5:"Prøve 5",kap56:"Prøve 2",p4:"Prøve 4",p6:"Prøve 6",p7:"Prøve 7",p8:"Prøve 8",p9:"Prøve 9",p10:"Prøve 10",p11:"Prøve 11",p12:"Prøve 12",p13:"Prøve 13",p14:"Prøve 14"};
 const CH14=["ak1","p3","p5"], CH56=["kap56","p4","p6"], CH7=["p7","p8","p9","p10"], CH811=["p11","p12","p13","p14"], ALL=CH14.concat(CH56,CH7,CH811);
 const LINK_RE=/forrige oppgave|Fortsett med|Samme (tall|maskin|ordre)|Bruk tabellen for/;
-function getQ(id){ const [k,i]=id.split(":"); return BASE[k][+i]; }
+function getQ(id){ if(id.startsWith("q:")) return genQ(id); const [k,i]=id.split(":"); return BASE[k][+i]; }
 function groupsOf(keys){
   const gs=[];
   keys.forEach(k=>BASE[k].forEach((q,i)=>{
@@ -4099,7 +4173,7 @@ function render(){
     const card=el("section",{class:"q"+(res?" st-"+res.state:""),id:"q"+(i+1)});
     const head=el("div",{class:"qhead"});
     head.append(el("span",{class:"qnum"},"Oppgave "+(i+1)), el("span",{class:"qtype"},TYPE_LABEL[q.type]), el("span",{class:"qtopic"},q.topic));
-    if(showSrc){ const [k,ix]=ids[i].split(":"); head.append(el("span",{class:"qsrc"},BASE_LABEL[k]+", oppg. "+(+ix+1))); }
+    if(showSrc && !ids[i].startsWith("q:")){ const [k,ix]=ids[i].split(":"); head.append(el("span",{class:"qsrc"},BASE_LABEL[k]+", oppg. "+(+ix+1))); }
     if (res){ const c = res.state==="ok"?"var(--ok)":res.state==="part"?"var(--warn)":res.state==="bad"?"var(--bad)":"var(--muted)";
       const xp=gained[i]?` · +${gained[i]} XP`:"";
       head.append(el("span",{class:"qscore",style:"color:"+c},(res.pts>0?"+":"")+fmt(res.pts)+" / 3"+xp)); }
@@ -5530,7 +5604,7 @@ function xlShowList(){ xlHide(); $("xlList").hidden=false; $("xlTitle").textCont
 /* ---------- open & build ---------- */
 function xlOpen(id,exam){
   const t=xlTaskById(id); if(!t) return;
-  XL.examMode=!!exam; $("xlCheck").hidden=$("xlSolution").hidden=!!exam; $("xlClose").lastChild.textContent=exam?"Eksamen":"Oppgaver";
+  XL.examMode=!!exam; $("xlCheck").hidden=$("xlSolution").hidden=!!exam||!!t.scratch; $("xlClose").lastChild.textContent=t.scratch?"Tilbake til oppgaven":exam?"Eksamen":"Oppgaver";
   XL.t=t; const saved=rd(xlKey(id),null);
   XL.raw=Object.assign({},(saved&&saved.raw)||{},t.cells);
   const first=Object.keys(t.targets).map(xlParseRef).sort((a,b)=>a.r-b.r||a.c-b.c)[0]||{c:0,r:0};
@@ -5574,6 +5648,7 @@ function xlStatus(comp,R){
   if(R.c1!==R.c2||R.r1!==R.r2){ let sum=0,n=0,cnt=0; for(let r=R.r1;r<=R.r2;r++) for(let c=R.c1;c<=R.c2;c++){ const v=comp.get(xlAddr(c,r)); if(v!=null&&v!=="") cnt++; if(typeof v==="number"){ sum+=v; n++; } }
     sel=n?`<span>Gjennomsnitt <b>${xlFmt(sum/n)}</b></span><span>Antall <b>${cnt}</b></span><span>Sum <b>${xlFmt(sum)}</b></span>`:`<span>Antall <b>${cnt}</b></span>`; }
   const st=XL.status?`<span class="${XL.status.ok?"st-ok":"st-bad"}"><b class="${XL.status.ok?"st-ok":"st-bad"}">${XL.status.txt}</b></span>`:"";
+  if(!keys.length){ $("xlStatus").innerHTML=`<span>Kladdeark · tallene fra oppgaven er importert</span><span class="st-right"></span>${sel}`; return; }
   $("xlStatus").innerHTML=`<span class="st-prog">Fylt ut <b>${filled} av ${keys.length}</b><i><span style="width:${keys.length?filled/keys.length*100:0}%"></span></i></span>${st}<span class="st-right"></span>${sel}`;
 }
 function xlApplyUi(){
@@ -5733,7 +5808,7 @@ function xlReset(){ xlPush(); XL.raw=Object.assign({},XL.t.cells); XL.marks={}; 
   $("xlSolution").addEventListener("click",xlSolution);
   $("xlReset").addEventListener("click",xlReset);
   $("xlBack").addEventListener("click",()=>go("laer"));
-  $("xlClose").addEventListener("click",()=>{ if(XL.examMode){ xlHide(); XL.examMode=false; if(typeof renderExam==="function") renderExam(); } else xlShowList(); });
+  $("xlClose").addEventListener("click",()=>{ if(XL.t&&XL.t.scratch){ xlHide(); return; } if(XL.examMode){ xlHide(); XL.examMode=false; if(typeof renderExam==="function") renderExam(); } else xlShowList(); });
   $("xlTaskTgl").addEventListener("click",()=>{ XLUI.task=!XLUI.task; xlUiSave(); xlApplyUi(); });
   $("xlZoomIn").addEventListener("click",()=>xlZoom(.1));
   $("xlZoomOut").addEventListener("click",()=>xlZoom(-.1));
@@ -6249,6 +6324,662 @@ Object.assign(CH_COLOR,{8:"#ff6b2c",9:"#a2845e",10:"#00a3a3",11:"#7d5fff"});
   if(C) CONCEPT_MAP.unshift(...C);
   if(X){ Object.assign(GEN,X); GEN_ORDER.push(...Object.keys(X)); }
 });
+
+const QGEN={};
+
+/* ================= Randomized quiz templates, kap. 1–6 ================= */
+(function(){
+const qa_nf=(x,d=2)=>Number(x).toLocaleString("nb-NO",{maximumFractionDigits:d});
+const qa_kr=(x,d=2)=>qa_nf(x,d)+" kr";
+const qa_pc=(x,d=1)=>qa_nf(x,d)+" %";
+const qa_cell=v=>typeof v==="number"?String(Math.round(v*1e6)/1e6).replace(".",","):String(v);
+const qa_tbl=rows=>"<table><tr>"+rows[0].map(h=>"<th>"+h+"</th>").join("")+"</tr>"+rows.slice(1).map(r=>"<tr>"+r.map(c=>"<td>"+qa_cell(c)+"</td>").join("")+"</tr>").join("")+"</table>";
+function qa_mc(R,correct,cands,fallback){
+  const out=[correct];
+  (cands||[]).concat(fallback||[]).forEach(c=>{ if(out.length<4 && !out.includes(c)) out.push(c); });
+  let k=1; while(out.length<4){ const f="Ingen av de andre ("+k+")"; if(!out.includes(f)) out.push(f); k++; }
+  const opts=R.shuffle(out); return {options:opts,correct:opts.indexOf(correct)};
+}
+const qa_firm=R=>R.pick(["Fjellsport AS","Bakeri Nord AS","Kystfisk AS","Bergen Sykkel AS","Trehuset Vest AS","Grønn Kaffe AS","Lysverket Elektro AS","Fjordmøbler AS","Sjøbris Klær AS","Nordlys Hudpleie AS","Vossa Bryggeri AS","Hagesenteret Sør AS"]);
+const qa_prod=R=>R.pick(["termoser","sykkelhjelmer","brødbakster","kaffekverner","stoler","lamper","jakker","ryggsekker","kremer","skrivebord"]);
+const qa_r=(x,d)=>{ const f=Math.pow(10,d); return Math.round(x*f)/f; };
+
+Object.assign(QGEN,{
+/* ---------------- Kap. 1 ---------------- */
+q1sel:{ch:1,make(R){
+  const navn=R.pick(["Ida","Jonas","Sara","Emil","Nora","Henrik","Maja","Sander"]), navn2=R.pick(["Lea","Oskar","Thea","Magnus","Ella","Tobias"]);
+  const bransje=R.pick(["en kafé","et snekkerverksted","et reisebyrå","en nettbutikk for klær","et regnskapskontor","et sykkelverksted"]);
+  const kap=R.ri(30,200,10)*1000;
+  const sc=R.pick([
+    ["AS",`${navn} og ${navn2} vil starte ${bransje}. De skyter inn ${qa_kr(kap,0)} til sammen og vil ikke risikere mer enn det de har skutt inn.`],
+    ["ENK",`${navn} vil starte ${bransje} alene. Det skal være lite formaliteter, og ${navn} har ikke kapital å skyte inn, men aksepterer å hefte personlig for all gjeld.`],
+    ["ANS",`${navn} og ${navn2} vil starte ${bransje} sammen uten krav til innskutt kapital. De aksepterer at hver av dem kan måtte dekke hele selskapets gjeld.`],
+    ["DA",`${navn} og ${navn2} vil starte ${bransje} sammen. Hver av dem skal bare hefte for sin avtalte andel av selskapets gjeld, ikke for hele gjelden.`]]);
+  const names={AS:"Aksjeselskap (AS)",ENK:"Enkeltpersonforetak (ENK)",ANS:"Ansvarlig selskap (ANS)",DA:"Selskap med delt ansvar (DA)"};
+  const m=qa_mc(R,names[sc[0]],Object.values(names).filter(x=>x!==names[sc[0]]));
+  const why={AS:"AS krever minst 30 000 kr i aksjekapital, og ansvaret er begrenset til innskutt kapital.",ENK:"ENK har én eier, ingen kapitalkrav og ubegrenset personlig ansvar.",ANS:"I ANS har eierne ubegrenset og solidarisk ansvar: hver kan måtte dekke all gjeld.",DA:"I DA hefter hver eier bare for sin avtalte andel av gjelden."};
+  return {topic:"1 Selskapsformer",type:"mc",case:`<p>${sc[1]}</p>`,prompt:"Hvilken selskapsform passer best?",...m,
+    explain:why[sc[0]]+" Vanlig feil er å blande ANS (solidarisk ansvar for alt) og DA (ansvar for egen andel)."};
+}},
+q1avvik:{ch:1,make(R){
+  const f=qa_firm(R), p=qa_prod(R);
+  const qb=R.ri(300,900,50), pb=R.ri(150,400,10), cb=pb-R.ri(30,100,5);
+  const qa=Math.round(qb*(1+R.ri(-15,10)/100)/10)*10, pa=pb+R.ri(-20,10,5), ca=cb+R.ri(-5,10);
+  const rb=qb*(pb-cb), ra=qa*(pa-ca), av=ra-rb;
+  return {topic:"1 Budsjett og avvik",type:"num",
+    case:`<p>${f} budsjetterte salg av ${qb} ${p} til ${qa_kr(pb,0)} per stk. Kostnaden var budsjettert til ${qa_kr(cb,0)} per stk. Faktisk solgte bedriften ${qa} stk til ${qa_kr(pa,0)}, og kostnaden ble ${qa_kr(ca,0)} per stk.</p>`,
+    prompt:"Hva er resultatavviket (regnskap − budsjett)? Oppgi negativt avvik med minus.",answer:av,tol:0.5,unit:"kr",
+    explain:`Budsjettert resultat = ${qb} × (${pb} − ${cb}) = ${qa_kr(rb,0)}. Faktisk resultat = ${qa} × (${pa} − ${ca}) = ${qa_kr(ra,0)}. Resultatavvik = ${qa_kr(ra,0)} − ${qa_kr(rb,0)} = <b>${qa_kr(av,0)}</b>. Vanlig feil er å bare se på inntektsavviket og glemme kostnadene.`};
+}},
+
+/* ---------------- Kap. 2 ---------------- */
+q2avanse:{ch:2,make(R){
+  const f=qa_firm(R), k=R.ri(80,900,5), a=R.ri(15,120)/100, s=Math.round(k*(1+a)), av=(s-k)/k*100;
+  return {topic:"2 Avanse",type:"num",case:`<p>${f} kjøper inn en vare for ${qa_kr(k,0)} og selger den for ${qa_kr(s,0)} (eks. mva.).</p>`,
+    prompt:"Hva er avanseprosenten? Rund av til én desimal.",answer:qa_r(av,1),tol:0.05,unit:"%",
+    explain:`Avanse % = (salgspris − kostpris) / kostpris × 100 = (${s} − ${k}) / ${k} × 100 = <b>${qa_pc(av)}</b>. Vanlig feil er å dele på salgsprisen; det gir bruttofortjenesteprosenten (${qa_pc((s-k)/s*100)}).`};
+}},
+q2bf:{ch:2,make(R){
+  const f=qa_firm(R), k=R.ri(100,800,10), s=k+R.ri(20,400,10);
+  const bf=(s-k)/s*100, av=(s-k)/k*100;
+  const m=qa_mc(R,qa_pc(bf),[qa_pc(av),qa_pc(k/s*100),qa_pc(100-av)],[qa_pc(bf+5),qa_pc(bf-5)]);
+  return {topic:"2 Bruttofortjeneste",type:"mc",case:`<p>${f} har en vare med kostpris ${qa_kr(k,0)} og salgspris ${qa_kr(s,0)} (eks. mva.).</p>`,
+    prompt:"Hva er bruttofortjenesteprosenten?",...m,
+    explain:`BF % = (salgspris − kostpris) / salgspris × 100 = ${s-k} / ${s} × 100 = <b>${qa_pc(bf)}</b>. Deler du på kostprisen, får du avanseprosenten (${qa_pc(av)}), som alltid er høyere.`};
+}},
+q2avskr:{ch:2,make(R){
+  const what=R.pick(["maskin","varebil","produksjonslinje","kaffemaskin","gaffeltruck"]);
+  const ak=R.ri(20,120)*10000, rv=R.ri(1,10)*5000, n=R.ri(4,10), sats=R.ri(10,35,5);
+  const v=R.pick(["lin","saldo2","bok3"]);
+  if(v==="lin"){ const a=(ak-rv)/n;
+    return {topic:"2 Avskrivning",type:"num",case:`<p>En ${what} koster ${qa_kr(ak,0)} og har en antatt restverdi på ${qa_kr(rv,0)} etter ${n} år.</p>`,
+      prompt:"Hva blir den årlige lineære avskrivningen? Rund av til hele kroner.",answer:Math.round(a),tol:1,unit:"kr",
+      explain:`Lineær avskrivning = (anskaffelseskost − restverdi) / levetid = (${ak} − ${rv}) / ${n} = <b>${qa_kr(a,0)}</b>. Vanlig feil er å glemme å trekke fra restverdien.`}; }
+  if(v==="saldo2"){ const a=ak*(1-sats/100)*sats/100;
+    return {topic:"2 Avskrivning",type:"num",case:`<p>En ${what} koster ${qa_kr(ak,0)} og avskrives med ${sats} % saldoavskrivning.</p>`,
+      prompt:"Hvor stor er avskrivningen i år 2? Rund av til hele kroner.",answer:Math.round(a),tol:1,unit:"kr",
+      explain:`År 1: ${ak} × ${sats} % = ${qa_kr(ak*sats/100,0)}, bokført verdi ${qa_kr(ak*(1-sats/100),0)}. År 2: ${qa_kr(ak*(1-sats/100),0)} × ${sats} % = <b>${qa_kr(a,0)}</b>. Vanlig feil er å ta prosenten av anskaffelseskosten hvert år.`}; }
+  const b=ak*Math.pow(1-sats/100,3);
+  return {topic:"2 Avskrivning",type:"num",case:`<p>En ${what} koster ${qa_kr(ak,0)} og avskrives med ${sats} % saldoavskrivning.</p>`,
+    prompt:"Hva er bokført verdi etter tre år? Rund av til hele kroner.",answer:Math.round(b),tol:1,unit:"kr",
+    explain:`Bokført verdi = ${ak} × (1 − ${sats/100})³ = <b>${qa_kr(b,0)}</b>. Saldoavskrivning gir en fast prosent av en stadig lavere verdi.`};
+}},
+q2lonn:{ch:2,make(R){
+  const f=qa_firm(R), l=R.ri(380,850,10)*1000, aga=R.pick([14.1,10.6,6.4,5.1,7.9]);
+  const fp=l*0.12, ag=(l+fp)*aga/100, tot=l+fp+ag;
+  return {topic:"2 Lønnskostnad",type:"num",case:`<p>${f} har en ansatt med årslønn ${qa_kr(l,0)}. Feriepengene er 12 %, og arbeidsgiveravgiften er ${qa_nf(aga,1)} %.</p>`,
+    prompt:"Hva blir de samlede lønnskostnadene for den ansatte (lønn + feriepenger + AGA)? Rund av til hele kroner.",answer:Math.round(tot),tol:1,unit:"kr",
+    explain:`Feriepenger = ${qa_kr(l,0)} × 12 % = ${qa_kr(fp,0)}. AGA = (${qa_kr(l,0)} + ${qa_kr(fp,0)}) × ${qa_nf(aga,1)} % = ${qa_kr(ag,0)}. Sum = <b>${qa_kr(tot,0)}</b>. Vanlig feil er å beregne AGA bare av lønnen, uten feriepengene.`};
+}},
+q2mva:{ch:2,make(R){
+  const f=qa_firm(R), v=R.pick(["brutto","mvabel","netto"]);
+  if(v==="brutto"){ const n=R.ri(40,4000,10); return {topic:"2 Merverdiavgift (mva)",type:"num",case:`<p>${f} selger en vare for ${qa_kr(n,0)} eksklusiv merverdiavgift (25 %).</p>`,
+    prompt:"Hva blir prisen inklusiv mva.?",answer:n*1.25,tol:0.01,unit:"kr",explain:`Brutto pris = ${n} × 1,25 = <b>${qa_kr(n*1.25)}</b>.`}; }
+  if(v==="mvabel"){ const b=R.ri(10,800)*5; return {topic:"2 Merverdiavgift (mva)",type:"num",case:`<p>En kunde betaler ${qa_kr(b,0)} inklusiv 25 % mva. hos ${f}.</p>`,
+    prompt:"Hvor mye av beløpet er merverdiavgift?",answer:b*0.2,tol:0.01,unit:"kr",explain:`Mva. i en bruttopris = brutto × 0,20 = ${b} × 0,20 = <b>${qa_kr(b*0.2)}</b>. Vanlig feil er å ta 25 % av bruttobeløpet (${qa_kr(b*0.25)}).`}; }
+  const s=R.ri(100,900)*1000, k=Math.round(s*R.ri(40,80)/100/1000)*1000, ut=s*0.25, inn=k*0.25;
+  return {topic:"2 Merverdiavgift (mva)",type:"num",case:`<p>${f} har i en termin salg på ${qa_kr(s,0)} og innkjøp på ${qa_kr(k,0)}, begge eksklusiv 25 % mva.</p>`,
+    prompt:"Hvor mye mva. skal betales til staten for terminen?",answer:ut-inn,tol:0.5,unit:"kr",explain:`Utgående mva. = ${qa_kr(ut,0)}, inngående mva. = ${qa_kr(inn,0)}. Netto til staten = <b>${qa_kr(ut-inn,0)}</b>.`};
+}},
+q2begrep:{ch:2,make(R){
+  const f=qa_firm(R);
+  const sc=R.pick([
+    ["Utgift",`${f} kjøper en ny maskin og får faktura med 30 dagers betalingsfrist.`],
+    ["Utbetaling",`${f} betaler fakturaen for maskinen den kjøpte for en måned siden.`],
+    ["Kostnad",`${f} tar råvarer ut av lageret og bruker dem i produksjonen.`],
+    ["Kostnad",`Maskinene til ${f} slites, og årets avskrivning føres.`],
+    ["Utbetaling",`${f} betaler ned 50 000 kr på et banklån.`],
+    ["Utgift",`${f} kjøper varer på kreditt og legger dem på lager.`],
+    ["Inntekt",`${f} leverer en tjeneste og sender faktura til kunden.`],
+    ["Innbetaling",`En kunde betaler en faktura til ${f}.`]]);
+  const m=qa_mc(R,sc[0],["Kostnad","Utgift","Utbetaling","Inntekt","Innbetaling"].filter(x=>x!==sc[0]));
+  return {topic:"2 Kostnadsbegreper",type:"mc",case:`<p>${sc[1]}</p>`,prompt:"Hvilket begrep beskriver hendelsen best?",...m,
+    explain:`Riktig svar er <b>${sc[0]}</b>. Kostnad = forbruk av ressurser, utgift = anskaffelse, utbetaling = kontanter ut, inntekt = verdi opptjent ved salg, innbetaling = kontanter inn.`};
+}},
+
+/* ---------------- Kap. 3 ---------------- */
+q3dek:{ch:3,make(R){
+  const a=R.pick([0.02,0.04,0.05,0.1]), b=R.ri(20,80,5), c=R.ri(10,40)*1000, st=R.pick([50,100,200]);
+  const xs=[1,2,3,4,5].map(i=>i*st), K=x=>Math.round(a*x*x+b*x+c);
+  const i=R.ri(1,4), dk=K(xs[i])-K(xs[i-1]), dek=dk/st;
+  return {topic:"3 Differanseenhetskostnad",type:"num",case:`<p>${qa_firm(R)} har disse totale kostnadene ved ulike produksjonsmengder:</p>`+qa_tbl([["Mengde","STK"]].concat(xs.map(x=>[x,K(x)]))),
+    prompt:`Hva er DEK når produksjonen økes fra ${xs[i-1]} til ${xs[i]} enheter? Rund av til to desimaler.`,answer:qa_r(dek,2),tol:0.01,unit:"kr",
+    explain:`DK = ${K(xs[i])} − ${K(xs[i-1])} = ${qa_nf(dk,0)}. DEK = DK / mengdeendring = ${qa_nf(dk,0)} / ${st} = <b>${qa_kr(dek)}</b>. Vanlig feil er å dele STK på mengden, som gir SEK.`};
+}},
+q3opt:{ch:3,make(R){
+  for(let t=0;t<50;t++){
+    const a=R.pick([0.02,0.025,0.04,0.05,0.1]), b=R.ri(20,80,5), c=R.ri(10,40)*1000, xo=Math.sqrt(c/a);
+    const st=Math.max(50,Math.round(xo/3/50)*50), xs=[1,2,3,4,5,6].map(i=>i*st), K=x=>Math.round(a*x*x+b*x+c), sek=xs.map(x=>K(x)/x);
+    let bi=0; sek.forEach((v,i)=>{ if(v<sek[bi]) bi=i; });
+    if(bi===0||bi===5) continue;
+    const others=xs.filter((x,i)=>i!==bi);
+    const m=qa_mc(R,qa_nf(xs[bi],0)+" enheter",R.shuffle(others).map(x=>qa_nf(x,0)+" enheter"));
+    return {topic:"3 Kostnadsoptimal mengde",type:"mc",case:`<p>${qa_firm(R)} har denne kostnadstabellen:</p>`+qa_tbl([["Mengde","STK"]].concat(xs.map(x=>[x,K(x)]))),
+      prompt:"Ved hvilken mengde er kostnadene per enhet (SEK) lavest?",...m,
+      explain:`SEK = STK / mengde: ${xs.map((x,i)=>qa_nf(x,0)+": "+qa_nf(sek[i],2)).join(", ")}. Lavest ved <b>${qa_nf(xs[bi],0)} enheter</b> (kostnadsoptimum, der DEK ≈ SEK). Vanlig feil er å velge mengden med lavest STK eller lavest DEK.`};
+  } throw new Error("q3opt");
+}},
+q3fek:{ch:3,make(R){
+  const x=R.ri(5,40)*100, fek=R.ri(10,120), ftk=x*fek, vek=R.ri(20,300);
+  return {topic:"3.1 Faste kostnader",type:"num",case:`<p>${qa_firm(R)} har faste kostnader på ${qa_kr(ftk,0)} per måned og variable kostnader på ${qa_kr(vek,0)} per enhet. Bedriften produserer ${qa_nf(x,0)} enheter i måneden.</p>`,
+    prompt:"Hva blir sum enhetskostnad (SEK)?",answer:fek+vek,tol:0.01,unit:"kr",
+    explain:`FEK = ${qa_nf(ftk,0)} / ${qa_nf(x,0)} = ${fek}. SEK = FEK + VEK = ${fek} + ${vek} = <b>${qa_kr(fek+vek,0)}</b>. Øker produksjonen, synker FEK og dermed SEK.`};
+}},
+q3mat:{ch:3,make(R){
+  const a=R.pick([0.05,0.1,0.125,0.2,0.25]), b=R.ri(10,40), c=R.ri(5,30)*100, x=R.ri(2,20)*100;
+  const K=a*x*x+b*x+c, sek=K/x;
+  return {topic:"3 Matematisk kostnadsmodell",type:"num",case:`<p>Kostnadsfunksjonen til ${qa_firm(R)} er K(x) = ${qa_nf(a,3)}x² + ${b}x + ${qa_nf(c,0)}.</p>`,
+    prompt:`Hva er sum enhetskostnad (SEK) ved x = ${qa_nf(x,0)}? Rund av til to desimaler.`,answer:qa_r(sek,2),tol:0.01,unit:"kr",
+    explain:`K(${x}) = ${qa_nf(a,3)} × ${x}² + ${b} × ${x} + ${c} = ${qa_nf(K,2)}. SEK = K(x) / x = <b>${qa_kr(sek)}</b>. Faste kostnader er konstantleddet c = ${qa_nf(c,0)}.`};
+}},
+
+/* ---------------- Kap. 4 ---------------- */
+q4elast:{ch:4,make(R){
+  const p1=R.ri(20,60)*5, dp=R.ri(1,6)*5, p2=p1-dp, q1=R.ri(10,80)*100, q2=q1+R.ri(1,40)*50;
+  const ep=((q2-q1)/q1)/(dp/p2);
+  return {topic:"4 Priselastisitet",type:"num",case:`<p>${qa_firm(R)} selger ${qa_nf(q1,0)} ${qa_prod(R)} per måned til ${qa_kr(p1,0)}. Når prisen settes ned til ${qa_kr(p2,0)}, øker salget til ${qa_nf(q2,0)} stk.</p>`,
+    prompt:"Hva er priselastisiteten (med laveste verdi som grunnlag, positivt tall)? Rund av til to desimaler.",answer:qa_r(ep,2),tol:0.01,unit:"",
+    explain:`(${q2} − ${q1}) / ${q1} = ${qa_nf((q2-q1)/q1,4)}. (${p1} − ${p2}) / ${p2} = ${qa_nf(dp/p2,4)}. ep = <b>${qa_nf(ep,2)}</b>, ${ep>1?"elastisk":ep<1?"uelastisk":"nøytralelastisk"}. Vanlig feil er å bruke høyeste pris eller høyeste mengde som grunnlag.`};
+}},
+q4dei:{ch:4,make(R){
+  const p0=R.ri(30,60)*10, dp=R.pick([10,20,25]), q0=R.ri(4,16)*50, k=R.ri(3,12);
+  const rows=[0,1,2,3].map(i=>[p0-i*dp,q0+k*i*dp]); const i=R.ri(1,3);
+  const di=rows[i][0]*rows[i][1]-rows[i-1][0]*rows[i-1][1], dei=di/(rows[i][1]-rows[i-1][1]);
+  return {topic:"4 Differanseenhetsinntekt",type:"num",case:`<p>Etterspørselen etter produktet til ${qa_firm(R)}:</p>`+qa_tbl([["Pris","Mengde"]].concat(rows)),
+    prompt:`Hva er DEI når prisen settes ned fra ${rows[i-1][0]} til ${rows[i][0]} kr? Rund av til to desimaler.`,answer:qa_r(dei,2),tol:0.01,unit:"kr",
+    explain:`STI: ${rows[i-1][0]} × ${rows[i-1][1]} = ${qa_nf(rows[i-1][0]*rows[i-1][1],0)} og ${rows[i][0]} × ${rows[i][1]} = ${qa_nf(rows[i][0]*rows[i][1],0)}. DI = ${qa_nf(di,0)}. DEI = DI / ${rows[i][1]-rows[i-1][1]} = <b>${qa_kr(dei)}</b>. DEI er lavere enn prisen fordi prisen settes ned på alle enhetene.`};
+}},
+q4red:{ch:4,make(R){
+  const ep=R.pick([0.3,0.5,0.6,0.8,1,1.2,1.5,1.8,2.4]);
+  const ans=ep>1?"Salgsinntekten øker":ep<1?"Salgsinntekten synker":"Salgsinntekten er uendret";
+  const m=qa_mc(R,ans,["Salgsinntekten øker","Salgsinntekten synker","Salgsinntekten er uendret","Overskuddet øker alltid"].filter(x=>x!==ans));
+  return {topic:"4 Prisreduksjon og elastisitet",type:"mc",case:`<p>${qa_firm(R)} har beregnet at priselastisiteten for ${qa_prod(R)} er ${qa_nf(ep,1)}.</p>`,
+    prompt:"Hva skjer med salgsinntekten hvis bedriften setter ned prisen litt?",...m,
+    explain:`ep ${ep>1?"> 1: elastisk":ep<1?"< 1: uelastisk":"= 1: nøytralelastisk"}, så <b>${ans.toLowerCase()}</b>. Selv om salgsinntekten øker, er prisreduksjonen bare lønnsom hvis merinntekten er større enn merkostnaden.`};
+}},
+q4subst:{ch:4,make(R){
+  const pair=R.pick([["kaffe","te","s"],["smør","margarin","s"],["buss","tog","s"],["iPad","Android-nettbrett","s"],["printere","blekkpatroner","k"],["ski","skibindinger","k"],["biler","bensin","k"],["spillkonsoller","spill","k"]]);
+  const ans=pair[2]==="s"?`Etterspørselen etter ${pair[1]} øker (substitutter)`:`Etterspørselen etter ${pair[1]} synker (komplementer)`;
+  const m=qa_mc(R,ans,[`Etterspørselen etter ${pair[1]} øker (substitutter)`,`Etterspørselen etter ${pair[1]} synker (komplementer)`,`Etterspørselen etter ${pair[1]} er uendret`,`Det blir en bevegelse langs etterspørselskurven for ${pair[1]}`].filter(x=>x!==ans));
+  return {topic:"4 Substitutter og komplementer",type:"mc",case:`<p>Prisen på ${pair[0]} øker kraftig.</p>`,prompt:`Hva skjer mest sannsynlig med etterspørselen etter ${pair[1]}?`,...m,
+    explain:`${pair[0]} og ${pair[1]} er ${pair[2]==="s"?"substitutter: kundene bytter over, så etterspørselskurven for "+pair[1]+" skifter mot høyre":"komplementer som brukes sammen: færre kjøper "+pair[0]+", og etterspørselskurven for "+pair[1]+" skifter mot venstre"}. Det er et skift i kurven, ikke en bevegelse langs den, fordi prisen på ${pair[1]} selv er uendret.`};
+}},
+
+/* ---------------- Kap. 5 ---------------- */
+q5vom:{ch:5,make(R){
+  for(let t=0;t<80;t++){
+    const p0=R.ri(50,90)*10, dp=R.ri(4,10)*5, a=R.pick([.1,.15,.2,.25]), b=R.ri(10,25)*10, c=R.ri(20,80)*1000;
+    const rows=[]; for(let i=1;i<=7;i++){ const x=100*i, P=p0-dp*i, K=Math.round(c+b*x+a*x*x); rows.push([x,P,K,x*P-K]); }
+    let bi=0; rows.forEach((r,i)=>{ if(r[3]>rows[bi][3]) bi=i; });
+    if(bi===0||bi===6||rows.some(r=>r[1]<=0)||rows[bi][3]<=0||rows.filter(r=>r[3]===rows[bi][3]).length>1) continue;
+    return {topic:"5.1 Vinningsoptimal mengde",type:"num",case:`<p>${qa_firm(R)} har fallende etterspørselskurve. Tabellen viser pris og totale kostnader ved ulike mengder:</p>`+qa_tbl([["Mengde","Pris","STK"]].concat(rows.map(r=>r.slice(0,3)))),
+      prompt:"Hvilken mengde er vinningsoptimal (gir størst overskudd)?",answer:rows[bi][0],tol:0.5,unit:"stk",
+      explain:`Overskudd = mengde × pris − STK: ${rows.map(r=>r[0]+": "+qa_nf(r[3],0)).join(", ")}. Størst ved <b>${rows[bi][0]} stk</b>, der DEI ≈ DEK. Vanlig feil er å velge mengden med høyest salgsinntekt.`};
+  } throw new Error("q5vom");
+}},
+q5db:{ch:5,make(R){
+  const p=R.ri(20,90)*10, v=Math.round(p*R.ri(35,75)/100), x=R.ri(10,90)*100, ftk=R.ri(10,90)*10000, v2=R.pick(["db","ov"]);
+  const db=(p-v)*x;
+  if(v2==="db") return {topic:"5.1 Dekningsbidrag",type:"num",case:`<p>${qa_firm(R)} selger ${qa_nf(x,0)} ${qa_prod(R)} til ${qa_kr(p,0)} per stk. Variable kostnader er ${qa_kr(v,0)} per stk, og faste kostnader er ${qa_kr(ftk,0)}.</p>`,
+    prompt:"Hva er samlet dekningsbidrag?",answer:db,tol:0.5,unit:"kr",explain:`DB = (pris − VEK) × mengde = (${p} − ${v}) × ${x} = <b>${qa_kr(db,0)}</b>. Faste kostnader trekkes ikke fra i dekningsbidraget.`};
+  return {topic:"5.1 Dekningsbidrag",type:"num",case:`<p>${qa_firm(R)} selger ${qa_nf(x,0)} ${qa_prod(R)} til ${qa_kr(p,0)} per stk. Variable kostnader er ${qa_kr(v,0)} per stk, og faste kostnader er ${qa_kr(ftk,0)}.</p>`,
+    prompt:"Hva er overskuddet? Oppgi underskudd med minus.",answer:db-ftk,tol:0.5,unit:"kr",explain:`DB = (${p} − ${v}) × ${x} = ${qa_kr(db,0)}. Overskudd = DB − faste kostnader = ${qa_kr(db,0)} − ${qa_kr(ftk,0)} = <b>${qa_kr(db-ftk,0)}</b>.`};
+}},
+q5dp:{ch:5,make(R){
+  const p=R.ri(20,90)*10, v=p-R.ri(5,40)*5, k=R.ri(5,60)*100, ftk=(p-v)*k;
+  return {topic:"5.1 Dekningspunkt",type:"num",case:`<p>${qa_firm(R)} selger til en fast pris på ${qa_kr(p,0)}. VEK er konstant ${qa_kr(v,0)}, og de faste kostnadene er ${qa_kr(ftk,0)}.</p>`,
+    prompt:"Hvor mange enheter må selges for å gå i null (dekningspunktet)?",answer:k,tol:0.5,unit:"stk",
+    explain:`Dekningspunktet er der pris = SEK, altså der DB dekker de faste kostnadene: ${qa_nf(ftk,0)} / (${p} − ${v}) = <b>${qa_nf(k,0)} stk</b>. Vanlig feil er å dele på prisen i stedet for på DB per enhet.`};
+}},
+q5lav:{ch:5,make(R){
+  for(let t=0;t<50;t++){
+    const a=R.pick([0.02,0.04,0.05,0.1]), b=R.ri(20,80,5), c=R.ri(10,40)*1000, st=Math.max(50,Math.round(Math.sqrt(c/a)/3/50)*50);
+    const xs=[1,2,3,4,5,6].map(i=>i*st), vek=xs.map(x=>qa_r(a*x+b,2)), sek=xs.map(x=>qa_r(a*x+b+c/x,2));
+    const lv=Math.min(...vek), ls=Math.min(...sek); if(sek.indexOf(ls)===0||sek.indexOf(ls)===5) continue;
+    const varig=R.r()<0.5, ans=varig?ls:lv;
+    const m=qa_mc(R,qa_kr(ans),[qa_kr(varig?lv:ls),qa_kr(vek[3]),qa_kr(sek[5]),qa_kr(sek[0])]);
+    return {topic:"5.2 Laveste akseptable pris",type:"mc",case:`<p>${qa_firm(R)} har denne tabellen over enhetskostnader:</p>`+qa_tbl([["Mengde","VEK","SEK"]].concat(xs.map((x,i)=>[x,vek[i],sek[i]]))),
+      prompt:`Etterspørselen faller ${varig?"varig":"midlertidig"}. Hva er laveste akseptable pris?`,...m,
+      explain:`${varig?"Ved varig nedgang må alle kostnader dekkes: laveste SEK":"Ved midlertidig nedgang må bare de variable kostnadene dekkes: laveste VEK"} = <b>${qa_kr(ans)}</b>. ${varig?"Laveste VEK gjelder bare på kort sikt.":"Faste kostnader påløper uansett på kort sikt."}`};
+  } throw new Error("q5lav");
+}},
+q5diff:{ch:5,make(R){
+  const n=7, T=R.ri(3,6), H=R.ri(1,T-1), E=R.ri(60,150), sd=R.ri(3,9), se=R.ri(3,9), o1=R.ri(1,sd-1), o2=R.ri(1,se-1);
+  const dek=[...Array(n)].map((_,i)=>E-(T-1-i)*sd-o1), dei=[...Array(n)].map((_,i)=>E+(H-1-i)*se+o2);
+  const xs=[...Array(n)].map((_,i)=>(i+1)*100);
+  return {topic:"5.2 Prisdifferensiering",type:"num",case:`<p>${qa_firm(R)} selger i hjemmemarkedet og kan eksportere ubegrenset til en fast pris på ${qa_kr(E,0)}. Tabellen viser DEK og DEI i hjemmemarkedet for hvert intervall på 100 enheter (opp til mengden i første kolonne):</p>`+qa_tbl([["Mengde","DEK","DEI hjemme"]].concat(xs.map((x,i)=>[x,dek[i],dei[i]]))),
+    prompt:"Hvor mange enheter bør eksporteres?",answer:(T-H)*100,tol:0.5,unit:"stk",
+    explain:`Totaltilbud: produser så lenge DEK < eksportprisen ${E}, altså ${T*100} enheter. Hjemme: selg så lenge DEI hjemme > ${E}, altså ${H*100} enheter. Eksport = ${T*100} − ${H*100} = <b>${(T-H)*100} stk</b>. Hver enhet selges i markedet med høyest DEI. Vanlig feil er å svare totaltilbudet eller hjemmesalget.`};
+}},
+
+/* ---------------- Kap. 6 ---------------- */
+q6handel:{ch:6,make(R){
+  const n=R.ri(5,40), ip=R.ri(100,3000,10), fr=R.ri(5,60)*50, ind=R.ri(20,70,5), fo=R.ri(5,25,5);
+  const ik=(n*ip+fr)/n, sk=ik*(1+ind/100), sp=sk*(1+fo/100);
+  return {topic:"6.1 Handelsbedrift",type:"num",case:`<p>${qa_firm(R)} kjøper inn ${n} ${qa_prod(R)} à ${qa_kr(ip,0)}. Frakt og forsikring for hele partiet koster ${qa_kr(fr,0)}. Indirekte kostnader legges på med ${ind} % av inntakskost, og fortjenesten er ${fo} % av selvkost.</p>`,
+    prompt:"Hva blir salgsprisen per enhet eksklusiv mva.? Rund av til to desimaler.",answer:qa_r(sp,2),tol:0.01,unit:"kr",
+    explain:`Inntakskost per enhet = (${n} × ${ip} + ${fr}) / ${n} = ${qa_kr(ik)}. Selvkost = × ${1+ind/100} = ${qa_kr(sk)}. Salgspris = × ${1+fo/100} = <b>${qa_kr(sp)}</b>. Vanlig feil er å glemme å fordele frakten på antall enheter.`};
+}},
+q6sats:{ch:6,make(R){
+  const dl=R.ri(10,40)*100000, rate=R.pick([40,60,75,80,90,110,120,150]), ind=dl*rate/100, odl=R.ri(5,60)*1000, v=R.pick(["sats","ordre"]);
+  if(v==="sats") return {topic:"6.2 Tilleggssats",type:"num",case:`<p>${qa_firm(R)} budsjetterer indirekte tilvirkningskostnader på ${qa_kr(ind,0)} og direkte lønn på ${qa_kr(dl,0)} for året. Indirekte kostnader fordeles etter direkte lønn.</p>`,
+    prompt:"Hva er tilleggssatsen i prosent av direkte lønn?",answer:rate,tol:0.05,unit:"%",explain:`Tilleggssats = ${qa_nf(ind,0)} / ${qa_nf(dl,0)} × 100 = <b>${rate} %</b>. Bruk budsjetterte (normale) tall, ikke faktiske.`};
+  return {topic:"6.2 Tilleggssats",type:"num",case:`<p>${qa_firm(R)} budsjetterer indirekte tilvirkningskostnader på ${qa_kr(ind,0)} og direkte lønn på ${qa_kr(dl,0)}. En ordre har ${qa_kr(odl,0)} i direkte lønn.</p>`,
+    prompt:"Hvor mye indirekte tilvirkningskostnader skal ordren belastes med?",answer:odl*rate/100,tol:0.5,unit:"kr",explain:`Tilleggssats = ${qa_nf(ind,0)} / ${qa_nf(dl,0)} = ${rate} %. Ordren: ${qa_nf(odl,0)} × ${rate} % = <b>${qa_kr(odl*rate/100,0)}</b>.`};
+}},
+q6selvkost:{ch:6,make(R){
+  const dm=R.ri(20,200)*100, dl=R.ri(10,150)*100, im=R.ri(5,20), it=R.ri(40,150,5), sa=R.ri(10,30), fo=R.ri(10,30);
+  const tk=dm*(1+im/100)+dl*(1+it/100), sk=tk*(1+sa/100), sp=sk*(1+fo/100);
+  const ask=R.pick(["sk","sp"]);
+  return {topic:"6.2 Selvkostkalkyle",type:"num",case:`<p>En ordre hos ${qa_firm(R)} har ${qa_kr(dm,0)} i direkte materialer og ${qa_kr(dl,0)} i direkte lønn. Tilleggssatser: indirekte material ${im} % av DM, indirekte tilvirkning ${it} % av DL, salg og administrasjon ${sa} % av tilvirkningskost. Fortjenesten er ${fo} % av selvkost.</p>`,
+    prompt:(ask==="sk"?"Hva er selvkost for ordren?":"Hva blir salgsprisen for ordren?")+" Rund av til hele kroner.",answer:Math.round(ask==="sk"?sk:sp),tol:1,unit:"kr",
+    explain:`Tilvirkningskost = ${dm} + ${qa_nf(dm*im/100)} + ${dl} + ${qa_nf(dl*it/100)} = ${qa_kr(tk,0)}. Selvkost = × ${1+sa/100} = ${qa_kr(sk,0)}. Salgspris = × ${1+fo/100} = ${qa_kr(sp,0)}. Svar: <b>${qa_kr(ask==="sk"?sk:sp,0)}</b>. Vanlig feil er å beregne salg og administrasjon av DM + DL i stedet for av tilvirkningskost.`};
+}},
+q6bidrag:{ch:6,make(R){
+  const dm=R.ri(50,400)*5, dl=R.ri(30,300)*5, vi=R.ri(10,60), vs=R.ri(5,15), p=Math.round((dm+dl)*(1+vi/100)*(1+vs/100)*R.ri(115,180)/100);
+  const vtk=dm+dl+(dm+dl)*vi/100, mk=vtk*(1+vs/100), db=p-mk;
+  return {topic:"6.2 Bidragskalkyle",type:"num",case:`<p>Et produkt hos ${qa_firm(R)} har direkte materialer ${qa_kr(dm,0)} og direkte lønn ${qa_kr(dl,0)} per enhet. Variable indirekte tilvirkningskostnader er ${vi} % av direkte kostnader, og variable salgs- og administrasjonskostnader er ${vs} % av variable tilvirkningskostnader. Salgsprisen er ${qa_kr(p,0)}.</p>`,
+    prompt:"Hva er dekningsbidraget per enhet? Rund av til to desimaler.",answer:qa_r(db,2),tol:0.01,unit:"kr",
+    explain:`Variable tilvirkningskostnader = ${dm+dl} × ${1+vi/100} = ${qa_kr(vtk)}. Minimumskost = × ${1+vs/100} = ${qa_kr(mk)}. DB = ${p} − ${qa_nf(mk)} = <b>${qa_kr(db)}</b>. Faste kostnader er ikke med i bidragskalkylen.`};
+}},
+q6ordre:{ch:6,make(R){
+  const vek=R.ri(100,600,10), fek=R.ri(20,200,10), sek=vek+fek, n=R.ri(2,20)*100;
+  const acc=R.r()<0.65, pr=acc?vek+R.ri(1,fek/10-1)*10:vek-R.ri(1,5)*10, db=(pr-vek)*n;
+  const a1=`Ja, ordren gir ${qa_kr(db,0)} i ekstra dekningsbidrag`, a2="Nei, prisen er lavere enn selvkost", a3=`Nei, ordren gir et negativt dekningsbidrag på ${qa_kr(db,0)}`, a4="Ja, fordi prisen er høyere enn selvkost";
+  const ans=acc?a1:a3;
+  const m=qa_mc(R,ans,[a1,a2,a3,a4].filter(x=>x!==ans),[`Ja, ordren gir ${qa_kr((pr-sek)*n,0)} i overskudd`]);
+  return {topic:"6.3 Tilleggsordre",type:"mc",case:`<p>${qa_firm(R)} har ledig kapasitet. Variable kostnader er ${qa_kr(vek,0)} per enhet og selvkost ${qa_kr(sek,0)} per enhet. En ny kunde tilbyr ${qa_kr(pr,0)} per enhet for ${qa_nf(n,0)} enheter, uten at det påvirker det vanlige salget.</p>`,
+    prompt:"Bør bedriften ta ordren?",...m,
+    explain:`Med ledig kapasitet er bidragsmetoden riktig: faste kostnader påløper uansett. DB = (${pr} − ${vek}) × ${n} = ${qa_kr(db,0)}. ${acc?"Positivt, så ordren bør tas selv om prisen er under selvkost.":"Negativt, så ordren bør avslås."}`};
+}},
+q6timepris:{ch:6,make(R){
+  const l=R.ri(10,40)*100000, sos=Math.round(l*R.ri(20,35)/100/1000)*1000, ind=R.ri(5,30)*50000, fo=R.ri(5,20), t=R.ri(30,120)*100;
+  const tp=(l+sos+ind)*(1+fo/100)/t;
+  return {topic:"6.1 Håndverksbedrift",type:"num",case:`<p>${R.pick(["Rørlegger","Elektriker","Snekker","Maler"])}firmaet ${qa_firm(R)} budsjetterer med lønn ${qa_kr(l,0)}, sosiale kostnader ${qa_kr(sos,0)} og andre indirekte kostnader ${qa_kr(ind,0)}. Fortjenesten skal være ${fo} %, og det er ${qa_nf(t,0)} fakturerbare timer.</p>`,
+    prompt:"Hva blir timeprisen? Rund av til to desimaler.",answer:qa_r(tp,2),tol:0.01,unit:"kr",
+    explain:`Timepris = (${qa_nf(l,0)} + ${qa_nf(sos,0)} + ${qa_nf(ind,0)}) × ${1+fo/100} / ${qa_nf(t,0)} = <b>${qa_kr(tp)}</b>. Vanlig feil er å dele på alle arbeidstimer i stedet for de fakturerbare.`};
+}}
+});
+})();
+
+/* ===== Randomized quiz templates, kap. 7–11 (qgen_b) ===== */
+function qb_n(x,d){ return Number(x).toLocaleString("nb-NO",{maximumFractionDigits:d==null?2:d}); }
+function qb_t(x){ return String(x).replace(".",","); }
+function qb_tab(rows){ return "<table>"+rows.map((r,i)=>"<tr>"+r.map(c=>i===0?"<th>"+c+"</th>":"<td>"+(typeof c==="number"?qb_t(c):c)+"</td>").join("")+"</tr>").join("")+"</table>"; }
+function qb_mc(R,correct,distr){
+  const out=[correct]; distr.forEach(d=>{ if(!out.includes(d)) out.push(d); });
+  const opts=R.shuffle(out); return {options:opts,correct:opts.indexOf(correct)};
+}
+const QB_FIRMA=["Fjordhandel AS","Bykjøp AS","Vestlandsmat AS","Nordlys Sport AS","Kystbygg AS","Fjellprodukter AS","Sentrum Interiør AS","Havbris AS","Solsiden Elektro AS","Trollvegen Verksted AS","Brygga Bakeri AS","Lysaker Møbler AS"];
+const QB_AVD=[["Herre","Dame"],["Kjøtt","Fisk"],["Frukt","Meieri"],["Sko","Klær"],["Bøker","Papir"],["Hvitevarer","Lyd og bilde"]];
+const QB_HJELP=["Lager","Bildrift","Kantine","Vedlikehold","IT-avdeling"];
+const QB_PROD=[["Alfa","Beta","Gamma"],["Standard","Pluss","Premium"],["Liten","Medium","Stor"],["Nord","Sør","Vest"],["Classic","Sport","Tur"]];
+
+Object.assign(QGEN,{
+/* ---------- Kap. 7 ---------- */
+b_fordel:{ch:7,make(R){
+  const f=R.pick(QB_FIRMA), A=R.pick(QB_AVD), H=R.pick(QB_HJELP);
+  const ar=[R.ri(4,20)*10,R.ri(8,30)*10,R.ri(8,30)*10], sum=ar[0]+ar[1]+ar[2], per=R.ri(40,250), cost=sum*per;
+  const ix=R.ri(0,2), names=[H,A[0],A[1]], ans=cost*ar[ix]/sum, wrong=cost*ar[ix]/(sum-(ix===0?0:ar[0]));
+  return {topic:"7 Kostnadsfordeling",type:"num",
+    case:`<p>${f} har avdelingene ${A[0].toLowerCase()} og ${A[1].toLowerCase()}, og ${H.toLowerCase()} som hjelpeavdeling. Husleien på ${qb_n(cost)} kr per måned fordeles etter areal.</p>`+qb_tab([["Avdeling","Areal (m²)"],[H,ar[0]],[A[0],ar[1]],[A[1],ar[2]]]),
+    prompt:`Hvor mye husleie belastes ${names[ix].toLowerCase()} i første trinn (før hjelpeavdelingen fordeles videre)? Rund av til hele kroner.`,
+    answer:Math.round(ans),tol:1,unit:"kr",
+    explain:`Andel = kostnad × egen del / sum av delene. Samlet areal = ${ar.join(" + ")} = ${sum} m². ${names[ix]}: ${qb_n(cost)} × ${ar[ix]} / ${sum} = <b>${qb_n(Math.round(ans),0)} kr</b>. Vanlig feil er å utelate hjelpeavdelingen fra arealsummen${ix===0?"":`, som gir ${qb_n(Math.round(wrong),0)} kr`}.`};
+}},
+b_trinn:{ch:7,make(R){
+  const f=R.pick(QB_FIRMA), A=R.pick(QB_AVD), H=R.pick(QB_HJELP);
+  const a=R.ri(1,5), b=R.ri(1,5), unit=R.ri(2,8)*1000, hs=(a+b)*unit, d1=R.ri(40,140)*1000, d2=R.ri(40,140)*1000, ix=R.ri(0,1);
+  const share=hs*(ix?b:a)/(a+b), own=ix?d2:d1, ans=own+share;
+  return {topic:"7 Trinnvis kostnadsfordeling",type:"num",
+    case:`<p>Etter første trinn i kostnadsfordelingen hos ${f} har ${H.toLowerCase()} samlet ${qb_n(hs)} kr, som fordeles videre på hovedavdelingene i forholdet ${a} : ${b} (${A[0].toLowerCase()} : ${A[1].toLowerCase()}).</p>`+qb_tab([["Avdeling","Indirekte kostnader etter trinn 1"],[H,hs],[A[0],d1],[A[1],d2]]),
+    prompt:`Hva blir sum indirekte kostnader for avdeling ${A[ix].toLowerCase()} etter at ${H.toLowerCase()} er fordelt?`,
+    answer:ans,tol:0.5,unit:"kr",
+    explain:`${H} fordeles ${a} : ${b}. ${A[ix]} får ${qb_n(hs)} × ${ix?b:a} / ${a+b} = ${qb_n(share)} kr. Sum = ${qb_n(own)} + ${qb_n(share)} = <b>${qb_n(ans)} kr</b>. Husk at hjelpeavdelingen tømmes helt: summen for hovedavdelingene skal bli ${qb_n(d1+d2+hs)} kr.`};
+}},
+b_budavvik:{ch:7,make(R){
+  const f=R.pick(QB_FIRMA), avd=R.pick(R.pick(QB_AVD));
+  const posts=[["Salgsinntekt",1,R.ri(30,90)*10000],["Varekostnad",0,R.ri(20,60)*10000],["Lønn",0,R.ri(20,80)*1000],["Markedsføring",0,R.ri(5,30)*1000],["Bildrift",0,R.ri(8,30)*1000]];
+  const [post,inc,bud]=R.pick(posts); let reg=bud+R.ri(-15,15)*Math.round(bud/100/1000)*1000; if(reg===bud) reg=bud+(inc?-1:1)*1000*R.ri(1,9);
+  const ans=inc?reg-bud:bud-reg;
+  return {topic:"7 Budsjettkontroll",type:"num",
+    case:`<p>Budsjettkontroll for avdeling ${avd.toLowerCase()} i ${f}:</p>`+qb_tab([["Post","Budsjett","Regnskap"],[post,bud,reg]]),
+    prompt:`Hva er avviket for ${post.toLowerCase()} regnet som effekt på resultatet? Oppgi negativt (ugunstig) avvik med minus.`,
+    answer:ans,tol:0.5,unit:"kr",
+    explain:`${inc?"For en inntekt: regnskap − budsjett":"For en kostnad: budsjett − regnskap"} = ${inc?qb_n(reg)+" − "+qb_n(bud):qb_n(bud)+" − "+qb_n(reg)} = <b>${qb_n(ans)} kr</b>, ${ans>=0?"et gunstig (positivt)":"et ugunstig (negativt)"} avvik. Vanlig feil er å regne regnskap − budsjett også for kostnader, som gir motsatt fortegn.`};
+}},
+b_varekost:{ch:7,make(R){
+  const f=R.pick(QB_FIRMA), ib=R.ri(10,60)*10000, ub=R.ri(10,60)*10000, inn=R.ri(30,120)*10000+Math.max(0,ub-ib), ans=ib+inn-ub;
+  return {topic:"7 Varekostnad",type:"num",
+    case:`<p>${f} har disse tallene for ${R.pick(["mars","april","mai","juni","september","oktober"])}:</p>`+qb_tab([["Post","Beløp"],["Varebeholdning ved periodens start (IB)",ib],["Varekjøp",inn],["Varebeholdning ved periodens slutt (UB)",ub]]),
+    prompt:"Hva er varekostnaden for perioden?",
+    answer:ans,tol:0.5,unit:"kr",
+    explain:`Varekostnad = IB + innkjøp − UB = ${qb_n(ib)} + ${qb_n(inn)} − ${qb_n(ub)} = <b>${qb_n(ans)} kr</b>. Bytter du om IB og UB, får du ${qb_n(ub+inn-ib)} kr, som er feil. Varekostnaden er innkjøpsverdien av varene som faktisk er solgt.`};
+}},
+b_svinn:{ch:7,make(R){
+  const f=R.pick(QB_FIRMA), s=R.ri(40,150)*10000, bf=R.pick([25,30,35,40]), ev=s*(100-bf)/100, sv=R.ri(2,30)*1000, vk=ev+sv, ib=R.ri(10,40)*10000, ub=R.ri(10,40)*10000;
+  return {topic:"7 Svinn",type:"num",
+    case:`<p>${f} kalkulerer alle varer med ${bf} % bruttofortjeneste. Etter vareopptellingen har butikken disse tallene:</p>`+qb_tab([["Post","Beløp"],["Salgsinntekt",s],["IB varer",ib],["Varekjøp",vk-ib+ub],["UB varer",ub]]),
+    prompt:"Hvor stort er svinnet målt i kostpris?",
+    answer:sv,tol:0.5,unit:"kr",
+    explain:`Faktisk varekostnad = ${qb_n(ib)} + ${qb_n(vk-ib+ub)} − ${qb_n(ub)} = ${qb_n(vk)}. Forventet varekostnad = ${qb_n(s)} × (1 − ${bf} %) = ${qb_n(ev)}. Svinn = ${qb_n(vk)} − ${qb_n(ev)} = <b>${qb_n(sv)} kr</b>. Vanlig feil er å regne forventet varekostnad som salg × BF %, som er bruttofortjenesten og ikke varekostnaden.`};
+}},
+b_dg:{ch:7,make(R){
+  const f=R.pick(QB_FIRMA), dg=R.pick([20,25,30,35,40,45,50]), s=R.ri(60,200)*10000, var_=s*(100-dg)/100, fk=R.ri(10,40)*dg*1000, np=fk/(dg/100);
+  const v=R.ri(0,1);
+  return {topic:"7 Dekningspunkt",type:"num",
+    case:`<p>En avdeling i ${f} har denne kostnadsstrukturen:</p>`+qb_tab([["Post","Beløp"],["Salgsinntekt",s],["Variable kostnader",var_],["Faste kostnader",fk]]),
+    prompt:v?"Hva er dekningspunktet (omsetningen som gir null i fortjeneste)?":"Hva er sikkerhetsmarginen i kroner?",
+    answer:v?np:s-np,tol:0.5,unit:"kr",
+    explain:`DB = ${qb_n(s)} − ${qb_n(var_)} = ${qb_n(s-var_)}. DG = ${qb_n(s-var_)} / ${qb_n(s)} = ${dg} %. Dekningspunkt = faste kostnader / DG = ${qb_n(fk)} / ${dg/100} = ${qb_n(np)} kr.${v?"":` Sikkerhetsmargin = salgsinntekt − dekningspunkt = ${qb_n(s)} − ${qb_n(np)} = <b>${qb_n(s-np)} kr</b>.`}${v?" Svaret er <b>"+qb_n(np)+" kr</b>. Vanlig feil er å dele på DB i kroner i stedet for på dekningsgraden.":" En negativ sikkerhetsmargin ville betydd at avdelingen går med tap."}`};
+}},
+b_normal:{ch:7,make(R){
+  const f=R.pick(QB_FIRMA), n=R.ri(10,40)*100, fs=R.ri(8,30)*10, bf=n*fs, va=n+R.ri(-15,15)*Math.round(n/100)*1, vf=bf+R.ri(-30,30)*1000;
+  const v=R.ri(0,2), ink=fs*va, dd=ink-vf, be=(va-n)*fs, ka=bf-vf;
+  const q=[["dekningsdifferansen for de faste indirekte kostnadene",dd],["beskjeftigelsesavviket",be],["kostnadsavviket for de faste kostnadene",ka]][v];
+  return {topic:"7 Normalkost",type:"num",
+    case:`<p>${f} bruker normalkost og fordeler faste indirekte kostnader etter maskintimer.</p>`+qb_tab([["Post","Verdi"],["Normal aktivitet (maskintimer)",n],["Budsjetterte faste indirekte kostnader",bf],["Virkelig aktivitet (maskintimer)",va],["Virkelige faste indirekte kostnader",vf]]),
+    prompt:`Hva er ${q[0]}? Oppgi underdekning eller ugunstig avvik med minus.`,
+    answer:q[1],tol:0.5,unit:"kr",
+    explain:`Fast normalsats = ${qb_n(bf)} / ${qb_n(n)} = ${fs} kr/t. Innkalkulert = ${fs} × ${qb_n(va)} = ${qb_n(ink)}. Dekningsdifferanse = ${qb_n(ink)} − ${qb_n(vf)} = ${qb_n(dd)}. Beskjeftigelsesavvik = (${qb_n(va)} − ${qb_n(n)}) × ${fs} = ${qb_n(be)}. Kostnadsavvik = ${qb_n(bf)} − ${qb_n(vf)} = ${qb_n(ka)}. Svaret er <b>${qb_n(q[1])} kr</b>. Kontroll: beskjeftigelsesavvik + kostnadsavvik = dekningsdifferansen.`};
+}},
+
+/* ---------- Kap. 8 ---------- */
+b_np:{ch:8,make(R){
+  const f=R.pick(QB_FIRMA), p=R.ri(20,90)*10, v=Math.round(p*R.ri(35,70)/100/10)*10, db=p-v, k=R.ri(4,60)*100, fk=db*k, kr=R.ri(0,1);
+  return {topic:"8 Nullpunkt",type:"num",
+    case:`<p>${f} selger ett produkt.</p>`+qb_tab([["Post","Beløp"],["Salgspris per enhet",p],["Variable kostnader per enhet",v],["Faste kostnader per år",fk]]),
+    prompt:kr?"Hva er nullpunktomsetningen i kroner?":"Hvor mange enheter må selges for å nå nullpunktet?",
+    answer:kr?k*p:k,tol:0.5,unit:kr?"kr":"enheter",
+    explain:`DB per enhet = ${p} − ${v} = ${db} kr. Nullpunkt = FK / DB per enhet = ${qb_n(fk)} / ${db} = ${qb_n(k)} enheter.${kr?` I kroner: ${qb_n(k)} × ${p} = <b>${qb_n(k*p)} kr</b> (eller FK / DG).`:" Svaret er <b>"+qb_n(k)+" enheter</b>."} Vanlig feil er å dele de faste kostnadene på salgsprisen i stedet for på dekningsbidraget.`};
+}},
+b_sm:{ch:8,make(R){
+  const f=R.pick(QB_FIRMA), p=R.ri(20,90)*10, v=Math.round(p*R.ri(35,70)/100/10)*10, db=p-v, k=R.ri(4,40)*100, fk=db*k, q=k+R.ri(2,30)*100, v2=R.ri(0,1);
+  const smkr=(q-k)*p, sg=(q-k)/q*100;
+  return {topic:"8 Sikkerhetsmargin",type:"num",
+    case:`<p>${f} har budsjettert salg av ${qb_n(q)} enheter.</p>`+qb_tab([["Post","Beløp"],["Salgspris per enhet",p],["Variable kostnader per enhet",v],["Faste kostnader",fk],["Budsjettert salg (enheter)",q]]),
+    prompt:v2?"Hva er sikkerhetsgraden (sikkerhetsmargin i prosent av budsjettert salg)? Svar i prosent med én desimal.":"Hva er sikkerhetsmarginen i kroner?",
+    answer:v2?Math.round(sg*10)/10:smkr,tol:v2?0.1:0.5,unit:v2?"%":"kr",
+    explain:`DB per enhet = ${db} kr, nullpunkt = ${qb_n(fk)} / ${db} = ${qb_n(k)} enheter. Sikkerhetsmargin = ${qb_n(q)} − ${qb_n(k)} = ${qb_n(q-k)} enheter = ${qb_n(smkr)} kr.${v2?` Sikkerhetsgrad = ${qb_n(q-k)} / ${qb_n(q)} = <b>${qb_n(sg,1)} %</b>.`:` Svaret er <b>${qb_n(smkr)} kr</b>.`} Salget kan falle så mye før bedriften går med underskudd.`};
+}},
+b_maal:{ch:8,make(R){
+  const f=R.pick(QB_FIRMA), p=R.ri(20,90)*10, v=Math.round(p*R.ri(35,70)/100/10)*10, db=p-v, k=R.ri(10,80)*100, fk=R.ri(2,k/100-1)*100*db, mr=k*db-fk;
+  return {topic:"8 Målsatt resultat",type:"num",
+    case:`<p>Ledelsen i ${f} ønsker et resultat på ${qb_n(mr)} kr neste år.</p>`+qb_tab([["Post","Beløp"],["Salgspris per enhet",p],["Variable kostnader per enhet",v],["Faste kostnader",fk],["Ønsket resultat",mr]]),
+    prompt:"Hvor mange enheter må selges for å nå det ønskede resultatet?",
+    answer:k,tol:0.5,unit:"enheter",
+    explain:`Målsatt salg = (FK + ønsket resultat) / DB per enhet = (${qb_n(fk)} + ${qb_n(mr)}) / ${db} = <b>${qb_n(k)} enheter</b>. Vanlig feil er å glemme de faste kostnadene og bare dele resultatet på DB, som gir ${qb_n(mr/db,1)} enheter.`};
+}},
+b_krit:{ch:8,make(R){
+  const f=R.pick(QB_FIRMA), q=R.ri(5,40)*100, fe=R.ri(10,90), fk=fe*q, v=R.ri(10,60)*5, p=v+fe+R.ri(5,60), w=R.ri(0,1);
+  const kp=v+fe, kv=p-fe;
+  return {topic:"8 Kritiske verdier",type:"num",
+    case:`<p>${f} budsjetterer med salg av ${qb_n(q)} enheter.</p>`+qb_tab([["Post","Beløp"],["Salgspris per enhet",p],["Variable kostnader per enhet",v],["Faste kostnader",fk],["Budsjettert salg (enheter)",q]]),
+    prompt:w?"Hvor høye kan de variable kostnadene per enhet bli før resultatet blir null (kritisk VEK)?":"Hvor lav kan salgsprisen bli før resultatet blir null (kritisk pris)?",
+    answer:w?kv:kp,tol:0.5,unit:"kr",
+    explain:`Resultatet er null når pris × mengde = VEK × mengde + FK. Faste kostnader per enhet = ${qb_n(fk)} / ${qb_n(q)} = ${fe} kr. ${w?`Kritisk VEK = pris − FK / mengde = ${p} − ${fe} = <b>${kv} kr</b>, mot ${v} kr i budsjettet.`:`Kritisk pris = VEK + FK / mengde = ${v} + ${fe} = <b>${kp} kr</b>, mot ${p} kr i budsjettet.`} Alle andre størrelser holdes som budsjettert.`};
+}},
+b_miks:{ch:8,make(R){
+  const f=R.pick(QB_FIRMA), P=R.pick(QB_PROD), a=R.ri(1,4), b=R.ri(1,4), pa=R.ri(10,40)*10, pb=R.ri(10,40)*10, dba=Math.round(pa*R.ri(25,55)/100), dbb=Math.round(pb*R.ri(25,55)/100);
+  const dbp=a*dba+b*dbb, k=R.ri(5,50)*10, fk=dbp*k, ix=R.ri(0,1);
+  return {topic:"8 Flervareproduksjon",type:"num",
+    case:`<p>${f} selger produktene ${P[0]} og ${P[1]} i fast salgsmiks ${a} : ${b}. Faste kostnader er ${qb_n(fk)} kr.</p>`+qb_tab([["Produkt","Pris per enhet","DB per enhet"],[P[0],pa,dba],[P[1],pb,dbb]]),
+    prompt:`Hvor mange enheter av ${P[ix]} må selges i nullpunktet?`,
+    answer:k*(ix?b:a),tol:0.5,unit:"enheter",
+    explain:`En «pakke» = ${a} ${P[0]} + ${b} ${P[1]} gir DB = ${a} × ${dba} + ${b} × ${dbb} = ${dbp} kr. Nullpunkt = ${qb_n(fk)} / ${dbp} = ${qb_n(k)} pakker. ${P[ix]}: ${qb_n(k)} × ${ix?b:a} = <b>${qb_n(k*(ix?b:a))} enheter</b>. Nullpunktet gjelder bare så lenge salgsmiksen holder seg.`};
+}},
+
+/* ---------- Kap. 9 ---------- */
+b_relev:{ch:9,make(R){
+  const f=R.pick(QB_FIRMA), mat=R.pick(["aluminiumsplater","treverk","stoff","stålrør","plastgranulat"]), bok=R.ri(20,90)*1000, salg=Math.round(bok*R.ri(30,90)/100/1000)*1000, nytt=bok+R.ri(5,30)*1000;
+  const m=qb_mc(R,qb_n(salg)+" kr",[qb_n(bok)+" kr",qb_n(nytt)+" kr","0 kr",qb_n(bok+salg)+" kr"]);
+  return {topic:"9 Relevante kostnader",type:"mc",
+    case:`<p>${f} vurderer en engangsordre som krever ${mat} bedriften allerede har på lager. Materialet ble kjøpt for ${qb_n(bok)} kr og brukes ikke i vanlig produksjon. Det kan selges i dag for ${qb_n(salg)} kr. Å kjøpe det samme materialet nytt ville kostet ${qb_n(nytt)} kr.</p>`,
+    prompt:"Hva er den relevante materialkostnaden for ordren?",
+    options:m.options,correct:m.correct,
+    explain:`Innkjøpsprisen på ${qb_n(bok)} kr er en <b>sunk cost</b> og er irrelevant. Bedriften trenger ikke kjøpe nytt, så gjenanskaffelsesprisen er heller ikke relevant. Det bedriften gir opp ved å bruke materialet, er salgsverdien: alternativkostnaden er <b>${qb_n(salg)} kr</b>.`};
+}},
+b_flaske:{ch:9,make(R){
+  const f=R.pick(QB_FIRMA), P=R.pick(QB_PROD);
+  let pr; for(let t=0;t<200;t++){
+    pr=P.map(n=>({n,db:R.ri(8,40)*10,h:R.pick([0.5,1,1.5,2,2.5,3]),d:R.ri(2,8)*100}));
+    pr.forEach(x=>x.dbh=x.db/x.h);
+    const byH=pr.slice().sort((a,b)=>b.dbh-a.dbh), byU=pr.slice().sort((a,b)=>b.db-a.db);
+    const dist=new Set(pr.map(x=>x.dbh.toFixed(4))).size===3 && new Set(pr.map(x=>x.db)).size===3;
+    if(dist && byH[0]!==byU[0]) break;
+  }
+  const byH=pr.slice().sort((a,b)=>b.dbh-a.dbh), need=pr.reduce((s,x)=>s+x.d*x.h,0);
+  const cap=Math.round(need*R.ri(45,80)/100/10)*10;
+  let left=cap, tot=0; byH.forEach(x=>{ const q=Math.min(x.d,Math.floor(left/x.h)); tot+=q*x.db; left-=q*x.h; });
+  const tab=qb_tab([["Produkt","DB per enhet","Maskintimer per enhet","Maks etterspørsel"]].concat(pr.map(x=>[x.n,x.db,x.h,x.d])));
+  const cs=`<p>${f} har ${qb_n(cap)} maskintimer tilgjengelig i måneden, og maskintid er eneste flaskehals.</p>`+tab;
+  if(R.ri(0,1)){
+    const byU=pr.slice().sort((a,b)=>b.db-a.db);
+    const m=qb_mc(R,byH[0].n,pr.filter(x=>x!==byH[0]).map(x=>x.n));
+    return {topic:"9 Produktvalg",type:"mc",case:cs,prompt:"Hvilket produkt bør prioriteres først?",options:m.options,correct:m.correct,
+      explain:`Med én knapp faktor rangeres produktene etter DB per maskintime: ${pr.map(x=>x.n+" "+qb_n(x.dbh,1)+" kr/t").join(", ")}. <b>${byH[0].n}</b> gir mest per knapp time. Å rangere etter DB per enhet (som ville gitt ${byU[0].n}) er den vanligste feilen.`};
+  }
+  return {topic:"9 Produktvalg",type:"num",case:cs,prompt:"Hva blir samlet dekningsbidrag med optimal produksjonsplan? Lag bare hele enheter.",answer:tot,tol:0.5,unit:"kr",
+    explain:`Ranger etter DB per maskintime: ${byH.map(x=>x.n+" ("+qb_n(x.dbh,1)+" kr/t)").join(" → ")}. Fyll opp etter etterspørselen i den rekkefølgen til de ${qb_n(cap)} timene er brukt. Samlet DB = <b>${qb_n(tot)} kr</b>. Rangering etter DB per enhet gir et lavere dekningsbidrag.`};
+}},
+b_tillegg:{ch:9,make(R){
+  const f=R.pick(QB_FIRMA), vek=R.ri(10,60)*5, pr=vek+R.ri(4,40)*5, q=R.ri(2,20)*100, saer=R.ri(0,20)*1000, full=R.ri(0,1);
+  if(!full){
+    const ans=(pr-vek)*q-saer;
+    return {topic:"9 Tilleggsordre",type:"num",
+      case:`<p>${f} har ledig kapasitet og får forespørsel om en tilleggsordre på ${qb_n(q)} enheter til ${pr} kr per stk. Ordren påvirker ikke vanlig salg.</p>`+qb_tab([["Post","Beløp"],["Variable kostnader per enhet",vek],["Faste kostnader fordelt per enhet",R.ri(10,50)],["Særkostnader for ordren (verktøy, frakt)",saer]]),
+      prompt:"Hvor mye endres resultatet hvis bedriften tar ordren? Oppgi en nedgang med minus.",
+      answer:ans,tol:0.5,unit:"kr",
+      explain:`Med ledig kapasitet påløper de faste kostnadene uansett, så de fordelte faste kostnadene er irrelevante. Endring = (${pr} − ${vek}) × ${qb_n(q)} − ${qb_n(saer)} = <b>${qb_n(ans)} kr</b>. Å trekke fra fordelte faste kostnader er den vanligste feilen.`};
+  }
+  const dbv=R.ri(10,50)*2, ans=vek+dbv;
+  return {topic:"9 Tilleggsordre",type:"num",
+    case:`<p>${f} har full kapasitet. En tilleggsordre vil fortrenge vanlig salg, som gir et dekningsbidrag på ${dbv} kr per enhet. Variable kostnader er ${vek} kr per enhet.</p>`,
+    prompt:"Hva er laveste akseptable pris per enhet for tilleggsordren?",
+    answer:ans,tol:0.5,unit:"kr",
+    explain:`Ved full kapasitet må ordren dekke både variable kostnader og det tapte dekningsbidraget (alternativkostnaden): ${vek} + ${dbv} = <b>${ans} kr</b>. Med ledig kapasitet ville grensen vært bare VEK (${vek} kr).`};
+}},
+b_kjop:{ch:9,make(R){
+  const f=R.pick(QB_FIRMA), del=R.pick(["en komponent","et deksel","en motorbrakett","en emballasjeløsning","et ventilhus"]), q=R.ri(2,20)*500;
+  const dm=R.ri(10,60), dl=R.ri(10,50), vi=R.ri(2,20), uf=R.ri(0,15), ff=R.ri(5,30), kj=dm+dl+vi+uf+R.ri(-15,15);
+  const egen=dm+dl+vi+uf, ans=(egen-kj)*q;
+  return {topic:"9 Tilvirke eller kjøpe",type:"num",
+    case:`<p>${f} produserer ${qb_n(q)} stk av ${del} per år. En leverandør tilbyr å levere for ${kj} kr per stk. Kapasiteten som frigjøres har ingen annen bruk.</p>`+qb_tab([["Kostnad per stk","Beløp"],["Direkte materialer",dm],["Direkte lønn",dl],["Variable indirekte kostnader",vi],["Faste kostnader som faller bort ved kjøp",uf],["Fordelte felleskostnader (består)",ff]]),
+    prompt:"Hvor mye endres resultatet per år hvis bedriften kjøper i stedet for å produsere selv? Oppgi en nedgang med minus.",
+    answer:ans,tol:0.5,unit:"kr",
+    explain:`Relevante (unngåelige) kostnader ved egenproduksjon = ${dm} + ${dl} + ${vi} + ${uf} = ${egen} kr per stk. Felleskostnadene på ${ff} kr består uansett og er irrelevante. Endring = (${egen} − ${kj}) × ${qb_n(q)} = <b>${qb_n(ans)} kr</b>. ${ans>=0?"Det lønner seg å kjøpe.":"Det lønner seg å produsere selv."}`};
+}},
+b_nedl:{ch:9,make(R){
+  const f=R.pick(QB_FIRMA), avd=R.pick(R.pick(QB_AVD)), db=R.ri(20,90)*1000, saer=R.ri(10,80)*1000, fell=R.ri(10,60)*1000;
+  const res=db-saer-fell, ans=saer-db;
+  return {topic:"9 Nedleggelse",type:"num",
+    case:`<p>Avdeling ${avd.toLowerCase()} i ${f} viser et resultat på ${qb_n(res)} kr etter fordeling av felleskostnader. Ledelsen vurderer å legge den ned.</p>`+qb_tab([["Post","Beløp"],["Dekningsbidrag",db],["Særkostnader (faller bort ved nedleggelse)",saer],["Fordelte felleskostnader (består)",fell]]),
+    prompt:"Hvor mye endres bedriftens samlede resultat ved nedleggelse? Oppgi en nedgang med minus.",
+    answer:ans,tol:0.5,unit:"kr",
+    explain:`Ved nedleggelse tapes dekningsbidraget (${qb_n(db)}), mens særkostnadene (${qb_n(saer)}) spares. Felleskostnadene består og må dekkes av andre avdelinger. Endring = ${qb_n(saer)} − ${qb_n(db)} = <b>${qb_n(ans)} kr</b>. ${ans<0?"Avdelingen bidrar positivt og bør beholdes, selv om den viser underskudd etter fordelte felleskostnader.":"Nedleggelse lønner seg."}`};
+}},
+
+/* ---------- Kap. 10 ---------- */
+b_sats:{ch:10,make(R){
+  const f=R.pick(QB_FIRMA), act=R.pick([["Maskinoppstilling","oppstillinger","oppstilling"],["Innkjøp","bestillinger","bestilling"],["Kvalitetskontroll","inspeksjoner","inspeksjon"],["Ordrebehandling","kundeordrer","kundeordre"],["Materialhåndtering","forflytninger","forflytning"]]);
+  const vol=R.ri(4,60)*10, sats=R.ri(10,90)*10, cost=vol*sats;
+  return {topic:"10 Aktivitetssats",type:"num",
+    case:`<p>${f} har innført aktivitetsbasert kalkulasjon. Aktiviteten «${act[0]}» har en kostnadspool og en kostnadsdriver:</p>`+qb_tab([["Aktivitet","Kostnad per år","Antall "+act[1]],[act[0],cost,vol]]),
+    prompt:`Hva er aktivitetssatsen per ${act[2]}?`,
+    answer:sats,tol:0.5,unit:"kr",
+    explain:`Aktivitetssats = aktivitetskostnad / volum av kostnadsdriveren = ${qb_n(cost)} / ${qb_n(vol)} = <b>${qb_n(sats)} kr</b>. Satsen brukes til å belaste hvert produkt etter hvor mange ${act[1]} det faktisk utløser.`};
+}},
+b_abcenhet:{ch:10,make(R){
+  const f=R.pick(QB_FIRMA), P=R.pick(QB_PROD)[R.ri(0,2)];
+  const acts=[["Oppstilling",R.ri(20,90)*10,R.ri(2,12)],["Innkjøp",R.ri(5,40)*10,R.ri(2,15)],["Kvalitetskontroll",R.ri(10,60)*5,R.ri(2,20)]];
+  const q=R.ri(2,20)*50, dir=R.ri(50,300), ind=acts.reduce((s,a)=>s+a[1]*a[2],0), ans=Math.round((dir+ind/q)*100)/100;
+  return {topic:"10 ABC-kalkyle",type:"num",
+    case:`<p>${f} produserer ${qb_n(q)} enheter av ${P} i året. Direkte kostnader (material og lønn) er ${dir} kr per enhet. Produktet utløser disse aktivitetene:</p>`+qb_tab([["Aktivitet","Aktivitetssats","Antall utløst av "+P]].concat(acts.map(a=>[a[0],a[1],a[2]]))),
+    prompt:`Hva blir kostnaden per enhet av ${P} etter ABC? Rund av til to desimaler.`,
+    answer:ans,tol:0.01,unit:"kr",
+    explain:`Indirekte kostnader for ${P} = ${acts.map(a=>a[1]+" × "+a[2]).join(" + ")} = ${qb_n(ind)} kr. Per enhet = ${qb_n(ind)} / ${qb_n(q)} = ${qb_n(ind/q)} kr. Kostnad per enhet = ${dir} + ${qb_n(ind/q)} = <b>${qb_n(ans)} kr</b>. Serienivåkostnader som oppstilling må deles på hele volumet, ikke regnes per enhet.`};
+}},
+b_tradabc:{ch:10,make(R){
+  const f=R.pick(QB_FIRMA), P=R.pick(QB_PROD);
+  const qa=R.ri(10,40)*100, qb=R.ri(1,8)*100, ma=R.pick([0.5,1,1.5,2]), mb=R.pick([0.5,1,1.5,2]);
+  const s1=R.ri(20,80)*100, oa=R.ri(2,10), ob=R.ri(5,30), s2=R.ri(10,60)*10, ka=R.ri(5,30), kb=R.ri(5,30);
+  const mt=qa*ma+qb*mb, ind=s1*(oa+ob)+s2*(ka+kb), tsats=ind/mt;
+  const tradB=tsats*mb, abcB=(s1*ob+s2*kb)/qb, ans=Math.round((abcB-tradB)*100)/100;
+  return {topic:"10 Tradisjonell eller ABC",type:"num",
+    case:`<p>${f} lager ${P[0]} (${qb_n(qa)} stk) og ${P[1]} (${qb_n(qb)} stk). Tradisjonelt fordeles alle indirekte kostnader etter maskintimer. Med ABC brukes to aktiviteter.</p>`+qb_tab([["Data",P[0],P[1]],["Antall enheter",qa,qb],["Maskintimer per enhet",ma,mb],["Oppstillinger (sats "+s1+" kr)",oa,ob],["Kvalitetskontroller (sats "+s2+" kr)",ka,kb]]),
+    prompt:`Hvor mye høyere (positivt) eller lavere (negativt) blir indirekte kostnad per enhet av ${P[1]} med ABC enn med tradisjonell kalkyle? Rund av til to desimaler.`,
+    answer:ans,tol:0.1,unit:"kr",
+    explain:`Samlede indirekte kostnader = ${qb_n(s1)} × ${oa+ob} + ${s2} × ${ka+kb} = ${qb_n(ind)} kr. Tradisjonell sats = ${qb_n(ind)} / ${qb_n(mt)} maskintimer = ${qb_n(tsats)} kr/t, så ${P[1]} får ${qb_n(tradB)} kr per enhet. ABC: (${qb_n(s1)} × ${ob} + ${s2} × ${kb}) / ${qb_n(qb)} = ${qb_n(abcB)} kr. Forskjell = <b>${qb_n(ans)} kr</b>. Lavvolumprodukter blir ofte underkalkulert med volumbaserte nøkler.`};
+}},
+b_niva:{ch:10,make(R){
+  const L=["Enhetsnivå","Serienivå","Produktnivå","Kundenivå","Bedriftsnivå"];
+  const items=[["Strømforbruk i maskiner, som øker med hver produserte enhet",0],["Direkte materialer i hver enhet",0],["Maskinoppstilling før hver ny produksjonsserie",1],["Kvalitetskontroll av første enhet i hver serie",1],["Innkjøpsordre for et parti råvarer",1],["Konstruksjon og vedlikehold av produktspesifikasjoner",2],["Markedsføring av ett bestemt produkt",2],["Teknisk støtte til én stor kunde",3],["Behandling av hver kundeordre",3],["Lønn til administrerende direktør",4],["Husleie for fabrikkbygningen",4]];
+  const it=R.pick(items), m=qb_mc(R,L[it[1]],L.filter((x,i)=>i!==it[1]));
+  return {topic:"10 Aktivitetshierarki",type:"mc",
+    case:`<p>${R.pick(QB_FIRMA)} deler aktivitetene sine inn etter aktivitetshierarkiet.</p>`,
+    prompt:`På hvilket nivå hører denne aktiviteten hjemme: «${it[0]}»?`,
+    options:m.options,correct:m.correct,
+    explain:`<b>${L[it[1]]}</b>. Enhetsnivå varierer med antall enheter, serienivå med antall serier eller partier, produktnivå med antall produkter, kundenivå med kunder eller ordrer, og bedriftsnivå holder virksomheten i gang uansett volum. Spør deg selv: hva får kostnaden til å øke?`};
+}},
+
+/* ---------- Kap. 11 ---------- */
+b_flex:{ch:11,make(R){
+  const f=R.pick(QB_FIRMA), fk=R.ri(10,80)*1000, vek=R.ri(10,90), qb=R.ri(10,50)*100, qf=qb+R.ri(-15,15)*Math.round(qb/100), reg=fk+vek*qf+R.ri(-20,20)*500, v=R.ri(0,1);
+  const flex=fk+vek*qf, av=flex-reg;
+  return {topic:"11 Fleksibelt budsjett",type:"num",
+    case:`<p>Produksjonsavdelingen i ${f} budsjetterte med ${qb_n(qb)} enheter, men produserte ${qb_n(qf)} enheter.</p>`+qb_tab([["Post","Verdi"],["Faste kostnader (budsjett)",fk],["Variable kostnader per enhet (budsjett)",vek],["Budsjettert produksjon",qb],["Faktisk produksjon",qf],["Faktiske kostnader",reg]]),
+    prompt:v?"Hva er avviket mellom fleksibelt budsjett og faktiske kostnader? Oppgi ugunstig avvik med minus.":"Hva er det fleksible budsjettet for kostnadene?",
+    answer:v?av:flex,tol:0.5,unit:"kr",
+    explain:`Fleksibelt budsjett = faste kostnader + VEK × faktisk produksjon = ${qb_n(fk)} + ${vek} × ${qb_n(qf)} = ${qb_n(flex)} kr.${v?` Avvik = ${qb_n(flex)} − ${qb_n(reg)} = <b>${qb_n(av)} kr</b>.`:" Svaret er <b>"+qb_n(flex)+" kr</b>."} Vanlig feil er å sammenligne med det statiske budsjettet (${qb_n(fk+vek*qb)} kr), som blander inn effekten av endret volum.`};
+}},
+b_mat:{ch:11,make(R){
+  const f=R.pick(QB_FIRMA), kg=R.pick([1,1.5,2,2.5,3,4]), sp=R.ri(10,90), q=R.ri(5,40)*100, sm=kg*q, fm=Math.round(sm*(1+R.ri(-10,10)/100)), fp=sp+R.ri(-8,8)*0.5, v=R.ri(0,1);
+  const pa=Math.round((sp-fp)*fm), fa=Math.round((sm-fm)*sp);
+  return {topic:"11 Materialavvik",type:"num",
+    case:`<p>Standarden hos ${f} er ${qb_n(kg)} kg materiale per enhet til ${sp} kr per kg. I perioden ble det produsert ${qb_n(q)} enheter.</p>`+qb_tab([["Post","Verdi"],["Standard kg per enhet",kg],["Standardpris per kg",sp],["Faktisk produksjon",q],["Faktisk forbruk (kg)",fm],["Faktisk pris per kg",fp]]),
+    prompt:`Hva er ${v?"materialforbruksavviket":"materialprisavviket"}? Oppgi ugunstig avvik med minus, og rund av til hele kroner.`,
+    answer:v?fa:pa,tol:1,unit:"kr",
+    explain:`Standard mengde for faktisk produksjon: SM = ${qb_n(kg)} × ${qb_n(q)} = ${qb_n(sm)} kg. Prisavvik = (SP − FP) × FM = (${sp} − ${qb_n(fp)}) × ${qb_n(fm)} = ${qb_n(pa,0)} kr. Forbruksavvik = (SM − FM) × SP = (${qb_n(sm)} − ${qb_n(fm)}) × ${sp} = ${qb_n(fa,0)} kr. Svaret er <b>${qb_n(v?fa:pa,0)} kr</b>. Vanlig feil er å bruke budsjettert produksjon i SM i stedet for faktisk.`};
+}},
+b_lonn:{ch:11,make(R){
+  const f=R.pick(QB_FIRMA), tpe=R.pick([0.25,0.5,0.75,1,1.5]), ss=R.ri(30,60)*10, q=R.ri(5,40)*100, st=tpe*q, ft=Math.round(st*(1+R.ri(-12,12)/100)), fs=ss+R.ri(-6,6)*5, v=R.ri(0,1);
+  const sa=(ss-fs)*ft, ea=(st-ft)*ss;
+  return {topic:"11 Lønnsavvik",type:"num",
+    case:`<p>Standarden hos ${f} er ${qb_n(tpe)} direkte arbeidstimer per enhet til ${ss} kr per time. Det ble produsert ${qb_n(q)} enheter.</p>`+qb_tab([["Post","Verdi"],["Standard timer per enhet",tpe],["Standard lønnssats",ss],["Faktisk produksjon",q],["Faktiske timer",ft],["Faktisk lønnssats",fs]]),
+    prompt:`Hva er ${v?"effektivitetsavviket (tidsavviket)":"lønnssatsavviket"}? Oppgi ugunstig avvik med minus.`,
+    answer:v?ea:sa,tol:0.5,unit:"kr",
+    explain:`Standard tid for faktisk produksjon: ST = ${qb_n(tpe)} × ${qb_n(q)} = ${qb_n(st)} timer. Lønnssatsavvik = (SS − FS) × FT = (${ss} − ${fs}) × ${qb_n(ft)} = ${qb_n(sa)} kr. Effektivitetsavvik = (ST − FT) × SS = (${qb_n(st)} − ${qb_n(ft)}) × ${ss} = ${qb_n(ea)} kr. Svaret er <b>${qb_n(v?ea:sa)} kr</b>.`};
+}},
+b_volum:{ch:11,make(R){
+  const f=R.pick(QB_FIRMA), qb=R.ri(10,60)*100, fs=R.ri(5,40), bf=qb*fs, qf=qb+R.ri(-15,15)*Math.round(qb/100), vf=bf+R.ri(-20,20)*500, v=R.ri(0,1);
+  const va=(qf-qb)*fs, ba=bf-vf;
+  return {topic:"11 Indirekte avvik",type:"num",
+    case:`<p>${f} har budsjetterte faste indirekte kostnader på ${qb_n(bf)} kr ved en budsjettert produksjon på ${qb_n(qb)} enheter (fast sats ${fs} kr per enhet).</p>`+qb_tab([["Post","Verdi"],["Budsjetterte faste indirekte kostnader",bf],["Budsjettert produksjon",qb],["Faktisk produksjon",qf],["Faktiske faste indirekte kostnader",vf]]),
+    prompt:`Hva er ${v?"budsjettavviket (kostnadsavviket)":"volumavviket"} for de faste indirekte kostnadene? Oppgi ugunstig avvik med minus.`,
+    answer:v?ba:va,tol:0.5,unit:"kr",
+    explain:`Volumavvik = (faktisk − budsjettert produksjon) × fast sats = (${qb_n(qf)} − ${qb_n(qb)}) × ${fs} = ${qb_n(va)} kr. Budsjettavvik = budsjetterte − faktiske faste = ${qb_n(bf)} − ${qb_n(vf)} = ${qb_n(ba)} kr. Svaret er <b>${qb_n(v?ba:va)} kr</b>. Volumavviket tilsvarer beskjeftigelsesavviket i normalkostregnskapet.`};
+}}
+});
+
+/* ================= Genererte spørsmål (motor) ================= */
+function qRand(seed){ const r=xlRng(seed); return { r, ri:(a,b,s=1)=>a+Math.floor(r()*(Math.floor((b-a)/s)+1))*s, pick:a=>a[Math.floor(r()*a.length)], shuffle:a=>{ const x=a.slice(); for(let i=x.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; } }; }
+const qCache={};
+function genQ(id){
+  if(qCache[id]) return qCache[id];
+  const [,key,seed]=id.split(":"); const T=QGEN[key]; if(!T) return null;
+  let q; try{ q=T.make(qRand(+seed)); }catch(e){ return null; }
+  q.gen=key; qCache[id]=q; return q;
+}
+function genIds(chs,n){
+  const keys=Object.keys(QGEN).filter(k=>chs.includes(QGEN[k].ch));
+  const by={}; shuffle(keys).forEach(k=>(by[QGEN[k].ch]=by[QGEN[k].ch]||[]).push(k));
+  const order=shuffle(Object.keys(by)), out=[]; let guard=0;
+  while(out.length<n && guard++<500){ for(const c of order){ if(out.length>=n) break; const list=by[c]; if(!list.length) continue; out.push(list.shift()); } if(order.every(c=>!by[c].length)) break; }
+  return shuffle(out).map(k=>"q:"+k+":"+newSeed());
+}
+const ALLCH=[1,2,3,4,5,6,7,8,9,10,11];
+SETS.genall={gen:()=>genIds(ALLCH,20),n:20,key:"hsm122-genall",group:"Generert",label:"Generert prøve",eyebrow:"Generert prøve · nye tall og scenarier hver gang · kap. 1–11"};
+SETS.gen17={gen:()=>genIds([1,2,3,4,5,6,7],20),n:20,key:"hsm122-gen17",group:"Generert",label:"Generert · kap. 1–7",eyebrow:"Generert prøve · nye tall hver gang · kap. 1–7"};
+SETS.gen811={gen:()=>genIds([7,8,9,10,11],20),n:20,key:"hsm122-gen811",group:"Generert",label:"Generert · kap. 7–11",eyebrow:"Generert prøve · nye tall hver gang · kap. 7–11"};
+DISPLAY.genall={t:"Generert prøve · hele pensum",s:"20 nye oppgaver hver gang, umulig å pugge",tile:"t-gold",ic:IC_SHUFFLE};
+DISPLAY.gen17={t:"Generert · kap. 1–7",s:"20 nye oppgaver hver gang",tile:"t-gold",ic:IC_SHUFFLE};
+DISPLAY.gen811={t:"Generert · kap. 7–11",s:"20 nye oppgaver hver gang",tile:"t-gold",ic:IC_SHUFFLE};
+GROUPS.splice(1,0,["Generert","Nye tall og nye scenarier hver gang, så du må kunne metoden",["genall","gen17","gen811"]]);
+/* Prøveeksamen del 1: én fast og én generert oppgave per kapittel */
+SETS.eks1.gen=()=>{ const fixed=drawStrat(ALLCH,1,11); const g=[]; ALLCH.forEach(c=>{ const k=shuffle(Object.keys(QGEN).filter(x=>QGEN[x].ch===c))[0]; if(k) g.push("q:"+k+":"+newSeed()); }); return shuffle(fixed.concat(g)); };
+
+/* ---------- auto-import av tabeller til regnearket ---------- */
+const SCRATCH={};
+const xlTaskByIdBase=xlTaskById;
+xlTaskById=function(id){ return SCRATCH[id]||xlTaskByIdBase(id); };
+function qTables(html){ const d=document.createElement("div"); d.innerHTML=html||""; return [...d.querySelectorAll("table")]; }
+function qCellVal(t){
+  const s=t.replace(/ /g," ").trim();
+  const n=s.replace(/\s+/g,"").replace(/kr$|%$/i,"");
+  if(/^[-−]?\d+(,\d+)?$/.test(n)) return n.replace("−","-");
+  return s;
+}
+function qToSheet(i){
+  const q=Q[i], id="s-"+String(ids[i]).replace(/[^\w-]/g,"_");
+  const cells={}; let r=0, cols=1; const widths=[];
+  qTables(q.case).forEach(tb=>{ [...tb.rows].forEach(tr=>{ [...tr.cells].forEach((td,c)=>{ const v=qCellVal(td.textContent); if(v!=="") cells[xlAddr(c,r)]=v; cols=Math.max(cols,c+1); widths[c]=Math.max(widths[c]||90,Math.min(320,v.length*8+28)); }); r++; }); r++; });
+  const d=document.createElement("div"); d.innerHTML=q.case||""; d.querySelectorAll("table").forEach(t=>t.remove());
+  SCRATCH[id]={id,scratch:true,ch:parseInt(q.topic)||1,title:"Oppgave "+(i+1)+" i regneark",src:q.topic,intro:d.textContent.trim().slice(0,900),steps:[q.prompt.replace(/<[^>]+>/g,"")],cols:Math.max(cols+3,6),rows:r+8,widths:Array.from({length:Math.max(cols+3,6)},(_,c)=>widths[c]||110),cells,targets:{},solution:{}};
+  xlOpen(id,false);
+}
+function qNewVariant(i){
+  const k=ids[i].split(":")[1]; ids[i]="q:"+k+":"+newSeed(); Q[i]=getQ(ids[i]);
+  delete ans[i]; delete checked[i]; delete gained[i]; save(); render(); updateBar();
+  const c=$("q"+(i+1)); if(c) c.scrollIntoView({block:"start",behavior:reduceMotion?"auto":"smooth"});
+  toast("Ny variant med nye tall");
+}
+const renderBase=render;
+render=function(){
+  renderBase();
+  Q.forEach((q,i)=>{
+    const card=$("q"+(i+1)); if(!card) return;
+    const isGen=String(ids[i]).startsWith("q:"), hasTbl=/<table/i.test(q.case||""), aidsOk=!(SETS[setKey].exam && setKey==="eks1");
+    if(!(isGen&&!graded&&!SETS[setKey].exam) && !(hasTbl&&aidsOk)) return;
+    const bar=el("div",{class:"qtools"});
+    if(hasTbl&&aidsOk){ const b=el("button",{class:"qtool",type:"button"},IC_GRID+"<span>Åpne i regneark</span>"); b.addEventListener("click",()=>qToSheet(i)); bar.append(b); }
+    if(isGen&&!graded&&!checked[i]&&!SETS[setKey].exam){ const b=el("button",{class:"qtool",type:"button"},IC_SHUFFLE+"<span>Ny variant</span>"); b.addEventListener("click",()=>qNewVariant(i)); bar.append(b); }
+    const head=card.querySelector(".qhead"); head.after(bar);
+  });
+};
+
+/* ================= Forside: dashbord ================= */
+const EXAM_DATE=new Date(2026,10,20,9,0);
+const IC_ARR='<svg class="darr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const IC_BOLT2='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2.5L5.5 13.5h5.5l-1 8 7.5-11h-5.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+const recordBase=record;
+record=function(id,q,r){ recordBase(id,q,r); P.daily=P.daily||{}; const d=today(); P.daily[d]=(P.daily[d]||0)+1; };
+function renderDash(){
+  let box=$("homeDash"); if(!box){ box=el("div",{id:"homeDash",class:"dash"}); $("homeQuick").before(box); }
+  const days=Math.max(0,Math.ceil((EXAM_DATE-Date.now())/864e5));
+  const ch=chapterStats(), chs=Object.keys(CH_NAME).map(Number);
+  const pcts=chs.map(c=>ch[c]?Math.round(ch[c][0]/ch[c][1]*100):null);
+  const seen=pcts.filter(p=>p!=null), avg=seen.length?Math.round(seen.reduce((a,b)=>a+b,0)/seen.length):0;
+  const weak=chs.map((c,i)=>[c,pcts[i]]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1])[0];
+  const m=memSummary(), dueC=dueCards().length;
+  const L=levelOf(P.xp), next=LEVELS[L+1];
+  const badges=Object.keys(P.badges).slice(-5).map(k=>{ const b=BADGES.find(x=>x[0]===k); return b?b[1]:"★"; });
+  const last=P.exams&&P.exams.length?P.exams[P.exams.length-1]:null;
+  box.innerHTML=`
+    <button class="dcard glass" type="button" data-view="eksamen">${IC_ARR}<span class="dl">Eksamen 20. november</span><span class="dv">${days} <small>${days===1?"dag igjen":"dager igjen"}</small></span>
+      <span class="dpill gold" style="--p:${seen.length/chs.length*100}%"><span>Øvd på ${seen.length} av ${chs.length} kapitler</span><span>${last?"Siste prøveeksamen: "+last.g:"Ingen prøveeksamen ennå"}</span></span></button>
+    <button class="dcard glass" type="button" data-view="svak">${IC_ARR}<span class="dl">Mestring</span><span class="dv">${seen.length?avg+" %":"–"} <small>${P.answered} besvart</small></span>
+      <span class="dbars" aria-hidden="true">${pcts.map(p=>`<i class="${p==null?"empty":""}" style="height:${p==null?8:Math.max(10,p)}%"></i>`).join("")}</span>
+      ${weak?`<span class="dpill" style="--p:${weak[1]}%"><span>Svakest: kap. ${weak[0]}</span><span>${weak[1]} %</span></span>`:`<span class="dpill" style="--p:0%"><span>Svar på oppgaver for å se mestring</span><span></span></span>`}</button>
+    <button class="dcard glass" type="button" data-view="huske">${IC_ARR}<span class="dl">Repetisjon i dag</span><span class="dv">${m.d+dueC} <small>klare</small></span>
+      <span class="dticks"><span class="ic">${IC_BOLT2}</span><span class="tk" style="--p:${m.solid/GLOSS.length*100}%"></span></span>
+      <span class="dchip" style="--dc:#a8b6ff">${m.solid} av ${GLOSS.length} begreper sitter</span></button>
+    <button class="dcard glass" type="button" data-view="profil">${IC_ARR}<span class="dl">Nivå ${L+1}</span><span class="dv">${LEVELS[L][1]}</span>
+      <span class="dchip">${P.xp} XP${next?" · "+(next[0]-P.xp)+" til neste":""}</span>
+      ${badges.length?`<span class="dbadges">${badges.map(b=>`<span>${b}</span>`).join("")}${Object.keys(P.badges).length>5?`<span>+${Object.keys(P.badges).length-5}</span>`:""}</span>`:""}</button>
+    <button class="dcta" type="button" data-view="genall">Start generert prøve · nye oppgaver hver gang</button>`;
+}
+const renderHomeDash=renderHome;
+renderHome=function(){ renderHomeDash(); renderDash(); };
 
 go((location.hash||"").slice(1)||"hjem",true);
 
