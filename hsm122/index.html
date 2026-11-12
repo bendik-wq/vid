@@ -7091,20 +7091,16 @@ const ROAST_PASS=[
   "Strøk. Dette er ikke en øvelse i å skuffe meg. Gjør det på nytt"
 ];
 const MOTIVATION=[
-  "Tre på rad. Der ja, nå snakker vi",
-  "Du er farligere enn en skattesmell for eksamen nå",
-  "Det der var rent, skarpt og riktig. Fortsett sånn",
-  "Nå tenker du som en controller. Ikke stopp",
-  "Riktig, riktig, riktig. Eksamen har ingen sjanse",
-  "Du leser pensum som om det skyldte deg penger. Elsker det",
-  "Sånn ja. Hjernen er tydeligvis ikke avskrevet likevel",
-  "Positivt avvik på alle linjer. Imponerende",
-  "Dette er hva som skjer når du faktisk prøver"
+  "Tre riktige på rad. Selv en blind høne finner et korn, men tre? Mistenkelig",
+  "Riktig. Ikke bli høy på deg selv, det var den letteste i hele pensum",
+  "Endelig. Jeg holdt på å ringe NAV for deg",
+  "Se der, hjernecellen våknet. Ikke la den sovne igjen",
+  "Tre på rad. Apen med 27 i IQ er offisielt slått. Gratulerer, antar jeg"
 ];
 const MOTIV_PASS=[
-  "Bestått. Jeg visste du hadde det i deg",
-  "Bestått. Nå tar vi A-en på eksamen",
-  "Godkjent. Gullfisken er stolt av deg"
+  "Bestått. Med nød og neppe, men jeg tar det",
+  "Godkjent. Kravet er 41 %, så ikke tro du er et geni",
+  "Bestått. Gullfisken er nesten imponert"
 ];
 let roastOn=!!rd("hsm122-roast",false), lastRoast=-1;
 const roastLast={};
@@ -7132,7 +7128,7 @@ hkGrade=function(res,conf,given){ const lock=HK.locked; hkGradeRoast(res,conf,gi
 (function(){
   const card=$("resetProfile").closest(".card");
   const c=el("div",{class:"card"});
-  c.innerHTML=`<h2>Roast-modus</h2><p class="modehint">Sitater fra Bendik, den mest karismatiske skaperen av dette programmet. Svarer du feil, får du høre det. Gjør du det bra, får du motivasjon. Bare for deg som tåler det.</p><div class="seg" role="group" aria-label="Roast-modus"><button type="button" id="roastOff">Av</button><button type="button" id="roastOn">På</button></div>`;
+  c.innerHTML=`<h2>Roast-modus</h2><p class="modehint">Sitater fra Bendik, den mest karismatiske skaperen av dette programmet, hver gang du svarer feil. Bare for deg som tåler det.</p><div class="seg" role="group" aria-label="Roast-modus"><button type="button" id="roastOff">Av</button><button type="button" id="roastOn">På</button></div>`;
   card.before(c);
   const sync=()=>{ $("roastOn").setAttribute("aria-pressed",String(roastOn)); $("roastOff").setAttribute("aria-pressed",String(!roastOn)); };
   $("roastOn").addEventListener("click",()=>{ roastOn=true; wr("hsm122-roast",true); sync(); showQuote("Roast-modus er på. Lykke til, kjøtthode","roast"); });
@@ -7140,26 +7136,38 @@ hkGrade=function(res,conf,given){ const lock=HK.locked; hkGradeRoast(res,conf,gi
   sync();
 })();
 /* ================= Motivasjon fra Bendik: roterende sitat på sidene ================= */
-const BENDIK_QUOTES=MOTIVATION.concat([
-  "Eksamen bryr seg ikke om hvordan du har det. Den bryr seg om hva du kan",
-  "Én oppgave til. Det er sånn A-er bygges",
-  "Du trenger ikke være genial. Du trenger å være ferdig med pensum",
-  "Den som øver på feilene sine, slutter å gjøre dem",
-  "Hver formel du kan utenat er tid du sparer på eksamen",
-  "Gullfisken husker formelen. Du skal også",
-  "Ikke vent på motivasjon. Start, så kommer den",
-  "Disiplin slår talent når talentet ikke gidder å øve",
-  "Ti minutter nå er bedre enn to timer i panikk kvelden før",
-  "Dekningsbidraget ditt i livet er innsatsen du legger ned i dag",
-  "Faste kostnader: søvn og mat. Variable kostnader: unnskyldninger. Kutt de variable",
-  "Du er ikke dårlig i bedriftsøkonomi. Du er bare ikke ferdig med å øve",
-  "Les oppgaven to ganger. Regn én gang. Sjekk fortegnet",
-  "Excel-delen vinnes med cellereferanser, ikke med hoderegning",
-  "Det er ingen sunk cost i å lære. Alt du øver på, tar du med deg",
-  "Kostnadsoptimum for deg er nå: lav innsats per poeng, høy avkastning",
-  "Fremtidige deg sitter på eksamen og takker deg for denne økta",
-  "Vær den typen student som gjør én prøve til når de andre gir seg"
-]);
+const BENDIK_QUOTES=[
+  "En gullfisk med hukommelsestap hadde husket dette her. Så jævlig enkelt. Hvorfor sliter du?",
+  "Jeg har aldri sett flere folk med under 30 i IQ enn jeg har i HSM122",
+  "Hvis denne klassen er fremtiden, har jeg ingen håp for fremtiden i det hele tatt",
+  "Dekningsbidrag er salgsinntekt minus variable kostnader. Det er ikke rakettforskning. For deg er det tydeligvis det",
+  "Jeg har sett potetstappe med bedre forståelse av selvkost enn denne klassen",
+  "Dere har ni dager til eksamen og bruker dem på TikTok. Imponerende strategi",
+  "Hver gang noen blander kostnad og utgift, dør en revisor litt inni seg",
+  "Jeg laget denne appen så dere skulle bestå. Ikke la meg angre",
+  "En ape med 27 i IQ hadde skjønt fordelingsnøkkelen innen lunsj",
+  "Du sier du har lest pensum. Pensum sier det ikke kjenner deg",
+  "Nullpunktet ditt er ikke i salget. Det er i innsatsen",
+  "Om innsatsen din var en fast kostnad, hadde den vært null",
+  "Elastisitet: hvor mye mengden reagerer på prisen. Hjernen din reagerer ikke på noe",
+  "Du har overdekning av selvtillit og underdekning av alt annet",
+  "Kalkulatoren din har mer potensial enn deg. Den har i det minste batteri",
+  "Dere ser på formlene som om de er skrevet på kinesisk. De er på norsk. Les dem",
+  "Den eneste flaskehalsen i denne bedriften er deg",
+  "Hvis latskap var et produkt, hadde du hatt markedsmonopol",
+  "Sikkerhetsmarginen din før stryk er negativ. Gjør noe med det",
+  "Du er ikke forvirret. Du har bare ikke åpnet boka",
+  "Excel gjør jobben for deg. Du må bare klare å skrive likhetstegn først",
+  "Jeg har sett mer struktur i en kantinekø enn i besvarelsen din",
+  "Beskjeftigelsesavviket i hjernen din er rekordhøyt. Ingenting jobber",
+  "Det står i sammendraget. Det har stått der hele tiden. Hele. Tiden",
+  "Sunk cost: tiden du allerede har kastet bort. Ikke kast bort mer",
+  "Dere klager på at eksamen er vanskelig. Eksamen klager på dere",
+  "Jeg har aldri sett noen bruke så lang tid på å regne ut 12 % feriepenger",
+  "Hvis forvirring var en variabel kostnad, ville dere vært overproporsjonale",
+  "Ta en prøve til. Ikke fordi du har lyst, men fordi du trenger det sårt",
+  "Tror du eksamen blir lettere av at du venter? Den blir ikke det"
+];
 let bqIdx=Math.floor(Math.random()*BENDIK_QUOTES.length), bqTimer=null;
 function bqNext(){ bqIdx=(bqIdx+1+Math.floor(Math.random()*3))%BENDIK_QUOTES.length; document.querySelectorAll(".bqr").forEach(w=>{ const p=w.querySelector("p"); w.classList.add("fade"); setTimeout(()=>{ p.textContent=BENDIK_QUOTES[bqIdx]; w.classList.remove("fade"); },400); }); bqSchedule(); }
 function bqSchedule(){ clearTimeout(bqTimer); bqTimer=setTimeout(bqNext,15000+Math.random()*5000); }
