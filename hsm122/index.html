@@ -872,6 +872,17 @@ select option,select optgroup{color:#111;background:#fff}
 .numrow input,.hk-in{background:#f7f6f2!important;color:#111!important}
 .numrow input::placeholder,.hk-in::placeholder{color:#777}
 .hk-in.right{background:#e2f5e9!important}.hk-in.wrong{background:#fde4e0!important}
+
+/* ===== v12: Bendik-sitater ===== */
+.bq{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:60;width:min(520px,calc(100vw - 28px));transform:translate(-50%,24px) scale(.97);opacity:0;pointer-events:none;transition:opacity .25s,transform .35s cubic-bezier(.2,.9,.3,1.2);border-radius:26px;padding:20px 22px 16px 58px;color:var(--fg);background:linear-gradient(180deg,rgba(60,40,36,.92),rgba(34,30,32,.94));box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset -2px -2px 0 rgba(255,122,107,.8),0 24px 50px -16px rgba(0,0,0,.7);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px)}
+.bq.motiv{background:linear-gradient(180deg,rgba(36,58,44,.92),rgba(28,34,32,.94));box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset -2px -2px 0 rgba(244,196,81,.9),0 24px 50px -16px rgba(0,0,0,.7)}
+.bq.on{opacity:1;transform:translate(-50%,0) scale(1);pointer-events:auto;cursor:pointer}
+.bq-mark{position:absolute;left:18px;top:6px;font-family:Georgia,serif;font-size:62px;line-height:1;color:#ff7a6b}
+.bq.motiv .bq-mark{color:var(--accent)}
+.bq p{margin:0;font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:-.015em;line-height:1.3}
+.bq-by{display:block;margin-top:8px;font-size:12.5px;letter-spacing:.02em;color:var(--muted);font-style:italic}
+body.in-quiz .bq{bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){.bq{transition:opacity .2s}}
 </style>
 </head>
 <body>
@@ -7028,56 +7039,83 @@ weakTopics=function(n){ return Object.entries(liveTopics()).filter(([k,d])=>d[1]
 const ROASTS=[
   "Kjøtthode, er du lobotomisert, lol",
   "En ape med 27 i IQ kunne fått til dette",
-  "Selv Excel ville skjemmes over den",
-  "Svaret ditt har negativt dekningsbidrag",
-  "Det der var en irreversibel kostnad for hjernen din",
-  "Hjernen din er tydeligvis en hjelpeavdeling: den fakturerer ingenting",
-  "Gratulerer, du fant det eneste feile alternativet",
-  "Til og med kalkulatoren ser bort",
-  "Det svaret er sunk cost. Gå videre",
-  "Du har overdekning av selvtillit og underdekning av kunnskap",
-  "Beskjeftigelsesavviket i hodet ditt er rekordhøyt",
-  "Nullpunktet ditt ligger et sted under gulvet",
-  "Sikkerhetsmarginen din er negativ, kompis",
-  "Svaret ditt er like elastisk som en betongblokk",
-  "Den gikk rett i svinn",
-  "Revisoren hadde grått nå",
-  "Det der var ikke VOM, det var VÆMMELIG",
-  "Lærebok: 1. Deg: 0",
-  "Har du prøvd å lese pensum, eller er det for mainstream?",
-  "Feil. Men du var veldig sikker, det skal du ha",
-  "Det var et modig svar. Modig og feil",
-  "Hjernen din kjører på kalkulatoriske avskrivninger",
-  "Du tilpasser deg prisfast, men tankene er prisvariable",
-  "Dette svaret bør legges ned. Ingen særkostnader går tapt",
-  "Foreleseren har kjent en kald trekk nå",
   "En gullfisk med hukommelsestap hadde husket formelen",
-  "Er du sponset av F på eksamen?",
-  "Nei. Bare nei",
-  "Det svaret har lavere DEI enn en tom butikk",
-  "Selv Fjordsnacks hadde ansatt noen andre",
-  "Du regnet som om tallene skyldte deg penger",
-  "Pensum ringte. Det vil ha deg tilbake",
-  "Det var et standardavvik fra fornuft",
-  "Kostnadsdriveren din er tydeligvis panikk",
-  "Hvis feil var en avdeling, ville du vært hovedsted",
-  "Seriøst? Formelen står i sammendraget",
-  "Det der var materialforbruksavvik, men for hjerneceller",
-  "Du er en ekte tilleggsordre: helt uventet og helt unødvendig",
-  "Excel hadde gitt deg #VERDI! for det der",
-  "Det svaret hadde underdekning på alle plan",
-  "Dette var ikke kostnadsoptimum, det var kostnadspessimum",
-  "Hjernen din har gått i lavsesong"
+  "Jeg har sett potetstappe med bedre resonnement enn det der",
+  "Du svarte som om pensum var valgfritt. Det er det ikke",
+  "Svaret ditt har negativt dekningsbidrag, akkurat som innsatsen din",
+  "Hjernen din er en hjelpeavdeling: den fakturerer null og koster bare penger",
+  "Det der var en irreversibel kostnad. For meg, som måtte se det",
+  "Gratulerer, av fire alternativer klarte du å finne søppelet",
+  "Selv kalkulatoren din vurderer å bytte eier",
+  "Du har overdekning av selvtillit og massiv underdekning av kunnskap",
+  "Nullpunktet ditt ligger i kjelleren, og du graver fortsatt",
+  "Sikkerhetsmarginen din er negativ. Du er allerede konkurs",
+  "Det svaret er like elastisk som en betongblokk i minus tjue",
+  "Revisoren så det der og leverte oppsigelsen sin",
+  "Lærebok: 1. Deg: 0. Og læreboka spilte ikke engang",
+  "Har du lest pensum, eller bare sett på forsiden?",
+  "Modig svar. Modig, selvsikkert og helt, totalt feil",
+  "Hjernen din går på kalkulatoriske avskrivninger. Den er avskrevet",
+  "Dette svaret bør legges ned umiddelbart. Ingen særkostnader går tapt",
+  "Er du sponset av karakteren F?",
+  "Nei. Bare nei. Gå og drikk vann og prøv igjen",
+  "Selv Fjordsnacks hadde sparket deg etter den",
+  "Du regnet som om tallene hadde fornærmet moren din",
+  "Pensum ringte. Det er skuffet, men ikke overrasket",
+  "Kostnadsdriveren din er ren panikk",
+  "Hvis feil var en avdeling, ville du vært hovedsted og daglig leder",
+  "Formelen står i sammendraget. Den har stått der hele tiden. Bare se",
+  "Excel hadde gitt deg #VERDI! og så slått seg av i skam",
+  "Det var ikke kostnadsoptimum. Det var kostnadskatastrofe",
+  "Hjernen din har permanent lavsesong",
+  "Du er en tilleggsordre ingen ba om",
+  "Jeg har sett bedre beslutninger i en kantinekø",
+  "Feil. Igjen. Er dette en strategi?",
+  "Den feilen er så stor at den trenger egen fordelingsnøkkel",
+  "Selv tilfeldig klikking hadde hatt 25 % sjanse. Du slo ikke engang den",
+  "Hold opp. Les. Så svar. I den rekkefølgen",
+  "Hvis dumhet var en fast kostnad, hadde du hatt stordriftsfordeler",
+  "Det svaret kostet deg poeng og meg hjerneceller"
 ];
-const ROAST_PASS=["Ikke bestått. Apen med 27 i IQ ler nå","Under kravet. Kanskje prøv med øynene åpne neste gang","Dekningsbidraget ditt dekket ikke engang de faste kostnadene"];
+const ROAST_PASS=[
+  "Ikke bestått. Apen med 27 i IQ står og ler av deg nå",
+  "Under kravet. Neste gang prøver du med hjernen påslått",
+  "Dekningsbidraget ditt dekket ikke engang de faste kostnadene. Prøv igjen",
+  "Strøk. Dette er ikke en øvelse i å skuffe meg. Gjør det på nytt"
+];
+const MOTIVATION=[
+  "Tre på rad. Der ja, nå snakker vi",
+  "Du er farligere enn en skattesmell for eksamen nå",
+  "Det der var rent, skarpt og riktig. Fortsett sånn",
+  "Nå tenker du som en controller. Ikke stopp",
+  "Riktig, riktig, riktig. Eksamen har ingen sjanse",
+  "Du leser pensum som om det skyldte deg penger. Elsker det",
+  "Sånn ja. Hjernen er tydeligvis ikke avskrevet likevel",
+  "Positivt avvik på alle linjer. Imponerende",
+  "Dette er hva som skjer når du faktisk prøver"
+];
+const MOTIV_PASS=[
+  "Bestått. Jeg visste du hadde det i deg",
+  "Bestått. Nå tar vi A-en på eksamen",
+  "Godkjent. Gullfisken er stolt av deg"
+];
 let roastOn=!!rd("hsm122-roast",false), lastRoast=-1;
-function roast(list){ if(!roastOn) return; const L=list||ROASTS; let i; do{ i=Math.floor(Math.random()*L.length); }while(L.length>1 && i===lastRoast); lastRoast=i; toast(L[i]); }
+const roastLast={};
+function roast(list,kind){ if(!roastOn) return; const L=list||ROASTS; let i; do{ i=Math.floor(Math.random()*L.length); }while(L.length>1 && i===roastLast[L.length]); roastLast[L.length]=i; showQuote(L[i],kind||"roast"); }
+let quoteTimer=null;
+function showQuote(text,kind){
+  let q=$("bendikQuote"); if(!q){ q=el("div",{id:"bendikQuote",class:"bq",role:"status","aria-live":"polite"}); document.body.append(q); q.addEventListener("click",()=>q.classList.remove("on")); }
+  q.className="bq "+kind; q.innerHTML=`<span class="bq-mark" aria-hidden="true">“</span><p></p><span class="bq-by">— Bendik, den mest karismatiske skaperen av dette programmet</span>`;
+  q.querySelector("p").textContent=text;
+  requestAnimationFrame(()=>q.classList.add("on"));
+  clearTimeout(quoteTimer); quoteTimer=setTimeout(()=>q.classList.remove("on"),5200);
+}
 /* prøver: når et svar sjekkes */
 const checkRoast=check;
-check=function(i){ checkRoast(i); try{ const r=scoreQ(Q[i],ans[i]); if(r.state==="bad"||r.state==="part") roast(); }catch(e){} };
+check=function(i){ checkRoast(i); try{ const r=scoreQ(Q[i],ans[i]); if(r.state==="bad"||r.state==="part") roast(); else if(r.state==="ok" && P.streak>=3 && P.streak%3===0) roast(MOTIVATION,"motiv"); }catch(e){} };
 /* levering uten bestått */
 const gradeRoast=grade;
-grade=function(){ const was=graded; gradeRoast(); try{ if(!was && graded){ let t=0; Q.forEach((q,i)=>t+=scoreQ(q,ans[i]).pts); if(t<passPts()) setTimeout(()=>roast(ROAST_PASS),900); } }catch(e){} };
+grade=function(){ const was=graded; gradeRoast(); try{ if(!was && graded){ let t=0; Q.forEach((q,i)=>t+=scoreQ(q,ans[i]).pts); setTimeout(()=>t<passPts()?roast(ROAST_PASS):roast(MOTIV_PASS,"motiv"),900); } }catch(e){} };
 /* huskeøkt */
 const hkGradeRoast=hkGrade;
 hkGrade=function(res,conf,given){ const lock=HK.locked; hkGradeRoast(res,conf,given); if(!lock && res==="no") roast(); };
@@ -7087,10 +7125,10 @@ hkGrade=function(res,conf,given){ const lock=HK.locked; hkGradeRoast(res,conf,gi
 (function(){
   const card=$("resetProfile").closest(".card");
   const c=el("div",{class:"card"});
-  c.innerHTML=`<h2>Roast-modus</h2><p class="modehint">Når du svarer feil, får du en frekk replikk. Bare for deg som tåler det.</p><div class="seg" role="group" aria-label="Roast-modus"><button type="button" id="roastOff">Av</button><button type="button" id="roastOn">På</button></div>`;
+  c.innerHTML=`<h2>Roast-modus</h2><p class="modehint">Sitater fra Bendik, den mest karismatiske skaperen av dette programmet. Svarer du feil, får du høre det. Gjør du det bra, får du motivasjon. Bare for deg som tåler det.</p><div class="seg" role="group" aria-label="Roast-modus"><button type="button" id="roastOff">Av</button><button type="button" id="roastOn">På</button></div>`;
   card.before(c);
   const sync=()=>{ $("roastOn").setAttribute("aria-pressed",String(roastOn)); $("roastOff").setAttribute("aria-pressed",String(!roastOn)); };
-  $("roastOn").addEventListener("click",()=>{ roastOn=true; wr("hsm122-roast",true); sync(); toast("Roast-modus er på. Lykke til, kjøtthode"); });
+  $("roastOn").addEventListener("click",()=>{ roastOn=true; wr("hsm122-roast",true); sync(); showQuote("Roast-modus er på. Lykke til, kjøtthode","roast"); });
   $("roastOff").addEventListener("click",()=>{ roastOn=false; wr("hsm122-roast",false); sync(); toast("Roast-modus er av"); });
   sync();
 })();
