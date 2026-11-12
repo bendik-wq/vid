@@ -7024,6 +7024,77 @@ chapterStats=function(){ const ch={}; Object.entries(liveTopics()).forEach(([k,d
 weakTopics=function(n){ return Object.entries(liveTopics()).filter(([k,d])=>d[1]>=2 && d[0]/d[1]<.8).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]).slice(0,n); };
 
 
+/* ================= Roast-modus: frekke replikker ved feil svar (kun når slått på) ================= */
+const ROASTS=[
+  "Kjøtthode, er du lobotomisert, lol",
+  "En ape med 27 i IQ kunne fått til dette",
+  "Selv Excel ville skjemmes over den",
+  "Svaret ditt har negativt dekningsbidrag",
+  "Det der var en irreversibel kostnad for hjernen din",
+  "Hjernen din er tydeligvis en hjelpeavdeling: den fakturerer ingenting",
+  "Gratulerer, du fant det eneste feile alternativet",
+  "Til og med kalkulatoren ser bort",
+  "Det svaret er sunk cost. Gå videre",
+  "Du har overdekning av selvtillit og underdekning av kunnskap",
+  "Beskjeftigelsesavviket i hodet ditt er rekordhøyt",
+  "Nullpunktet ditt ligger et sted under gulvet",
+  "Sikkerhetsmarginen din er negativ, kompis",
+  "Svaret ditt er like elastisk som en betongblokk",
+  "Den gikk rett i svinn",
+  "Revisoren hadde grått nå",
+  "Det der var ikke VOM, det var VÆMMELIG",
+  "Lærebok: 1. Deg: 0",
+  "Har du prøvd å lese pensum, eller er det for mainstream?",
+  "Feil. Men du var veldig sikker, det skal du ha",
+  "Det var et modig svar. Modig og feil",
+  "Hjernen din kjører på kalkulatoriske avskrivninger",
+  "Du tilpasser deg prisfast, men tankene er prisvariable",
+  "Dette svaret bør legges ned. Ingen særkostnader går tapt",
+  "Foreleseren har kjent en kald trekk nå",
+  "En gullfisk med hukommelsestap hadde husket formelen",
+  "Er du sponset av F på eksamen?",
+  "Nei. Bare nei",
+  "Det svaret har lavere DEI enn en tom butikk",
+  "Selv Fjordsnacks hadde ansatt noen andre",
+  "Du regnet som om tallene skyldte deg penger",
+  "Pensum ringte. Det vil ha deg tilbake",
+  "Det var et standardavvik fra fornuft",
+  "Kostnadsdriveren din er tydeligvis panikk",
+  "Hvis feil var en avdeling, ville du vært hovedsted",
+  "Seriøst? Formelen står i sammendraget",
+  "Det der var materialforbruksavvik, men for hjerneceller",
+  "Du er en ekte tilleggsordre: helt uventet og helt unødvendig",
+  "Excel hadde gitt deg #VERDI! for det der",
+  "Det svaret hadde underdekning på alle plan",
+  "Dette var ikke kostnadsoptimum, det var kostnadspessimum",
+  "Hjernen din har gått i lavsesong"
+];
+const ROAST_PASS=["Ikke bestått. Apen med 27 i IQ ler nå","Under kravet. Kanskje prøv med øynene åpne neste gang","Dekningsbidraget ditt dekket ikke engang de faste kostnadene"];
+let roastOn=!!rd("hsm122-roast",false), lastRoast=-1;
+function roast(list){ if(!roastOn) return; const L=list||ROASTS; let i; do{ i=Math.floor(Math.random()*L.length); }while(L.length>1 && i===lastRoast); lastRoast=i; toast(L[i]); }
+/* prøver: når et svar sjekkes */
+const checkRoast=check;
+check=function(i){ checkRoast(i); try{ const r=scoreQ(Q[i],ans[i]); if(r.state==="bad"||r.state==="part") roast(); }catch(e){} };
+/* levering uten bestått */
+const gradeRoast=grade;
+grade=function(){ const was=graded; gradeRoast(); try{ if(!was && graded){ let t=0; Q.forEach((q,i)=>t+=scoreQ(q,ans[i]).pts); if(t<passPts()) setTimeout(()=>roast(ROAST_PASS),900); } }catch(e){} };
+/* huskeøkt */
+const hkGradeRoast=hkGrade;
+hkGrade=function(res,conf,given){ const lock=HK.locked; hkGradeRoast(res,conf,given); if(!lock && res==="no") roast(); };
+/* formelduell og skill begrepene: et feil valg får klassen "wrong" */
+["duelStage","skStage"].forEach(id=>$(id).addEventListener("click",e=>{ const b=e.target.closest(".duel-o"); if(b && b.classList.contains("wrong")) roast(); }));
+/* innstilling under Profil */
+(function(){
+  const card=$("resetProfile").closest(".card");
+  const c=el("div",{class:"card"});
+  c.innerHTML=`<h2>Roast-modus</h2><p class="modehint">Når du svarer feil, får du en frekk replikk. Bare for deg som tåler det.</p><div class="seg" role="group" aria-label="Roast-modus"><button type="button" id="roastOff">Av</button><button type="button" id="roastOn">På</button></div>`;
+  card.before(c);
+  const sync=()=>{ $("roastOn").setAttribute("aria-pressed",String(roastOn)); $("roastOff").setAttribute("aria-pressed",String(!roastOn)); };
+  $("roastOn").addEventListener("click",()=>{ roastOn=true; wr("hsm122-roast",true); sync(); toast("Roast-modus er på. Lykke til, kjøtthode"); });
+  $("roastOff").addEventListener("click",()=>{ roastOn=false; wr("hsm122-roast",false); sync(); toast("Roast-modus er av"); });
+  sync();
+})();
+
 go((location.hash||"").slice(1)||"hjem",true);
 
 </script>
