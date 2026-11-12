@@ -7166,7 +7166,27 @@ const BENDIK_QUOTES=[
   "Jeg har aldri sett noen bruke så lang tid på å regne ut 12 % feriepenger",
   "Hvis forvirring var en variabel kostnad, ville dere vært overproporsjonale",
   "Ta en prøve til. Ikke fordi du har lyst, men fordi du trenger det sårt",
-  "Tror du eksamen blir lettere av at du venter? Den blir ikke det"
+  "Tror du eksamen blir lettere av at du venter? Den blir ikke det",
+  "Bare bli smart som meg, så er dette easy as",
+  "Jeg lagde denne appen fordi jeg ble så enormt skuffet da jeg så nivået i klassen",
+  "Jeg har sett smartere beslutninger fra en parkeringsautomat",
+  "Dette er pensum for førsteårsstudenter. Ikke for førsteklassinger. Selv om du tydeligvis tror det",
+  "Hvis hjernen din var en bedrift, hadde den gått konkurs før første faktura",
+  "Det er ikke pensum som er vanskelig. Det er dere som er sakte",
+  "Jeg forklarte dette én gang. En gullfisk hadde fått det med seg på første forsøk",
+  "Halve klassen tror VOM er et lydord",
+  "Hvis kunnskapen din var et lager, hadde vareopptellingen vært null",
+  "Svinnet i denne klassen er ikke varer. Det er hjerneceller",
+  "Jeg har mistet troen på utdanningssystemet. Takk, HSM122",
+  "Dere har hatt hele semesteret. Og dere har fortsatt ikke skjønt forskjellen på fast og variabel",
+  "Om dumhet var fornybar energi, kunne denne klassen drevet hele Bergen",
+  "Hvis du trenger fasit for å skjønne fasiten, er det ikke fasiten som er problemet",
+  "Jeg er ikke streng. Jeg er bare den eneste i rommet som har lest boka",
+  "Tenk på eksamen som et nullpunkt. Akkurat nå er du godt under",
+  "Ingen fordelingsnøkkel i verden kan fordele intelligens jevnt i denne klassen",
+  "Du har ikke en kunnskapsbrist. Du har et kunnskapskrater",
+  "Selv tilfeldig klikking slår deg. Og den har ikke engang lest pensum",
+  "Lær det nå, eller forklar til mamma i januar hvorfor du strøk"
 ];
 let bqIdx=Math.floor(Math.random()*BENDIK_QUOTES.length), bqTimer=null;
 function bqNext(){ bqIdx=(bqIdx+1+Math.floor(Math.random()*3))%BENDIK_QUOTES.length; document.querySelectorAll(".bqr").forEach(w=>{ const p=w.querySelector("p"); w.classList.add("fade"); setTimeout(()=>{ p.textContent=BENDIK_QUOTES[bqIdx]; w.classList.remove("fade"); },400); }); bqSchedule(); }
