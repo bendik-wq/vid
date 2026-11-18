@@ -873,6 +873,68 @@ select option,select optgroup{color:#111;background:#fff}
 .numrow input::placeholder,.hk-in::placeholder{color:#777}
 .hk-in.right{background:#e2f5e9!important}.hk-in.wrong{background:#fde4e0!important}
 
+/* ===== v13: Forståelse + Fordypning ===== */
+.iq-card{border-radius:26px;padding:20px;display:grid;gap:14px}
+.iq-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12.5px}
+.iq-ch{padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--cc) 20%,transparent);color:var(--fg);font-weight:600}
+.iq-lvl{padding:4px 10px;border-radius:999px;background:var(--fill);color:var(--muted);font-weight:600}
+.iq-lvl.l3{background:rgba(255,55,95,.18);color:#ff6b8a}
+.iq-pos{margin-left:auto;color:var(--muted)}
+.iq-q{margin:0;font-family:var(--f-display);font-size:clamp(18px,2.6vw,21px);font-weight:600;line-height:1.38;letter-spacing:-.015em}
+.iq-o{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;line-height:1.4}
+.iq-k{font-weight:700;opacity:.55}
+.iq-o.dim{opacity:.55}
+.iq-mark{font-weight:800;font-size:17px}
+.iq-mark.ok{color:#1f8a4c!important}.iq-mark.no{color:#c4271d!important}
+.iq-why{border-radius:18px;padding:14px 16px;line-height:1.5;font-size:15px}
+.iq-why.ok{background:rgba(52,199,89,.16);box-shadow:inset 0 0 0 1.5px rgba(52,199,89,.55)}
+.iq-why.no{background:rgba(255,69,58,.14);box-shadow:inset 0 0 0 1.5px rgba(255,69,58,.55)}
+.iq-why p{margin:6px 0 0}
+.iq-res{display:grid;gap:2px}.iq-res b{font-family:var(--f-display);font-size:34px;letter-spacing:-.03em}.iq-res span{color:var(--muted)}
+.iq-h{margin:6px 0 0;font-size:17px}
+.iq-rev{border-top:.5px solid var(--line);padding:10px 0}.iq-rev summary{cursor:pointer;font-weight:600;line-height:1.4}.iq-rev p{margin:8px 0 0;line-height:1.5;font-size:14.5px}
+.dp{display:grid;gap:16px;padding-bottom:40px}
+.dp-intro{margin:4px 2px 0}
+.dp-grid .tile{color:#fff;font-weight:700;font-size:18px;display:grid;place-items:center}
+.dp-head{border-radius:26px;padding:22px;display:grid;gap:8px;background-image:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--cc) 22%,transparent),transparent 60%)}
+.dp-head h2{margin:0;font-family:var(--f-display);font-size:clamp(26px,4vw,34px);letter-spacing:-.03em}
+.dp-head p{margin:0;color:var(--muted);line-height:1.5}
+.dp-toc{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dp-toc button{border:0;background:var(--fill);color:var(--fg);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+.dp-toc button:hover{background:var(--accent-soft)}
+.dp-sec{border-radius:24px;padding:20px 22px;scroll-margin-top:16px}
+.dp-sec h3{margin:0 0 10px;font-family:var(--f-display);font-size:21px;letter-spacing:-.02em}
+.dp-body{line-height:1.62;font-size:15.5px}
+.dp-body p{margin:0 0 12px}.dp-body ul,.dp-body ol{margin:0 0 12px;padding-left:22px}.dp-body li{margin:4px 0}
+.dp-body h4{margin:16px 0 8px;font-size:16.5px}
+.dp-body .formula{font-family:var(--f-mono,ui-monospace,monospace);font-size:14.5px;line-height:1.75;background:var(--fill);border-radius:14px;padding:12px 16px;margin:0 0 12px;border-left:3px solid var(--accent);overflow-x:auto}
+.dp-body .tip,.dp-body .warn,.dp-body .ex{border-radius:14px;padding:12px 16px;margin:0 0 12px}
+.dp-body .tip{background:rgba(52,199,89,.13);border-left:3px solid #34c759}
+.dp-body .warn{background:rgba(255,159,10,.14);border-left:3px solid #ff9f0a}
+.dp-body .ex{background:rgba(47,123,246,.12);border-left:3px solid #2f7bf6}
+.dp-body .tip::before{content:"Eksamenstriks";display:block;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#34c759;margin-bottom:4px}
+.dp-body .warn::before{content:"Typisk feil";display:block;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#ff9f0a;margin-bottom:4px}
+.dp-body .ex::before{content:"Eksempel";display:block;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#2f7bf6;margin-bottom:4px}
+.dp-body .tip p:last-child,.dp-body .warn p:last-child,.dp-body .ex p:last-child{margin-bottom:0}
+.dp-body .tblwrap{overflow-x:auto;margin:0 0 12px}
+.dp-body table{border-collapse:collapse;font-size:14px;min-width:100%}
+.dp-body th,.dp-body td{padding:7px 10px;border-bottom:.5px solid var(--line);text-align:left;vertical-align:top}
+.dp-body th{font-weight:600;background:var(--fill)}
+.dp-body td:not(:first-child),.dp-body th:not(:first-child){text-align:right}
+.dc{margin:6px 0 14px;padding:10px 8px 8px;border-radius:16px;background:var(--fill)}
+.dc-svg{width:100%;height:auto;display:block;color:var(--fg)}
+.dc-grid{stroke:var(--line);stroke-width:1}
+.dc-axis{stroke:currentColor;stroke-width:1.2;opacity:.6}
+.dc-tick{fill:var(--muted);font-size:12px}
+.dc-lab{fill:var(--muted);font-size:12.5px;font-weight:600}
+.dc-title{fill:currentColor;font-size:14.5px;font-weight:700}
+.dc-ann{font-size:12.5px;font-weight:600}
+.dc-pt{fill:var(--fg);stroke:var(--bg);stroke-width:2}
+.dc-ptl{fill:currentColor}
+.dc-leg{display:flex;flex-wrap:wrap;gap:6px 16px;padding:6px 10px 2px;font-size:13px;color:var(--muted)}
+.dc-leg span{display:inline-flex;align-items:center;gap:6px}.dc-leg i{display:inline-block;width:20px}
+.dp-end{border-radius:24px;padding:20px;display:grid;gap:8px}.dp-end b{font-size:19px}.dp-end>span{color:var(--muted)}
+.dp-nav{justify-content:space-between}
 </style>
 </head>
 <body>
@@ -5266,7 +5328,7 @@ function mtRenderChips(){
   $("mtDecks").innerHTML=chipsHTML(MT.ch,c=>{ const b=P.matchBest[c]; return b?"Rekord "+(b/1000).toFixed(1)+" s":"6 par"; });
   $("mtDecks").querySelectorAll(".deck").forEach(b=>b.addEventListener("click",()=>{ MT.ch=+b.dataset.ch; startMatch(); }));
 }
-function mtShort(g){ const d=memMask(g); const m=d.match(/^.+?[.:](?=\s|$)/), s=m?m[0]:d; return s.length>110?s.slice(0,107).replace(/\s\S*$/,"")+" …":s; }
+function mtShort(g){ let d=memMask(g).replace(/^[▁\s]+(?:\([^)]*\))?\s*:\s*/,""); d=d.charAt(0).toUpperCase()+d.slice(1); const parts=d.split(/(?<=[.!?:])\s+(?=[A-ZÆØÅ▁0-9])/); let s=""; for(const p of parts){ s+=(s?" ":"")+p; if(s.length>=45) break; } s=s.replace(/:$/,"."); return s.length>130?s.slice(0,127).replace(/\s\S*$/,"")+" …":s; }
 function startMatch(){
   clearInterval(MT.timer);
   const pool=shuffle((MT.ch?GLOSS.filter(g=>g.ch===MT.ch):GLOSS).slice());
